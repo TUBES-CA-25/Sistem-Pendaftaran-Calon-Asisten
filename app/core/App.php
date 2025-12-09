@@ -10,12 +10,27 @@ class App {
         $url = $this->parseURL();
         
         // Controller
-        if( isset($url[0]) && file_exists('../app/Controllers/' . ucfirst($url[0]) . '.php') ) {
-            $this->controller = ucfirst($url[0]);
-            unset($url[0]);
+        if( isset($url[0]) ) {
+            $u = ucfirst($url[0]);
+            if( file_exists('../app/Controllers/' . $u . '/' . $u . 'Controller.php') ) {
+                $this->controller = $u . 'Controller';
+                unset($url[0]);
+                require_once '../app/Controllers/' . $u . '/' . $this->controller . '.php';
+            } elseif( file_exists('../app/Controllers/' . $u . '.php') ) {
+                $this->controller = $u;
+                unset($url[0]);
+                require_once '../app/Controllers/' . $this->controller . '.php';
+            }
+        } else {
+            // Default Controller
+            if( file_exists('../app/Controllers/Home/HomeController.php') ) {
+                $this->controller = 'HomeController';
+                require_once '../app/Controllers/Home/HomeController.php';
+            } elseif( file_exists('../app/Controllers/Home.php') ) {
+                require_once '../app/Controllers/Home.php';
+            }
         }
         
-        require_once '../app/Controllers/' . $this->controller . '.php';
         $this->controller = new $this->controller;
 
         // Method
