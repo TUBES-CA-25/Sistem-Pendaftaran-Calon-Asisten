@@ -12,7 +12,7 @@ $jenisKelamin = ProfileController::viewBiodata() == null ? "Jenis Kelamin" : Pro
 $tempatLahir = ProfileController::viewBiodata() == null ? "Tempat Lahir" : ProfileController::viewBiodata()["tempatLahir"];
 $tanggalLahir = ProfileController::viewBiodata() == null ? "Tanggal Lahir" : ProfileController::viewBiodata()["tanggalLahir"];
 $noHp = ProfileController::viewBiodata() == null ? "No Telephone" : ProfileController::viewBiodata()["noHp"];
-$photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
+$photo = "/Kelompok1_IC-ASSIST/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
 ?>
 
 <style>
@@ -361,18 +361,18 @@ $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"
         $('#logoutButton').click(function (e) {
             e.preventDefault();
             $.ajax({
-                url: '/tubes_web/public/logout',
+                url: '/Kelompok1_IC-ASSIST/public/logout',
                 type: 'POST',
                 success: function (response) {
                     if (response.status === 'success') {
-                        showModal('Logout berhasil', '/tubes_web/public/Assets/gif/success.gif');
+                        showModal('Logout berhasil', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
                         setTimeout(() => {
-                            window.location.href = '/tubes_web/public/';
+                            window.location.href = '/Kelompok1_IC-ASSIST/public/';
                             window.location.reload();
         }, 1000);
                         
                     } else {
-                        showModal('Logout gagal', '/tubes_web/public/Assets/gif/failed.gif');
+                        showModal('Logout gagal', '/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif');
                     }
                 },
                 error: function (xhr, status, error) {
@@ -420,7 +420,7 @@ $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"
 
             if (!isValid) return;
             $.ajax({
-                url: '/tubes_web/public/updatebiodata',
+                url: '/Kelompok1_IC-ASSIST/public/updatebiodata',
                 method: 'POST',
                 data: formData,
                 success: function (response) {
@@ -429,11 +429,11 @@ $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"
                         console.log('Parsed Response:', parsedResponse);
 
                         if (parsedResponse.status === 'success') {
-                            showModal('Data berhasil diperbarui', '/tubes_web/public/Assets/gif/success.gif');
+                            showModal('Data berhasil diperbarui', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
                             document.querySelector('a[data-page="profile"]').click();
                         } else {
                             console.log('Error:', parsedResponse.message);
-                            showModal('Data gagal diperbarui', '/tubes_web/public/Assets/gif/failed.gif');
+                            showModal('Data gagal diperbarui', '/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif');
                             document.querySelector('a[data-page="profile"]').click();
                         }
                     } catch (error) {

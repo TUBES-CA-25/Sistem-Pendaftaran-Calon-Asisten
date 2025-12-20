@@ -11,9 +11,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="/tubes_web/public/Assets/Style/alertstyle.css">
-    <link rel="stylesheet" href="/tubes_web/public/Assets/Style/Styles1.css">
-    <link rel="icon" href="/tubes_web/public/Assets/Img/iclabs.png">
+    <link rel="stylesheet" href="/Kelompok1_IC-ASSIST/public/Assets/Style/alertstyle.css">
+    <link rel="stylesheet" href="/Kelompok1_IC-ASSIST/public/Assets/Style/Styles1.css">
+    <link rel="icon" href="/Kelompok1_IC-ASSIST/public/Assets/Img/iclabs.png">
 
     <title>Pendaftaran calon asisten ICLABS</title>
     <style>
@@ -37,18 +37,18 @@
             <form id="loginForm">
                 <div>
                     <div style="margin-bottom: 20px; text-align: center; position: relative; top: -10px;">
-                        <img src="/tubes_web/public/Assets/Img/umi.png" alt="logo fikom" class="logo"
+                        <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/umi.png" alt="logo fikom" class="logo"
                             style="margin-right: 10px; width: 80px;">
-                        <img src="/tubes_web/public/Assets/Img/fikom.png" alt="" class="logo"
+                        <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/fikom.png" alt="" class="logo"
                             style="margin-right: 10px; width: 80px;">
-                        <img src="/tubes_web/public/Assets/Img/iclabs.png" alt="" class="logo" style="width: 80px;">
+                        <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/iclabs.png" alt="" class="logo" style="width: 80px;">
                     </div>
                     <div style="margin-bottom : 50px">
                         <h1 style="text-align: center;">Masuk</h1>
                     </div>
                     <div>
                         <div style="position: relative; width: 100%; margin-bottom: 15px;">
-                            <img src="/tubes_web/public/Assets/Img/idcard.svg" alt="ID Card Icon"
+                            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/idcard.svg" alt="ID Card Icon"
                                 style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px;">
                             <input type="text" class="form-control" id="stambuk" name="stambuk" placeholder="Stambuk"
                                 style="padding-left: 40px; width: 100%; height: 45px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc;"
@@ -56,7 +56,7 @@
                         </div>
 
                         <div style="position: relative; width: 100%; margin-bottom: 15px;">
-                            <img src="/tubes_web/public/Assets/Img/password.svg" alt="Lock Icon"
+                            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/password.svg" alt="Lock Icon"
                                 style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px;">
                             <input type="password" id="passwordLogin" name="password" placeholder="Password"
                                 style="padding-left: 40px; width: 100%; height: 45px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc;"
@@ -88,7 +88,7 @@
                     <div style="width: 100%; max-width: 400px; margin: auto; padding: 20px;">
 
                         <div style="position: relative; width: 100%; margin-bottom: 15px;">
-                            <img src="/tubes_web/public/Assets/Img/profile.svg" alt="Profile Icon"
+                            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/profile.svg" alt="Profile Icon"
                                 style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px;">
                             <input type="text" id="email" name="email" placeholder="email@umi.ac.id"
                                 style="padding-left: 40px; width: 100%; height: 45px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc;"
@@ -97,7 +97,7 @@
                         </div>
 
                         <div style="position: relative; width: 100%; margin-bottom: 15px;">
-                            <img src="/tubes_web/public/Assets/Img/idcard.svg" alt="ID Card Icon"
+                            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/idcard.svg" alt="ID Card Icon"
                                 style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px;">
                             <input type="text" class="form-control" id="stambukregister" name="stambuk"
                                 placeholder="Stambuk"
@@ -106,7 +106,7 @@
                         </div>
 
                         <div style="position: relative; width: 100%; margin-bottom: 15px;">
-                            <img src="/tubes_web/public/Assets/Img/password.svg" alt="Lock Icon"
+                            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/password.svg" alt="Lock Icon"
                                 style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px;">
                             <input type="password" id="password" name="password" placeholder="Password"
                                 style="padding-left: 40px; width: 100%; height: 45px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc;"
@@ -120,7 +120,7 @@
                         </div>
 
                         <div style="position: relative; width: 100%; margin-bottom: 15px;">
-                            <img src="/tubes_web/public/Assets/Img/password.svg" alt="Key Icon"
+                            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/password.svg" alt="Key Icon"
                                 style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px;">
                             <input type="password" id="confirmPass" name="konfirmasiPassword"
                                 placeholder="Konfirmasi Password"
@@ -178,7 +178,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    <script src="/tubes_web/public/Assets/Script/Login/ScriptLogin.js"></script>
+    <script src="/Kelompok1_IC-ASSIST/public/Assets/Script/Login/ScriptLogin.js"></script>
 
 
 </body>

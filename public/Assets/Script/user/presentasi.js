@@ -30,16 +30,16 @@ $(document).ready(function() {
         e.preventDefault(); 
 
         $.ajax({
-            url: '/tubes_web/public/judul', 
+            url: '/Kelompok1_IC-ASSIST/public/judul', 
             type: 'POST',
             data: $(this).serialize(),
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                   showModal(response.message || 'Data berhasil disimpan', '/tubes_web/public/Assets/gif/success.gif');
+                   showModal(response.message || 'Data berhasil disimpan', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
                    document.querySelector('a[data-page="presentasi"]').click();
                 } else {
-                    showModal(response.message || 'Data gagal disimpan', '/tubes_web/public/Assets/gif/failed.gif');
+                    showModal(response.message || 'Data gagal disimpan', '/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif');
                 }
             },
             error: function(xhr, status, error) {
@@ -60,14 +60,14 @@ $(document).ready(function() {
         }
     
         $.ajax({
-            url: '/tubes_web/public/presentasi',
+            url: '/Kelompok1_IC-ASSIST/public/presentasi',
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             dataType: 'json',
             success: function (response) {
-               showModal(response.message || 'Data berhasil disimpan', '/tubes_web/public/Assets/gif/success.gif');
+               showModal(response.message || 'Data berhasil disimpan', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
                 document.querySelector('a[data-page="presentasi"]').click();
             },
             error: function (xhr, status, error) {

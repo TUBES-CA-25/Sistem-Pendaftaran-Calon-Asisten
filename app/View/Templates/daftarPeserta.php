@@ -138,8 +138,8 @@ $result = MahasiswaController::viewAllMahasiswa() ?? [];
                     <td><?= $row['alamat'] ?></td>
                     <td>
                         <div style="display: flex; gap:5%;">
-                            <img src="/tubes_web/public/Assets/Img/edit.svg" alt="edit" style="cursor: pointer;">
-                            <img src="/tubes_web/public/Assets/Img/delete.svg" alt="delete" style="cursor: pointer;">
+                            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/edit.svg" alt="edit" style="cursor: pointer;">
+                            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/delete.svg" alt="delete" style="cursor: pointer;">
                         </div>
                     </td>
                 </tr>
@@ -473,13 +473,13 @@ $result = MahasiswaController::viewAllMahasiswa() ?? [];
         $('#modalTanggal_lahir').text(tanggal_lahir);
         $('#modalJenis_kelamin').text(jenis_kelamin);
 
-        $('#modalFoto').attr('src', "/tubes_web/res/imageUser/" + (foto || 'default-image.jpg'));
+        $('#modalFoto').attr('src', "/Kelompok1_IC-ASSIST/res/imageUser/" + (foto || 'default-image.jpg'));
         $('#modalFoto').attr('alt', `Foto ${nama}`);
 
-        $('#downloadFotoButton').attr('data-download-url', foto ? `/tubes_web/res/imageUser/${foto}` : '#');
-        $('#downloadCVButton').attr('data-download-url', cv ? `/tubes_web/res/berkasUser/${cv}` : '#');
-        $('#downloadTranskripButton').attr('data-download-url', transkrip ? `/tubes_web/res/berkasUser/${transkrip}` : '#');
-        $('#downloadSuratButton').attr('data-download-url', surat ? `/tubes_web/res/berkasUser/${surat}` : '#');
+        $('#downloadFotoButton').attr('data-download-url', foto ? `/Kelompok1_IC-ASSIST/res/imageUser/${foto}` : '#');
+        $('#downloadCVButton').attr('data-download-url', cv ? `/Kelompok1_IC-ASSIST/res/berkasUser/${cv}` : '#');
+        $('#downloadTranskripButton').attr('data-download-url', transkrip ? `/Kelompok1_IC-ASSIST/res/berkasUser/${transkrip}` : '#');
+        $('#downloadSuratButton').attr('data-download-url', surat ? `/Kelompok1_IC-ASSIST/res/berkasUser/${surat}` : '#');
     });
 
     $('button[data-download-url]').on('click', function () {
@@ -523,14 +523,14 @@ $result = MahasiswaController::viewAllMahasiswa() ?? [];
                 if (response.status === 'success') {
                     showModal(
                         "Mahasiswa berhasil di terima",
-                        "/tubes_web/public/Assets/gif/success.gif"
+                        "/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif"
                     );
                     document.querySelector('a[data-page="lihatPeserta"]').click();
                     $('#detailModal').modal('hide');
                 } else {
                     showModal(
                         "Gagal menerima mahasiswa",
-                        "/tubes_web/public/Assets/gif/failed.gif"
+                        "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif"
                     );
                     console.log(response.message);
                 }
@@ -554,7 +554,7 @@ $result = MahasiswaController::viewAllMahasiswa() ?? [];
                 if (response.status === 'success') {
                     showModal(
                         "Mahasiswa berhasil dihapus",
-                        "/tubes_web/public/Assets/gif/success.gif"
+                        "/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif"
                     );
                     document.querySelector('a[data-page="lihatPeserta"]').click();
                     $('#deleteModal').modal('hide');
@@ -562,7 +562,7 @@ $result = MahasiswaController::viewAllMahasiswa() ?? [];
                 } else {
                     showModal(
                         "Gagal menghapus mahasiswa",
-                        "/tubes_web/public/Assets/gif/failed.gif"
+                        "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif"
                     );
                     $('#deleteModal').modal('hide');
                     console.log(response.message);
@@ -590,13 +590,13 @@ $result = MahasiswaController::viewAllMahasiswa() ?? [];
                 if (response.status === 'success') {
                     showModal(
                         "Pesan berhasil dikirim",
-                        "/tubes_web/public/Assets/gif/success.gif"
+                        "/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif"
                     );
                     document.querySelector('a[data-page="lihatPeserta"]').click();
                 } else {
                     showModal(
                         response.message || "Gagal mengirim pesan",
-                        "/tubes_web/public/Assets/gif/failed.gif"
+                        "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif"
                     );
                 }
             },

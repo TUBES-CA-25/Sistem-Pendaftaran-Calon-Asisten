@@ -62,21 +62,21 @@ const namaInput = document.getElementById("nama");
   $("#logoutButton").click(function (e) {
     e.preventDefault();
     $.ajax({
-      url: "/tubes_web/public/logout",
+      url: "/Kelompok1_IC-ASSIST/public/logout",
       type: "POST",
       success: function (response) {
         if (response.status === "success") {
           showModal(
             response.message || "Logout berhasil",
-            "/tubes_web/public/Assets/gif/success.gif",
+            "/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif",
             () => {
-              window.location.href = "/tubes_web/public";
+              window.location.href = "/Kelompok1_IC-ASSIST/public";
             }
           );
         } else {
           showModal(
             response.message || "Logout gagal",
-            "/tubes_web/public/Assets/gif/failed.gif"
+            "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif"
           );
         }
       },
@@ -84,7 +84,7 @@ const namaInput = document.getElementById("nama");
         console.log("Error:", xhr.responseText);
         showModal(
           "Terjadi kesalahan: " + error,
-          "/tubes_web/public/Assets/gif/failed.gif"
+          "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif"
         );
       },
     });
@@ -136,7 +136,7 @@ const namaInput = document.getElementById("nama");
 
     if(!isValid) return;
     $.ajax({
-      url: "tubes_web/public/store",
+      url: "Kelompok1_IC-ASSIST/public/store",
       type: "post",
       data: $("#biodataForm").serialize(),
       dataType: "json",
@@ -144,13 +144,13 @@ const namaInput = document.getElementById("nama");
         if (response.status === "success") {
           showModal(
             "Biodata berhasil disimpan",
-            "/tubes_web/public/Assets/gif/success.gif"
+            "/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif"
           );
           document.querySelector('a[data-page="biodata"]').click();
         } else {
           showModal(
             response.message || "Biodata gagal disimpan",
-            "/tubes_web/public/Assets/gif/failed.gif"
+            "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif"
           );
           console.log(response.message);
         }
@@ -159,7 +159,7 @@ const namaInput = document.getElementById("nama");
         console.log("Error:", xhr.responseText);
         showModal(
           "Terjadi kesalahan: " + error,
-          "/tubes_web/public/Assets/gif/failed.gif"
+          "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif"
         );
       },
     });

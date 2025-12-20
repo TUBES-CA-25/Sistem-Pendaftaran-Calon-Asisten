@@ -12,7 +12,7 @@ class App
 
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        $path = str_replace('/tubes_web/public', '', $path);
+        $path = str_replace('/Kelompok1_IC-ASSIST/public', '', $path);
         
         if ($path == '') { 
             $path = '/';

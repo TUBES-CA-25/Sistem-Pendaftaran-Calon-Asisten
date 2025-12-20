@@ -213,7 +213,7 @@ $jadwalPresentasi = JadwalPresentasiController::getJadwalPresentasi();
                     <td><?= $row['judul'] ?></td>
                     <td>
                         <div style="display: flex; gap: 5%;">
-                            <img src="/tubes_web/public/Assets/Img/edit.svg" alt="edit" class="edit-button">
+                            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/edit.svg" alt="edit" class="edit-button">
                         </div>
                     </td>
                 </tr>
@@ -331,8 +331,8 @@ $jadwalPresentasi = JadwalPresentasiController::getJadwalPresentasi();
                 $('#modalNamaPresentasi').text(nama || 'Data tidak tersedia');
                 $('#modalStambukPresentasi').text(stambuk || 'Data tidak tersedia');
                 $('#modalJudulPresentasi').text(judul || 'Data tidak tersedia');
-                $('#downloadMakalahPresentasi').attr('data-download-url', makalah ? `/tubes_web/res/makalahUser/${makalah}` : '#');
-                $('#downloadPptPresentasi').attr('data-download-url', ppt ? `/tubes_web/res/pptUser/${ppt}` : '#');
+                $('#downloadMakalahPresentasi').attr('data-download-url', makalah ? `/Kelompok1_IC-ASSIST/res/makalahUser/${makalah}` : '#');
+                $('#downloadPptPresentasi').attr('data-download-url', ppt ? `/Kelompok1_IC-ASSIST/res/pptUser/${ppt}` : '#');
                 $('#acceptButtonPresentasi').data('userid', idMahasiswa);
 
             });

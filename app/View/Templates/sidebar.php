@@ -3,12 +3,12 @@ use app\Controllers\Profile\ProfileController;
 use App\Controllers\user\BerkasUserController;
 $role = ProfileController::viewUser()["role"];
 $userName = ProfileController::viewUser()["username"];
-$photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
+$photo = "/Kelompok1_IC-ASSIST/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
 ?>
 <div class="sidebar" id="sidebar">
     <div class="top">
         <div class="logo">
-            <img src="/tubes_web/public/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
+            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
             <span>IC-ASSIST</span>
         </div>
         <i class="bx bx-menu" id="btn"></i>

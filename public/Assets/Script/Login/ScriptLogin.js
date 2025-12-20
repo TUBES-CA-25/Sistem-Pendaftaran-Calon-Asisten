@@ -219,16 +219,16 @@ $(document).ready(function () {
     
         console.log('Form validation passed, submitting...');
         $.ajax({
-            url: '/tubes_web/public/register/authenticate',
+            url: '/Kelompok1_IC-ASSIST/public/register/authenticate',
             type: 'post',
             data: $('#registerForm').serialize(),
             dataType: 'json',
             success: function (response) {
                 if (response.status === 'success') {
-                    showModal('Register Berhasil', '/tubes_web/public/Assets/gif/registergif.gif');
+                    showModal('Register Berhasil', '/Kelompok1_IC-ASSIST/public/Assets/gif/registergif.gif');
                     document.getElementById('login').click();
                 } else {
-                    showModal('Register Gagal stambuk sudah digunakan', '/tubes_web/public/Assets/gif/failedregistergif.gif');
+                    showModal('Register Gagal stambuk sudah digunakan', '/Kelompok1_IC-ASSIST/public/Assets/gif/failedregistergif.gif');
                     console.log(response.message);
                 }
             },
@@ -243,18 +243,18 @@ $(document).ready(function () {
     e.preventDefault();
 
     $.ajax({
-      url: "/tubes_web/public/login/authenticate",
+      url: "/Kelompok1_IC-ASSIST/public/login/authenticate",
       type: "post",
       data: $("#loginForm").serialize(),
       dataType: "json",
       success: function (response) {
         if (response.status === "success") {
-          showModal("Login Berhasil", "/tubes_web/public/Assets/gif/loginsuccess.gif");
+          showModal("Login Berhasil", "/Kelompok1_IC-ASSIST/public/Assets/gif/loginsuccess.gif");
           setTimeout(() => {
             window.location.href = response.redirect;
         }, 1000);
         } else {
-            showModal("Stambuk atau password salah", "/tubes_web/public/Assets/gif/failedregistergif.gif");
+            showModal("Stambuk atau password salah", "/Kelompok1_IC-ASSIST/public/Assets/gif/failedregistergif.gif");
         }
       },
       error: function (xhr, status, error) {

@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const navButtons = document.querySelectorAll(".nav button");
   const timerElement = document.getElementById("timer");
-  const endpoint = "/tubes_web/public/hasil";
+  const endpoint = "/Kelompok1_IC-ASSIST/public/hasil";
   let currentQuestion = 0;
   const initialDuration = 30 * 60;
   let remainingTime;
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function submitAndFinish() {
-    const calculateEndpoint = "/tubes_web/public/calculate";
+    const calculateEndpoint = "/Kelompok1_IC-ASSIST/public/calculate";
 
     try {
       const response = await fetch(calculateEndpoint, {
@@ -103,21 +103,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (data.status === "success") {
           setTimeout(() => {
-            window.location.href = "/tubes_web/public";
+            window.location.href = "/Kelompok1_IC-ASSIST/public";
           }, 3000);
         } else {
           setTimeout(() => {
-            window.location.href = "/tubes_web/public";
+            window.location.href = "/Kelompok1_IC-ASSIST/public";
           }, 3000);
         }
       } catch (parseError) {
         setTimeout(() => {
-          window.location.href = "/tubes_web/public";
+          window.location.href = "/Kelompok1_IC-ASSIST/public";
         }, 3000);
       }
     } catch (error) {
       setTimeout(() => {
-        window.location.href = "/tubes_web/public";
+        window.location.href = "/Kelompok1_IC-ASSIST/public";
       }, 3000);
     }
   }
@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(countdown);
         showModal(
           "Waktu Habis jawaban akan di kumpul",
-          "/tubes_web/public/Assets/gif/glasshour.gif"
+          "/Kelompok1_IC-ASSIST/public/Assets/gif/glasshour.gif"
         );
         submitAllAnswers()
           .then(() => submitAndFinish())
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.status === "success") {
               showModal(
                 "Jawaban berhasil disimpan. Silahkan menunggu pengumuman selanjutnya",
-                "/tubes_web/public/Assets/gif/glasshour.gif"
+                "/Kelompok1_IC-ASSIST/public/Assets/gif/glasshour.gif"
               );
               resolve(response);
             } else {
