@@ -300,12 +300,12 @@ $nilai = NilaiAkhirController::getAllNilaiAkhirMahasiswa();
                 dataType: 'json',
                 success: function (response) {
                     if (response.status === 'success') {
-                        showModal('Nilai berhasil ditambahkan!', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
+                        showModal('Nilai berhasil ditambahkan!', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
                         document.querySelector('a[data-page="lihatnilai"').click();
                     } else {
                         showModal(
                             'Error saat mengupdate nilai',
-                            '/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif'
+                            '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif'
                         );
                     }
                 },

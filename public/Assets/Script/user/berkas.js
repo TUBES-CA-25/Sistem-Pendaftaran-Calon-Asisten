@@ -33,7 +33,7 @@ $(document).ready(function () {
     e.preventDefault();
     var formData = new FormData(this);
     $.ajax({
-      url: "/Kelompok1_IC-ASSIST/public/berkas",
+      url: "/Sistem-Pendaftaran-Calon-Asisten/public/berkas",
       type: "POST",
       data: formData,
       dataType: "json",
@@ -43,13 +43,13 @@ $(document).ready(function () {
         if (response.status === "success") {
           showModal(
             "Berkas berhasil disimpan",
-            "/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif"
+            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif"
           );
           document.querySelector('a[data-page="uploadBerkas"]').click();
         } else {
           showModal(
             "Berkas gagal disimpan",
-            "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif"
+            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
           );
           console.log(response.message);
         }

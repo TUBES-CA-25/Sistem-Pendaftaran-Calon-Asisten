@@ -30,16 +30,16 @@ $(document).ready(function() {
         e.preventDefault(); 
 
         $.ajax({
-            url: '/Kelompok1_IC-ASSIST/public/judul', 
+            url: '/Sistem-Pendaftaran-Calon-Asisten/public/judul', 
             type: 'POST',
             data: $(this).serialize(),
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                   showModal(response.message || 'Data berhasil disimpan', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
+                   showModal(response.message || 'Data berhasil disimpan', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
                    document.querySelector('a[data-page="presentasi"]').click();
                 } else {
-                    showModal(response.message || 'Data gagal disimpan', '/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif');
+                    showModal(response.message || 'Data gagal disimpan', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
                 }
             },
             error: function(xhr, status, error) {
@@ -60,14 +60,14 @@ $(document).ready(function() {
         }
     
         $.ajax({
-            url: '/Kelompok1_IC-ASSIST/public/presentasi',
+            url: '/Sistem-Pendaftaran-Calon-Asisten/public/presentasi',
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             dataType: 'json',
             success: function (response) {
-               showModal(response.message || 'Data berhasil disimpan', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
+               showModal(response.message || 'Data berhasil disimpan', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
                 document.querySelector('a[data-page="presentasi"]').click();
             },
             error: function (xhr, status, error) {

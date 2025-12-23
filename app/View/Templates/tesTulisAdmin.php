@@ -447,7 +447,7 @@ $allSoal = ExamController::viewAllSoal();
       console.log("jawaban: ", formData.get("jawaban"));
 
       $.ajax({
-        url: '/Kelompok1_IC-ASSIST/public/addingsoal',
+        url: '/Sistem-Pendaftaran-Calon-Asisten/public/addingsoal',
         type: 'POST',
         data: formData,
         contentType: false,
@@ -457,10 +457,10 @@ $allSoal = ExamController::viewAllSoal();
         },
         success: function (response) {
           if (response.status === 'success') {
-            showModal('soal berhasil ditambahkan!', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
+            showModal('soal berhasil ditambahkan!', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
             document.querySelector('a[data-page="tesTulis"]').click();
           } else {
-            showModal('soal berhasil ditambahkan!', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
+            showModal('soal berhasil ditambahkan!', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
             document.querySelector('a[data-page="tesTulis"]').click();
           }
         },
@@ -484,10 +484,10 @@ $allSoal = ExamController::viewAllSoal();
           data: { id },
           success: function (response) {
             if (response.status === 'success') {
-              showModal('Soal berhasil dihapus!', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
+              showModal('Soal berhasil dihapus!', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
               document.querySelector('a[data-page="tesTulis"]').click();
             } else {
-              showModal('Soal berhasil dihapus!', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
+              showModal('Soal berhasil dihapus!', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
               document.querySelector('a[data-page="tesTulis"]').click();
 
             }
@@ -534,7 +534,7 @@ $allSoal = ExamController::viewAllSoal();
       console.log("jawaban: ", formData.get("jawaban"));
 
       $.ajax({
-        url: '/Kelompok1_IC-ASSIST/public/updatesoal',
+        url: '/Sistem-Pendaftaran-Calon-Asisten/public/updatesoal',
         type: 'POST',
         data: formData,
         contentType: false,
@@ -546,10 +546,10 @@ $allSoal = ExamController::viewAllSoal();
           try {
             const jsonResponse = JSON.parse(response);
             if (jsonResponse.status === 'success') {
-              showModal('Soal berhasil diupdate!', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
+              showModal('Soal berhasil diupdate!', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
               document.querySelector('a[data-page="tesTulis"]').click();
             } else {
-              showModal('Soal gagal diupdate: ' + jsonResponse.message, '/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif');
+              showModal('Soal gagal diupdate: ' + jsonResponse.message, '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
               document.querySelector('a[data-page="tesTulis"]').click();
             }
           } catch (error) {

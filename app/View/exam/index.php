@@ -5,7 +5,7 @@ use App\Controllers\user\BerkasUserController;
 $stambuk = ProfileController::viewUser()["stambuk"];
 $profile = ProfileController::viewBiodata();
 $nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileController::viewBiodata()["namaLengkap"];
-$photo = "/Kelompok1_IC-ASSIST/res/imageUser/" . (BerkasUserController::viewBerkas()["foto"] ?? "default.png");
+$photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserController::viewBerkas()["foto"] ?? "default.png");
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +16,7 @@ $photo = "/Kelompok1_IC-ASSIST/res/imageUser/" . (BerkasUserController::viewBerk
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<?=APP_URL?>/Assets/Style/exam.css" />
     <link rel="stylesheet" href="<?=APP_URL?>/Assets/Style/alertstyle.css">
-    <link rel="icon" href="/Kelompok1_IC-ASSIST/public/Assets/Img/iclabs.png">
+    <link rel="icon" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png">
 </head>
 
 <body>
@@ -105,7 +105,7 @@ foreach ($results as $index => $result): ?>
         <p>&copy; 2024 by ICLabs</p>
     </footer>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/Kelompok1_IC-ASSIST/public/Assets/Script/exam/examScript.js"></script>
+    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/exam/examScript.js"></script>
 </body>
 
 </html>

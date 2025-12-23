@@ -144,4 +144,4 @@ $results = PresentasiUserController::viewAll();
     </table>
   </div>
 </main>
-<script src="/Kelompok1_IC-ASSIST/public/Assets/Script/user/presentasi.js"></script>
+<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/user/presentasi.js"></script>

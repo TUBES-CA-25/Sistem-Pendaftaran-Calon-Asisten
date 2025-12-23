@@ -519,11 +519,11 @@ $mahasiswaList = MahasiswaController::viewAllMahasiswa();
                 data: JSON.stringify(formData),
                 success: function (response) {
                     if (response.status === "success") {
-                        showModal(response.message, "/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif");
+                        showModal(response.message, "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif");
                         document.querySelector('a[data-page="daftarKehadiran"]').click();
                     } else {
                         console.log(response.message)
-                        showModal(response.message, "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif");
+                        showModal(response.message, "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif");
                     }
                 },
             });
@@ -620,17 +620,17 @@ $mahasiswaList = MahasiswaController::viewAllMahasiswa();
                 success: function (response) {
                     console.log("Response:", response);  // Debug respons server
                     if (response.status === "success") {
-                        showModal(response.message, "/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif");
+                        showModal(response.message, "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif");
                         document.querySelector('a[data-page="daftarKehadiran"]').click();
                         $("#detailAbsensiModal").modal("hide");
                     } else {
-                        showModal(response.message, "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif");
+                        showModal(response.message, "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif");
                     }
                 },
                 error: function (xhr, status, error) {
                     console.log("Error:", error);  // Debug error jika AJAX gagal
                     console.log(status)
-                    showModal("Something went wrong. Please try again.", "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif");
+                    showModal("Something went wrong. Please try again.", "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif");
                 }
             });
         });

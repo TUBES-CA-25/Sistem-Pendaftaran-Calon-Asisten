@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const navButtons = document.querySelectorAll(".nav button");
   const timerElement = document.getElementById("timer");
-  const endpoint = "/Kelompok1_IC-ASSIST/public/hasil";
+  const endpoint = "/Sistem-Pendaftaran-Calon-Asisten/public/hasil";
   let currentQuestion = 0;
   const initialDuration = 30 * 60;
   let remainingTime;
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function submitAndFinish() {
-    const calculateEndpoint = "/Kelompok1_IC-ASSIST/public/calculate";
+    const calculateEndpoint = "/Sistem-Pendaftaran-Calon-Asisten/public/calculate";
 
     try {
       const response = await fetch(calculateEndpoint, {
@@ -103,21 +103,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (data.status === "success") {
           setTimeout(() => {
-            window.location.href = "/Kelompok1_IC-ASSIST/public";
+            window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
           }, 3000);
         } else {
           setTimeout(() => {
-            window.location.href = "/Kelompok1_IC-ASSIST/public";
+            window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
           }, 3000);
         }
       } catch (parseError) {
         setTimeout(() => {
-          window.location.href = "/Kelompok1_IC-ASSIST/public";
+          window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
         }, 3000);
       }
     } catch (error) {
       setTimeout(() => {
-        window.location.href = "/Kelompok1_IC-ASSIST/public";
+        window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
       }, 3000);
     }
   }
@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(countdown);
         showModal(
           "Waktu Habis jawaban akan di kumpul",
-          "/Kelompok1_IC-ASSIST/public/Assets/gif/glasshour.gif"
+          "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/glasshour.gif"
         );
         submitAllAnswers()
           .then(() => submitAndFinish())
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.status === "success") {
               showModal(
                 "Jawaban berhasil disimpan. Silahkan menunggu pengumuman selanjutnya",
-                "/Kelompok1_IC-ASSIST/public/Assets/gif/glasshour.gif"
+                "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/glasshour.gif"
               );
               resolve(response);
             } else {

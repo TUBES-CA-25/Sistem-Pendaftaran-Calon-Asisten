@@ -62,21 +62,21 @@ const namaInput = document.getElementById("nama");
   $("#logoutButton").click(function (e) {
     e.preventDefault();
     $.ajax({
-      url: "/Kelompok1_IC-ASSIST/public/logout",
+      url: "/Sistem-Pendaftaran-Calon-Asisten/public/logout",
       type: "POST",
       success: function (response) {
         if (response.status === "success") {
           showModal(
             response.message || "Logout berhasil",
-            "/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif",
+            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif",
             () => {
-              window.location.href = "/Kelompok1_IC-ASSIST/public";
+              window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
             }
           );
         } else {
           showModal(
             response.message || "Logout gagal",
-            "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif"
+            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
           );
         }
       },
@@ -84,7 +84,7 @@ const namaInput = document.getElementById("nama");
         console.log("Error:", xhr.responseText);
         showModal(
           "Terjadi kesalahan: " + error,
-          "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif"
+          "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
         );
       },
     });
@@ -136,7 +136,7 @@ const namaInput = document.getElementById("nama");
 
     if(!isValid) return;
     $.ajax({
-      url: "Kelompok1_IC-ASSIST/public/store",
+      url: "Sistem-Pendaftaran-Calon-Asisten/public/store",
       type: "post",
       data: $("#biodataForm").serialize(),
       dataType: "json",
@@ -144,13 +144,13 @@ const namaInput = document.getElementById("nama");
         if (response.status === "success") {
           showModal(
             "Biodata berhasil disimpan",
-            "/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif"
+            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif"
           );
           document.querySelector('a[data-page="biodata"]').click();
         } else {
           showModal(
             response.message || "Biodata gagal disimpan",
-            "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif"
+            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
           );
           console.log(response.message);
         }
@@ -159,7 +159,7 @@ const namaInput = document.getElementById("nama");
         console.log("Error:", xhr.responseText);
         showModal(
           "Terjadi kesalahan: " + error,
-          "/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif"
+          "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
         );
       },
     });

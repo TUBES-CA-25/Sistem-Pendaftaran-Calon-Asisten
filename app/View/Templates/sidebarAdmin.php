@@ -1,7 +1,7 @@
 <div class="sidebar" id="sidebar">
     <div class="top">
         <div class="logo">
-            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
+            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
             <span>IC-ASSIST</span>
         </div>
         <i class="bx bx-menu" id="btn"></i>

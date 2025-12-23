@@ -156,9 +156,9 @@ $ruanganList = RuanganController::viewAllRuangan();
                     <td><?= $ruangan['nama'] ?></td>
                     <td>
                         <div style="display: flex; gap:5%;">
-                            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/edit.svg" alt="edit" class="edit-button"
+                            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/edit.svg" alt="edit" class="edit-button"
                                 data-id="<?= $ruangan['id'] ?>" style="cursor: pointer;">
-                            <img src="/Kelompok1_IC-ASSIST/public/Assets/Img/delete.svg" alt="delete" class="delete-button"
+                            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/delete.svg" alt="delete" class="delete-button"
                                 data-id="<?= $ruangan['id'] ?>" style="cursor: pointer;">
                         </div>
                     </td>
@@ -287,11 +287,11 @@ $ruanganList = RuanganController::viewAllRuangan();
                 dataType: 'json',
                 success: function (response) {
                     if (response.status === 'success') {
-                        showModal('Ruangan berhasil ditambahkan!', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
+                        showModal('Ruangan berhasil ditambahkan!', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
                         document.querySelector('a[data-page="ruangan"]').click();
                         $('#tambahRuanganModal').modal('hide');
                     } else {
-                        showModal('Ruangan gagal ditambahkan: ' + response.message, '/Kelompok1_IC-ASSIST/public/Assets/gif/error.gif');
+                        showModal('Ruangan gagal ditambahkan: ' + response.message, '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/error.gif');
                     }
                 },
                 error: function (xhr, status, error) {
@@ -312,10 +312,10 @@ $ruanganList = RuanganController::viewAllRuangan();
                     dataType: 'json',
                     success: function (response) {
                         if (response.status === 'success') {
-                            showModal('Ruangan berhasil dihapus!', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
+                            showModal('Ruangan berhasil dihapus!', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
                             document.querySelector('a[data-page="ruangan"]').click();
                         } else {
-                            showModal('Gagal menghapus ruangan: ' + response.message, '/Kelompok1_IC-ASSIST/public/Assets/gif/error.gif');
+                            showModal('Gagal menghapus ruangan: ' + response.message, '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/error.gif');
                         }
                     },
                     error: function (xhr, status, error) {
@@ -352,7 +352,7 @@ $ruanganList = RuanganController::viewAllRuangan();
                         document.querySelector('a[data-page="ruangan"]').click();
                         $('#updateRuanganModal').modal('hide');
                     } else {
-                        showModal('Gagal memperbarui ruangan: ' + response.message, '/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif');
+                        showModal('Gagal memperbarui ruangan: ' + response.message, '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
                     }
                 },
                 error: function (xhr, status, error) {

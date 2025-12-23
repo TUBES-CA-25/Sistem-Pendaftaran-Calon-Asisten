@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteBase /Kelompok1_IC-ASSIST/public/
+RewriteBase /Sistem-Pendaftaran-Calon-Asisten/public/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]

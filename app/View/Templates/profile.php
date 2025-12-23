@@ -12,7 +12,7 @@ $jenisKelamin = ProfileController::viewBiodata() == null ? "Jenis Kelamin" : Pro
 $tempatLahir = ProfileController::viewBiodata() == null ? "Tempat Lahir" : ProfileController::viewBiodata()["tempatLahir"];
 $tanggalLahir = ProfileController::viewBiodata() == null ? "Tanggal Lahir" : ProfileController::viewBiodata()["tanggalLahir"];
 $noHp = ProfileController::viewBiodata() == null ? "No Telephone" : ProfileController::viewBiodata()["noHp"];
-$photo = "/Kelompok1_IC-ASSIST/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
+$photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
 ?>
 
 <style>
@@ -361,18 +361,18 @@ $photo = "/Kelompok1_IC-ASSIST/res/imageUser/" . (BerkasUserController::viewPhot
         $('#logoutButton').click(function (e) {
             e.preventDefault();
             $.ajax({
-                url: '/Kelompok1_IC-ASSIST/public/logout',
+                url: '/Sistem-Pendaftaran-Calon-Asisten/public/logout',
                 type: 'POST',
                 success: function (response) {
                     if (response.status === 'success') {
-                        showModal('Logout berhasil', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
+                        showModal('Logout berhasil', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
                         setTimeout(() => {
-                            window.location.href = '/Kelompok1_IC-ASSIST/public/';
+                            window.location.href = '/Sistem-Pendaftaran-Calon-Asisten/public/';
                             window.location.reload();
         }, 1000);
                         
                     } else {
-                        showModal('Logout gagal', '/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif');
+                        showModal('Logout gagal', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
                     }
                 },
                 error: function (xhr, status, error) {
@@ -420,7 +420,7 @@ $photo = "/Kelompok1_IC-ASSIST/res/imageUser/" . (BerkasUserController::viewPhot
 
             if (!isValid) return;
             $.ajax({
-                url: '/Kelompok1_IC-ASSIST/public/updatebiodata',
+                url: '/Sistem-Pendaftaran-Calon-Asisten/public/updatebiodata',
                 method: 'POST',
                 data: formData,
                 success: function (response) {
@@ -429,11 +429,11 @@ $photo = "/Kelompok1_IC-ASSIST/res/imageUser/" . (BerkasUserController::viewPhot
                         console.log('Parsed Response:', parsedResponse);
 
                         if (parsedResponse.status === 'success') {
-                            showModal('Data berhasil diperbarui', '/Kelompok1_IC-ASSIST/public/Assets/gif/success.gif');
+                            showModal('Data berhasil diperbarui', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
                             document.querySelector('a[data-page="profile"]').click();
                         } else {
                             console.log('Error:', parsedResponse.message);
-                            showModal('Data gagal diperbarui', '/Kelompok1_IC-ASSIST/public/Assets/gif/failed.gif');
+                            showModal('Data gagal diperbarui', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
                             document.querySelector('a[data-page="profile"]').click();
                         }
                     } catch (error) {
