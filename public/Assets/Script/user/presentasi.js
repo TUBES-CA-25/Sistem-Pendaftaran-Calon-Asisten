@@ -1,30 +1,5 @@
-function showModal(message, gifUrl = null) {
-    const modal = document.getElementById('customModal');
-    const modalMessage = document.getElementById('modalMessage');
-    const modalGif = document.getElementById('modalGif');
-    const closeModal = document.getElementById('closeModal');
+// Dependencies: common.js untuk showModal()
 
-    modalMessage.textContent = message;
-
-    if (gifUrl) {
-        modalGif.src = gifUrl;
-        modalGif.style.display = 'block';
-    } else {
-        modalGif.style.display = 'none';
-    }
-
-    modal.style.display = 'flex';
-
-    closeModal.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-}
 $(document).ready(function() {
     $('#berkasPresentasiForm').submit(function(e) {
         e.preventDefault(); 
