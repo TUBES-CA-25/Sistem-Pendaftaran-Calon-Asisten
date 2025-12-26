@@ -1,0 +1,26 @@
+@startuml uml
+actor CalonAsisten
+actor Admin
+
+CalonAsisten -> (Daftar Akun)
+CalonAsisten -> (Login)
+CalonAsisten -> (Isi Berkas dan Biodata)
+CalonAsisten -> (Melihat Informasi Tes Soal) : <<depends on>> Validasi Berkas
+CalonAsisten -> (Tes Soal) : <<depends on>> Validasi Berkas
+CalonAsisten -> (Melihat Informasi Tes Presentasi) : <<depends on>> Lulus Tes Soal
+CalonAsisten -> (Submit PPT dan Makalah)
+CalonAsisten -> (Melihat Informasi Tes Wawancara) : <<depends on>> Lulus Tes Presentasi
+CalonAsisten -> (Tes Wawancara) : <<depends on>> Validasi Tes Wawancara
+
+Admin --> (Check Daftar Calon Asisten)
+Admin --> (Validasi Berkas dan Biodata)
+Admin --> (Memberi Informasi Tes Soal) : <<extends>> Validasi Berkas dan Biodata
+Admin --> (Memberikan Tes Soal)
+Admin --> (Validasi Lulus Tes Soal)
+Admin --> (Memberikan Informasi Tes Presentasi) : <<extends>> Validasi Lulus Tes Soal
+Admin --> (Validasi PPT dan Makalah)
+Admin --> (Validasi Lulus Tes Presentasi)
+Admin --> (Memberikan Informasi Tes Wawancara) : <<extends>> Validasi Lulus Tes Presentasi
+Admin --> (Validasi Lulus Tes Wawancara)
+
+@enduml
