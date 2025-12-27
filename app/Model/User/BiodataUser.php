@@ -58,6 +58,7 @@ class BiodataUser extends Model
         }
     }
 
+
     public function save(BiodataUser $biodata)
     {
         try {
@@ -116,7 +117,8 @@ class BiodataUser extends Model
         $stmt->bindParam(1, $namaJurusan);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $result = ["id" => $result ['id']];
+        $result = [
+            "id" => $result ['id']];
         return $result;
     }
     private function getIdKelas($namaKelas)
@@ -144,7 +146,7 @@ class BiodataUser extends Model
             return true;
         }
 
-        return (
+        return (    
             $result['id_jurusan'] === null || $result['stambuk'] === null ||
             $result['id_kelas'] === null || $result['nama_lengkap'] === null ||
             $result['alamat'] === null || $result['jenis_kelamin'] === null ||
