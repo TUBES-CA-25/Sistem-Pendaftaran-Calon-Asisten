@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root{
+    --color-primary: #3DC2EC;
+    --color-danger : #ff7782;
+    --color-success : #4CAF50;
+    --color-warning : #FFC107;
+    --color-white : #fff;
+    --color-info-dark : #3A3A3A;
+    --color-info-light : #F5F5F5;
+    --color-dark : #333;
+    --color-light:rgba(132,139,200,0.18);
+    --color-primary-variant:#111e88;
+    --color-dark-variant:#677483;
+    --color-background:#f5f5f5;
+
+    --card-border-radius:2rem;
+    --border-radius-1:0.4rem;
+    --border-radius-2:0.8rem;
+    --border-radius-3:1.2rem;
+
+    --card-padding:1.8rem;
+    --padding-1:1.2rem;
+
+    --box-shadow :0 2rem 3 rem var(--color-light);
+}
+.berkas {
+    margin-bottom: 1rem;
+    background-color: var(--color-white);
+    width: 18%;
+    text-align: center;
+    border-radius: var(--border-radius-1);
+    box-shadow: var(--box-shadow);
+    color: var(--color-primary);
+    border: 1px solid var(--color-light);
+}
+.form-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style untuk header */
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #007bff;
+}
+
+/* Border radius pada input dan tombol */
+.form-control,
+.btn {
+    border-radius: 5px;
+}
+
+/* Style untuk tombol submit */
+.btn-submit {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #0056b3;
+}
+
+/* Menambahkan sedikit ruang di atas form */
+body {
+    background-color: #f1f1f1;
+    font-family: 'Poppins', sans-serif;
+
+}
+.card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 16px 24px;
+    width: 100%;
+    max-width: 800px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card .left {
+    display: flex;
+    align-items: center;
+}
+
+.card .left .icon {
+    font-size: 1.5rem;
+    color: #3DC2EC;
+    margin-right: 12px;
+}
+
+.card .left .details {
+    display: flex;
+    flex-direction: column;
+}
+
+.card .left .details .id {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.card .left .details .date {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.card .middle {
+    display: flex;
+    align-items: center;
+}
+
+.card .middle .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ddd;
+    margin-right: 16px;
+    overflow: hidden;
+}
+
+.card .middle .info {
+    display: flex;
+    flex-direction: column;
+}
+
+.card .middle .info .name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.card .middle .info .category {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.card .right {
+    display: flex;
+    align-items: center;
+}
+
+.card .right .status {
+    font-size: 0.9rem;
+    color: #FFC107;
+    background-color: rgba(255, 193, 7, 0.2);
+    padding: 4px 8px;
+    border-radius: 8px;
+    margin-right: 16px;
+}
+
+.card .right .menu {
+    font-size: 1.2rem;
+    color: #888;
+    cursor: pointer;
+}
+
+.card .right .menu:hover {
+    color: #333;
+}
