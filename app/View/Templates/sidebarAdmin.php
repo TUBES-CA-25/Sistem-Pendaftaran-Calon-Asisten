@@ -1,74 +1,59 @@
 <div class="sidebar" id="sidebar">
     <div class="top">
         <div class="logo">
-            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
-            <span>IC-ASSIST</span>
-        </div>
-        <i class="bx bx-menu" id="btn"></i>
-    </div>
-    <div class="user">
-        <div>
-            <p class="bold" id="username">Admin</p>
+            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="ICLABS Logo" class="icon">
+            <span>ICLABS</span>
         </div>
     </div>
     <ul>
+        <li>
+            <a href="#" data-page="dashboard" class="active">
+                <i class='bx bxs-dashboard'></i>
+                <span class="nav-item">Dashboard</span>
+            </a>
+        </li>
+        <li class="menu-label">MENU UTAMA</li>
         <li>
             <a href="#" data-page="lihatPeserta">
                 <i class='bx bxs-user-check'></i>
                 <span class="nav-item">Lihat Peserta</span>
             </a>
-            <span class="tooltip">Lihat Peserta</span>
-        </li>
-
-        <li>
-            <a href="#" data-page="ruangan">
-            <i class='bx bx-spreadsheet'></i>                
-            <span class="nav-item">Ruangan</span>
-            </a>
-            <span class="tooltip">Ruangan</span>
-        </li>
-
-        <li>
-            <a href="#" data-page="presentasi">
-            <i class='bx bx-slideshow' ></i>
-                <span class="nav-item">Presentasi</span>
-            </a>
-            <span class="tooltip">Presentasi</span>
         </li>
         <li>
             <a href="#" data-page="tesTulis">
-                <i class="bx bx-task"></i>
-                <span class="nav-item">Tes Tulis</span>
+                <i class='bx bx-edit'></i>
+                <span class="nav-item">Ujian</span>
             </a>
-            <span class="tooltip">Tes Tulis</span>
+        </li>
+        <li>
+            <a href="#" data-page="ruangan">
+                <i class='bx bx-home-alt'></i>
+                <span class="nav-item">Ruangan</span>
+            </a>
         </li>
         <li>
             <a href="#" data-page="lihatnilai">
-            <i class='bx bx-bar-chart-alt-2' ></i>
-                        <span class="nav-item">Lihat nilai peserta</span>
+                <i class='bx bx-bar-chart-alt-2'></i>
+                <span class="nav-item">Nilai</span>
             </a>
-            <span class="tooltip">Lihat nilai peserta</span>
         </li>
         <li>
-            <a href="#" data-page="wawancara">
-                <i class="bx bx-user-voice"></i>
-                <span class="nav-item">Jadwal Kegiatan</span>
+            <a href="#" data-page="presentasi">
+                <i class='bx bx-slideshow'></i>
+                <span class="nav-item">Presentasi</span>
             </a>
-            <span class="tooltip">Jadwal Kegiatan</span>
         </li>
         <li>
             <a href="#" data-page="daftarKehadiran">
-                <i class="bx bx-notepad"></i>
-                <span class="nav-item">Daftar Kehadiran</span>
+                <i class='bx bx-calendar-check'></i>
+                <span class="nav-item">Absensi</span>
             </a>
-            <span class="tooltip">Daftar Kehadiran Peserta</span>
-        </li>
-        <li>
-            <a href="#" data-page="logout">
-            <i class='bx bxs-exit'></i>
-            <span class="nav-item">Logout</span>
-            </a>
-            <span class="tooltip">Logout</span>
         </li>
     </ul>
+    <div class="sidebar-footer">
+        <a href="#" data-page="logout">
+            <i class='bx bx-log-out'></i>
+            <span class="nav-item">Logout</span>
+        </a>
+    </div>
 </div>

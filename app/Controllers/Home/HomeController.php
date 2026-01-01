@@ -30,6 +30,9 @@ class HomeController extends Controller
 
         if ($this->getRole() == "Admin") {
             switch ($page) {
+                case 'dashboard':
+                    View::render('dashboardAdmin', 'Templates');
+                    break;
                 case 'ruangan':
                     View::render('ruangan', 'Templates');
                     break;

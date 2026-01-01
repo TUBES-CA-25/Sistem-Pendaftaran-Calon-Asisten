@@ -1,32 +1,32 @@
+<!DOCTYPE html>
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ICLABS</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/biodata.css" />
     <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/sidebarStyle.css">
+    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/dashboardStyle.css" />
+    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/biodata.css" />
     <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/wawancara.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/pengumuman.css" />
     <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/presentasi.css" />
     <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/uploadberkas.css" />
-    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/dashboardStyle.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/alertAdmin.css">
-
-
-
 </head>
 
 <body>
     <?php require_once "sidebarAdmin.php" ?>
 
     <div class="main-content" id="content">
-        <?php require_once "daftarPeserta.php" ?>
+        <?php require_once "dashboardAdmin.php" ?>
     </div>
 
 
@@ -59,3 +59,4 @@
     <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/sidebar/ScriptSidebar.js"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 </body>
+</html>

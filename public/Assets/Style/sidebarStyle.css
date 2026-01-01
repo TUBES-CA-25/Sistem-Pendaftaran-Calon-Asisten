@@ -1,280 +1,273 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 :root {
-    --color-primary: #3DC2EC;
-    --color-danger: #ff7782;
-    --color-success: #4CAF50;
-    --color-warning: #FFC107;
-    --color-white: #fff;
-    --color-info-dark: #3A3A3A;
-    --color-info-light: #F5F5F5;
-    --color-dark: #333;
-    --color-light: rgba(132, 139, 200, 0.18);
-    --color-primary-variant: #111e88;
-    --color-dark-variant: #677483;
-    --color-background: #f5f5f5;
+  --color-primary: #3dc2ec;
+  --color-danger: #ff7782;
+  --color-success: #4caf50;
+  --color-warning: #ffc107;
+  --color-white: #fff;
+  --color-info-dark: #3a3a3a;
+  --color-info-light: #f5f5f5;
+  --color-dark: #333;
+  --color-light: rgba(132, 139, 200, 0.18);
+  --color-primary-variant: #111e88;
+  --color-dark-variant: #677483;
+  --color-background: #f5f5f5;
 
-    --card-border-radius: 2rem;
-    --border-radius-1: 0.4rem;
-    --border-radius-2: 0.8rem;
-    --border-radius-3: 1.2rem;
+  --card-border-radius: 2rem;
+  --border-radius-1: 0.4rem;
+  --border-radius-2: 0.8rem;
+  --border-radius-3: 1.2rem;
 
-    --card-padding: 1.8rem;
-    --padding-1: 1.2rem;
+  --card-padding: 1.8rem;
+  --padding-1: 1.2rem;
 
-    --box-shadow: 0 2rem 3rem var(--color-light);
+  --box-shadow: 0 2rem 3rem var(--color-light);
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
 
 .icon {
-    width: 30%;
-    height: 90%;
-    margin-right: 10px;
+  width: 30%;
+  height: 90%;
+  margin-right: 10px;
 }
 
 .user-img {
-    width: 75px;
-    border-radius: 100%;
-    border: 1px solid #3DC2EC;
+  width: 75px;
+  border-radius: 100%;
+  border: 1px solid #3dc2ec;
 }
 
+/* ==============================
+   ADMIN SIDEBAR - White Clean Design
+   ============================== */
 .sidebar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 80px;
-    background: #fff;
-    padding: 1rem 0;
-    transition: all 0.5s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 200px;
+  background: #fff;
+  padding: 0;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar .top {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100px;
-}
-
-.sidebar.active ~ .main-content {
-    left: 250px;
-    width: calc(100% - 80px);
-}
-
-.sidebar.active {
-    width: 250px;
-}
-
-.sidebar #btn {
-    position: absolute;
-    color: #3DC2EC;
-    top: .4rem;
-    left: 50%;
-    font-size: 1.5rem;
-    line-height: 50px;
-    transform: translateX(-50%);
-    cursor: pointer;
-}
-
-.sidebar.active #btn {
-    left: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px 15px;
+  border-bottom: none;
 }
 
 .sidebar .top .logo {
-    color: #3DC2EC;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: auto;
-    font-size: 1.5rem;
-    width: 100%;
-    padding: 0;
-    margin-bottom: 1rem;
-    pointer-events: none;
-    opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+  padding: 0 10px;
 }
 
-.sidebar.active .top .logo {
-    opacity: 1;
+.sidebar .top .logo .icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  margin-right: 0;
+  flex-shrink: 0;
 }
 
-.top .logo i {
-    font-size: 3rem;
-    margin-bottom: 0.5rem;
-    margin-right: 5px;
+.sidebar .top .logo span {
+  font-size: 1.1rem;
+  color: #3dc2ec;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
-.top .logo span {
-    font-size: 1.5rem;
-    color: #3DC2EC;
-    text-align: center;
-    display: inline-block;
-    margin: 0;
-}
-
-.user {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin: 1rem 0;
-}
-
-.user div {
-    text-align: center;
-}
-
-.user p {
-    color: #3DC2EC;
-    opacity: 1;
-    margin: 0.2rem 0;
-}
-
-.bold {
-    font-weight: 600;
-}
-
-.sidebar p {
-    opacity: 0;
-}
-
-.sidebar.active p {
-    opacity: 1;
+.sidebar ul {
+  padding: 10px 0;
+  flex: 1;
 }
 
 .sidebar ul li {
-    position: relative;
-    list-style-type: none;
-    height: 50px;
-    width: 90%;
-    margin: 0.8rem auto;
-    line-height: 50px;
+  position: relative;
+  list-style-type: none;
+  margin: 3px 10px;
+}
+
+.sidebar ul li.menu-label {
+  color: #9ca3af;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 16px 15px 8px;
+  margin: 0;
 }
 
 .sidebar ul li a {
-    color: #3DC2EC;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    border-radius: 0.8rem;
-    transition: all 0.3s ease;
+  color: #64748b;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
+  gap: 12px;
 }
 
 .sidebar ul li a:hover {
-    background-color: #3DC2EC;
-    color: #fff;
+  background: #f0f9ff;
+  color: #3dc2ec;
+}
+
+.sidebar ul li a.active {
+  background: #2563eb;
+  color: #fff;
 }
 
 .sidebar ul li a i {
-    min-width: 50px;
-    text-align: center;
-    height: 50px;
-    border-radius: 12px;
-    line-height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    line-height: normal;
+  font-size: 1.25rem;
+  width: 24px;
+  min-width: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .sidebar .nav-item {
-    opacity: 0;
+  white-space: nowrap;
+  font-size: 0.85rem;
 }
 
-.sidebar.active .nav-item {
-    opacity: 1;
+.sidebar-footer {
+  padding: 15px 10px 20px;
+  border-top: none;
+  margin-top: auto;
 }
 
-.sidebar ul li .tooltip {
-    position: absolute;
-    left: 125px;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0.5rem 0.8rem rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-    border-radius: .6rem;
-    padding: .4rem 1.2rem;
-    line-height: 1.8rem;
-    z-index: 20;
-    opacity: 0;
-    pointer-events: none;
+.sidebar-footer a {
+  color: #64748b;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
+  gap: 12px;
 }
 
-.sidebar ul li:hover .tooltip {
-    opacity: 1;
-    pointer-events: auto;
+.sidebar-footer a:hover {
+  background: #fef2f2;
+  color: #ef4444;
 }
 
-.sidebar.active ul li .tooltip {
-    display: none;
+.sidebar-footer a i {
+  font-size: 1.25rem;
+  width: 24px;
+  min-width: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
 }
 
+/* ==============================
+   MAIN CONTENT AREA
+   ============================== */
 .main-content {
-    position: relative;
-    background-color: var(--color-info-light);
-    min-height: 100vh; /* Sedikit lebih kecil untuk proporsi */
-    top: 0;
-    left: 80px; /* Sesuaikan dengan sidebar */
-    transition: all 0.5s ease;
-    width: calc(100% - 80px); /* Sesuai ukuran sidebar */
-    padding: 1.5rem; /* Padding sedikit lebih kecil */
-    border-radius: 12px; /* Radius yang lebih proporsional */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Shadow lebih lembut */
-    overflow: hidden;
-    max-width: 100%; /* Batas lebar maksimal */
-    margin-left: 1px;
+  position: relative;
+  background-color: #f1f5f9;
+  min-height: 100vh;
+  margin-left: 200px;
+  width: calc(100% - 200px);
+  padding: 20px;
+  overflow-x: auto;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
+/* ==============================
+   RESPONSIVE BREAKPOINTS
+   Sidebar selalu terbuka dengan lebar tetap 150px
+   ============================== */
+@media (max-width: 1200px) {
+  .main-content {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 15px;
+  }
+}
 
 .container-gacor-footer {
-    max-width: 100%;
-    overflow-x: hidden;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 footer {
-    background: var(--color-primary);
-    color: white;
-    padding: 1rem 0;
-    text-align: center;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-    transition: transform 0.5s ease;
-    transform: translateY(100%);
-    box-shadow: 0 -4px 8px var(--color-white);
+  background: var(--color-primary);
+  color: white;
+  padding: 1rem 0;
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  transition: transform 0.5s ease;
+  transform: translateY(100%);
+  box-shadow: 0 -4px 8px var(--color-white);
 }
 
 footer a {
-    color: #ffc107;
-    text-decoration: none;
-    transition: color 0.3s;
+  color: #ffc107;
+  text-decoration: none;
+  transition: color 0.3s;
 }
 
 footer a:hover {
-    color: #ffffff;
-    text-decoration: underline;
+  color: #ffffff;
+  text-decoration: underline;
 }
 
 .show-footer {
-    transform: translateY(0);
+  transform: translateY(0);
 }
-body {
-    font-family: 'Poppins', sans-serif;
 
+html {
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .rounded-table {
-    border-radius: 10px; 
-    overflow: hidden; 
-    border-collapse: separate; 
-    border-spacing: 0; 
+  border-radius: 10px;
+  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0;
 }

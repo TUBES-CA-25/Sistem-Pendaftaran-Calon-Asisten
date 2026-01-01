@@ -1,11 +1,11 @@
-let btn = document.getElementById('btn');
-let sidebar = document.querySelector('.sidebar');
-let user = document.querySelector('.user');
-
-btn.onclick = function(){
-    sidebar.classList.toggle('active');
-    user.classList.add('active');
-    user.classList.toggle('active');
-};
-
-
+// Active link highlight
+document
+  .querySelectorAll(".sidebar ul li a, .sidebar-footer a")
+  .forEach((link) => {
+    link.addEventListener("click", function () {
+      document
+        .querySelectorAll(".sidebar ul li a, .sidebar-footer a")
+        .forEach((l) => l.classList.remove("active"));
+      this.classList.add("active");
+    });
+  });

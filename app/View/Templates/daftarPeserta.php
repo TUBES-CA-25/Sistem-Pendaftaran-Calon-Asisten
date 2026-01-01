@@ -282,3 +282,11 @@ $result = MahasiswaController::viewAllMahasiswa() ?? [];
 <!-- Load JavaScript -->
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/common.js"></script>
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/daftarPeserta.js"></script>
+<script>
+// Call initialization after scripts are loaded
+if (typeof window.initDaftarPeserta === 'function') {
+    window.initDaftarPeserta();
+} else {
+    console.error('initDaftarPeserta function not found!');
+}
+</script>

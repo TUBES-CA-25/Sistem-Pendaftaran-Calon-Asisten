@@ -1,7 +1,8 @@
 
 
 $(document).ready(function () {
-  $('.sidebar a, .profile a, .dashboard a').on('click', function (e) {
+  // Menggunakan event delegation untuk menghindari multiple event handlers
+  $(document).on('click', '.sidebar a, .profile a, .dashboard a', function (e) {
     if (this.id === "startTestButton") return; 
     e.preventDefault();
 
@@ -12,6 +13,19 @@ $(document).ready(function () {
     }
 
     console.log("Memuat halaman:", page);
+
+    // Update active state
+    $('.sidebar a').removeClass('active');
+    $(this).addClass('active');
+
+    // Destroy all DataTables instances before replacing content
+    if ($.fn.DataTable) {
+      $('#content').find('table.dataTable').each(function() {
+        if ($.fn.DataTable.isDataTable(this)) {
+          $(this).DataTable().destroy();
+        }
+      });
+    }
 
     $.ajax({
       url: `${APP_URL}/${page}`, 
