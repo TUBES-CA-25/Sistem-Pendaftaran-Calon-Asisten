@@ -7,7 +7,7 @@
 const APP_PATHS = {
     images: RES_PATH + '/imageUser',
     documents: RES_PATH + '/berkasUser',
-    gifs: PUBLIC_PATH + '/Assets/gif'
+    gifs: BASE_URL + '/Assets/gif'
 };
 
 /**

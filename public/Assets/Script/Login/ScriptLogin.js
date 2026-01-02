@@ -194,10 +194,10 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (response) {
                 if (response.status === 'success') {
-                    showModal('Register Berhasil', PUBLIC_PATH + '/Assets/gif/registergif.gif');
+                    showModal('Register Berhasil', BASE_URL + '/Assets/gif/registergif.gif');
                     document.getElementById('login').click();
                 } else {
-                    showModal('Register Gagal stambuk sudah digunakan', PUBLIC_PATH + '/Assets/gif/failedregistergif.gif');
+                    showModal('Register Gagal stambuk sudah digunakan', BASE_URL + '/Assets/gif/failedregistergif.gif');
                     console.log(response.message);
                 }
             },
@@ -218,12 +218,12 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.status === "success") {
-          showModal("Login Berhasil", PUBLIC_PATH + "/Assets/gif/loginsuccess.gif");
+          showModal("Login Berhasil", BASE_URL + "/Assets/gif/loginsuccess.gif");
           setTimeout(() => {
             window.location.href = response.redirect;
         }, 1000);
         } else {
-            showModal("Stambuk atau password salah", PUBLIC_PATH + "/Assets/gif/failedregistergif.gif");
+            showModal("Stambuk atau password salah", BASE_URL + "/Assets/gif/failedregistergif.gif");
         }
       },
       error: function (xhr, status, error) {

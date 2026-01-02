@@ -139,4 +139,4 @@ $noHp = ProfileController::viewBiodata() == null ? "No Telephone" : ProfileContr
     <?php } ?>
 </div>
 </main>
-<script src="<?= PUBLIC_PATH ?>/Assets/Script/user/biodata.js"></script>
+<script src="<?= BASE_URL ?>/Assets/Script/user/biodata.js"></script>

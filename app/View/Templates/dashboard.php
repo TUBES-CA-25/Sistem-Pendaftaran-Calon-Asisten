@@ -1,6 +1,6 @@
 <?php
-use app\Controllers\notifications\NotificationControllers;
-use app\Controllers\user\DashboardUserController;
+use App\Controllers\notifications\NotificationControllers;
+use App\Controllers\user\DashboardUserController;
 $notifikasi = NotificationControllers::getMessageById() ?? [];
 
 ?>

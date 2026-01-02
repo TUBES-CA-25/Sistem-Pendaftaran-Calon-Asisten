@@ -213,7 +213,7 @@ $jadwalPresentasi = JadwalPresentasiController::getJadwalPresentasi();
                     <td><?= $row['judul'] ?></td>
                     <td>
                         <div style="display: flex; gap: 5%;">
-                            <img src="\u003c?= PUBLIC_PATH ?\u003e/Assets/Img/edit.svg" alt="edit" class="edit-button">
+                            <img src="\u003c?= BASE_URL ?\u003e/Assets/Img/edit.svg" alt="edit" class="edit-button">
                         </div>
                     </td>
                 </tr>

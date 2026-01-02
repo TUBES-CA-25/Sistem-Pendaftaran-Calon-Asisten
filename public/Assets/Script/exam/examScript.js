@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(countdown);
         showModal(
           "Waktu Habis jawaban akan di kumpul",
-          PUBLIC_PATH + "/Assets/gif/glasshour.gif"
+          BASE_URL + "/Assets/gif/glasshour.gif"
         );
         submitAllAnswers()
           .then(() => submitAndFinish())
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.status === "success") {
               showModal(
                 "Jawaban berhasil disimpan. Silahkan menunggu pengumuman selanjutnya",
-                PUBLIC_PATH + "/Assets/gif/glasshour.gif"
+                BASE_URL + "/Assets/gif/glasshour.gif"
               );
               resolve(response);
             } else {

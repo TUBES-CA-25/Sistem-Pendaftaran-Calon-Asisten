@@ -1,23 +1,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="<?= PUBLIC_PATH ?>/Assets/Img/iclabs.png">
+    <link rel="icon" href="<?= BASE_URL ?>/Assets/Img/iclabs.png">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="<?= PUBLIC_PATH ?>/Assets/Style/biodata.css" />
-    <link rel="stylesheet" href="<?= PUBLIC_PATH ?>/Assets/Style/sidebarStyle.css">
-    <link rel="stylesheet" href="<?= PUBLIC_PATH ?>/Assets/Style/wawancara.css" />
+    <link rel="stylesheet" href="<?= BASE_URL ?>/Assets/Style/biodata.css" />
+    <link rel="stylesheet" href="<?= BASE_URL ?>/Assets/Style/sidebarStyle.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/Assets/Style/wawancara.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="<?= PUBLIC_PATH ?>/Assets/Style/pengumuman.css" />
-    <link rel="stylesheet" href="<?= PUBLIC_PATH ?>/Assets/Style/presentasi.css" />
-    <link rel="stylesheet" href="<?= PUBLIC_PATH ?>/Assets/Style/uploadberkas.css" />
-    <link rel="stylesheet" href="<?= PUBLIC_PATH ?>/Assets/Style/dashboardStyle.css" />
+    <link rel="stylesheet" href="<?= BASE_URL ?>/Assets/Style/pengumuman.css" />
+    <link rel="stylesheet" href="<?= BASE_URL ?>/Assets/Style/presentasi.css" />
+    <link rel="stylesheet" href="<?= BASE_URL ?>/Assets/Style/uploadberkas.css" />
+    <link rel="stylesheet" href="<?= BASE_URL ?>/Assets/Style/dashboardStyle.css" />
 
-    <link rel="stylesheet" href="<?= PUBLIC_PATH ?>/Assets/Style/alertstyle.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/Assets/Style/alertstyle.css">
     
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -47,7 +47,7 @@
    
     <script> 
         const APP_URL = '<?php echo APP_URL; ?>';
-        const PUBLIC_PATH = '<?php echo PUBLIC_PATH; ?>';
+        const BASE_URL = '<?php echo BASE_URL; ?>';
         const RES_PATH = '<?php echo RES_PATH; ?>';
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -55,10 +55,10 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     
-    <script src="<?= PUBLIC_PATH ?>/Assets/Script/app.js"></script>
+    <script src="<?= BASE_URL ?>/Assets/Script/app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
-    <script src="<?= PUBLIC_PATH ?>/Assets/Script/sidebar/ScriptSidebar.js"></script>
+    <script src="<?= BASE_URL ?>/Assets/Script/sidebar/ScriptSidebar.js"></script>
     
 </body>

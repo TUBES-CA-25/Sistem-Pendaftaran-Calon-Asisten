@@ -365,14 +365,14 @@ $photo = RES_PATH . "/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?
                 type: 'POST',
                 success: function (response) {
                     if (response.status === 'success') {
-                        showModal('Logout berhasil', '<?= PUBLIC_PATH ?>/Assets/gif/success.gif');
+                        showModal('Logout berhasil', '<?= BASE_URL ?>/Assets/gif/success.gif');
                         setTimeout(() => {
                             window.location.href = '<?= APP_URL ?>/';
                             window.location.reload();
         }, 1000);
                         
                     } else {
-                        showModal('Logout gagal', '<?= PUBLIC_PATH ?>/Assets/gif/failed.gif');
+                        showModal('Logout gagal', '<?= BASE_URL ?>/Assets/gif/failed.gif');
                     }
                 },
                 error: function (xhr, status, error) {
@@ -429,11 +429,11 @@ $photo = RES_PATH . "/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?
                         console.log('Parsed Response:', parsedResponse);
 
                         if (parsedResponse.status === 'success') {
-                            showModal('Data berhasil diperbarui', '<?= PUBLIC_PATH ?>/Assets/gif/success.gif');
+                            showModal('Data berhasil diperbarui', '<?= BASE_URL ?>/Assets/gif/success.gif');
                             document.querySelector('a[data-page="profile"]').click();
                         } else {
                             console.log('Error:', parsedResponse.message);
-                            showModal('Data gagal diperbarui', '<?= PUBLIC_PATH ?>/Assets/gif/failed.gif');
+                            showModal('Data gagal diperbarui', '<?= BASE_URL ?>/Assets/gif/failed.gif');
                             document.querySelector('a[data-page="profile"]').click();
                         }
                     } catch (error) {

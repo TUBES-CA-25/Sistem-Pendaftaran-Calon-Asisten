@@ -8,7 +8,7 @@ $photo = RES_PATH . "/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?
 <div class="sidebar" id="sidebar">
     <div class="top">
         <div class="logo">
-            <img src="<?= PUBLIC_PATH ?>/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
+            <img src="<?= BASE_URL ?>/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
             <span>IC-ASSIST</span>
         </div>
         <i class="bx bx-menu" id="btn"></i>
@@ -71,4 +71,10 @@ $photo = RES_PATH . "/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?
             <span class="tooltip">Pengumuman</span>
         </li> -->
     </ul>
+    <div class="sidebar-footer">
+        <a href="<?= BASEURL ?>/logout">
+            <i class='bx bx-log-out'></i>
+            <span class="nav-item">Logout</span>
+        </a>
+    </div>
 </div>

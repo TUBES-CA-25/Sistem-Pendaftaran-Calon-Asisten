@@ -42,7 +42,7 @@ const namaInput = document.getElementById("nama");
         if (response.status === "success") {
           showModal(
             response.message || "Logout berhasil",
-            PUBLIC_PATH + "/Assets/gif/success.gif",
+            BASE_URL + "/Assets/gif/success.gif",
             () => {
               window.location.href = APP_URL;
             }
@@ -50,7 +50,7 @@ const namaInput = document.getElementById("nama");
         } else {
           showModal(
             response.message || "Logout gagal",
-            PUBLIC_PATH + "/Assets/gif/failed.gif"
+            BASE_URL + "/Assets/gif/failed.gif"
           );
         }
       },
@@ -58,7 +58,7 @@ const namaInput = document.getElementById("nama");
         console.log("Error:", xhr.responseText);
         showModal(
           "Terjadi kesalahan: " + error,
-          PUBLIC_PATH + "/Assets/gif/failed.gif"
+          BASE_URL + "/Assets/gif/failed.gif"
         );
       },
     });
@@ -118,13 +118,13 @@ const namaInput = document.getElementById("nama");
         if (response.status === "success") {
           showModal(
             "Biodata berhasil disimpan",
-            PUBLIC_PATH + "/Assets/gif/success.gif"
+            BASE_URL + "/Assets/gif/success.gif"
           );
           document.querySelector('a[data-page="biodata"]').click();
         } else {
           showModal(
             response.message || "Biodata gagal disimpan",
-            PUBLIC_PATH + "/Assets/gif/failed.gif"
+            BASE_URL + "/Assets/gif/failed.gif"
           );
           console.log(response.message);
         }
@@ -133,7 +133,7 @@ const namaInput = document.getElementById("nama");
         console.log("Error:", xhr.responseText);
         showModal(
           "Terjadi kesalahan: " + error,
-          PUBLIC_PATH + "/Assets/gif/failed.gif"
+          BASE_URL + "/Assets/gif/failed.gif"
         );
       },
     });

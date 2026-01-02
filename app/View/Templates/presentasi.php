@@ -144,4 +144,4 @@ $results = PresentasiUserController::viewAll();
     </table>
   </div>
 </main>
-<script src="\u003c?= PUBLIC_PATH ?\u003e/Assets/Script/user/presentasi.js"></script>
+<script src="\u003c?= BASE_URL ?\u003e/Assets/Script/user/presentasi.js"></script>

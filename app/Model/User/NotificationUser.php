@@ -39,12 +39,17 @@ class NotificationUser extends Model {
         $query = "SELECT * FROM " . static::$table . " WHERE id_mahasiswa = :idMahasiswa";
         $stmt = self::getDB()->prepare($query);
         $idMahasiswa = $this->getIdMahasiswaByIdUser($notification->id_mahasiswa);
+        
+        if ($idMahasiswa === false) {
+            return [];
+        }
+
         $id = $idMahasiswa['id'] ?? 0;
         $stmt->bindParam(':idMahasiswa', $id);
         $stmt->execute();
         $result = $stmt->fetchAll();
         if (!$result) {
-            return false;
+            return [];
         }
         return $result;
     }

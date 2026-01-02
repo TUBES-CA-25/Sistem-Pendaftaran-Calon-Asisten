@@ -16,7 +16,7 @@ $photo = RES_PATH . "/imageUser/" . (BerkasUserController::viewBerkas()["foto"] 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<?=APP_URL?>/Assets/Style/exam.css" />
     <link rel="stylesheet" href="<?=APP_URL?>/Assets/Style/alertstyle.css">
-    <link rel="icon" href="<?= PUBLIC_PATH ?>/Assets/Img/iclabs.png">
+    <link rel="icon" href="<?= BASE_URL ?>/Assets/Img/iclabs.png">
 </head>
 
 <body>

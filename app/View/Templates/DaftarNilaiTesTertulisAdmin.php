@@ -300,12 +300,12 @@ $nilai = NilaiAkhirController::getAllNilaiAkhirMahasiswa();
                 dataType: 'json',
                 success: function (response) {
                     if (response.status === 'success') {
-                        showModal('Nilai berhasil ditambahkan!', '<?= PUBLIC_PATH ?>/Assets/gif/success.gif');
+                        showModal('Nilai berhasil ditambahkan!', '<?= BASE_URL ?>/Assets/gif/success.gif');
                         document.querySelector('a[data-page="lihatnilai"').click();
                     } else {
                         showModal(
                             'Error saat mengupdate nilai',
-                            '<?= PUBLIC_PATH ?>/Assets/gif/failed.gif'
+                            '<?= BASE_URL ?>/Assets/gif/failed.gif'
                         );
                     }
                 },

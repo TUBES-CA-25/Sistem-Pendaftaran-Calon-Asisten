@@ -17,13 +17,13 @@ $(document).ready(function () {
         if (response.status === "success") {
           showModal(
             "Berkas berhasil disimpan",
-            PUBLIC_PATH + "/Assets/gif/success.gif"
+            BASE_URL + "/Assets/gif/success.gif"
           );
           document.querySelector('a[data-page="uploadBerkas"]').click();
         } else {
           showModal(
             "Berkas gagal disimpan",
-            PUBLIC_PATH + "/Assets/gif/failed.gif"
+            BASE_URL + "/Assets/gif/failed.gif"
           );
           console.log(response.message);
         }

@@ -11,10 +11,10 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                   showModal(response.message || 'Data berhasil disimpan', PUBLIC_PATH + '/Assets/gif/success.gif');
+                   showModal(response.message || 'Data berhasil disimpan', BASE_URL + '/Assets/gif/success.gif');
                    document.querySelector('a[data-page="presentasi"]').click();
                 } else {
-                    showModal(response.message || 'Data gagal disimpan', PUBLIC_PATH + '/Assets/gif/failed.gif');
+                    showModal(response.message || 'Data gagal disimpan', BASE_URL + '/Assets/gif/failed.gif');
                 }
             },
             error: function(xhr, status, error) {
@@ -42,7 +42,7 @@ $(document).ready(function() {
             contentType: false,
             dataType: 'json',
             success: function (response) {
-               showModal(response.message || 'Data berhasil disimpan', PUBLIC_PATH + '/Assets/gif/success.gif');
+               showModal(response.message || 'Data berhasil disimpan', BASE_URL + '/Assets/gif/success.gif');
                 document.querySelector('a[data-page="presentasi"]').click();
             },
             error: function (xhr, status, error) {

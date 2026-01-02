@@ -28,6 +28,13 @@ class HomeController extends Controller
             $page = $page['page'];
         }
 
+        if ($page == 'logout') {
+            session_destroy();
+            $_SESSION = [];
+            header("Location: " . BASEURL);
+            exit;
+        }
+
         if ($this->getRole() == "Admin") {
             switch ($page) {
                 case 'dashboard':
@@ -60,11 +67,6 @@ class HomeController extends Controller
                 case 'lihatnilai':
                     View::render('DaftarNilaiTesTertulisAdmin', 'Templates');
                     break;
-                case 'logout':
-                    session_destroy();
-                    $_SESSION = [];
-                    echo "<script>window.location.href = '';</script>";
-                    exit;
             }
 
         } else {
