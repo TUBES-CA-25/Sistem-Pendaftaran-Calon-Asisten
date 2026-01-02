@@ -1,7 +1,7 @@
 <div class="sidebar" id="sidebar">
     <div class="top">
         <div class="logo">
-            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="ICLABS Logo" class="icon">
+            <img src="<?= PUBLIC_PATH ?>/Assets/Img/iclabs.png" alt="ICLABS Logo" class="icon">
             <span>ICLABS</span>
         </div>
     </div>

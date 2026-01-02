@@ -3,12 +3,12 @@ use app\Controllers\Profile\ProfileController;
 use App\Controllers\user\BerkasUserController;
 $role = ProfileController::viewUser()["role"];
 $userName = ProfileController::viewUser()["username"];
-$photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
+$photo = RES_PATH . "/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
 ?>
 <div class="sidebar" id="sidebar">
     <div class="top">
         <div class="logo">
-            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
+            <img src="<?= PUBLIC_PATH ?>/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
             <span>IC-ASSIST</span>
         </div>
         <i class="bx bx-menu" id="btn"></i>

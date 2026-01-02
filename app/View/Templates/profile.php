@@ -12,7 +12,7 @@ $jenisKelamin = ProfileController::viewBiodata() == null ? "Jenis Kelamin" : Pro
 $tempatLahir = ProfileController::viewBiodata() == null ? "Tempat Lahir" : ProfileController::viewBiodata()["tempatLahir"];
 $tanggalLahir = ProfileController::viewBiodata() == null ? "Tanggal Lahir" : ProfileController::viewBiodata()["tanggalLahir"];
 $noHp = ProfileController::viewBiodata() == null ? "No Telephone" : ProfileController::viewBiodata()["noHp"];
-$photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
+$photo = RES_PATH . "/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
 ?>
 
 <style>
@@ -361,18 +361,18 @@ $photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserControl
         $('#logoutButton').click(function (e) {
             e.preventDefault();
             $.ajax({
-                url: '/Sistem-Pendaftaran-Calon-Asisten/public/logout',
+                url: '<?= APP_URL ?>/logout',
                 type: 'POST',
                 success: function (response) {
                     if (response.status === 'success') {
-                        showModal('Logout berhasil', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
+                        showModal('Logout berhasil', '<?= PUBLIC_PATH ?>/Assets/gif/success.gif');
                         setTimeout(() => {
-                            window.location.href = '/Sistem-Pendaftaran-Calon-Asisten/public/';
+                            window.location.href = '<?= APP_URL ?>/';
                             window.location.reload();
         }, 1000);
                         
                     } else {
-                        showModal('Logout gagal', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
+                        showModal('Logout gagal', '<?= PUBLIC_PATH ?>/Assets/gif/failed.gif');
                     }
                 },
                 error: function (xhr, status, error) {
@@ -420,7 +420,7 @@ $photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserControl
 
             if (!isValid) return;
             $.ajax({
-                url: '/Sistem-Pendaftaran-Calon-Asisten/public/updatebiodata',
+                url: '<?= APP_URL ?>/updatebiodata',
                 method: 'POST',
                 data: formData,
                 success: function (response) {
@@ -429,11 +429,11 @@ $photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserControl
                         console.log('Parsed Response:', parsedResponse);
 
                         if (parsedResponse.status === 'success') {
-                            showModal('Data berhasil diperbarui', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
+                            showModal('Data berhasil diperbarui', '<?= PUBLIC_PATH ?>/Assets/gif/success.gif');
                             document.querySelector('a[data-page="profile"]').click();
                         } else {
                             console.log('Error:', parsedResponse.message);
-                            showModal('Data gagal diperbarui', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
+                            showModal('Data gagal diperbarui', '<?= PUBLIC_PATH ?>/Assets/gif/failed.gif');
                             document.querySelector('a[data-page="profile"]').click();
                         }
                     } catch (error) {

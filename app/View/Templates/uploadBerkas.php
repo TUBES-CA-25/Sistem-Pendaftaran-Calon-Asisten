@@ -241,4 +241,4 @@ $nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileContr
 
 
 </main>
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/user/berkas.js"></script>
+<script src="\u003c?= PUBLIC_PATH ?\u003e/Assets/Script/user/berkas.js"></script>
