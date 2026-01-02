@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dokumentasi Proyek Registrasi CCA
 
 Dokumen ini menjelaskan struktur direktori dan fungsi file dalam proyek aplikasi web berbasis **PHP Native MVC** ini.
@@ -73,3 +74,6 @@ Tempat mendefinisikan rute (routes) kustom jika diperlukan, meskipun routing uta
         ```
         Lalu buka `http://localhost:8080`.
 
+=======
+# Branch Kosong
+>>>>>>> origin/raihn
