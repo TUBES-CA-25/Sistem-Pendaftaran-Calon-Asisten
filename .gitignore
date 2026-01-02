@@ -7,3 +7,6 @@ package-lock.json
 res/*
 !res/.gitkeep
 public/Assets/Img/uploads/
+./res/imageUser/*
+./res/berkasUser/*
+./res/berkasMahasiswa/*

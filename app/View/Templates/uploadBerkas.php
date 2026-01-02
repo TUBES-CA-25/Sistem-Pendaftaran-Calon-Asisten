@@ -241,4 +241,4 @@ $nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileContr
 
 
 </main>
-<script src="\u003c?= BASE_URL ?\u003e/Assets/Script/user/berkas.js"></script>
+<script src="<?= BASE_URL ?>/Assets/Script/user/berkas.js?v=<?= time() ?>"></script>
