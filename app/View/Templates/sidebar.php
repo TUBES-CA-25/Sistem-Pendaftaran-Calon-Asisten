@@ -5,76 +5,68 @@ $role = ProfileController::viewUser()["role"];
 $userName = ProfileController::viewUser()["username"];
 $photo = RES_PATH . "/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
 ?>
-<div class="sidebar" id="sidebar">
-    <div class="top">
-        <div class="logo">
-            <img src="<?= BASE_URL ?>/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
-            <span>IC-ASSIST</span>
+<aside class="sidebar d-flex flex-column flex-shrink-0 bg-white" id="sidebar">
+    <div class="top p-3 d-flex align-items-center justify-content-between">
+        <div class="logo d-flex align-items-center gap-2 overflow-hidden">
+            <img src="<?= BASE_URL ?>/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon" style="width: 32px; height: 32px;">
+            <span class="fs-5 fw-bold text-primary logo-text">IC-ASSIST</span>
         </div>
-        <i class="bx bx-menu" id="btn"></i>
+        <i class="bx bx-chevron-left fs-4 cursor-pointer" id="btn"></i>
     </div>
-    <div class="user">
-        <a href="#" data-page="profile"><img src=<?= $photo ?> alt="foto" name="userphoto" id="userphoto"
-                class="user-img"></a>
-        <div>
-            <p class="bold" id="username"><?= $userName ?></p>
+
+    <div class="user p-3 d-flex align-items-center gap-3 border-bottom mb-3 overflow-hidden">
+        <a href="#" data-page="profile" class="flex-shrink-0">
+            <img src="<?= $photo ?>" alt="foto" name="userphoto" id="userphoto" class="rounded-circle border border-2 border-primary" style="width: 40px; height: 40px; object-fit: cover;">
+        </a>
+        <div class="user-info">
+            <p class="mb-0 fw-bold text-dark text-truncate" id="username"><?= $userName ?></p>
+            <small class="text-muted text-xs"><?= $role ?></small>
         </div>
     </div>
-    <ul>
-        <li>
-            <a href="<?= BASE_URL ?>/dashboard" data-page="dashboard">
-                <i class="bx bx-home"></i>
-                <span class="nav-item">Dashboard</span>
+
+    <ul class="nav nav-pills flex-column mb-auto px-2">
+        <li class="nav-item mb-1">
+            <a href="<?= BASE_URL ?>/dashboard" data-page="dashboard" class="nav-link d-flex align-items-center gap-3 text-dark">
+                <i class="bx bx-home fs-4"></i>
+                <span class="nav-text">Dashboard</span>
             </a>
-            <span class="tooltip">Dashboard</span>
         </li>
-        <li>
-            <a href="<?= BASE_URL ?>/biodata" data-page="biodata">
-                <i class="bx bxs-id-card"></i>
-                <span class="nav-item">Lengkapi Biodata</span>
+        <li class="nav-item mb-1">
+            <a href="<?= BASE_URL ?>/biodata" data-page="biodata" class="nav-link d-flex align-items-center gap-3 text-dark">
+                <i class="bx bxs-id-card fs-4"></i>
+                <span class="nav-text">Lengkapi Biodata</span>
             </a>
-            <span class="tooltip">Lengkapi Biodata</span>
         </li>
-        <li>
-            <a href="<?= BASE_URL ?>/uploadBerkas" data-page="uploadBerkas">
-                <i class="bx bx-file"></i>
-                <span class="nav-item">Upload Berkas</span>
+        <li class="nav-item mb-1">
+            <a href="<?= BASE_URL ?>/uploadBerkas" data-page="uploadBerkas" class="nav-link d-flex align-items-center gap-3 text-dark">
+                <i class="bx bx-file fs-4"></i>
+                <span class="nav-text">Upload Berkas</span>
             </a>
-            <span class="tooltip">Upload Berkas</span>
         </li>
-        <li>
-            <a href="<?= BASE_URL ?>/tesTulis" data-page="tesTulis">
-                <i class="bx bx-task"></i>
-                <span class="nav-item">Tes Tulis</span>
+        <li class="nav-item mb-1">
+            <a href="<?= BASE_URL ?>/tesTulis" data-page="tesTulis" class="nav-link d-flex align-items-center gap-3 text-dark">
+                <i class="bx bx-task fs-4"></i>
+                <span class="nav-text">Tes Tulis</span>
             </a>
-            <span class="tooltip">Tes Tulis</span>
         </li>
-        <li>
-            <a href="<?= BASE_URL ?>/presentasi" data-page="presentasi">
-                <i class="bx bx-chalkboard"></i>
-                <span class="nav-item">Presentasi</span>
+        <li class="nav-item mb-1">
+            <a href="<?= BASE_URL ?>/presentasi" data-page="presentasi" class="nav-link d-flex align-items-center gap-3 text-dark">
+                <i class="bx bx-chalkboard fs-4"></i>
+                <span class="nav-text">Presentasi</span>
             </a>
-            <span class="tooltip">Presentasi</span>
         </li>
-        <li>
-            <a href="<?= BASE_URL ?>/wawancara" data-page="wawancara">
-                <i class="bx bx-user-voice"></i>
-                <span class="nav-item">Jadwal</span>
+        <li class="nav-item mb-1">
+            <a href="<?= BASE_URL ?>/wawancara" data-page="wawancara" class="nav-link d-flex align-items-center gap-3 text-dark">
+                <i class="bx bx-user-voice fs-4"></i>
+                <span class="nav-text">Jadwal</span>
             </a>
-            <span class="tooltip">Jadwal</span>
         </li>
-        <!-- <li>
-            <a href="#" data-page="pengumuman">
-                <i class="bx bx-notepad"></i>
-                <span class="nav-item">Pengumuman</span>
-            </a>
-            <span class="tooltip">Pengumuman</span>
-        </li> -->
     </ul>
-    <div class="sidebar-footer">
-        <a href="<?= BASE_URL ?>/logout" data-page="logout">
-            <i class='bx bx-log-out'></i>
-            <span class="nav-item">Logout</span>
+
+    <div class="sidebar-footer p-3 mt-auto border-top">
+        <a href="<?= BASE_URL ?>/logout" data-page="logout" class="nav-link d-flex align-items-center gap-3 text-danger hover-danger">
+            <i class='bx bx-log-out fs-4'></i>
+            <span class="nav-text">Logout</span>
         </a>
     </div>
-</div>
+</aside>
