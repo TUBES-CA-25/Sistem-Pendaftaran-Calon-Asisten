@@ -51,7 +51,7 @@
         </li>
     </ul>
     <div class="sidebar-footer">
-        <a href="<?= BASE_URL ?>/logout">
+        <a href="<?= BASE_URL ?>/logout" data-page="logout">
             <i class='bx bx-log-out'></i>
             <span class="nav-item">Logout</span>
         </a>

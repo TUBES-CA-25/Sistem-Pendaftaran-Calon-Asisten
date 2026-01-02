@@ -22,42 +22,42 @@ $photo = RES_PATH . "/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?
     </div>
     <ul>
         <li>
-            <a href="#" data-page="dashboard">
+            <a href="<?= BASE_URL ?>/dashboard" data-page="dashboard">
                 <i class="bx bx-home"></i>
                 <span class="nav-item">Dashboard</span>
             </a>
             <span class="tooltip">Dashboard</span>
         </li>
         <li>
-            <a href="#" data-page="biodata">
+            <a href="<?= BASE_URL ?>/biodata" data-page="biodata">
                 <i class="bx bxs-id-card"></i>
                 <span class="nav-item">Lengkapi Biodata</span>
             </a>
             <span class="tooltip">Lengkapi Biodata</span>
         </li>
         <li>
-            <a href="#" data-page="uploadBerkas">
+            <a href="<?= BASE_URL ?>/uploadBerkas" data-page="uploadBerkas">
                 <i class="bx bx-file"></i>
                 <span class="nav-item">Upload Berkas</span>
             </a>
             <span class="tooltip">Upload Berkas</span>
         </li>
         <li>
-            <a href="#" data-page="tesTulis">
+            <a href="<?= BASE_URL ?>/tesTulis" data-page="tesTulis">
                 <i class="bx bx-task"></i>
                 <span class="nav-item">Tes Tulis</span>
             </a>
             <span class="tooltip">Tes Tulis</span>
         </li>
         <li>
-            <a href="#" data-page="presentasi">
+            <a href="<?= BASE_URL ?>/presentasi" data-page="presentasi">
                 <i class="bx bx-chalkboard"></i>
                 <span class="nav-item">Presentasi</span>
             </a>
             <span class="tooltip">Presentasi</span>
         </li>
         <li>
-            <a href="#" data-page="wawancara">
+            <a href="<?= BASE_URL ?>/wawancara" data-page="wawancara">
                 <i class="bx bx-user-voice"></i>
                 <span class="nav-item">Jadwal</span>
             </a>
@@ -72,7 +72,7 @@ $photo = RES_PATH . "/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?
         </li> -->
     </ul>
     <div class="sidebar-footer">
-        <a href="<?= BASEURL ?>/logout">
+        <a href="<?= BASE_URL ?>/logout" data-page="logout">
             <i class='bx bx-log-out'></i>
             <span class="nav-item">Logout</span>
         </a>

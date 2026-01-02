@@ -31,7 +31,7 @@ class HomeController extends Controller
         if ($page == 'logout') {
             session_destroy();
             $_SESSION = [];
-            header("Location: " . BASEURL);
+            header("Location: " . BASE_URL);
             exit;
         }
 
@@ -107,11 +107,11 @@ class HomeController extends Controller
 
     private function isLoggedIn()
     {
-        return isset($_SESSION['user']);
+        return isset($_SESSION['user']) && isset($_SESSION['user']['role']);
     }
     
     private function getRole()
     {
-        return $_SESSION['user']['role'];
+        return $_SESSION['user']['role'] ?? null;
     }
 }

@@ -4,13 +4,15 @@ $(document).ready(function () {
   // Menggunakan event delegation untuk menghindari multiple event handlers
   $(document).on('click', '.sidebar a, .profile a, .dashboard a', function (e) {
     if (this.id === "startTestButton") return; 
-    e.preventDefault();
 
     var page = $(this).data('page');
-    if (!page) {
-      console.error("Data page tidak ditemukan pada elemen ini:", this);
+
+    // Allow default behavior if no data-page is present or if it's logout
+    if (!page || page === 'logout') {
       return;
     }
+
+    e.preventDefault();
 
     console.log("Memuat halaman:", page);
 
