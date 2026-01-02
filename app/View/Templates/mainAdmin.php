@@ -49,7 +49,11 @@
             </div>
         </div>
     </div>
-    <script> const APP_URL = '<?php echo APP_URL; ?>' </script>
+    <script> 
+        const APP_URL = '<?php echo APP_URL; ?>';
+        const PUBLIC_PATH = '<?php echo PUBLIC_PATH; ?>';
+        const RES_PATH = '<?php echo RES_PATH; ?>';
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="<?= PUBLIC_PATH ?>/Assets/Script/common.js"></script>
     <script src="<?= PUBLIC_PATH ?>/Assets/Script/app.js"></script>

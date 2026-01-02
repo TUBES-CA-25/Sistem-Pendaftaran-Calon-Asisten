@@ -138,8 +138,8 @@ $result = MahasiswaController::viewAllMahasiswa() ?? [];
                     <td><?= $row['alamat'] ?></td>
                     <td>
                         <div style="display: flex; gap:5%;">
-                            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/edit.svg" alt="edit" style="cursor: pointer;">
-                            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/delete.svg" alt="delete" style="cursor: pointer;">
+                            <img src="<?= PUBLIC_PATH ?>/Assets/Img/edit.svg" alt="edit" style="cursor: pointer;">
+                            <img src="<?= PUBLIC_PATH ?>/Assets/Img/delete.svg" alt="delete" style="cursor: pointer;">
                         </div>
                     </td>
                 </tr>
@@ -280,8 +280,8 @@ $result = MahasiswaController::viewAllMahasiswa() ?? [];
 </div>
 
 <!-- Load JavaScript -->
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/common.js"></script>
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/daftarPeserta.js"></script>
+<script src="<?= PUBLIC_PATH ?>/Assets/Script/common.js"></script>
+<script src="<?= PUBLIC_PATH ?>/Assets/Script/daftarPeserta.js"></script>
 <script>
 // Call initialization after scripts are loaded
 if (typeof window.initDaftarPeserta === 'function') {

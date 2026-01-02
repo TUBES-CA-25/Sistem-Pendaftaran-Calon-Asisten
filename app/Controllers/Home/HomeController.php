@@ -1,14 +1,5 @@
 <?php
 
-<<<<<<< HEAD
-class HomeController extends Controller {
-    public function index()
-    {
-        $data['judul'] = 'Home';
-        $this->view('Templates/header', $data);
-        $this->view('Home/index', $data);
-        $this->view('Templates/footer');
-=======
 namespace App\Controllers\Home;
 
 use App\Core\Controller;
@@ -105,7 +96,7 @@ class HomeController extends Controller
                 case 'editprofile':
                     View::render('editprofile', 'Templates');
                     break;
-                case 'notifcation':
+                case 'notification':
                     View::render('notification', 'Templates');
                     break;
             }
@@ -116,9 +107,9 @@ class HomeController extends Controller
     {
         return isset($_SESSION['user']);
     }
+    
     private function getRole()
     {
         return $_SESSION['user']['role'];
->>>>>>> origin/raihn
     }
 }

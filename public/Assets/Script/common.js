@@ -5,9 +5,9 @@
 
 // Constants untuk path
 const APP_PATHS = {
-    images: '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser',
-    documents: '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser',
-    gifs: '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif'
+    images: RES_PATH + '/imageUser',
+    documents: RES_PATH + '/berkasUser',
+    gifs: PUBLIC_PATH + '/Assets/gif'
 };
 
 /**

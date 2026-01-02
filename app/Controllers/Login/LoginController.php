@@ -1,6 +1,6 @@
 <?php
 namespace App\Controllers\Login;
-session_start();
+
 use App\Core\Controller;
 use App\Core\View;
 use App\Model\User\UserModel;

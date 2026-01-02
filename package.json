@@ -4,8 +4,7 @@
   "description": "Dokumen ini menjelaskan struktur direktori dan fungsi file dalam proyek aplikasi web berbasis **PHP Native MVC** ini.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build:css": "npx tailwindcss -i ./public/Assets/Style/input.css -o ./public/Assets/Style/output.css"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -17,10 +16,5 @@
   "bugs": {
     "url": "https://github.com/TUBES-CA-25/Sistem-Pendaftaran-Calon-Asisten/issues"
   },
-  "homepage": "https://github.com/TUBES-CA-25/Sistem-Pendaftaran-Calon-Asisten#readme",
-  "devDependencies": {
-    "autoprefixer": "^10.4.22",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.18"
-  }
+  "homepage": "https://github.com/TUBES-CA-25/Sistem-Pendaftaran-Calon-Asisten#readme"
 }
