@@ -44,8 +44,8 @@ $noHp = ProfileController::viewBiodata() == null ? "No Telephone" : ProfileContr
                 <div class="form-group">
                     <label for="jurusan" class="form-label">Jurusan</label>
                     <select class="form-select" name="jurusan" required>
-                        <option value="Teknik informatika">Teknik Informatika</option>
-                        <option value="Sistem informasi">Sistem Informasi</option>
+                        <option value="Teknik Informatika">Teknik Informatika</option>
+                        <option value="Sistem Informasi">Sistem Informasi</option>
                     </select>
                 </div>
                 <div class="form-group">

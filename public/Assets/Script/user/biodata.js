@@ -110,7 +110,7 @@ const namaInput = document.getElementById("nama");
 
     if(!isValid) return;
     $.ajax({
-      url: "Sistem-Pendaftaran-Calon-Asisten/public/store",
+      url: APP_URL + "/store",
       type: "post",
       data: $("#biodataForm").serialize(),
       dataType: "json",

@@ -60,8 +60,12 @@ class BiodataUserController extends Controller
                 $noHp
             );
 
-            if ($biodata->save($biodata)) {
+            $saveResult = $biodata->save($biodata);
+            
+            if ($saveResult['status']) {
                 echo json_encode(['status' => 'success', 'message' => 'Data berhasil disimpan']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => $saveResult['message']]);
             } 
         } catch (\Exception $e) {
             echo json_encode(['status' => 'error', 'message' => 'Data gagal disimpan: ' . $e->getMessage()]);

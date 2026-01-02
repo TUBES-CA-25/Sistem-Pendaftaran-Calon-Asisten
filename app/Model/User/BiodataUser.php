@@ -71,8 +71,7 @@ class BiodataUser extends Model
             // Ambil ID Jurusan
             $idJurusanData = $this->getIdJurusan($biodata->jurusan);
             if (!$idJurusanData) {
-                error_log("Error: Jurusan tidak ditemukan - " . $biodata->jurusan);
-                return false;
+                return ['status' => false, 'message' => "Jurusan tidak valid: " . $biodata->jurusan];
             }
             $biodata->idJurusan = $idJurusanData['id'];
 
@@ -80,10 +79,9 @@ class BiodataUser extends Model
             $jenisKelamin = ucfirst($biodata->jenisKelamin);
             $idKelasData = $this->getIdKelas($biodata->kelas);
             if (!$idKelasData) {
-                error_log("Error: Kelas tidak ditemukan - " . $biodata->kelas);
-                return false;
+                return ['status' => false, 'message' => "Kelas tidak valid: " . $biodata->kelas];
             }
-            $biodata->idKelas = $idKelasData['id']; // Pastikan variabel ini konsisten
+            $biodata->idKelas = $idKelasData['id'];
 
             // Binding Parameter
             $stmt->bindParam(1, $biodata->idUser);
@@ -99,14 +97,12 @@ class BiodataUser extends Model
 
             // Eksekusi Query
             if ($stmt->execute()) {
-                return true; // Berhasil
+                return ['status' => true, 'message' => 'Berhasil menyimpan biodata'];
             } else {
-                error_log("Error: Gagal menyimpan biodata");
-                return false; // Gagal
+                return ['status' => false, 'message' => 'Gagal mengeksekusi query database'];
             }
         } catch (\PDOException $e) {
-            error_log("SQL Error: " . $e->getMessage());
-            return false;
+            return ['status' => false, 'message' => "SQL Error: " . $e->getMessage()];
         }
     }
     private function getIdJurusan($namaJurusan)
@@ -116,10 +112,11 @@ class BiodataUser extends Model
         $stmt->bindParam(1, $namaJurusan);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $result = [
-            "id" => $result['id']
-        ];
-        return $result;
+        
+        if ($result && isset($result['id'])) {
+             return ["id" => $result['id']];
+        }
+        return null;
     }
     private function getIdKelas($namaKelas)
     {
@@ -128,10 +125,11 @@ class BiodataUser extends Model
         $stmt->bindParam(1, $namaKelas);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $result = [
-            "id" => $result['id']
-        ];
-        return $result;
+        
+        if ($result && isset($result['id'])) {
+            return ["id" => $result['id']];
+       }
+       return null;
     }
     public function isEmpty($idUser)
     {
