@@ -316,7 +316,7 @@ class HomeController extends Controller
                     View::render('admin', 'presentasi', $this->getPresentasiAdminData());
                     break;
                 case 'tesTulis':
-                    View::render('admin', 'exam/pages', $this->getTesTulisAdminData());
+                    View::render('admin', 'exam', $this->getTesTulisAdminData());
                     break;
                 case 'wawancara':
                     View::render('admin', 'wawancara', $this->getWawancaraAdminData());
@@ -346,7 +346,7 @@ class HomeController extends Controller
                     View::render('index', 'presentasi', $this->getPresentasiData());
                     break;
                 case 'tesTulis':
-                    View::render('user', 'exam/pages', $this->getTesTulisData());
+                    View::render('user', 'exam', $this->getTesTulisData());
                     break;
                 case 'uploadBerkas':
                     View::render('uploadBerkas', 'user', $this->getUploadBerkasData());
