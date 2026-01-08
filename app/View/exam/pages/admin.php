@@ -1,10 +1,15 @@
 <?php
-use App\Controllers\exam\ExamController;
-$allSoal = ExamController::viewAllSoal();
+/**
+ * Tes Tulis Admin View
+ * 
+ * Data yang diterima dari Controller:
+ * @var array $allSoal - Daftar semua soal
+ */
+$allSoal = $allSoal ?? [];
 ?>
 
 <style>
-  <style>@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
   .table-hover {
     background-color: white;
@@ -155,7 +160,6 @@ $allSoal = ExamController::viewAllSoal();
   }
 </style>
 
-</style>
 <main>
   <h1 class="dashboard">Tes Tertulis</h1>
   <button type="button" data-bs-toggle="modal" data-bs-target="#addSoalModal" class="btn btn-primary mb-3">

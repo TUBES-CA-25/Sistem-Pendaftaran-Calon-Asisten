@@ -1,9 +1,12 @@
 <?php
-use App\Controllers\User\BerkasUserController;
-use App\Controllers\user\DashboardUserController;
-use App\Controllers\Profile\ProfileController;
-$res = BerkasUserController::viewBerkas() ?? [];
-$nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileController::viewBiodata()["namaLengkap"] ?? [];
+/**
+ * Upload Berkas View
+ * 
+ * Data yang diterima dari Controller:
+ * @var string $nama - Nama lengkap user
+ * @var array $berkas - Data berkas user
+ */
+$res = $berkas ?? [];
 ?>
 
 <style>

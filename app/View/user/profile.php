@@ -1,18 +1,21 @@
 <?php
-use App\Controllers\Profile\ProfileController;
-use App\Controllers\user\BerkasUserController;
-
-$userName = ProfileController::viewUser()["username"];
-$nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileController::viewBiodata()["namaLengkap"];
-$stambuk = ProfileController::viewUser()["stambuk"];
-$jurusan = ProfileController::viewBiodata() == null ? "Jurusan" : ProfileController::viewBiodata()["jurusan"];
-$alamat = ProfileController::viewBiodata() == null ? "Alamat" : ProfileController::viewBiodata()["alamat"];
-$kelas = ProfileController::viewBiodata() == null ? "Kelas" : ProfileController::viewBiodata()["kelas"];
-$jenisKelamin = ProfileController::viewBiodata() == null ? "Jenis Kelamin" : ProfileController::viewBiodata()["jenisKelamin"];
-$tempatLahir = ProfileController::viewBiodata() == null ? "Tempat Lahir" : ProfileController::viewBiodata()["tempatLahir"];
-$tanggalLahir = ProfileController::viewBiodata() == null ? "Tanggal Lahir" : ProfileController::viewBiodata()["tanggalLahir"];
-$noHp = ProfileController::viewBiodata() == null ? "No Telephone" : ProfileController::viewBiodata()["noHp"];
-$photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
+/**
+ * Profile View
+ * 
+ * Data yang diterima dari Controller:
+ * @var string $userName - Username
+ * @var string $stambuk - Nomor stambuk
+ * @var string $nama - Nama lengkap
+ * @var string $jurusan - Jurusan
+ * @var string $alamat - Alamat
+ * @var string $kelas - Kelas
+ * @var string $jenisKelamin - Jenis kelamin
+ * @var string $tempatLahir - Tempat lahir
+ * @var string $tanggalLahir - Tanggal lahir
+ * @var string $noHp - No HP
+ * @var string $photo - Nama file foto
+ */
+$photoPath = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . ($photo ?? "default.png");
 ?>
 
 <style>
@@ -153,7 +156,7 @@ $photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserControl
         style="display: grid; grid-template-columns: 1fr; gap: 2rem; padding: 2.5rem; max-width: 900px; margin: 0 auto;">
         <div class="profile-card"
             style="background-color: #fff; border-radius: 20px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); padding: 2.5rem; display: grid; grid-template-columns: auto 1fr auto; gap: 1.5rem; align-items: center;">
-            <img src="<?= $photo ?>" alt="Profile Picture"
+            <img src="<?= $photoPath ?>" alt="Profile Picture"
                 style="width: 150px; height: 150px; object-fit: cover; border-radius: 15px;">
             <div style="font-size: 1.1rem;">
                 <p>Email: <strong><?= $userName; ?></strong></p>

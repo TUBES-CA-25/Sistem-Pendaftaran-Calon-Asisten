@@ -4,6 +4,8 @@ session_start();
 use App\Core\Controller;
 use App\Core\View;
 use App\Model\User\UserModel;
+use App\Model\User\BerkasUser;
+
 class LoginController extends Controller
 {
     public function __construct()
@@ -15,7 +17,7 @@ class LoginController extends Controller
 
     public function index()
     {
-        View::render('index', 'login');
+        View::render('login', 'auth');
     }
 
     public function authenticate()
@@ -33,6 +35,11 @@ class LoginController extends Controller
             $user = UserModel::findByStambuk($stambuk);
 
             if ($user && isset($user['password']) && password_verify($password, $user['password'])) {
+                // Get user photo from berkas
+                $berkasModel = new BerkasUser();
+                $berkas = $berkasModel->getBerkas($user['id']);
+                $user['foto'] = $berkas['foto'] ?? 'default.png';
+                
                 $_SESSION['user'] = $user;
                 header('Content-Type: application/json');
                 echo json_encode(['status' => 'success', 'message' => 'Login successful.', 'redirect' => APP_URL . "/", 'role' => $user['role']]);

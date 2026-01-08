@@ -1,23 +1,26 @@
 <?php
-use App\Controllers\user\BiodataUserController;
-use App\Controllers\Profile\ProfileController;
-
-$nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileController::viewBiodata()["namaLengkap"];
-$stambuk = ProfileController::viewUser()["stambuk"];
-$jurusan = ProfileController::viewBiodata() == null ? "Jurusan" : ProfileController::viewBiodata()["jurusan"];
-$alamat = ProfileController::viewBiodata() == null ? "Alamat" : ProfileController::viewBiodata()["alamat"];
-$kelas = ProfileController::viewBiodata() == null ? "kelas" : ProfileController::viewBiodata()["kelas"];
-$jenisKelamin = ProfileController::viewBiodata() == null ? "Jenis Kelamin" : ProfileController::viewBiodata()["jenisKelamin"];
-$tempatLahir = ProfileController::viewBiodata() == null ? "Tempat Lahir" : ProfileController::viewBiodata()["tempatLahir"];
-$tanggalLahir = ProfileController::viewBiodata() == null ? "Tanggal Lahir" : ProfileController::viewBiodata()["tanggalLahir"];
-$noHp = ProfileController::viewBiodata() == null ? "No Telephone" : ProfileController::viewBiodata()["noHp"];
+/**
+ * Biodata View
+ * 
+ * Data yang diterima dari Controller:
+ * @var bool $isEmpty - Apakah biodata masih kosong
+ * @var string $stambuk - Nomor stambuk user
+ * @var string $nama - Nama lengkap
+ * @var string $jrusan - Jurusan
+ * @var string $alamat - Alamat
+ * @var string $kelas - Kelas
+ * @var string $jenisKelamin - Jenis kelamin
+ * @var string $tempatLahir - Tempat lahir
+ * @var string $tanggalLahir - Tanggal lahir
+ * @var string $noHp - No HP
+ */
 ?>
 <div>
     <main>
     <h1 class="dashboard">Biodata</h1>
 </div>
 <div class="form-container">
-    <?php if (BiodataUserController::isEmpty()) { ?>
+    <?php if ($isEmpty ?? true) { ?>
         <form id="biodataForm" class="biodata-form">
             <div class="form-row">
                 <div class="form-group">
@@ -26,7 +29,7 @@ $noHp = ProfileController::viewBiodata() == null ? "No Telephone" : ProfileContr
                 </div>
                 <div class="form-group">
                     <label for="stambuk" class="form-label">Stambuk</label>
-                    <input type="text" class="form-control" value="<?=$stambuk?>" readonly>
+                    <input type="text" class="form-control" value="<?= $stambuk ?? '' ?>" readonly>
                 </div>
             </div>
             <div class="form-group">

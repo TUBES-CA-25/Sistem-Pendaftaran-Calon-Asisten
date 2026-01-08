@@ -1,7 +1,11 @@
 <?php
-
-use App\Controllers\Exam\NilaiAkhirController;
-$nilai = NilaiAkhirController::getAllNilaiAkhirMahasiswa();
+/**
+ * Daftar Nilai Tes Tertulis Admin View
+ * 
+ * Data yang diterima dari Controller:
+ * @var array $nilai - Daftar nilai mahasiswa
+ */
+$nilai = $nilai ?? [];
 ?>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
@@ -93,7 +97,7 @@ $nilai = NilaiAkhirController::getAllNilaiAkhirMahasiswa();
         max-height: 80vh;
         background: #fff;
         overflow-y: auto;
-        */ border-radius: 12px;
+        border-radius: 12px;
         padding: 20px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         font-family: 'Poppins', sans-serif;

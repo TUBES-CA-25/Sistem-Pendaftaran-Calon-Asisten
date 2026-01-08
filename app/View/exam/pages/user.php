@@ -1,5 +1,16 @@
 <?php
-use App\Controllers\User\DashboardUserController;
+/**
+ * Tes Tulis User View
+ * 
+ * Data yang diterima dari Controller:
+ * @var bool $biodataStatus - Status biodata
+ * @var bool $berkasStatus - Status berkas
+ * @var bool $tesTertulisStatus - Status sudah mengikuti tes tertulis
+ */
+
+$biodataStatus = $biodataStatus ?? false;
+$berkasStatus = $berkasStatus ?? false;
+$tesTertulisStatus = $tesTertulisStatus ?? false;
 ?>
 <style>
     /* Import Font */
@@ -123,18 +134,18 @@ use App\Controllers\User\DashboardUserController;
     <h1 class="dashboard">Tes Tertulis</h1>
     <div class="exam-container">
         <?php 
-        if(DashboardUserController::getAbsensiTesTertulis()){
+        if($tesTertulisStatus){
             echo '<h2>Anda sudah mengikuti tes tertulis</h2>';
             echo '<p>Anda tidak bisa mengikuti tes tertulis lebih dari sekali.</p>';
             echo '<p>Terima kasih.</p>';
             return;
         }
-        if(!DashboardUserController::getBerkasStatus()){
+        if(!$berkasStatus){
             echo '<div class="alert alert-warning" role="alert">
             Lengkapi berkas terlebih dahulu';
             return;
         }
-        if(!DashboardUserController::getBiodataStatus()){
+        if(!$biodataStatus){
             echo '<div class="alert alert-warning" role="alert">
             Lengkapi biodata terlebih dahulu';
             return;
@@ -151,9 +162,9 @@ use App\Controllers\User\DashboardUserController;
         <p>Ujian kali ini memiliki durasi waktu <strong>80 Menit</strong>. Sebelum dimulai, dipersilahkan untuk membaca doa terlebih dahulu.</p>
 
         <strong><label for="nomorMeja" class="form-label">Masukkan nomor meja Anda untuk memulai ujian</label></strong>
-        <input type="text" id="nomorMeja" class="form-control" placeholder="Masukkan nomor meja Anda" required <?php if(!DashboardUserController::getBerkasStatus() || !DashboardUserController::getBiodataStatus() || DashboardUserController::getAbsensiTesTertulis()) echo 'disabled';?>>
+        <input type="text" id="nomorMeja" class="form-control" placeholder="Masukkan nomor meja Anda" required <?php if(!$berkasStatus || !$biodataStatus || $tesTertulisStatus) echo 'disabled';?>>
         <div id="errorMessage" class="error">Silahkan masukkan nomor meja.</div>
-        <button id="startTestButton" <?php if(!DashboardUserController::getBerkasStatus() || !DashboardUserController::getBiodataStatus() || DashboardUserController::getAbsensiTesTertulis()) echo 'disabled';?>>Start Test</button>
+        <button id="startTestButton" <?php if(!$berkasStatus || !$biodataStatus || $tesTertulisStatus) echo 'disabled';?>>Start Test</button>
     </div>
 </main>
 

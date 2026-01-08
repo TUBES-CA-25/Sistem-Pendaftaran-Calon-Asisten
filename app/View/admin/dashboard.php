@@ -1,22 +1,31 @@
 <?php
-
-use App\Controllers\admin\DashboardAdminController;
-
+/**
+ * Dashboard Admin View
+ * 
+ * Data yang diterima dari Controller:
+ * @var int $totalPendaftar - Total pendaftar
+ * @var int $pendaftarLulus - Pendaftar lulus
+ * @var int $pendaftarPending - Pendaftar pending
+ * @var int $pendaftarGagal - Pendaftar gagal
+ * @var array $statusKegiatan - Status kegiatan
+ * @var array $kegiatanBulanIni - Kegiatan bulan ini
+ * @var string $currentMonthName - Nama bulan saat ini
+ */
 $currentYear = date('Y');
 $currentMonth = date('m');
-$currentMonthName = date('F Y');
+$currentMonthName = $currentMonthName ?? date('F Y');
 
-// Get statistics
-$totalPendaftar = DashboardAdminController::getTotalPendaftar();
-$pendaftarLulus = DashboardAdminController::getPendaftarLulus();
-$pendaftarPending = DashboardAdminController::getPendaftarPending();
-$pendaftarGagal = DashboardAdminController::getPendaftarGagal();
+// Get statistics from passed data
+$totalPendaftar = $totalPendaftar ?? 0;
+$pendaftarLulus = $pendaftarLulus ?? 0;
+$pendaftarPending = $pendaftarPending ?? 0;
+$pendaftarGagal = $pendaftarGagal ?? 0;
 
 // Get activity status
-$statusKegiatan = DashboardAdminController::getStatusKegiatan();
+$statusKegiatan = $statusKegiatan ?? [];
 
 // Get calendar events
-$kegiatanBulanIni = DashboardAdminController::getKegiatanByMonth($currentYear, $currentMonth) ?? [];
+$kegiatanBulanIni = $kegiatanBulanIni ?? [];
 
 $jumlahKelengkapanBerkas = $statusKegiatan['kelengkapan_berkas']['jumlah'] ?? 0;
 $jumlahTesTertulis = $statusKegiatan['tes_tertulis']['jumlah'] ?? 0;

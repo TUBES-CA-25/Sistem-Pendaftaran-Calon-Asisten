@@ -26,10 +26,10 @@
 </head>
 
 <body>
-    <?php require_once "sidebar.php"?>
+    <?php require_once __DIR__ . "/sidebar.php"?>
     
     <div class="main-content" id="content">
-        <?php require_once "dashboard.php"?>
+        <?php require_once __DIR__ . "/../user/dashboard.php"?>
     </div>
 
     <div id="customModal" class="alertmodal">

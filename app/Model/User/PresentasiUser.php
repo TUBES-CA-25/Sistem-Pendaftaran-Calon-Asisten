@@ -222,4 +222,56 @@ class PresentasiUser extends Model {
         return $result['is_accepted'];
     }
 
+    /**
+     * Get all presentasi data for a user (used by View)
+     */
+    public function viewAll($userId) {
+        return $this->getValueForTable($userId);
+    }
+
+    /**
+     * Get all presentasi data for admin view
+     */
+    public function viewAllForAdmin() {
+        $sql = "SELECT p.id, p.id_mahasiswa, p.judul, p.makalah, p.ppt, p.is_revisi, p.is_accepted,
+                       m.nama_lengkap as nama, m.stambuk 
+                FROM " . static::$table . " p 
+                LEFT JOIN mahasiswa m ON p.id_mahasiswa = m.id";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Format data sesuai dengan yang diharapkan View
+        $formatted = [];
+        foreach ($results as $row) {
+            $formatted[] = [
+                'id' => $row['id'],
+                'id_mahasiswa' => $row['id_mahasiswa'],
+                'nama' => $row['nama'],
+                'stambuk' => $row['stambuk'],
+                'judul' => $row['judul'],
+                'berkas' => [
+                    'ppt' => $row['ppt'],
+                    'makalah' => $row['makalah']
+                ],
+                'is_revisi' => $row['is_revisi'],
+                'is_accepted' => $row['is_accepted']
+            ];
+        }
+        return $formatted;
+    }
+
+    /**
+     * Get all accepted presentasi for admin view
+     */
+    public function viewAllAccStatusForAdmin() {
+        $sql = "SELECT p.*, m.nama_lengkap, m.stambuk 
+                FROM " . static::$table . " p 
+                LEFT JOIN mahasiswa m ON p.id_mahasiswa = m.id 
+                WHERE p.is_accepted = 1";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

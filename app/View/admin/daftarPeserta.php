@@ -1,8 +1,12 @@
 <?php
-use App\Controllers\user\BerkasUserController;
-use App\Controllers\user\MahasiswaController;
-$mahasiswaList = MahasiswaController::viewAllMahasiswa() ?? [];
-$result = MahasiswaController::viewAllMahasiswa() ?? [];
+/**
+ * Daftar Peserta Admin View
+ * 
+ * Data yang diterima dari Controller:
+ * @var array $mahasiswaList - Daftar mahasiswa
+ */
+$mahasiswaList = $mahasiswaList ?? [];
+$result = $mahasiswaList;
 ?>
 
 <style>

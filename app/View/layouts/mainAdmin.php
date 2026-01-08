@@ -23,10 +23,10 @@
 </head>
 
 <body>
-    <?php require_once "sidebarAdmin.php" ?>
+    <?php require_once __DIR__ . "/sidebarAdmin.php" ?>
 
     <div class="main-content" id="content">
-        <?php require_once "dashboardAdmin.php" ?>
+        <?php require_once __DIR__ . "/../admin/dashboard.php" ?>
     </div>
 
 

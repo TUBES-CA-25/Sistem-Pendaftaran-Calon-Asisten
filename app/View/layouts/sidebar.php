@@ -1,9 +1,13 @@
 <?php
-use app\Controllers\Profile\ProfileController;
-use App\Controllers\user\BerkasUserController;
-$role = ProfileController::viewUser()["role"];
-$userName = ProfileController::viewUser()["username"];
-$photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
+/**
+ * Sidebar View
+ * 
+ * Data diambil langsung dari SESSION untuk komponen layout yang bersifat global.
+ * Ini adalah pengecualian karena sidebar adalah layout component yang selalu tampil.
+ */
+$role = $_SESSION['user']['role'] ?? '';
+$userName = $_SESSION['user']['username'] ?? '';
+$photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . ($_SESSION['user']['foto'] ?? "default.png");
 ?>
 <div class="sidebar" id="sidebar">
     <div class="top">

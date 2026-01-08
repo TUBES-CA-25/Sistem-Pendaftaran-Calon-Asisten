@@ -1,8 +1,13 @@
 <?php
-use app\Controllers\notifications\NotificationControllers;
-use app\Controllers\user\DashboardUserController;
-$notifikasi = NotificationControllers::getMessageById() ?? [];
-
+/**
+ * Dashboard View
+ * 
+ * Data yang diterima dari Controller:
+ * @var array $statuses - Status tiap tahapan
+ * @var int $completed - Jumlah tahapan selesai
+ * @var int $percentage - Persentase penyelesaian
+ * @var array $notifikasi - Daftar notifikasi
+ */
 ?>
 
 <main>
@@ -13,12 +18,12 @@ $notifikasi = NotificationControllers::getMessageById() ?? [];
       <div class="middle">
         <div class="left">
           <h3>Tahap yang telah diselesaikan</h3>
-          <h1><?= DashboardUserController::getNumberTahapanSelesai() ?></h1>
+          <h1><?= $completed ?? 0 ?></h1>
         </div>
-        <div class="progress" data-percentage="<?= DashboardUserController::getPercentage() ?>">
+        <div class="progress" data-percentage="<?= $percentage ?? 0 ?>">
          
           <div class="number">
-            <?= DashboardUserController::getPercentage() ?>%
+            <?= $percentage ?? 0 ?>%
           </div>
         </div>
 
@@ -43,15 +48,15 @@ $notifikasi = NotificationControllers::getMessageById() ?? [];
           <tbody>
             <?php
             $tahapan = [
-              ["1", "Lengkapi Biodata", DashboardUserController::getBiodataStatus(), "tahap ini"],
-              ["2", "Lengkapi Berkas", DashboardUserController::getBerkasStatus(), "mensubmit berkas"],
-              ["3", "Tes Tertulis", DashboardUserController::getAbsensiTesTertulis(), "tahap ini"],
-              ["4", "Submit Judul Makalah dan PPT", DashboardUserController::getPptJudulAccStatus(), "submit judul presentasi"],
-              ["5", "Submit Makalah dan PPT", DashboardUserController::getPptStatus(), "submit PPT dan makalah"],
-              ["6", "Presentasi", DashboardUserController::getAbsensiPresentasi(), "tahap ini"],
-              ["7", "Wawancara Asisten", DashboardUserController::getAbsensiWawancaraI(), "tahap ini"],
-              ["8", "Wawancara Kepala Lab 1", DashboardUserController::getAbsensiWawancaraII(), "tahap ini"],
-              ["9", "Wawancara Kepala Lab 2", DashboardUserController::getAbsensiWawancaraIII(), "tahap ini"],
+              ["1", "Lengkapi Biodata", $statuses['biodata'] ?? false, "tahap ini"],
+              ["2", "Lengkapi Berkas", $statuses['berkas'] ?? false, "mensubmit berkas"],
+              ["3", "Tes Tertulis", $statuses['tesTertulis'] ?? false, "tahap ini"],
+              ["4", "Submit Judul Makalah dan PPT", $statuses['pptJudul'] ?? false, "submit judul presentasi"],
+              ["5", "Submit Makalah dan PPT", $statuses['ppt'] ?? false, "submit PPT dan makalah"],
+              ["6", "Presentasi", $statuses['presentasi'] ?? false, "tahap ini"],
+              ["7", "Wawancara Asisten", $statuses['wawancaraI'] ?? false, "tahap ini"],
+              ["8", "Wawancara Kepala Lab 1", $statuses['wawancaraII'] ?? false, "tahap ini"],
+              ["9", "Wawancara Kepala Lab 2", $statuses['wawancaraIII'] ?? false, "tahap ini"],
             ];
 
             foreach ($tahapan as $tahap) {
