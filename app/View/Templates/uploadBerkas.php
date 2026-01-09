@@ -1,9 +1,17 @@
 <?php
-use App\Controllers\User\BerkasUserController;
-use App\Controllers\user\DashboardUserController;
-use App\Controllers\Profile\ProfileController;
-$res = BerkasUserController::viewBerkas() ?? [];
-$nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileController::viewBiodata()["namaLengkap"] ?? [];
+/**
+ * Upload Berkas View
+ * 
+ * Data yang diterima dari controller:
+ * @var array $res - Data berkas user
+ * @var string $nama - Nama lengkap
+ * @var bool $biodataStatus - Status biodata sudah lengkap atau belum
+ * @var bool $isBerkasEmpty - Status berkas kosong atau tidak
+ */
+$res = $res ?? [];
+$nama = $nama ?? 'Nama Lengkap';
+$biodataStatus = $biodataStatus ?? false;
+$isBerkasEmpty = $isBerkasEmpty ?? true;
 ?>
 
 <style>
@@ -155,7 +163,7 @@ $nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileContr
     <div>
         <div class="form-container">
             <?php
-            if(!DashboardUserController::getBiodataStatus()) {
+            if(!$biodataStatus) {
                 echo '<div class="alert alert-warning" role="alert">
                 Lengkapi biodata terlebih dahulu';
                 return;
@@ -165,25 +173,25 @@ $nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileContr
                 <div class="mb-3">
                     <label for="foto" class="form-label">Masukkan Foto 3x4</label>
                     <input class="form-control" type="file" id="foto" name="foto" accept="image/png, image/jpeg, image/jpg" required
-                           <?php if (!DashboardUserController::getBiodataStatus()) echo 'disabled'; ?>>
+                           <?php if (!$biodataStatus) echo 'disabled'; ?>>
                 </div>
 
                 <div class="mb-3">
                     <label for="cv" class="form-label">Masukkan CV</label>
                     <input class="form-control" type="file" id="cv" name="cv" accept="application/pdf" required
-                           <?php if (!DashboardUserController::getBiodataStatus()) echo 'disabled'; ?>>
+                           <?php if (!$biodataStatus) echo 'disabled'; ?>>
                 </div>
 
                 <div class="mb-3">
                     <label for="transkrip" class="form-label">Masukkan Transkrip Nilai</label>
                     <input class="form-control" type="file" id="transkrip" name="transkrip" accept="application/pdf" required
-                           <?php if (!DashboardUserController::getBiodataStatus()) echo 'disabled'; ?>>
+                           <?php if (!$biodataStatus) echo 'disabled'; ?>>
                 </div>
 
                 <div class="mb-3">
                     <label for="suratpernyataan" class="form-label">Masukkan Surat Pernyataan</label>
                     <input class="form-control" type="file" id="suratpernyataan" name="suratpernyataan" accept="application/pdf" required
-                           <?php if (!DashboardUserController::getBiodataStatus()) echo 'disabled'; ?>>
+                           <?php if (!$biodataStatus) echo 'disabled'; ?>>
                 </div>
                 <div style="display: flex; flex-direction: row; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
                 <a id="downloadFile1" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #007bff; font-size: 16px;" href="#" download>
@@ -197,7 +205,7 @@ $nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileContr
 </div>
 
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-submit" <?php if (!DashboardUserController::getBiodataStatus()) echo 'disabled'; ?>>Submit</button>
+                    <button type="submit" class="btn btn-submit" <?php if (!$biodataStatus) echo 'disabled'; ?>>Submit</button>
                 </div>
             </form>
         </div>
@@ -215,7 +223,7 @@ $nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileContr
                 </tr>
             </thead>
             <tbody>
-                <?php if (!BerkasUserController::isEmptyBerkas()) { ?>
+                <?php if (!$isBerkasEmpty) { ?>
                     <tr>
                         <?php foreach($res as $result) {?>
                         <td>CCA00<?=$result['id_mahasiswa']?></td>

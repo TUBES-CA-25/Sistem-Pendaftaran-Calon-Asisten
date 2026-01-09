@@ -20,7 +20,7 @@
             </a>
         </li>
         <li>
-            <a href="#" data-page="tesTulis">
+            <a href="#" data-page="bankSoal">
                 <i class='bx bx-edit'></i>
                 <span class="nav-item">Ujian</span>
             </a>

@@ -1,8 +1,13 @@
 <?php
-use App\Controllers\user\AbsensiUserController;
-use App\Controllers\user\MahasiswaController;
-$absensiList = AbsensiUserController::viewAbsensi();
-$mahasiswaList = MahasiswaController::viewAllMahasiswa();
+/**
+ * Daftar Hadir Peserta Admin View
+ * 
+ * Data yang diterima dari controller:
+ * @var array $absensiList - Daftar absensi
+ * @var array $mahasiswaList - Daftar mahasiswa
+ */
+$absensiList = $absensiList ?? [];
+$mahasiswaList = $mahasiswaList ?? [];
 ?>
 
 <style>

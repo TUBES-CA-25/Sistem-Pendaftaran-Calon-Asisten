@@ -1,27 +1,40 @@
 <?php
-use App\Controllers\User\PresentasiUserController;
-use App\Controllers\User\DashboardUserController;
-
-$results = PresentasiUserController::viewAll();
+/**
+ * Presentasi View
+ * 
+ * Data yang diterima dari controller:
+ * @var array $results - Data presentasi user
+ * @var bool $biodataStatus - Status biodata
+ * @var bool $berkasStatus - Status berkas
+ * @var bool $absensiTesTertulis - Status absensi tes tertulis
+ * @var bool $pptStatus - Status PPT
+ */
+$results = $results ?? [];
+$biodataStatus = $biodataStatus ?? false;
+$berkasStatus = $berkasStatus ?? false;
+$absensiTesTertulis = $absensiTesTertulis ?? false;
+$pptStatus = $pptStatus ?? false;
+$canSubmitJudul = $biodataStatus && $absensiTesTertulis;
+$canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
 ?>
 <main>
   <div>
     <h1 class="dashboard">Presentasi</h1>
     <div class="form-container">
     <?php
-    if(!DashboardUserController::getBiodataStatus()) {
+    if(!$biodataStatus) {
       echo '<div class="alert alert-warning" role="alert">
         Lengkapi biodata terlebih dahulu!
       </div>';
       return;
     }
-    if(!DashboardUserController::getBerkasStatus()) {
+    if(!$berkasStatus) {
       echo '<div class="alert alert-warning" role="alert">
         Lengkapi berkas terlebih dahulu!
       </div>';
       return;
     }
-    if(!DashboardUserController::getAbsensiTesTertulis()) {
+    if(!$absensiTesTertulis) {
       echo '<div class="alert alert-warning" role="alert">
         Anda belum mengikuti tes tertulis!
       </div>';
@@ -39,7 +52,7 @@ $results = PresentasiUserController::viewAll();
               name="judul" 
               placeholder="Masukkan Judul" 
               required 
-              <?php if (!(DashboardUserController::getBiodataStatus() && DashboardUserController::getAbsensiTesTertulis())): ?>
+              <?php if (!$canSubmitJudul): ?>
                 disabled
               <?php endif; ?>
             >
@@ -59,7 +72,7 @@ $results = PresentasiUserController::viewAll();
               name="ppt" 
               accept=".ppt,.pptx" 
               required
-              <?php if ((!DashboardUserController::getBiodataStatus() || !DashboardUserController::getAbsensiTesTertulis() || !DashboardUserController::getPptStatus())) echo 'disabled' ?>
+              <?php if (!$canSubmitPpt) echo 'disabled' ?>
                 
             >
           </div>
@@ -72,7 +85,7 @@ $results = PresentasiUserController::viewAll();
               name="makalah" 
               accept="application/pdf" 
               required
-              <?php if ((!DashboardUserController::getBiodataStatus() || !DashboardUserController::getAbsensiTesTertulis() || !DashboardUserController::getPptStatus())) echo 'disabled' ?>
+              <?php if (!$canSubmitPpt) echo 'disabled' ?>
             >
           </div>
           <a 

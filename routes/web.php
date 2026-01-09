@@ -38,7 +38,8 @@ Router::post("/judul", [new PresentasiUserController, 'saveJudul']);
 Router::post("/presentasi", [new PresentasiUserController, 'saveMakalahAndPpt']);
 Router::post("/hasil",[new AnswersController, 'saveAnswer']);
 Router::post("/notification",[new NotificationControllers, 'sendMessage']);
-Router::post("/deletemhs",[new MahasiswaController,'deleteMahasiswa']);
+Router::post("/deletemahasiswa",[new MahasiswaController,'deleteMahasiswa']);
+Router::post("/getdetailpeserta",[new MahasiswaController,'getDetailPeserta']);
 
 Router::post("/updatestatus",[new PresentasiUserController, 'updateStatusJudul']);
 Router::post("/tambahjadwal",[new JadwalPresentasiController,'saveJadwal']);
@@ -61,3 +62,9 @@ Router::post("/ruangan/getfilter",[new WawancaraController,'getAllFilterByIdRuan
 Router::post("/updatenilaiakhir",[new NilaiAkhirController, 'updateTotalNilai']);
 Router::post("/updateabsensi",[new AbsensiUserController, 'updateData']);
 Router::post("/addallnotif",[new NotificationControllers, 'sendAllMessage']);
+
+// Bank Soal Routes
+Router::post("/createBank",[new SoalController, 'createBank']);
+Router::post("/updateBank",[new SoalController, 'updateBank']);
+Router::post("/deleteBank",[new SoalController, 'deleteBank']);
+Router::post("/getBankQuestions",[new SoalController, 'getBankQuestions']);

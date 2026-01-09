@@ -6,6 +6,7 @@ use PDO;
 class SoalExam extends Model {
     protected static $table = 'soal';
     protected $id;
+    protected $bank_soal_id;
     protected $deskripsi;
     protected $pilihan;
     protected $jawaban;
@@ -50,22 +51,24 @@ class SoalExam extends Model {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    public function save(SoalExam  $soal) {
-        $sql = "INSERT INTO " . static::$table . " (deskripsi,pilihan,jawaban,status_soal) VALUES (?,?,?,?)";
+    public function save(SoalExam  $soal, $bankSoalId = null) {
+        $sql = "INSERT INTO " . static::$table . " (bank_soal_id,deskripsi,pilihan,jawaban,status_soal) VALUES (?,?,?,?,?)";
         $stmt = self::getDB()->prepare($sql);
-        $stmt->bindParam(1, $soal->deskripsi);
-        $stmt->bindParam(2, $soal->pilihan);
-        $stmt->bindParam(3, $soal->jawaban);
-        $stmt->bindParam(4, $soal->status);
+        $stmt->bindParam(1, $bankSoalId, PDO::PARAM_INT);
+        $stmt->bindParam(2, $soal->deskripsi);
+        $stmt->bindParam(3, $soal->pilihan);
+        $stmt->bindParam(4, $soal->jawaban);
+        $stmt->bindParam(5, $soal->status);
         return $stmt->execute();
     }
 
-    public function saveWithoutAnswer(SoalExam $soal) {
-        $sql = "INSERT INTO " . static::$table . " (deskripsi,pilihan,status_soal) VALUES (?,?,?)";
+    public function saveWithoutAnswer(SoalExam $soal, $bankSoalId = null) {
+        $sql = "INSERT INTO " . static::$table . " (bank_soal_id, deskripsi,pilihan,status_soal) VALUES (?,?,?,?)";
         $stmt = self::getDB()->prepare($sql);
-        $stmt->bindParam(1, $soal->deskripsi);
-        $stmt->bindParam(2, $soal->pilihan);
-        $stmt->bindParam(3, $soal->status);
+        $stmt->bindParam(1, $bankSoalId, PDO::PARAM_INT);
+        $stmt->bindParam(2, $soal->deskripsi);
+        $stmt->bindParam(3, $soal->pilihan);
+        $stmt->bindParam(4, $soal->status);
         return $stmt->execute();
     }
     
@@ -95,5 +98,18 @@ class SoalExam extends Model {
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute();
         return $stmt->fetch();
+    }
+
+    /**
+     * Get questions by bank ID
+     * @param int $bankId
+     * @return array
+     */
+    public function getSoalByBankId($bankId) {
+        $query = "SELECT * FROM " . self::$table . " WHERE bank_soal_id = :bankId ORDER BY id ASC";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(':bankId', $bankId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

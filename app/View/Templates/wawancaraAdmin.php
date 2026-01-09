@@ -1,10 +1,15 @@
 <?php
-use App\Controllers\user\WawancaraController;
-use App\Controllers\user\MahasiswaController;
-use App\Controllers\presentasi\RuanganController;
-$wawancara = WawancaraController::getAll();
-$mahasiswaList = MahasiswaController::viewAllMahasiswa();
-$ruanganList = RuanganController::viewAllRuangan();
+/**
+ * Wawancara Admin View
+ * 
+ * Data yang diterima dari controller:
+ * @var array $wawancara - Data wawancara
+ * @var array $mahasiswaList - Daftar mahasiswa
+ * @var array $ruanganList - Daftar ruangan
+ */
+$wawancara = $wawancara ?? [];
+$mahasiswaList = $mahasiswaList ?? [];
+$ruanganList = $ruanganList ?? [];
 $colors = ['#3357FF'];
 ?>
 <style>

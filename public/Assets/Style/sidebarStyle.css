@@ -52,7 +52,7 @@
   top: 0;
   left: 0;
   height: 100vh;
-  width: 200px;
+  width: 260px;
   background: #fff;
   padding: 0;
   z-index: 1000;
@@ -68,7 +68,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding: 20px 15px;
+  padding: 25px 20px;
   border-bottom: none;
 }
 
@@ -77,21 +77,21 @@
   align-items: center;
   justify-content: flex-start;
   flex-direction: row;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
   padding: 0 10px;
 }
 
 .sidebar .top .logo .icon {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   object-fit: contain;
   margin-right: 0;
   flex-shrink: 0;
 }
 
 .sidebar .top .logo span {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   color: #3dc2ec;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -105,16 +105,16 @@
 .sidebar ul li {
   position: relative;
   list-style-type: none;
-  margin: 3px 10px;
+  margin: 4px 12px;
 }
 
 .sidebar ul li.menu-label {
   color: #9ca3af;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
-  padding: 16px 15px 8px;
+  padding: 18px 18px 10px;
   margin: 0;
 }
 
@@ -123,12 +123,12 @@
   text-decoration: none;
   display: flex;
   align-items: center;
-  padding: 12px 15px;
+  padding: 14px 18px;
   border-radius: 10px;
   transition: all 0.2s ease;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  gap: 12px;
+  gap: 14px;
 }
 
 .sidebar ul li a:hover {
@@ -142,9 +142,9 @@
 }
 
 .sidebar ul li a i {
-  font-size: 1.25rem;
-  width: 24px;
-  min-width: 24px;
+  font-size: 1.35rem;
+  width: 26px;
+  min-width: 26px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -153,11 +153,11 @@
 
 .sidebar .nav-item {
   white-space: nowrap;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
 
 .sidebar-footer {
-  padding: 15px 10px 20px;
+  padding: 15px 12px 20px;
   border-top: none;
   margin-top: auto;
 }
@@ -167,12 +167,12 @@
   text-decoration: none;
   display: flex;
   align-items: center;
-  padding: 12px 15px;
+  padding: 14px 18px;
   border-radius: 10px;
   transition: all 0.2s ease;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  gap: 12px;
+  gap: 14px;
 }
 
 .sidebar-footer a:hover {
@@ -181,9 +181,9 @@
 }
 
 .sidebar-footer a i {
-  font-size: 1.25rem;
-  width: 24px;
-  min-width: 24px;
+  font-size: 1.35rem;
+  width: 26px;
+  min-width: 26px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -197,8 +197,8 @@
   position: relative;
   background-color: #f1f5f9;
   min-height: 100vh;
-  margin-left: 200px;
-  width: calc(100% - 200px);
+  margin-left: 260px;
+  width: calc(100% - 260px);
   padding: 20px;
   overflow-x: auto;
   overflow-y: auto;

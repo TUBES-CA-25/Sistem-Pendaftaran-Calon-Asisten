@@ -1,6 +1,11 @@
 <?php
-  use app\Controllers\user\WawancaraController;
-  $wawancara = WawancaraController::getAllById() ;
+/**
+ * Wawancara View
+ * 
+ * Data yang diterima dari controller:
+ * @var array $wawancara - Data jadwal wawancara
+ */
+$wawancara = $wawancara ?? [];
 ?>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');

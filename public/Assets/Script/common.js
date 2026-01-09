@@ -3,12 +3,14 @@
  * Fungsi-fungsi yang digunakan di banyak halaman
  */
 
-// Constants untuk path
-const APP_PATHS = {
-    images: '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser',
-    documents: '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser',
-    gifs: '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif'
-};
+// Constants untuk path - Check if already declared to prevent errors when loaded via AJAX
+if (typeof APP_PATHS === 'undefined') {
+    var APP_PATHS = {
+        images: '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser',
+        documents: '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser',
+        gifs: '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif'
+    };
+}
 
 /**
  * Menampilkan modal custom

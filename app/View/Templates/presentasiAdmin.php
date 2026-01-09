@@ -1,11 +1,17 @@
 <?php
-use App\Controllers\presentasi\RuanganController;
-use App\Controllers\User\PresentasiUserController;
-use App\Controllers\presentasi\JadwalPresentasiController;
-$mahasiswaList = PresentasiUserController::viewAllForAdmin();
-$mahasiswaAccStatus = PresentasiUserController::viewAllAccStatusForAdmin();
-$ruanganList = RuanganController::viewAllRuangan();
-$jadwalPresentasi = JadwalPresentasiController::getJadwalPresentasi();
+/**
+ * Presentasi Admin View
+ * 
+ * Data yang diterima dari controller:
+ * @var array $mahasiswaList - Daftar mahasiswa presentasi
+ * @var array $mahasiswaAccStatus - Status acc mahasiswa
+ * @var array $ruanganList - Daftar ruangan
+ * @var array $jadwalPresentasi - Jadwal presentasi
+ */
+$mahasiswaList = $mahasiswaList ?? [];
+$mahasiswaAccStatus = $mahasiswaAccStatus ?? [];
+$ruanganList = $ruanganList ?? [];
+$jadwalPresentasi = $jadwalPresentasi ?? [];
 ?>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');

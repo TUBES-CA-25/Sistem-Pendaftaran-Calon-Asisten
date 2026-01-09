@@ -1,9 +1,15 @@
 <?php
-use app\Controllers\Profile\ProfileController;
-use App\Controllers\user\BerkasUserController;
-$role = ProfileController::viewUser()["role"];
-$userName = ProfileController::viewUser()["username"];
-$photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
+/**
+ * Sidebar View
+ * 
+ * Data yang diterima dari controller:
+ * @var string $role - Role user (User/Admin)
+ * @var string $userName - Username user
+ * @var string $photo - Path foto user
+ */
+$role = $role ?? 'User';
+$userName = $userName ?? 'Guest';
+$photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
 ?>
 <div class="sidebar" id="sidebar">
     <div class="top">

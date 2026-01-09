@@ -1,6 +1,11 @@
 <?php
-use App\Controllers\presentasi\RuanganController;
-$ruanganList = RuanganController::viewAllRuangan();
+/**
+ * Ruangan View
+ * 
+ * Data yang diterima dari controller:
+ * @var array $ruanganList - Daftar ruangan
+ */
+$ruanganList = $ruanganList ?? [];
 ?>
 <style>
     /* Import Font */

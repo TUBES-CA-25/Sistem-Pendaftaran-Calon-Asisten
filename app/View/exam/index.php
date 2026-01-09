@@ -1,11 +1,19 @@
 <?php
-use App\Controllers\Profile\ProfileController;
-use App\Controllers\user\BerkasUserController;
-
-$stambuk = ProfileController::viewUser()["stambuk"];
-$profile = ProfileController::viewBiodata();
-$nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileController::viewBiodata()["namaLengkap"];
-$photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserController::viewBerkas()["foto"] ?? "default.png");
+/**
+ * Exam View
+ * 
+ * Data yang diterima dari controller:
+ * @var string $stambuk - Stambuk mahasiswa
+ * @var array $profile - Data profile
+ * @var string $nama - Nama mahasiswa
+ * @var string $photo - Path foto
+ * @var array $results - Soal-soal ujian
+ */
+$stambuk = $stambuk ?? '';
+$profile = $profile ?? [];
+$nama = $nama ?? 'Nama Lengkap';
+$photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
+$results = $results ?? [];
 ?>
 
 <!DOCTYPE html>

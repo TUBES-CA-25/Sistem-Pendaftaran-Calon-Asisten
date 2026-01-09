@@ -37,4 +37,22 @@ class ExamController extends Controller {
         return $soal == null ? [] : $soal;
     
     }
+
+    /**
+     * Get all bank soal with statistics
+     */
+    public static function getAllBankSoal() {
+        $bankSoal = new \App\Model\Exam\BankSoal();
+        $banks = $bankSoal->getAllBanks();
+        return $banks == null ? [] : $banks;
+    }
+
+    /**
+     * Get soal by bank ID
+     */
+    public static function getSoalByBank($bankId) {
+        $soalExam = new SoalExam();
+        $soal = $soalExam->getSoalByBankId($bankId);
+        return $soal == null ? [] : $soal;
+    }
 }

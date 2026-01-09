@@ -1,18 +1,31 @@
 <?php
-use App\Controllers\Profile\ProfileController;
-use App\Controllers\user\BerkasUserController;
-
-$userName = ProfileController::viewUser()["username"];
-$nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileController::viewBiodata()["namaLengkap"];
-$stambuk = ProfileController::viewUser()["stambuk"];
-$jurusan = ProfileController::viewBiodata() == null ? "Jurusan" : ProfileController::viewBiodata()["jurusan"];
-$alamat = ProfileController::viewBiodata() == null ? "Alamat" : ProfileController::viewBiodata()["alamat"];
-$kelas = ProfileController::viewBiodata() == null ? "Kelas" : ProfileController::viewBiodata()["kelas"];
-$jenisKelamin = ProfileController::viewBiodata() == null ? "Jenis Kelamin" : ProfileController::viewBiodata()["jenisKelamin"];
-$tempatLahir = ProfileController::viewBiodata() == null ? "Tempat Lahir" : ProfileController::viewBiodata()["tempatLahir"];
-$tanggalLahir = ProfileController::viewBiodata() == null ? "Tanggal Lahir" : ProfileController::viewBiodata()["tanggalLahir"];
-$noHp = ProfileController::viewBiodata() == null ? "No Telephone" : ProfileController::viewBiodata()["noHp"];
-$photo = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
+/**
+ * Profile View
+ * 
+ * Data yang diterima dari controller:
+ * @var string $userName - Username user
+ * @var string $nama - Nama lengkap
+ * @var string $stambuk - Stambuk
+ * @var string $jurusan - Jurusan
+ * @var string $alamat - Alamat
+ * @var string $kelas - Kelas
+ * @var string $jenisKelamin - Jenis kelamin
+ * @var string $tempatLahir - Tempat lahir
+ * @var string $tanggalLahir - Tanggal lahir
+ * @var string $noHp - No HP
+ * @var string $photo - Path foto
+ */
+$userName = $userName ?? 'Guest';
+$nama = $nama ?? 'Nama Lengkap';
+$stambuk = $stambuk ?? '';
+$jurusan = $jurusan ?? 'Jurusan';
+$alamat = $alamat ?? 'Alamat';
+$kelas = $kelas ?? 'Kelas';
+$jenisKelamin = $jenisKelamin ?? 'Jenis Kelamin';
+$tempatLahir = $tempatLahir ?? 'Tempat Lahir';
+$tanggalLahir = $tanggalLahir ?? 'Tanggal Lahir';
+$noHp = $noHp ?? 'No Telephone';
+$photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
 ?>
 
 <style>

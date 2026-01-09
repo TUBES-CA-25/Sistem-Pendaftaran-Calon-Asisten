@@ -12,7 +12,8 @@ class App
 
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        $path = str_replace('/Sistem-Pendaftaran-Calon-Asisten/public', '', $path);
+        $scriptName = dirname($_SERVER['SCRIPT_NAME']);
+        $path = str_replace($scriptName, '', $path);
         
         if ($path == '') { 
             $path = '/';

@@ -4,13 +4,13 @@ namespace App\Core;
 use \PDO;
 class Database {
     private static $pdo;
-    private static $DB_CONNECTION = "mysql";
-    private static $DB_HOST = "localhost";
-    private static $DB_USER = "root";
-    private static $DB_PORT = 3306;
-    private static $DB_NAME = "DB_TUBES";
-    private static $DB_PASS = "";
-
+    private static $DB_CONNECTION = DB_CONNECTION;
+    private static $DB_HOST = DB_HOST;
+    private static $DB_USER = DB_USER;
+    private static $DB_PORT = PORT;
+    private static $DB_NAME = DB_NAME;
+    private static $DB_PASS = DB_PASS;
+    
     private static function con() {
         $DB = self::$DB_CONNECTION . ':host=' . 
         self::$DB_HOST . ';port=' . 

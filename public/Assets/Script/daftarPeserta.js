@@ -154,7 +154,11 @@
      * Inisialisasi modal handlers
      */
     function initModalHandlers() {
-        // Detail Modal Handler
+        // Detail Modal Handler - DISABLED
+        // Handler sudah ada di inline script dalam daftarPeserta.php
+        // untuk menghindari konflik dan duplikasi
+        
+        /* COMMENTED OUT - Using inline script instead
         $('#detailModal').off('show.bs.modal').on('show.bs.modal', function(event) {
             const $button = $(event.relatedTarget);
             const data = {
@@ -198,8 +202,9 @@
             $('#downloadTranskripButton').attr('data-download-url', getDocumentUrl(data.transkrip));
             $('#downloadSuratButton').attr('data-download-url', getDocumentUrl(data.surat));
         });
+        */
 
-        // Download Button Handler
+        // Download Button Handler - Keep this active
         $('button[data-download-url]').off('click').on('click', function() {
             const url = $(this).data('download-url');
             if (url && url !== '#') {

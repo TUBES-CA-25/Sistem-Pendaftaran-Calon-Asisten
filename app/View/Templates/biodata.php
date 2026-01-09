@@ -1,23 +1,36 @@
 <?php
-use App\Controllers\user\BiodataUserController;
-use App\Controllers\Profile\ProfileController;
-
-$nama = ProfileController::viewBiodata() == null ? "Nama Lengkap" : ProfileController::viewBiodata()["namaLengkap"];
-$stambuk = ProfileController::viewUser()["stambuk"];
-$jurusan = ProfileController::viewBiodata() == null ? "Jurusan" : ProfileController::viewBiodata()["jurusan"];
-$alamat = ProfileController::viewBiodata() == null ? "Alamat" : ProfileController::viewBiodata()["alamat"];
-$kelas = ProfileController::viewBiodata() == null ? "kelas" : ProfileController::viewBiodata()["kelas"];
-$jenisKelamin = ProfileController::viewBiodata() == null ? "Jenis Kelamin" : ProfileController::viewBiodata()["jenisKelamin"];
-$tempatLahir = ProfileController::viewBiodata() == null ? "Tempat Lahir" : ProfileController::viewBiodata()["tempatLahir"];
-$tanggalLahir = ProfileController::viewBiodata() == null ? "Tanggal Lahir" : ProfileController::viewBiodata()["tanggalLahir"];
-$noHp = ProfileController::viewBiodata() == null ? "No Telephone" : ProfileController::viewBiodata()["noHp"];
+/**
+ * Biodata View
+ * 
+ * Data yang diterima dari controller:
+ * @var string $nama - Nama lengkap user
+ * @var string $stambuk - Stambuk user
+ * @var string $jurusan - Jurusan user
+ * @var string $alamat - Alamat user
+ * @var string $kelas - Kelas user
+ * @var string $jenisKelamin - Jenis kelamin
+ * @var string $tempatLahir - Tempat lahir
+ * @var string $tanggalLahir - Tanggal lahir
+ * @var string $noHp - No HP
+ * @var bool $isBiodataEmpty - Status biodata kosong
+ */
+$nama = $nama ?? 'Nama Lengkap';
+$stambuk = $stambuk ?? '';
+$jurusan = $jurusan ?? 'Jurusan';
+$alamat = $alamat ?? 'Alamat';
+$kelas = $kelas ?? 'Kelas';
+$jenisKelamin = $jenisKelamin ?? 'Jenis Kelamin';
+$tempatLahir = $tempatLahir ?? 'Tempat Lahir';
+$tanggalLahir = $tanggalLahir ?? 'Tanggal Lahir';
+$noHp = $noHp ?? 'No Telephone';
+$isBiodataEmpty = $isBiodataEmpty ?? true;
 ?>
 <div>
     <main>
     <h1 class="dashboard">Biodata</h1>
 </div>
 <div class="form-container">
-    <?php if (BiodataUserController::isEmpty()) { ?>
+    <?php if ($isBiodataEmpty) { ?>
         <form id="biodataForm" class="biodata-form">
             <div class="form-row">
                 <div class="form-group">

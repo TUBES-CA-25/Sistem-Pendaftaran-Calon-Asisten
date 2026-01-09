@@ -25,5 +25,3 @@ spl_autoload_register(function($class) {
 });
 
 APP_DEBUG ? ini_set('display_errors', 1) : ini_set('display_errors', 0);
-$app = new App\Core\App;
-$app->run();

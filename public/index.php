@@ -5,3 +5,6 @@ error_reporting(E_ALL);
 
 require_once '../routes/autoload.php';
 
+$app = new App\Core\App;
+$app->run();
+

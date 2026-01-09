@@ -1,22 +1,25 @@
 <?php
-
-use App\Controllers\admin\DashboardAdminController;
-
+/**
+ * Dashboard Admin View
+ * 
+ * Data yang diterima dari controller:
+ * @var int $totalPendaftar - Total pendaftar
+ * @var int $pendaftarLulus - Jumlah lulus
+ * @var int $pendaftarPending - Jumlah pending
+ * @var int $pendaftarGagal - Jumlah gagal
+ * @var array $statusKegiatan - Status kegiatan
+ * @var array $kegiatanBulanIni - Kegiatan bulan ini
+ */
 $currentYear = date('Y');
 $currentMonth = date('m');
 $currentMonthName = date('F Y');
 
-// Get statistics
-$totalPendaftar = DashboardAdminController::getTotalPendaftar();
-$pendaftarLulus = DashboardAdminController::getPendaftarLulus();
-$pendaftarPending = DashboardAdminController::getPendaftarPending();
-$pendaftarGagal = DashboardAdminController::getPendaftarGagal();
-
-// Get activity status
-$statusKegiatan = DashboardAdminController::getStatusKegiatan();
-
-// Get calendar events
-$kegiatanBulanIni = DashboardAdminController::getKegiatanByMonth($currentYear, $currentMonth) ?? [];
+$totalPendaftar = $totalPendaftar ?? 0;
+$pendaftarLulus = $pendaftarLulus ?? 0;
+$pendaftarPending = $pendaftarPending ?? 0;
+$pendaftarGagal = $pendaftarGagal ?? 0;
+$statusKegiatan = $statusKegiatan ?? [];
+$kegiatanBulanIni = $kegiatanBulanIni ?? [];
 
 $jumlahKelengkapanBerkas = $statusKegiatan['kelengkapan_berkas']['jumlah'] ?? 0;
 $jumlahTesTertulis = $statusKegiatan['tes_tertulis']['jumlah'] ?? 0;

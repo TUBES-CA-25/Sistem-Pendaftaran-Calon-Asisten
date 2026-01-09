@@ -58,6 +58,7 @@ class Mahasiswa extends Model
         $data = [];
         foreach ($result as $stmt) {
             $berkas = $this->getBerkasMahasiswa($stmt['id']);
+            $presentasi = $this->getPresentasiMahasiswa($stmt['id']);
 
             $data[] = [
                 'id' => $stmt['id'],
@@ -71,11 +72,20 @@ class Mahasiswa extends Model
                 'tempat_lahir' => $stmt['tempat_lahir'],
                 'tanggal_lahir' => $stmt['tanggal_lahir'],
                 'jenis_kelamin' => $stmt['jenis_kelamin'],
+                'judul_presentasi' => $presentasi['judul'] ?? null,
                 'berkas' => [
                     'foto' => $berkas['foto'],
                     'cv' => $berkas['cv'],
                     'transkrip_nilai' => $berkas['transkrip_nilai'],
-                    'surat_pernyataan' => $berkas['surat_pernyataan']
+                    'surat_pernyataan' => $berkas['surat_pernyataan'],
+                    'accepted' => $berkas['accepted'] ?? null
+                ],
+                'presentasi' => [
+                    'judul' => $presentasi['judul'] ?? null,
+                    'makalah' => $presentasi['makalah'] ?? null,
+                    'ppt' => $presentasi['ppt'] ?? null,
+                    'is_accepted' => $presentasi['is_accepted'] ?? null,
+                    'is_revisi' => $presentasi['is_revisi'] ?? null
                 ]
             ];
         }
@@ -127,7 +137,7 @@ class Mahasiswa extends Model
 
     public function getBerkasMahasiswa($mahasiswaId)
     {
-        $query = "SELECT foto, cv, transkrip_nilai, surat_pernyataan FROM berkas_mahasiswa WHERE id_mahasiswa = :mahasiswa_id";
+        $query = "SELECT foto, cv, transkrip_nilai, surat_pernyataan, accepted FROM berkas_mahasiswa WHERE id_mahasiswa = :mahasiswa_id";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(':mahasiswa_id', $mahasiswaId);
         $stmt->execute();
@@ -137,7 +147,28 @@ class Mahasiswa extends Model
             'foto' => null,
             'cv' => null,
             'transkrip_nilai' => null,
-            'surat_pernyataan' => null
+            'surat_pernyataan' => null,
+            'accepted' => null
+        ];
+    }
+
+    /**
+     * Get presentasi data for mahasiswa
+     */
+    public function getPresentasiMahasiswa($mahasiswaId)
+    {
+        $query = "SELECT judul, makalah, ppt, is_accepted, is_revisi FROM presentasi WHERE id_mahasiswa = :mahasiswa_id";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(':mahasiswa_id', $mahasiswaId);
+        $stmt->execute();
+        $result = $stmt->fetch();
+
+        return $result ?: [
+            'judul' => null,
+            'makalah' => null,
+            'ppt' => null,
+            'is_accepted' => null,
+            'is_revisi' => null
         ];
     }
 
@@ -165,5 +196,55 @@ class Mahasiswa extends Model
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         return $stmt->fetch();
+    }
+
+    /**
+     * Get mahasiswa detail by mahasiswa ID
+     */
+    public function getMahasiswaById($mahasiswaId)
+    {
+        $query = "SELECT * FROM " . static::$table . " WHERE id = :id";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(':id', $mahasiswaId);
+        $stmt->execute();
+        $result = $stmt->fetch();
+
+        if (!$result) {
+            return null;
+        }
+
+        $berkas = $this->getBerkasMahasiswa($result['id']);
+        $presentasi = $this->getPresentasiMahasiswa($result['id']);
+
+        return [
+            'id' => $result['id'],
+            'idUser' => $result['id_user'],
+            'nama_lengkap' => $result['nama_lengkap'],
+            'stambuk' => $result['stambuk'],
+            'jurusan' => $this->getJurusan($result['id_jurusan'])['nama'] ?? null,
+            'id_jurusan' => $result['id_jurusan'],
+            'kelas' => $this->getKelas($result['id_kelas'])['nama'] ?? null,
+            'id_kelas' => $result['id_kelas'],
+            'alamat' => $result['alamat'],
+            'notelp' => $result['no_telp'],
+            'tempat_lahir' => $result['tempat_lahir'],
+            'tanggal_lahir' => $result['tanggal_lahir'],
+            'jenis_kelamin' => $result['jenis_kelamin'],
+            'judul_presentasi' => $presentasi['judul'] ?? null,
+            'berkas' => [
+                'foto' => $berkas['foto'],
+                'cv' => $berkas['cv'],
+                'transkrip_nilai' => $berkas['transkrip_nilai'],
+                'surat_pernyataan' => $berkas['surat_pernyataan'],
+                'accepted' => $berkas['accepted'] ?? null
+            ],
+            'presentasi' => [
+                'judul' => $presentasi['judul'] ?? null,
+                'makalah' => $presentasi['makalah'] ?? null,
+                'ppt' => $presentasi['ppt'] ?? null,
+                'is_accepted' => $presentasi['is_accepted'] ?? null,
+                'is_revisi' => $presentasi['is_revisi'] ?? null
+            ]
+        ];
     }
 }
