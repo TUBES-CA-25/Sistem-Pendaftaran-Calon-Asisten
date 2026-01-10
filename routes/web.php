@@ -68,3 +68,5 @@ Router::post("/createBank",[new SoalController, 'createBank']);
 Router::post("/updateBank",[new SoalController, 'updateBank']);
 Router::post("/deleteBank",[new SoalController, 'deleteBank']);
 Router::post("/getBankQuestions",[new SoalController, 'getBankQuestions']);
+Router::post("/exam/verifyToken",[new ExamController, 'verifyToken']);
+Router::post("/exam/activateBank",[new SoalController, 'activateBank']);

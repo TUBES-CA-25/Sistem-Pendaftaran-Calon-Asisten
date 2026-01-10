@@ -156,6 +156,7 @@ class SoalController extends Controller
         try {
             $nama = $_POST['nama'] ?? '';
             $deskripsi = $_POST['deskripsi'] ?? '';
+            $token = $_POST['token'] ?? '';
             
             if (empty($nama)) {
                 echo json_encode(['status' => 'error', 'message' => 'Nama bank soal harus diisi']);
@@ -163,7 +164,7 @@ class SoalController extends Controller
             }
             
             $bankModel = new \App\Model\Exam\BankSoal();
-            if ($bankModel->save($nama, $deskripsi)) {
+            if ($bankModel->save($nama, $deskripsi, $token)) {
                 $newId = $bankModel->getLastInsertId();
                 echo json_encode([
                     'status' => 'success', 
@@ -188,9 +189,10 @@ class SoalController extends Controller
             $id = $_POST['id'] ?? 0;
             $nama = $_POST['nama'] ?? '';
             $deskripsi = $_POST['deskripsi'] ?? '';
+            $token = $_POST['token'] ?? '';
             
             $bankModel = new \App\Model\Exam\BankSoal();
-            if ($bankModel->updateBank($id, $nama, $deskripsi)) {
+            if ($bankModel->updateBank($id, $nama, $deskripsi, $token)) {
                 echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil diupdate']);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate bank soal']);
@@ -224,6 +226,21 @@ class SoalController extends Controller
             $questions = $soalModel->getSoalByBankId($bankId);
             
             echo json_encode(['status' => 'success', 'data' => $questions]);
+        } catch (\Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+    public function activateBank() {
+        header('Content-Type: application/json');
+        try {
+            $id = $_POST['id'] ?? 0;
+            $bankModel = new \App\Model\Exam\BankSoal();
+            
+            if ($bankModel->setActiveBank($id)) {
+                echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil diaktifkan']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Gagal mengaktifkan bank soal']);
+            }
         } catch (\Exception $e) {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }

@@ -926,20 +926,29 @@ foreach ($allSoal as $soal) {
                                     <i class='bx bx-file'></i> <?= $bank['jumlah_soal'] ?? 0 ?> Soal
                                 </span>
                                 <span class="bank-stat-item pg">
-                                    <i class='bx bx-list-check'></i> <?= $bank['pg_count'] ?? 0 ?> PG
-                                </span>
-                                <span class="bank-stat-item essay">
-                                    <i class='bx bx-edit-alt'></i> <?= $bank['essay_count'] ?? 0 ?> Essay
+                                    <i class='bx bx-key'></i> Token: <strong><?= htmlspecialchars($bank['token'] ?? '-') ?></strong>
                                 </span>
                             </div>
+                            <div class="mt-3 d-flex justify-content-between align-items-center">
+                                <div class="form-check form-switch cursor-pointer" onclick="event.stopPropagation()">
+                                    <input class="form-check-input" type="checkbox" id="activeSwitch_<?= $bank['id'] ?>" 
+                                        <?= ($bank['is_active'] ?? 0) == 1 ? 'checked' : '' ?>
+                                        onchange="window.activateBank(<?= $bank['id'] ?>)">
+                                    <label class="form-check-label small <?= ($bank['is_active'] ?? 0) == 1 ? 'text-primary fw-bold' : 'text-muted' ?>" for="activeSwitch_<?= $bank['id'] ?>">
+                                        <?= ($bank['is_active'] ?? 0) == 1 ? 'Aktif' : 'Tidak Aktif' ?>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
-                        <div class="bank-card-footer" onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama']) ?>')">
-                            <span class="bank-date">
-                                <i class='bx bx-calendar'></i> <?= date('d M Y', strtotime($bank['created_at'])) ?>
-                            </span>
-                            <span class="bank-action-btn">
-                                Lihat Soal <i class='bx bx-chevron-right'></i>
-                            </span>
+                        <div class="bank-card-footer">
+                             <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); window.editBankModal(<?= $bank['id'] ?>)" title="Edit Bank">
+                                    <i class='bx bx-edit'></i> Edit
+                                </button>
+                                <span class="bank-action-btn" onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama']) ?>')">
+                                    Lihat Soal <i class='bx bx-chevron-right'></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <?php endforeach; ?>
@@ -1113,11 +1122,52 @@ foreach ($allSoal as $soal) {
                         <label class="form-label">Deskripsi</label>
                         <textarea class="form-control" name="deskripsi_bank" rows="3" placeholder="Deskripsi singkat tentang bank soal ini..."></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Token Ujian</label>
+                        <input type="text" class="form-control" name="token_bank" placeholder="Contoh: UJIAN2024" required>
+                        <div class="form-text">Token yang harus dimasukkan peserta untuk memulai ujian.</div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary-custom">
                         <i class='bx bx-check me-1'></i> Buat Bank Soal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Bank Modal -->
+<div class="modal fade modal-custom" id="editBankModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class='bx bx-edit me-2'></i>Edit Bank Soal</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editBankForm">
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="editBankId">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Bank Soal</label>
+                        <input type="text" class="form-control" name="nama" id="editBankName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea class="form-control" name="deskripsi" id="editBankDesc" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Token Ujian</label>
+                        <input type="text" class="form-control" name="token" id="editBankToken" required>
+                        <div class="form-text">Update token untuk ujian ini.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class='bx bx-check me-1'></i> Update Bank Soal
                     </button>
                 </div>
             </form>
@@ -1688,7 +1738,9 @@ document.getElementById('createBankForm').addEventListener('submit', function(e)
     fetch(baseUrl + '/createBank', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'nama=' + encodeURIComponent(formData.get('nama_bank')) + '&deskripsi=' + encodeURIComponent(formData.get('deskripsi_bank'))
+        body: 'nama=' + encodeURIComponent(formData.get('nama_bank')) + 
+              '&deskripsi=' + encodeURIComponent(formData.get('deskripsi_bank')) +
+              '&token=' + encodeURIComponent(formData.get('token_bank'))
     })
     .then(res => res.json())
     .then(data => {
@@ -1780,35 +1832,62 @@ window.downloadTemplate = function() {
 }
 
 // Edit Bank
-window.editBank = function() {
-    if (!window.currentBankId) {
-        alert('Tidak ada bank yang dipilih');
-        return;
-    }
+// Open Edit Bank Modal
+window.editBankModal = function(bankId) {
+    const bank = window.bankSoalList.find(b => b.id == bankId);
+    if (!bank) return;
     
-    const bank = window.bankSoalList.find(b => b.id == window.currentBankId);
-    if (bank) {
-        const newName = prompt('Nama Bank Soal:', bank.nama);
-        if (newName && newName.trim()) {
-            const newDesc = prompt('Deskripsi:', bank.deskripsi || '');
-            
-            fetch(baseUrl + '/updateBank', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `id=${window.currentBankId}&nama=${encodeURIComponent(newName)}&deskripsi=${encodeURIComponent(newDesc || '')}`
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert('Bank soal berhasil diupdate!');
-                    location.reload();
-                } else {
-                    alert(data.message || 'Gagal mengupdate bank soal');
-                }
-            })
-            .catch(() => alert('Terjadi kesalahan'));
+    document.getElementById('editBankId').value = bank.id;
+    document.getElementById('editBankName').value = bank.nama;
+    document.getElementById('editBankDesc').value = bank.deskripsi || '';
+    document.getElementById('editBankToken').value = bank.token || '';
+    
+    new bootstrap.Modal(document.getElementById('editBankModal')).show();
+}
+
+// Handler Edit Bank Submit
+document.getElementById('editBankForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    
+    fetch(baseUrl + '/updateBank', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${formData.get('id')}&nama=${encodeURIComponent(formData.get('nama'))}&deskripsi=${encodeURIComponent(formData.get('deskripsi'))}&token=${encodeURIComponent(formData.get('token'))}`
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Bank soal berhasil diupdate!');
+            location.reload();
+        } else {
+            alert(data.message || 'Gagal mengupdate bank soal');
         }
-    }
+    })
+    .catch(() => alert('Terjadi kesalahan'));
+});
+
+// Activate Bank
+window.activateBank = function(id) {
+    fetch(baseUrl + '/exam/activateBank', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'id=' + id
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Optional: Reload to update UI fully or just toggle
+            location.reload(); 
+        } else {
+            alert(data.message || 'Gagal mengaktifkan bank soal');
+            location.reload(); // Revert switch
+        }
+    })
+    .catch(() => {
+        alert('Terjadi kesalahan');
+        location.reload();
+    });
 }
 
 // Delete Bank

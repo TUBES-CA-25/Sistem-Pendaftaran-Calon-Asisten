@@ -35,36 +35,28 @@ $result = $result ?? [];
         width: 100%;
     }
 
-    /* Force full width by removing parent padding */
-    .main-content {
-        padding: 0 !important;
-    }
-
     /* Page Header - Match Dashboard Admin Style (Larger) */
     .page-header {
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+        background: #2f66f6;
         color: #fff;
-        border-radius: 0;
-        padding: 4rem 2rem 5rem 2rem;
+        border-radius: 14px;
+        padding: 35px 30px;
         position: relative;
         overflow: hidden;
-        margin-bottom: 0;
-        margin-top: -20px; /* Counteract any default body/main padding */
+        margin-bottom: 14px;
     }
 
     .page-header::after {
         content: "";
         position: absolute;
-        bottom: -30%;
-        left: 5%;
-        width: 200px;
-        height: 200px;
-        background: rgba(255,255,255,0.05);
+        right: -180px;
+        top: 50%;
+        width: 400px;
+        height: 400px;
+        transform: translateY(-50%);
+        border: 5px solid rgba(255, 255, 255, 0.5);
         border-radius: 50%;
-        border: none;
-        transform: none;
-        top: auto;
-        right: auto;
+        opacity: 0.7;
     }
 
     .page-header h1 {

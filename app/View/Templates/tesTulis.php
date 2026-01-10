@@ -151,45 +151,115 @@ $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
             return;
         }
         ?>
-        <h2>Test Exam</h2>
-        <p>Pada tahap kali ini kalian akan melaksanakan ujian pilihan ganda.</p>
-        <p>Tata tertib sebelum ujian meliputi:</p>
-        <ul>
-            <li><strong>Dilarang menghadap kiri kanan. Silahkan fokus di komputernya saja.</strong></li>
-            <li><strong>Bila membutuhkan sesuatu silahkan angkat tangan dan panggil asistennya.</strong></li>
-            <li><strong>Kerjakan dengan jujur.</strong></li>
-        </ul>
-        <p>Ujian kali ini memiliki durasi waktu <strong>80 Menit</strong>. Sebelum dimulai, dipersilahkan untuk membaca doa terlebih dahulu.</p>
+        <?php if (!isset($activeBank) || !$activeBank): ?>
+            <div class="alert alert-info text-center">
+                <h4><i class='bx bx-info-circle'></i> Belum Ada Ujian Aktif</h4>
+                <p class="mb-0">Mohon tunggu informasi dari pengawas ujian.</p>
+            </div>
+        <?php else: ?>
+            <div class="text-center mb-4">
+                <h4 class="text-primary mb-2"><?= htmlspecialchars($activeBank['nama']) ?></h4>
+                <p class="text-muted small"><?= htmlspecialchars($activeBank['deskripsi'] ?? '') ?></p>
+            </div>
 
-        <strong><label for="nomorMeja" class="form-label">Masukkan nomor meja Anda untuk memulai ujian</label></strong>
-        <input type="text" id="nomorMeja" class="form-control" placeholder="Masukkan nomor meja Anda" required <?php if($isDisabled) echo 'disabled';?>>
-        <div id="errorMessage" class="error">Silahkan masukkan nomor meja.</div>
-        <button id="startTestButton" <?php if($isDisabled) echo 'disabled';?>>Start Test</button>
+            <h2>Test Exam</h2>
+            <p>Pada tahap kali ini kalian akan melaksanakan ujian pilihan ganda.</p>
+            <p>Tata tertib sebelum ujian meliputi:</p>
+            <ul>
+                <li><strong>Dilarang menghadap kiri kanan. Silahkan fokus di komputernya saja.</strong></li>
+                <li><strong>Bila membutuhkan sesuatu silahkan angkat tangan dan panggil asistennya.</strong></li>
+                <li><strong>Kerjakan dengan jujur.</strong></li>
+            </ul>
+            <p>Ujian kali ini memiliki durasi waktu <strong>80 Menit</strong>. Sebelum dimulai, dipersilahkan untuk membaca doa terlebih dahulu.</p>
+
+            <strong><label for="nomorMeja" class="form-label">Masukkan nomor meja Anda untuk memulai ujian</label></strong>
+            <input type="text" id="nomorMeja" class="form-control" placeholder="Masukkan nomor meja Anda" required <?php if($isDisabled) echo 'disabled';?>>
+            <div id="errorMessage" class="error">Silahkan masukkan nomor meja.</div>
+            <button id="startTestButton" <?php if($isDisabled) echo 'disabled';?>>Mulai Ujian</button>
+        <?php endif; ?>
     </div>
 </main>
+
+<!-- Token Modal -->
+<div class="modal fade" id="tokenModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-primary">Verifikasi Token Ujian</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="text-center mb-4">
+                    <i class='bx bx-lock-alt' style="font-size: 4rem; color: #3DC2EC;"></i>
+                    <p class="mt-3 text-muted">Silahkan masukkan token ujian yang diberikan oleh pengawas.</p>
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="inputToken" class="form-control form-control-lg text-center fw-bold" placeholder="TOKEN UJIAN" style="letter-spacing: 2px; text-transform: uppercase;">
+                    <div id="tokenError" class="text-danger small mt-2 text-center" style="display:none;">Token yang Anda masukkan salah!</div>
+                </div>
+                <button type="button" class="btn btn-primary w-100 py-2" id="btnSubmitToken">Masuk Ujian</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function () {
-  try {
-    console.log("Inisialisasi tombol...");
-    $('#startTestButton').on('click', function () {
-      console.log("Tombol Start Test diklik.");
+  const APP_URL = '<?= APP_URL ?>'; // Ensure APP_URL is available
+  
+  $('#startTestButton').on('click', function () {
       const nomorMejaInput = $('#nomorMeja').val().trim();
 
       if (!nomorMejaInput || isNaN(nomorMejaInput) || parseInt(nomorMejaInput) <= 0) {
-        $('#errorMessage').text('Nomor meja tidak valid!');
+        $('#errorMessage').text('Nomor meja tidak valid!').show();
         return;
       }
-
-      $('#errorMessage').text('');
-      const targetURL = `${APP_URL}/soal?nomorMeja=${encodeURIComponent(nomorMejaInput)}`;
-      console.log("Redirecting to:", targetURL);
-      window.location.href = targetURL;
-    });
-  } catch (error) {
-    console.error("Terjadi error saat inisialisasi:", error);
-  }
+      
+      $('#errorMessage').hide();
+      
+      // Show Token Modal instead of direct redirect
+      new bootstrap.Modal(document.getElementById('tokenModal')).show();
+  });
+  
+  // Handle Token Submit
+  $('#btnSubmitToken').on('click', function() {
+      const token = $('#inputToken').val().trim();
+      if(!token) {
+          $('#tokenError').text('Masukkan token!').show();
+          return;
+      }
+      
+      // Verify Token AJAX
+      const btn = $(this);
+      btn.prop('disabled', true).text('Memverifikasi...');
+      
+      $.ajax({
+          url: APP_URL + '/exam/verifyToken',
+          method: 'POST',
+          data: { token: token },
+          success: function(res) {
+              if(res.status === 'success') {
+                  const nomorMeja = $('#nomorMeja').val().trim();
+                  window.location.href = `${APP_URL}/soal?nomorMeja=${encodeURIComponent(nomorMeja)}`;
+              } else {
+                  $('#tokenError').text(res.message || 'Token salah!').show();
+                  btn.prop('disabled', false).text('Masuk Ujian');
+              }
+          },
+          error: function() {
+              $('#tokenError').text('Terjadi kesalahan server').show();
+              btn.prop('disabled', false).text('Masuk Ujian');
+          }
+      });
+  });
+  
+  // Enter key support for token input
+  $('#inputToken').on('keypress', function(e) {
+      if(e.which === 13) {
+          $('#btnSubmitToken').click();
+      }
+  });
 });
 
 </script>

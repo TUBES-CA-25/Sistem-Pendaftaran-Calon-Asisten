@@ -252,7 +252,8 @@ class HomeController extends Controller
         return [
             'absensiTesTertulis' => DashboardUserController::getAbsensiTesTertulis(),
             'berkasStatus' => DashboardUserController::getBerkasStatus(),
-            'biodataStatus' => DashboardUserController::getBiodataStatus()
+            'biodataStatus' => DashboardUserController::getBiodataStatus(),
+            'activeBank' => ExamController::getActiveBank()
         ];
     }
 
