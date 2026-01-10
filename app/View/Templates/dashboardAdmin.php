@@ -27,43 +27,244 @@ $jumlahTahapWawancara = $statusKegiatan['tahap_wawancara']['jumlah'] ?? 0;
 $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
 ?>
 
-<div class="dashboard-wrapper">
-    <div class="dashboard-header-banner">
-        <h1>Dashboard</h1>
-        <h2>Hello Admin 👋</h2>
-        <p>Let's learn something new today!</p>
+<style>
+/* ==================== GLOBAL STYLES ==================== */
+.dashboard-full-wrapper {
+    background: #f1f5f9;
+    min-height: calc(100vh - 60px);
+    margin: 0;
+    padding: 0;
+}
+
+/* Force full width by removing parent padding */
+.main-content {
+    padding: 0 !important;
+}
+
+/* ==================== HEADER STYLES ==================== */
+.page-header {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+    padding: 0 2rem 3.5rem 2rem;
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 400px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+}
+
+.page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: 5%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+}
+
+.header-content {
+    position: relative;
+    z-index: 1;
+    padding-top: 3.5rem;
+    max-width: 100%;
+}
+
+.header-breadcrumb {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.header-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.25rem;
+}
+
+.header-subtitle {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.header-stats {
+    display: flex;
+    gap: 1rem;
+}
+
+.stat-badge {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 100px;
+}
+
+.stat-badge .stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    display: block;
+}
+
+.stat-badge .stat-label {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* NEW STATS CARDS STYLES */
+.new-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.new-stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.new-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.stat-icon-large {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.stat-icon-large.blue { background: #2563eb; }
+.stat-icon-large.green { background: #16a34a; }
+.stat-icon-large.yellow { background: #ca8a04; }
+.stat-icon-large.red { background: #dc2626; }
+
+.stat-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-details .label {
+    color: #64748b;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.stat-details .number {
+    color: #0f172a;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.dashboard-container {
+    padding: 1.5rem;
+    margin-top: -30px; /* Overlap effect */
+    position: relative;
+    z-index: 10;
+}
+</style>
+
+<div class="dashboard-full-wrapper">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content d-flex justify-content-between align-items-center flex-wrap gap-4" style="padding-left: 2rem; padding-right: 2rem;">
+            <div class="d-flex align-items-center gap-3">
+                <div>
+                    <span class="header-breadcrumb">Dashboard</span>
+                    <h1 class="header-title">Hello Admin 👋</h1>
+                    <p class="header-subtitle">Let's learn something new today!</p>
+                </div>
+            </div>
+            <!-- Header stats removed -->
+        </div>
     </div>
 
-    <div class="stats-cards">
-        <div class="stat-card">
-            <div class="icon-box blue"><i class='bx bxs-group'></i></div>
-            <div class="stat-info">
-                <div class="label">Total Pendaftar</div>
-                <div class="value"><?= $totalPendaftar ?></div>
+    <!-- Main Content Container -->
+    <div class="dashboard-container">
+        
+        <!-- New Stats Cards Grid -->
+        <div class="new-stats-grid">
+            <!-- Total Pendaftar -->
+            <div class="new-stat-card">
+                <div class="stat-icon-large blue">
+                    <i class='bx bxs-group'></i>
+                </div>
+                <div class="stat-details">
+                    <span class="label">Total Pendaftar</span>
+                    <span class="number"><?= $totalPendaftar ?></span>
+                </div>
+            </div>
+
+            <!-- Lulus -->
+            <div class="new-stat-card">
+                <div class="stat-icon-large green">
+                    <i class='bx bxs-check-shield'></i>
+                </div>
+                <div class="stat-details">
+                    <span class="label">Pendaftar Lulus</span>
+                    <span class="number"><?= $pendaftarLulus ?></span>
+                </div>
+            </div>
+
+            <!-- Pending -->
+            <div class="new-stat-card">
+                <div class="stat-icon-large yellow">
+                    <i class='bx bxs-time-five'></i>
+                </div>
+                <div class="stat-details">
+                    <span class="label">Pendaftar Pending</span>
+                    <span class="number"><?= $pendaftarPending ?></span>
+                </div>
+            </div>
+
+            <!-- Gagal -->
+            <div class="new-stat-card">
+                <div class="stat-icon-large red">
+                    <i class='bx bxs-x-circle'></i>
+                </div>
+                <div class="stat-details">
+                    <span class="label">Pendaftar Gagal</span>
+                    <span class="number"><?= $pendaftarGagal ?></span>
+                </div>
             </div>
         </div>
-        <div class="stat-card">
-            <div class="icon-box green"><i class='bx bxs-group'></i></div>
-            <div class="stat-info">
-                <div class="label">Pendaftar Lulus</div>
-                <div class="value"><?= $pendaftarLulus ?></div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="icon-box yellow"><i class='bx bxs-group'></i></div>
-            <div class="stat-info">
-                <div class="label">Pendaftar Pending</div>
-                <div class="value"><?= $pendaftarPending ?></div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="icon-box red"><i class='bx bxs-group'></i></div>
-            <div class="stat-info">
-                <div class="label">Pendaftar Gagal</div>
-                <div class="value"><?= $pendaftarGagal ?></div>
-            </div>
-        </div>
-    </div>
+
+
 
     <div class="content-row">
         <div class="card-box">
@@ -166,6 +367,7 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <script>

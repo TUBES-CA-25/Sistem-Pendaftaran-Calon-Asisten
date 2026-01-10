@@ -27,12 +27,20 @@ foreach ($allSoal as $soal) {
 .bank-soal-wrapper {
     background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
     min-height: calc(100vh - 60px);
+    margin: 0;
+    padding: 0;
+}
+
+/* Force full width by removing parent padding */
+.main-content {
+    padding: 0 !important;
 }
 
 /* ==================== HEADER STYLES ==================== */
 .page-header {
     background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
-    padding: 2.5rem 2rem;
+    padding: 0 2rem 3.5rem 2rem;
+    margin: 0;
     position: relative;
     overflow: hidden;
 }
@@ -62,6 +70,8 @@ foreach ($allSoal as $soal) {
 .header-content {
     position: relative;
     z-index: 1;
+    padding-top: 3.5rem;
+    max-width: 100%;
 }
 
 .header-icon {
@@ -831,8 +841,7 @@ foreach ($allSoal as $soal) {
 <div class="bank-soal-wrapper">
     <!-- Page Header -->
     <div class="page-header">
-        <div class="container-fluid">
-            <div class="header-content d-flex justify-content-between align-items-center flex-wrap gap-4">
+        <div class="header-content d-flex justify-content-between align-items-center flex-wrap gap-4" style="padding-left: 2rem; padding-right: 2rem;">
                 <div class="d-flex align-items-center gap-3">
                     <div class="header-icon">
                         <i class='bx bx-library'></i>
@@ -860,7 +869,6 @@ foreach ($allSoal as $soal) {
                         <span class="stat-label">Essay</span>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 
