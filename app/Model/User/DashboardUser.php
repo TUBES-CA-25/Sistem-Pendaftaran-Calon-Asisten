@@ -76,7 +76,7 @@ class DashboardUser extends Model {
         if ($result['absensi_wawancara_I'] == "Hadir") {
             return true;
         }
-        return false;
+        return false; 
     }
     public function getAbsensiWawancaraII() {
         $query = "SELECT absensi_wawancara_II FROM " . self::$tableAbsensi . " WHERE id_mahasiswa = :id";
@@ -173,6 +173,38 @@ class DashboardUser extends Model {
             return false;
         }
         return $result['id'];
+    }
+
+
+    // --- TAMBAHAN FITUR WAKTU ---
+
+    // 1. Ambil waktu terakhir
+    public function getLastActivityTime() {
+        // Kita gunakan tabel 'dashboard' sesuai skema database Anda
+        $query = "SELECT modified FROM dashboard WHERE id_mahasiswa = :id";
+        $stmt = self::getDB()->prepare($query);
+        $id = $this->getMahasiswaId();
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        $result = $stmt->fetch();
+
+        // Jika ada data, kembalikan waktunya. Jika tidak, false.
+        return $result ? $result['modified'] : false;
+    }
+
+    // 2. Fungsi untuk Update Waktu (Panggil ini saat user selesai melakukan tahapan)
+    public function updateActivity() {
+        // Gunakan ON DUPLICATE KEY UPDATE agar:
+        // - Jika belum ada data: Insert baru
+        // - Jika sudah ada: Update kolom modified
+        $query = "INSERT INTO dashboard (id_mahasiswa, deskripsi, modified) 
+                  VALUES (:id, 'Update Aktivitas', NOW()) 
+                  ON DUPLICATE KEY UPDATE modified = NOW()";
+        
+        $stmt = self::getDB()->prepare($query);
+        $id = $this->getMahasiswaId();
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
     }
     
 }

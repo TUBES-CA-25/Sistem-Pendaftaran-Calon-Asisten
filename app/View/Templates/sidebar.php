@@ -5,6 +5,12 @@ $role = ProfileController::viewUser()["role"];
 $userName = ProfileController::viewUser()["username"];
 $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
 ?>
+
+
+
+
+
+
 <div class="sidebar" id="sidebar">
     <div class="top">
         <div class="logo">
@@ -13,6 +19,9 @@ $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"
         </div>
         <i class="bx bx-menu" id="btn"></i>
     </div>
+
+
+
     <div class="user">
         <a href="#" data-page="profile"><img src=<?= $photo ?> alt="foto" name="userphoto" id="userphoto"
                 class="user-img"></a>
@@ -20,6 +29,10 @@ $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"
             <p class="bold" id="username"><?= $userName ?></p>
         </div>
     </div>
+
+
+
+
     <ul>
         <li>
             <a href="#" data-page="dashboard">
@@ -28,6 +41,10 @@ $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"
             </a>
             <span class="tooltip">Dashboard</span>
         </li>
+
+
+
+
         <li>
             <a href="#" data-page="biodata">
                 <i class="bx bxs-id-card"></i>
@@ -35,6 +52,10 @@ $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"
             </a>
             <span class="tooltip">Lengkapi Biodata</span>
         </li>
+
+
+
+
         <li>
             <a href="#" data-page="uploadBerkas">
                 <i class="bx bx-file"></i>
@@ -42,6 +63,10 @@ $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"
             </a>
             <span class="tooltip">Upload Berkas</span>
         </li>
+
+
+
+
         <li>
             <a href="#" data-page="tesTulis">
                 <i class="bx bx-task"></i>
@@ -49,6 +74,9 @@ $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"
             </a>
             <span class="tooltip">Tes Tulis</span>
         </li>
+
+
+
         <li>
             <a href="#" data-page="presentasi">
                 <i class="bx bx-chalkboard"></i>
@@ -56,6 +84,10 @@ $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"
             </a>
             <span class="tooltip">Presentasi</span>
         </li>
+
+
+
+
         <li>
             <a href="#" data-page="wawancara">
                 <i class="bx bx-user-voice"></i>
@@ -63,12 +95,19 @@ $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"
             </a>
             <span class="tooltip">Jadwal</span>
         </li>
-        <!-- <li>
+
+
+
+        <li>
             <a href="#" data-page="pengumuman">
                 <i class="bx bx-notepad"></i>
                 <span class="nav-item">Pengumuman</span>
             </a>
             <span class="tooltip">Pengumuman</span>
-        </li> -->
+        </li>
+
+
+
+
     </ul>
 </div>

@@ -25,6 +25,14 @@ class Absensi extends Model {
         $this->tesTertulis = $tesTertulis;
         $this->presentasi = $presentasi;
     }
+
+
+
+
+
+
+
+
     public function getAbsensi() {
         $sql = "SELECT
         a.id, 
@@ -49,12 +57,22 @@ class Absensi extends Model {
     }
     
 
+
+
+    
     public function updateTesTertulisAbsensi($id) {
         $sql = "UPDATE ". self::$table . " SET absensi_tes_tertulis = Hadir WHERE id_mahasiswa = :id";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
     }
+
+
+
+
+
+
+
     public function updatePresentasiAbsensi($id) {
         $sql = "UPDATE ". self::$table . " SET absensi_presentasi = Hadir WHERE id_mahasiswa = :id";
         $stmt = self::getDB()->prepare($sql);
@@ -62,24 +80,54 @@ class Absensi extends Model {
         $stmt->execute();
     }
 
+
+
+
+
+
+
     public function updateWawancaraAbsensiI($id) {
         $sql = "UPDATE ". self::$table . " SET absensi_wawancara_I = Hadir WHERE id_mahasiswa = :id";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
     }
+
+
+
+
+
+
+
+
     public function updateWawancaraAbsensiII($id) {
         $sql = "UPDATE ". self::$table . " SET absensi_wawancara_II = Hadir WHERE id_mahasiswa = :id";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
     }
+
+
+
+
+
+
+
+
     public function updateWawancaraAbsensiIII($id) {
         $sql = "UPDATE ". self::$table . " SET absensi_wawancara_III = Hadir WHERE id_mahasiswa = :id";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
     }
+
+
+
+
+
+
+
+
     
     public function updateAbsensi() {
         $sql = "UPDATE ". self::$table . " SET absensi_wawancara_I = ?, absensi_wawancara_II = ?, absensi_wawancara_III = ?, absensi_tes_tertulis = ?, absensi_presentasi = ? WHERE id = ?";
@@ -92,6 +140,18 @@ class Absensi extends Model {
         $stmt->bindValue(6, $this->id);
         return $stmt->execute();
     }
+
+
+
+
+
+
+
+
+
+
+
+
     public function addMahasiswa(Absensi $absensi, $id) {
         if (!is_array($id) || empty($id)) {
             throw new \InvalidArgumentException("Parameter 'id' harus berupa array dan tidak boleh kosong.");

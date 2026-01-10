@@ -18,16 +18,19 @@ use App\Controllers\notifications\NotificationControllers;
 use App\Controllers\exam\SoalController;
 use App\Controllers\user\WawancaraController;
 use App\Controllers\presentasi\RuanganController;
+use App\Controllers\Admin\PengumumanAdminController;
+use App\Controllers\user\PengumumanController;
 use App\Core\Router;
 
 
 
 Router::get('/soal', [new ExamController, 'index']);
 Router::get('/login', [new LoginController, 'index']);
+Router::get('/pengumuman-admin', [new PengumumanAdminController, 'index']);
+Router::get('/pengumuman', [new PengumumanController, 'index']);
 Router::get('/',[new HomeController, 'index']);
-Router::get('/{page}', [new HomeController, 'loadContent']);
 Router::get('/download',[new BerkasUserController, 'downloadBerkas']);
-
+Router::get('/{page}', [new HomeController, 'loadContent']);
 
 Router::post('/login/authenticate', [new LoginController, 'authenticate']);
 Router::post('/register/authenticate', [new RegisterController, 'register']);
@@ -42,6 +45,19 @@ Router::post("/deletemhs",[new MahasiswaController,'deleteMahasiswa']);
 
 Router::post("/updatestatus",[new PresentasiUserController, 'updateStatusJudul']);
 Router::post("/tambahjadwal",[new JadwalPresentasiController,'saveJadwal']);
+
+
+
+
+//Pengumuman admin
+Router::post('/pengumuman-admin/tambah', [new PengumumanAdminController, 'tambah']);
+Router::post('/pengumuman-admin/hapus', [new PengumumanAdminController, 'hapus']);
+// Tambahkan di bawah route pengumuman yang sudah ada
+Router::post('/pengumuman-admin/edit', [new PengumumanAdminController, 'edit']);
+Router::post('/pengumuman-admin/update', [new PengumumanAdminController, 'update']);
+
+
+
 
 Router::post("/addingsoal",[new SoalController,'saveSoal']);
 Router::post("/deletesoal",[new SoalController,'deleteSoal']);
@@ -61,3 +77,5 @@ Router::post("/ruangan/getfilter",[new WawancaraController,'getAllFilterByIdRuan
 Router::post("/updatenilaiakhir",[new NilaiAkhirController, 'updateTotalNilai']);
 Router::post("/updateabsensi",[new AbsensiUserController, 'updateData']);
 Router::post("/addallnotif",[new NotificationControllers, 'sendAllMessage']);
+
+

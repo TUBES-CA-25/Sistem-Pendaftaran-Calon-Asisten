@@ -134,25 +134,21 @@ use App\Controllers\User\DashboardUserController;
             Lengkapi berkas terlebih dahulu';
             return;
         }
-        if(!DashboardUserController::getBiodataStatus()){
-            echo '<div class="alert alert-warning" role="alert">
-            Lengkapi biodata terlebih dahulu';
-            return;
-        }
+       
         ?>
         <h2>Test Exam</h2>
         <p>Pada tahap kali ini kalian akan melaksanakan ujian pilihan ganda.</p>
         <p>Tata tertib sebelum ujian meliputi:</p>
         <ul>
-            <li><strong>Dilarang menghadap kiri kanan. Silahkan fokus di komputernya saja.</strong></li>
-            <li><strong>Bila membutuhkan sesuatu silahkan angkat tangan dan panggil asistennya.</strong></li>
-            <li><strong>Kerjakan dengan jujur.</strong></li>
+            <li><strong>Dilarang menghadap kiri kanan. Silahkan fokus di komputernya Masing-masing.</strong></li>
+            <li><strong>Bila membutuhkan sesuatu silahkan mengangkat tangan dan panggil asistennya.</strong></li>
+            <li><strong>Kerjakan dengan jujur (tidak menyontek).</strong></li>
         </ul>
         <p>Ujian kali ini memiliki durasi waktu <strong>80 Menit</strong>. Sebelum dimulai, dipersilahkan untuk membaca doa terlebih dahulu.</p>
 
         <strong><label for="nomorMeja" class="form-label">Masukkan nomor meja Anda untuk memulai ujian</label></strong>
         <input type="text" id="nomorMeja" class="form-control" placeholder="Masukkan nomor meja Anda" required <?php if(!DashboardUserController::getBerkasStatus() || !DashboardUserController::getBiodataStatus() || DashboardUserController::getAbsensiTesTertulis()) echo 'disabled';?>>
-        <div id="errorMessage" class="error">Silahkan masukkan nomor meja.</div>
+        <div id="errorMessage" class="error">Silahkan masukkan nomor meja.</div>        
         <button id="startTestButton" <?php if(!DashboardUserController::getBerkasStatus() || !DashboardUserController::getBiodataStatus() || DashboardUserController::getAbsensiTesTertulis()) echo 'disabled';?>>Start Test</button>
     </div>
 </main>

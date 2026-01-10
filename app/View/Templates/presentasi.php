@@ -15,7 +15,7 @@ $results = PresentasiUserController::viewAll();
       </div>';
       return;
     }
-    if(!DashboardUserController::getBerkasStatus()) {
+      if(!DashboardUserController::getBerkasStatus()) {
       echo '<div class="alert alert-warning" role="alert">
         Lengkapi berkas terlebih dahulu!
       </div>';

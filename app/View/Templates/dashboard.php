@@ -7,24 +7,32 @@ $notifikasi = NotificationControllers::getMessageById() ?? [];
 
 <main>
   <h1 class="dashboard">Dashboard</h1>
+  
   <div class="insights">
+    
     <div class="tahap">
       <span class="material-symbols-outlined">browse_activity</span>
       <div class="middle">
+
         <div class="left">
-          <h3>Tahap yang telah diselesaikan</h3>
-          <h1><?= DashboardUserController::getNumberTahapanSelesai() ?></h1>
+          <h3>Presentase Tahapan Seleksi</h3>
+          <h1><?= DashboardUserController::getNumberTahapanSelesai() ?></h1> <!-- Nomor tahapan seleksi-->
         </div>
+
         <div class="progress" data-percentage="<?= DashboardUserController::getPercentage() ?>">
          
-          <div class="number">
+          <div class="number"> <!-- Nomor Pada Presentasi Seleksi -->
             <?= DashboardUserController::getPercentage() ?>%
           </div>
+
         </div>
 
       </div>
-      <small class="text-muted">Last 24 Hours</small>
+      <small class="text-muted">
+          Terakhir diupdate: <?= DashboardUserController::getLastActivityString() ?>
+      </small>
     </div>
+
   </div>
 
   <div class="recent-tahapan">
@@ -95,7 +103,8 @@ $notifikasi = NotificationControllers::getMessageById() ?? [];
 </div>
 
 <div id="customMessageModal" class="custom-modal"
-  style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center;">
+style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center;">
+
   <div class="custom-modal-content"
     style="background: white; padding: 20px; border-radius: 8px; width: 600px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
     <div class="custom-modal-header"
@@ -105,6 +114,8 @@ $notifikasi = NotificationControllers::getMessageById() ?? [];
         style="background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
     </div>
     <div class="custom-modal-body" style="margin-top: 10px; display: flex; flex-direction: column; gap: 10px;">
+
+
       <?php
       if ($notifikasi == null) {
         echo "<p>Tidak ada pesan</p>";
@@ -122,11 +133,16 @@ $notifikasi = NotificationControllers::getMessageById() ?? [];
       }
       ?>
     </div>
+
     <div class="custom-modal-footer" style="margin-top: 20px; text-align: right;">
       <button id="closeModalFooterButton" class="btn btn-secondary">Tutup</button>
     </div>
+
   </div>
+
 </div>
+
+
 
 <script>
  
@@ -138,7 +154,7 @@ $notifikasi = NotificationControllers::getMessageById() ?? [];
 
   document.getElementById("viewMessageButton").addEventListener("click", function () {
     customMessageModal.style.display = "flex";
-  });
+   });
 
   document.getElementById("closeModalButton").addEventListener("click", function () {
     customMessageModal.style.display = "none";

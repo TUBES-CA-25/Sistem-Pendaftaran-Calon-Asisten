@@ -63,6 +63,17 @@
             </a>
             <span class="tooltip">Daftar Kehadiran Peserta</span>
         </li>
+
+
+        <li>
+            <a href="#" data-page="pengumuman-admin">
+            <i class='bx bx-notepad' ></i>
+                <span class="nav-item">Pengumuman</span>
+            </a>
+            <span class="tooltip">Pengumuman</span>
+        </li>
+
+        
         <li>
             <a href="#" data-page="logout">
             <i class='bx bxs-exit'></i>
@@ -70,5 +81,6 @@
             </a>
             <span class="tooltip">Logout</span>
         </li>
+        
     </ul>
 </div>

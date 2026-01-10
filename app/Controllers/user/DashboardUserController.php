@@ -71,7 +71,7 @@ class DashboardUserController extends Controller {
             $i++;
         }
         return $i;
-    }
+    } 
     public static function getPercentage() {
         $completed = self::getNumberTahapanSelesai(); 
         $total = 9; 
@@ -79,6 +79,52 @@ class DashboardUserController extends Controller {
             return 0;
         }
         return floor(($completed / $total) * 100); 
+    }
+
+
+
+    // --- TAMBAHAN HELPER WAKTU ---
+
+    public static function getLastActivityString() {
+        $model = new DashboardUser();
+        $time = $model->getLastActivityTime();
+
+        if (!$time) {
+            return "Belum ada aktivitas";
+        }
+
+        return self::timeAgo($time);
+    }
+
+    private static function timeAgo($datetime) {
+        // Set zona waktu agar akurat (WITA/WIB sesuaikan)
+        date_default_timezone_set('Asia/Makassar'); 
+        
+        $time_ago = strtotime($datetime);
+        $current_time = time();
+        $time_difference = $current_time - $time_ago;
+        $seconds = $time_difference;
+        
+        $minutes      = round($seconds / 60);           // value 60 is seconds
+        $hours        = round($seconds / 3600);         // value 3600 is 60 minutes * 60 sec
+        $days         = round($seconds / 86400);        // value 86400 is 24 hours * 60 min * 60 sec
+        $weeks        = round($seconds / 604800);       // value 604800 is 7 days * 24 hours * 60 min * 60 sec
+        $months       = round($seconds / 2629440);      // value 2629440 is ((365+365+365+365+366)/5/12) days * 24 hours * 60 min * 60 sec
+        $years        = round($seconds / 31553280);     // value 31553280 is ((365+365+365+365+366)/5) days * 24 hours * 60 min * 60 sec
+
+        if ($seconds <= 60) {
+            return "Baru saja";
+        } else if ($minutes <= 60) {
+            return "$minutes menit yang lalu";
+        } else if ($hours <= 24) {
+            return "$hours jam yang lalu";
+        } else if ($days <= 7) {
+            return "$days hari yang lalu";
+        } else if ($weeks <= 4.3) {
+            return "$weeks minggu yang lalu";
+        } else {
+            return date('d M Y', $time_ago); // Tampilkan tanggal biasa jika sudah lama
+        }
     }
     
     public static function generateCircle($percentage) {

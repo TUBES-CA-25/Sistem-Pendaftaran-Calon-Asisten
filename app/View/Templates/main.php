@@ -30,17 +30,17 @@
     </div>
 
     <div id="customModal" class="alertmodal">
-    <div class="modal-content">
-        <!-- GIF Animasi -->
-        <img id="modalGif" src="" alt="Animation" style="width: 100px; margin-bottom: 15px; display: none;">
-        
-        <!-- Pesan Custom -->
-        <p id="modalMessage" style="margin: 10px 0; font-size: 18px;">Pesan akan ditampilkan di sini.</p>
-        
-        <!-- Tombol Close -->
-        <button id="closeModal" class="btn btn-primary" style="margin-top: 10px;">Tutup</button>
+        <div class="modal-content">
+            <!-- GIF Animasi -->
+            <img id="modalGif" src="" alt="Animation" style="width: 100px; margin-bottom: 15px; display: none;">
+            
+            <!-- Pesan Custom -->
+            <p id="modalMessage" style="margin: 10px 0; font-size: 18px;">Pesan akan ditampilkan di sini.</p>
+            
+            <!-- Tombol Close -->
+            <button id="closeModal" class="btn btn-primary" style="margin-top: 10px;">Tutup</button>
+        </div>
     </div>
-</div>
    
     <script> const APP_URL = '<?php echo APP_URL; ?>' </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
