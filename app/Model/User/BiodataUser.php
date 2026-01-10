@@ -3,6 +3,8 @@
 namespace App\Model\User;
 use App\Core\Model;
 use PDO;
+
+
 class BiodataUser extends Model
 {
     protected static $table = 'mahasiswa';
@@ -21,6 +23,7 @@ class BiodataUser extends Model
     protected $tempatLahir;
     protected $tanggalLahir;
     protected $noHp;
+
 
     public function __construct(
         $idUser = null,
@@ -59,8 +62,14 @@ class BiodataUser extends Model
     }
 
 
+    
+
     public function save(BiodataUser $biodata)
     {
+
+             // Panggil Model Dashboard buat update waktu
+        $dashboard = new \App\Model\User\DashboardUser();
+        $dashboard->updateActivity();
         try {
             $query = "INSERT INTO " . static::$table . " 
                 (id_user, id_jurusan, stambuk, id_kelas, nama_lengkap, alamat, jenis_kelamin, tempat_lahir, tanggal_lahir, no_telp) 
@@ -105,6 +114,7 @@ class BiodataUser extends Model
                 error_log("Error: Gagal menyimpan biodata");
                 return false; // Gagal
             }
+
         } catch (\PDOException $e) {
             error_log("SQL Error: " . $e->getMessage());
             return false;

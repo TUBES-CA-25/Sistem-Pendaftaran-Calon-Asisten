@@ -88,7 +88,10 @@ class BerkasUser extends Model {
         $stmt->bindParam(3, $fileCv);
         $stmt->bindParam(4, $fileNilai);
         $stmt->bindParam(5, $filePernyataan);
-    
+
+                 // Panggil Model Dashboard buat update waktu
+        $dashboard = new \App\Model\User\DashboardUser();
+        $dashboard->updateActivity();
         return $stmt->execute();
     }
 

@@ -1,6 +1,8 @@
 <?php
 namespace App\Model\User;
 use App\Core\Model;
+// Import Model DashboardUser agar bisa dipanggil
+use App\Model\User\DashboardUser;
 class Absensi extends Model {
     protected static $table = 'absensi';
     protected $id;
@@ -72,12 +74,13 @@ class Absensi extends Model {
 
 
 
-
+    // Perbaharui Basen Presentasi 
     public function updatePresentasiAbsensi($id) {
         $sql = "UPDATE ". self::$table . " SET absensi_presentasi = Hadir WHERE id_mahasiswa = :id";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
+       
     }
 
 
@@ -85,12 +88,14 @@ class Absensi extends Model {
 
 
 
-
+    // Perbaharui Basen wawancara 1 
     public function updateWawancaraAbsensiI($id) {
         $sql = "UPDATE ". self::$table . " SET absensi_wawancara_I = Hadir WHERE id_mahasiswa = :id";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
+
+       
     }
 
 
@@ -99,12 +104,14 @@ class Absensi extends Model {
 
 
 
-
+    // Perbaharui Basen wawancara 2
     public function updateWawancaraAbsensiII($id) {
         $sql = "UPDATE ". self::$table . " SET absensi_wawancara_II = Hadir WHERE id_mahasiswa = :id";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
+
+       
     }
 
 
@@ -113,12 +120,14 @@ class Absensi extends Model {
 
 
 
-
+    // Perbaharui Basen wawancara 3
     public function updateWawancaraAbsensiIII($id) {
         $sql = "UPDATE ". self::$table . " SET absensi_wawancara_III = Hadir WHERE id_mahasiswa = :id";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
+
+        
     }
 
 
@@ -128,7 +137,7 @@ class Absensi extends Model {
 
 
 
-    
+    // Perbaharui Basen semua    
     public function updateAbsensi() {
         $sql = "UPDATE ". self::$table . " SET absensi_wawancara_I = ?, absensi_wawancara_II = ?, absensi_wawancara_III = ?, absensi_tes_tertulis = ?, absensi_presentasi = ? WHERE id = ?";
         $stmt = self::getDB()->prepare($sql);
@@ -138,7 +147,25 @@ class Absensi extends Model {
         $stmt->bindValue(4, $this->tesTertulis);
         $stmt->bindValue(5, $this->presentasi);
         $stmt->bindValue(6, $this->id);
-        return $stmt->execute();
+       
+
+        if ($stmt->execute()) {
+            // 2. CARI ID MAHASISWA (Karena kita cuma punya ID Absensi)
+            $queryCariMhs = "SELECT id_mahasiswa FROM " . self::$table . " WHERE id = :id_absen";
+            $stmtCari = self::getDB()->prepare($queryCariMhs);
+            $stmtCari->bindParam(':id_absen', $this->id);
+            $stmtCari->execute();
+            $dataAbsen = $stmtCari->fetch();
+
+            if ($dataAbsen) {
+                // 3. Update Dashboard menggunakan ID Mahasiswa yang ditemukan
+                $dashboard = new DashboardUser();
+                $dashboard->updateActivity($dataAbsen['id_mahasiswa']);
+            }
+            
+            return true;
+        }
+        return false;
     }
 
 
