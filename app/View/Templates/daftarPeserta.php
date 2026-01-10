@@ -31,19 +31,19 @@ $result = $result ?? [];
 
     main {
         padding: 0;
-        margin: 0;
-        width: 100%;
+        margin: -20px -20px -20px -20px;
+        width: calc(100% + 40px);
     }
 
     /* Page Header - Match Dashboard Admin Style (Larger) */
     .page-header {
         background: #2f66f6;
         color: #fff;
-        border-radius: 14px;
+        border-radius: 0;
         padding: 35px 30px;
         position: relative;
         overflow: hidden;
-        margin-bottom: 14px;
+        margin-bottom: 0;
     }
 
     .page-header::after {
@@ -83,13 +83,13 @@ $result = $result ?? [];
         z-index: 1;
     }
 
-    /* Card Container - Clean White */
+    /* Card Container */
     .card-table {
-        background: white;
+        background: #fff;
         border-radius: 0;
-        box-shadow: none;
-        padding: 25px 40px;
+        padding: 24px;
         margin: 0;
+        min-height: calc(100vh - 120px);
     }
 
     /* Table Controls */
@@ -98,46 +98,50 @@ $result = $result ?? [];
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
-        gap: 20px;
+        gap: 16px;
+        flex-wrap: wrap;
     }
 
     .entries-select {
         display: flex;
         align-items: center;
-        gap: 10px;
-        font-size: 0.9rem;
-        color: #495057;
+        gap: 8px;
+        font-size: 0.875rem;
+        color: #6c757d;
     }
 
     .entries-select select {
         border: 1px solid #dee2e6;
-        border-radius: 4px;
+        border-radius: 6px;
         padding: 6px 12px;
-        font-size: 0.9rem;
+        font-size: 0.875rem;
         background: white;
         cursor: pointer;
     }
 
+    .entries-select select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        outline: none;
+    }
+
     .search-box {
         position: relative;
-        flex: 1;
-        max-width: 400px;
+        min-width: 250px;
     }
 
     .search-box input {
         width: 100%;
-        padding: 8px 15px 8px 40px;
+        padding: 8px 12px 8px 38px;
         border: 1px solid #dee2e6;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        transition: all 0.2s ease;
-        background: white;
+        border-radius: 6px;
+        font-size: 0.875rem;
     }
 
     .search-box input:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
         outline: none;
-        border-color: #4c6ef5;
-        box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
     }
 
     .search-box i {
@@ -145,62 +149,85 @@ $result = $result ?? [];
         left: 12px;
         top: 50%;
         transform: translateY(-50%);
-        color: #adb5bd;
-        font-size: 0.9rem;
-    }
-
-    /* Table Styling - Clean */
-    .table {
-        margin-bottom: 0;
-        font-size: 0.9rem;
-    }
-
-    .table thead th {
-        background: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-        border-top: 1px solid #dee2e6;
-        color: #495057;
-        font-weight: 600;
-        font-size: 0.85rem;
-        padding: 12px 14px;
-        white-space: nowrap;
-        text-align: left;
-    }
-
-    .table thead th:first-child {
-        text-align: center;
-        width: 60px;
-    }
-
-    .table thead th:last-child {
-        text-align: center;
-        width: 100px;
-    }
-
-    .table tbody tr {
-        transition: all 0.2s ease;
-        border-bottom: 1px solid #f1f3f5;
-    }
-
-    .table tbody tr:hover {
-        background-color: #f8f9fa;
-    }
-
-    .table tbody td {
-        padding: 14px;
-        vertical-align: middle;
-        color: #495057;
-        border: none;
-    }
-
-    .table tbody td:first-child {
-        text-align: center;
-        font-weight: 500;
         color: #6c757d;
     }
 
-    .table tbody td:last-child {
+    /* Table Responsive Container with Scrollbar */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px;
+        box-shadow: 0 0 0 1px #e9ecef;
+    }
+
+    /* Custom Scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 10px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f3f5;
+        border-radius: 5px;
+        margin: 0 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #2f66f6;
+        border-radius: 5px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #1e4fd8;
+    }
+
+    /* Bootstrap Table Override - No Borders */
+    .table {
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table > thead {
+        background-color: #2f66f6;
+    }
+
+    .table > thead > tr > th {
+        background-color: #2f66f6;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 14px 12px;
+        border: none;
+        vertical-align: middle;
+    }
+
+    .table > tbody > tr {
+        transition: background-color 0.15s ease-in-out;
+    }
+
+    .table > tbody > tr:hover {
+        background-color: #f0f5ff;
+    }
+
+    .table > tbody > tr > td {
+        padding: 14px 12px;
+        vertical-align: middle;
+        border: none;
+        border-bottom: 1px solid #f1f3f5;
+        color: #212529;
+    }
+
+    .table > tbody > tr:last-child > td {
+        border-bottom: none;
+    }
+
+    .table > tbody > tr > td:first-child {
+        font-weight: 600;
+        color: #2f66f6;
         text-align: center;
+        width: 50px;
     }
 
     /* User Info */
@@ -211,12 +238,11 @@ $result = $result ?? [];
     }
 
     .user-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
         object-fit: cover;
-        background: #e9ecef;
-        flex-shrink: 0;
+        border: 2px solid #e9ecef;
     }
 
     .user-name {
@@ -226,46 +252,56 @@ $result = $result ?? [];
         font-size: 0.9rem;
     }
 
-    /* Status Badges - Simple */
+    /* Status Badges - Modern Style */
     .badge-status {
-        padding: 4px 12px;
-        border-radius: 4px;
+        padding: 8px 16px;
+        border-radius: 8px;
         font-size: 0.75rem;
-        font-weight: 500;
-        display: inline-block;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-width: 100px;
+        white-space: nowrap;
+        text-transform: capitalize;
+        letter-spacing: 0.3px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+    }
+
+    .badge-status:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .badge-status i {
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
     }
 
     .badge-diterima {
-        background-color: #d3f9d8;
-        color: #2b8a3e;
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #047857;
     }
 
     .badge-process {
-        background-color: #fff3bf;
-        color: #e67700;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #1d4ed8;
     }
 
     .badge-ditolak {
-        background-color: #ffe3e3;
-        color: #c92a2a;
-    }
-
-    .badge-delivered {
-        background-color: #d0ebff;
-        color: #1864ab;
-    }
-
-    .badge-cancelled {
-        background-color: #ffe3e3;
-        color: #c92a2a;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #b91c1c;
     }
 
     .badge-pending {
-        background-color: #e9ecef;
-        color: #495057;
+        background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        color: #334155;
     }
 
-    /* Action Buttons - Simple */
+    /* Action Buttons */
     .action-buttons {
         display: flex;
         gap: 6px;
@@ -273,70 +309,84 @@ $result = $result ?? [];
     }
 
     .btn-action {
-        width: 32px;
-        height: 32px;
-        border-radius: 4px;
+        width: 34px;
+        height: 34px;
+        border-radius: 6px;
         display: flex;
         align-items: center;
         justify-content: center;
         border: none;
-        transition: all 0.2s ease;
         cursor: pointer;
-        font-size: 0.9rem;
+        transition: all 0.2s ease;
     }
 
     .btn-action:hover {
-        opacity: 0.8;
+        transform: translateY(-2px);
+        opacity: 0.9;
     }
 
     .btn-view {
-        background-color: #4c6ef5;
+        background-color: #2f66f6;
         color: white;
+    }
+
+    .btn-view:hover {
+        background-color: #1e4fd8;
     }
 
     .btn-delete {
-        background-color: #fa5252;
+        background-color: #dc3545;
         color: white;
     }
 
-    /* DataTables Pagination */
+    .btn-delete:hover {
+        background-color: #bb2d3b;
+    }
+
+    /* DataTables Override */
     .dataTables_wrapper .dataTables_info {
         color: #6c757d;
-        font-size: 0.85rem;
-        padding-top: 15px;
+        font-size: 0.875rem;
+        padding-top: 16px;
     }
 
     .dataTables_wrapper .dataTables_paginate {
-        padding-top: 15px;
+        padding-top: 16px;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button {
         padding: 6px 12px;
         margin: 0 2px;
-        border-radius: 4px;
-        border: none !important;
-        background: transparent !important;
-        color: #495057 !important;
-        font-size: 0.85rem;
+        border-radius: 6px;
+        border: 1px solid #dee2e6 !important;
+        background: white !important;
+        color: #2f66f6 !important;
+        font-size: 0.875rem;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background: #4c6ef5 !important;
+        background: #2f66f6 !important;
         color: white !important;
+        border-color: #2f66f6 !important;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-        background: #f1f3f5 !important;
-        color: #495057 !important;
+        background: #f0f5ff !important;
+        color: #2f66f6 !important;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-        background: #4c6ef5 !important;
+        background: #1e4fd8 !important;
         color: white !important;
     }
 
     /* Responsive */
     @media (max-width: 768px) {
+        main {
+            margin: -20px -20px 0 -20px;
+            width: calc(100% + 40px);
+        }
+
         .page-header {
             padding: 25px 20px;
         }
@@ -345,12 +395,8 @@ $result = $result ?? [];
             font-size: 1.4rem;
         }
 
-        .page-header .subtitle {
-            font-size: 0.85rem;
-        }
-
         .card-table {
-            padding: 15px 20px;
+            padding: 16px;
         }
 
         .table-controls {
@@ -359,7 +405,38 @@ $result = $result ?? [];
         }
 
         .search-box {
-            max-width: 100%;
+            min-width: 100%;
+        }
+
+        .table > thead > tr > th {
+            font-size: 0.7rem;
+            padding: 10px 8px;
+        }
+
+        .table > tbody > tr > td {
+            padding: 10px 8px;
+            font-size: 0.8rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+        }
+
+        .btn-action {
+            width: 30px;
+            height: 30px;
+        }
+
+        .badge-status {
+            padding: 6px 12px;
+            font-size: 0.7rem;
+            min-width: 85px;
+            border-radius: 6px;
+        }
+
+        .badge-status i {
+            font-size: 0.75rem;
         }
     }
 </style>
@@ -394,35 +471,38 @@ $result = $result ?? [];
 
         <!-- Data Table -->
         <div class="table-responsive">
-            <table id="daftarPesertaTable" class="table">
+            <table id="daftarPesertaTable" class="table table-hover align-middle">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th class="text-center" style="width: 50px;">No</th>
                         <th>Nama</th>
                         <th>Judul Presentasi</th>
                         <th>Stambuk</th>
                         <th>Jurusan</th>
                         <th>Kelas</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center" style="width: 100px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php $i = 1; ?>
                     <?php foreach ($result as $row): ?>
-                        <?php 
+                        <?php
                             // Determine status
                             $status = $row['status'] ?? 'pending';
                             $statusClass = 'badge-pending';
                             $statusText = 'Pending';
-                            
+                            $statusIcon = 'bi-hourglass';
+
                             if (isset($row['berkas']['accepted'])) {
                                 if ($row['berkas']['accepted'] == 1) {
                                     $statusClass = 'badge-diterima';
                                     $statusText = 'Diterima';
+                                    $statusIcon = 'bi-check-circle-fill';
                                 } elseif ($row['berkas']['accepted'] == 0) {
                                     $statusClass = 'badge-process';
                                     $statusText = 'Process';
+                                    $statusIcon = 'bi-clock-fill';
                                 }
                             }
                             
@@ -447,8 +527,11 @@ $result = $result ?? [];
                             <td><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
                             <td><?= htmlspecialchars($row['jurusan'] ?? '-') ?></td>
                             <td><?= htmlspecialchars($row['kelas'] ?? '-') ?></td>
-                            <td>
-                                <span class="badge-status <?= $statusClass ?>"><?= $statusText ?></span>
+                            <td class="text-center">
+                                <span class="badge-status <?= $statusClass ?>">
+                                    <i class="bi <?= $statusIcon ?>"></i>
+                                    <?= $statusText ?>
+                                </span>
                             </td>
                             <td>
                                 <div class="action-buttons">

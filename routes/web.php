@@ -70,3 +70,9 @@ Router::post("/deleteBank",[new SoalController, 'deleteBank']);
 Router::post("/getBankQuestions",[new SoalController, 'getBankQuestions']);
 Router::post("/exam/verifyToken",[new ExamController, 'verifyToken']);
 Router::post("/exam/activateBank",[new SoalController, 'activateBank']);
+
+// Room Participant Management Routes
+Router::post("/getroomparticipants",[new RuanganController, 'getRoomParticipants']);
+Router::post("/assignparticipant",[new RuanganController, 'assignParticipant']);
+Router::post("/removeparticipant",[new RuanganController, 'removeParticipant']);
+Router::post("/getroomoccupants",[new RuanganController, 'getRoomOccupants']);

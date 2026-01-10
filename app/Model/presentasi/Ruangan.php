@@ -36,4 +36,75 @@ class Ruangan extends Model {
         $stmt->bindParam(3, $id);
         $stmt->execute();
     }
+
+    // User Assignment Methods
+    public function getUsersByRoom($roomId, $type) {
+        $column = $this->getColumnByType($type);
+        if(!$column) return [];
+        $sql = "SELECT id, username as name, stambuk FROM user WHERE $column = ?";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $roomId);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getAvailableUsers($type) {
+        $column = $this->getColumnByType($type);
+        if(!$column) return [];
+        $sql = "SELECT id, username as name, stambuk FROM user WHERE ($column IS NULL OR $column = 0) AND role = 'User'";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function assignUserToRoom($userId, $roomId, $type) {
+        $column = $this->getColumnByType($type);
+        if(!$column) return false;
+        $sql = "UPDATE user SET $column = ? WHERE id = ?";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $roomId);
+        $stmt->bindParam(2, $userId);
+        return $stmt->execute();
+    }
+
+    public function removeUserFromRoom($userId, $type) {
+        $column = $this->getColumnByType($type);
+        if(!$column) return false;
+        $sql = "UPDATE user SET $column = NULL WHERE id = ?";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $userId);
+        return $stmt->execute();
+    }
+
+    public function getAllRoomOccupants($roomId) {
+        // Fetch all users who have this room ID in ANY of the 3 columns
+        $sql = "SELECT id, username as name, stambuk, 
+                CASE 
+                    WHEN id_ruang_presentasi = ? THEN 'Presentasi'
+                    WHEN id_ruang_tes_tulis = ? THEN 'Tes Tulis'
+                    WHEN id_ruang_wawancara = ? THEN 'Wawancara'
+                END as activity
+                FROM user 
+                WHERE id_ruang_presentasi = ? 
+                   OR id_ruang_tes_tulis = ? 
+                   OR id_ruang_wawancara = ?
+                ORDER BY activity, username";
+        
+        $stmt = self::getDB()->prepare($sql);
+        // Bind parameters: 3 for CASE, 3 for WHERE = 6 total
+        for($i=1; $i<=6; $i++) {
+            $stmt->bindParam($i, $roomId);
+        }
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    private function getColumnByType($type) {
+        switch($type) {
+            case 'presentasi': return 'id_ruang_presentasi';
+            case 'tes_tulis': return 'id_ruang_tes_tulis';
+            case 'wawancara': return 'id_ruang_wawancara';
+            default: return null;
+        }
+    }
 }

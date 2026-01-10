@@ -73,4 +73,83 @@ class RuanganController extends Controller {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
+
+    public function getRoomParticipants() {
+        if(!isset($_POST['id']) || !isset($_POST['type'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => 'Invalid params']);
+            return;
+        }
+        $ruangan = new Ruangan();
+        try {
+            $assigned = $ruangan->getUsersByRoom($_POST['id'], $_POST['type']);
+            $available = $ruangan->getAvailableUsers($_POST['type']);
+            
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status' => 'success', 
+                'assigned' => $assigned,
+                'available' => $available
+            ]);
+        } catch(\Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function assignParticipant() {
+        header('Content-Type: application/json');
+        if(!isset($_POST['userId']) || !isset($_POST['roomId']) || !isset($_POST['type'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Missing params']);
+            return;
+        }
+        $ruangan = new Ruangan();
+        try {
+            $result = $ruangan->assignUserToRoom($_POST['userId'], $_POST['roomId'], $_POST['type']);
+            if($result) {
+                echo json_encode(['status' => 'success', 'message' => 'Peserta berhasil ditambahkan']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan peserta']);
+            }
+        } catch(\Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function removeParticipant() {
+        header('Content-Type: application/json');
+        if(!isset($_POST['userId']) || !isset($_POST['type'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Missing params']);
+            return;
+        }
+        $ruangan = new Ruangan();
+        try {
+            $result = $ruangan->removeUserFromRoom($_POST['userId'], $_POST['type']);
+            if($result) {
+                echo json_encode(['status' => 'success', 'message' => 'Peserta berhasil dihapus']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus peserta']);
+            }
+        } catch(\Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function getRoomOccupants() {
+        if(!isset($_POST['id'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => 'Invalid params']);
+            return;
+        }
+        $ruangan = new Ruangan();
+        try {
+            $occupants = $ruangan->getAllRoomOccupants($_POST['id']);
+            
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'success', 'data' => $occupants]);
+        } catch(\Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
 }
