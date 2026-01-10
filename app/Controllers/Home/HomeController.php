@@ -29,6 +29,8 @@ class HomeController extends Controller
 
         } else if ($this->isLoggedIn() && $this->getRole() == "Admin") {
             $data = $this->getSidebarData();
+            $dashboardData = $this->getDashboardAdminData();
+            $data = array_merge($data, $dashboardData);
             View::render('mainAdmin', 'Templates', $data);
 
         } else {

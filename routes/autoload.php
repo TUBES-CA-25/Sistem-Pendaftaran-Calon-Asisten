@@ -4,13 +4,13 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 
-$core = glob('../app/core/*.php');
-foreach ($core as $file) {
+$config = glob(__DIR__ . '/../config/*.php');
+foreach ($config as $file) {
     require $file;
 }
 
-$config = glob('../config/*.php');
-foreach ($config as $file) {
+$core = glob(__DIR__ . '/../app/core/*.php');
+foreach ($core as $file) {
     require $file;
 }
 
