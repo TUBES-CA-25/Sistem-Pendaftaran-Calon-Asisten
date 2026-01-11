@@ -163,6 +163,7 @@ $nilai = $nilai ?? [];
         font-weight: 600;
         padding: 16px 20px;
         text-align: left;
+        vertical-align: middle;
         font-size: 0.9rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -189,6 +190,8 @@ $nilai = $nilai ?? [];
         color: #475569;
         font-size: 0.95rem;
         border-bottom: 1px solid #e2e8f0;
+        text-align: left;
+        vertical-align: middle;
     }
 
     /* Button Styles */
