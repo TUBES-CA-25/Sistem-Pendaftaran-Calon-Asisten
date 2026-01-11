@@ -1,7 +1,7 @@
 <?php
 /**
  * Dashboard Admin View
- * 
+ *
  * Data yang diterima dari controller:
  * @var int $totalPendaftar - Total pendaftar
  * @var int $pendaftarLulus - Jumlah lulus
@@ -9,6 +9,7 @@
  * @var int $pendaftarGagal - Jumlah gagal
  * @var array $statusKegiatan - Status kegiatan
  * @var array $kegiatanBulanIni - Kegiatan bulan ini
+ * @var array $jadwalPresentasiMendatang - Jadwal presentasi mendatang
  */
 $currentYear = date('Y');
 $currentMonth = date('m');
@@ -20,6 +21,7 @@ $pendaftarPending = $pendaftarPending ?? 0;
 $pendaftarGagal = $pendaftarGagal ?? 0;
 $statusKegiatan = $statusKegiatan ?? [];
 $kegiatanBulanIni = $kegiatanBulanIni ?? [];
+$jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
 
 $jumlahKelengkapanBerkas = $statusKegiatan['kelengkapan_berkas']['jumlah'] ?? 0;
 $jumlahTesTertulis = $statusKegiatan['tes_tertulis']['jumlah'] ?? 0;
@@ -197,6 +199,170 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
     position: relative;
     z-index: 10;
 }
+
+/* ==================== JADWAL PRESENTASI CARD ==================== */
+.schedule-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1.5rem;
+}
+
+.schedule-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.schedule-card-header .title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.schedule-card-header .title i {
+    color: #2563eb;
+    font-size: 1.5rem;
+}
+
+.schedule-card-header .view-all {
+    color: #2563eb;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.schedule-card-header .view-all:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.schedule-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border-left: 4px solid #2563eb;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.schedule-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.schedule-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    padding: 0.5rem;
+    background: #2563eb;
+    border-radius: 8px;
+    color: white;
+}
+
+.schedule-date .day {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.schedule-date .month {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.schedule-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.schedule-info .name {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.schedule-info .judul {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.schedule-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.schedule-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.schedule-meta i {
+    font-size: 1rem;
+}
+
+.schedule-empty {
+    text-align: center;
+    padding: 2rem;
+    color: #94a3b8;
+}
+
+.schedule-empty i {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .schedule-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .schedule-date {
+        flex-direction: row;
+        gap: 0.5rem;
+        min-width: auto;
+        padding: 0.5rem 1rem;
+    }
+
+    .schedule-meta {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+}
 </style>
 
 <div class="dashboard-full-wrapper">
@@ -264,7 +430,46 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
             </div>
         </div>
 
-
+        <!-- Jadwal Presentasi Mendatang -->
+        <div class="schedule-card">
+            <div class="schedule-card-header">
+                <div class="title">
+                    <i class='bx bx-calendar-event'></i>
+                    Jadwal Presentasi Mendatang
+                </div>
+                <a href="#" data-page="presentasi" class="view-all">Lihat Semua</a>
+            </div>
+            <div class="schedule-list">
+                <?php if (empty($jadwalPresentasiMendatang)): ?>
+                    <div class="schedule-empty">
+                        <i class='bx bx-calendar-x'></i>
+                        <p>Belum ada jadwal presentasi mendatang</p>
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($jadwalPresentasiMendatang as $jadwal):
+                        $tanggal = new DateTime($jadwal['tanggal']);
+                        $day = $tanggal->format('d');
+                        $month = $tanggal->format('M');
+                        $waktu = date('H:i', strtotime($jadwal['waktu']));
+                    ?>
+                    <div class="schedule-item">
+                        <div class="schedule-date">
+                            <span class="day"><?= $day ?></span>
+                            <span class="month"><?= $month ?></span>
+                        </div>
+                        <div class="schedule-info">
+                            <div class="name"><?= htmlspecialchars($jadwal['nama_lengkap']) ?></div>
+                            <div class="judul"><?= htmlspecialchars($jadwal['judul']) ?></div>
+                            <div class="schedule-meta">
+                                <span><i class='bx bx-time'></i> <?= $waktu ?> WIB</span>
+                                <span><i class='bx bx-building'></i> <?= htmlspecialchars($jadwal['ruangan']) ?></span>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </div>
 
     <div class="content-row">
         <div class="card-box">

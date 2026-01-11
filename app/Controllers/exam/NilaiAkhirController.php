@@ -47,7 +47,7 @@ class NilaiAkhirController extends Controller
                 throw new \Exception('User tidak terautentikasi');
             }
             $nilai = new NilaiAkhir();
-            return $nilai->getAllNIlai();
+            return $nilai->getAllNilai();
         } catch (\Exception $e) {
             error_log("Error in getAllNilaiAkhirMahasiswa: " . $e->getMessage());
             return [];

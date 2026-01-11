@@ -145,16 +145,19 @@ class PresentasiUserController extends Controller
     }
     public function updateStatusJudul()
     {
+        header('Content-Type: application/json');
         $presentasi = new Presentasi();
         $id = $_POST['id'] ?? '';
+        $status = $_POST['status'] ?? 1; // Default: 1 = accepted, 2 = rejected
 
         if (!empty($id)) {
             try {
-                $presentasi->updateJudulStatus($id);
+                $presentasi->updateJudulStatus($id, $status);
 
+                $message = $status == 1 ? 'Judul berhasil diterima.' : 'Judul ditolak. Mahasiswa akan diminta revisi.';
                 echo json_encode([
                     'status' => 'success',
-                    'message' => 'Status judul berhasil diperbarui.'
+                    'message' => $message
                 ]);
             } catch (\Exception $e) {
                 echo json_encode([

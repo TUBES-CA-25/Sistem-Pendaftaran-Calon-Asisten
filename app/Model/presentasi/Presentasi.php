@@ -8,7 +8,9 @@ class Presentasi extends Model {
     static protected $table = 'presentasi';
 
     public function getAll() {
-        $sql = "SELECT * FROM " . static::$table;
+        $sql = "SELECT p.*,
+                       (SELECT COUNT(*) FROM jadwal_presentasi jp WHERE jp.id_presentasi = p.id) as has_schedule
+                FROM " . static::$table . " p";
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute();
         $stmt = $stmt->fetchAll();
@@ -23,6 +25,9 @@ class Presentasi extends Model {
                 'nama' => $nama,
                 'stambuk' => $stambuk,
                 'judul' =>  $result['judul'],
+                'is_accepted' => $result['is_accepted'] ?? 0,
+                'is_revisi' => $result['is_revisi'] ?? 0,
+                'has_schedule' => $result['has_schedule'] > 0,
                 'berkas' => [
                     'ppt' => $berkas['ppt'],
                     'makalah' => $berkas['makalah']
@@ -89,11 +94,15 @@ class Presentasi extends Model {
         return $stmt->fetch();
     }
 
-    public function updateJudulStatus($id) {
-        $sql = "UPDATE " . static::$table . " SET is_accepted = 1, is_revisi = 0  WHERE id_mahasiswa = :id";
+    public function updateJudulStatus($id, $status = 1) {
+        // Status: 0 = pending, 1 = accepted, 2 = rejected
+        $is_revisi = ($status == 2) ? 1 : 0;
+        $sql = "UPDATE " . static::$table . " SET is_accepted = :status, is_revisi = :is_revisi WHERE id_mahasiswa = :id";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(':id', $id);
-        $stmt->execute();
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':is_revisi', $is_revisi);
+        return $stmt->execute();
     }
 
     public function updateIsRevisiAndKeterangan($id,$keterangan) {
