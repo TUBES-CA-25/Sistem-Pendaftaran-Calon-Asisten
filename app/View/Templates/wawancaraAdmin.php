@@ -1,7 +1,7 @@
 <?php
 /**
  * Wawancara Admin View
- * 
+ *
  * Data yang diterima dari controller:
  * @var array $wawancara - Data wawancara
  * @var array $mahasiswaList - Daftar mahasiswa
@@ -10,205 +10,428 @@
 $wawancara = $wawancara ?? [];
 $mahasiswaList = $mahasiswaList ?? [];
 $ruanganList = $ruanganList ?? [];
-$colors = ['#3357FF'];
+$colors = ['#2f66f6'];
 ?>
 <style>
     /* Import Font */
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-    /* Primary Button */
-    .btn-primary {
-        background: linear-gradient(135deg, #3DC2EC, #3392cc);
+    * {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* ==================== PAGE HEADER ==================== */
+    .page-header {
+        background: #2f66f6;
+        padding: 35px 30px;
+        border-radius: 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::after {
+        content: "";
+        position: absolute;
+        right: -180px;
+        top: 50%;
+        width: 400px;
+        height: 400px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transform: translateY(-50%);
+    }
+
+    .page-header h1 {
+        color: #fff;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-header h1 i {
+        font-size: 1.5rem;
+    }
+
+    .page-header .subtitle {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.95rem;
+        margin-top: 8px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ==================== CARD CONTENT ==================== */
+    .card-content {
+        background: #fff;
+        border-radius: 0;
+        padding: 24px;
+        margin: 0;
+        min-height: calc(100vh - 140px);
+    }
+
+    /* ==================== TABLE CONTROLS ==================== */
+    .table-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .filter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ==================== PRIMARY BUTTON ==================== */
+    .btn-add {
+        background: linear-gradient(135deg, #2f66f6 0%, #1e4fd8 100%);
         color: white;
         border: none;
         padding: 10px 20px;
         border-radius: 8px;
         font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .btn-primary:hover {
-        background: linear-gradient(135deg, #3392cc, #3DC2EC);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    .btn-add:hover {
+        background: linear-gradient(135deg, #1e4fd8 0%, #1a3fc0 100%);
         transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(47, 102, 246, 0.4);
+        color: white;
     }
 
-    .btn-primary:focus {
-        outline: none;
-    }
-
-    .table-hover {
-        background-color: white;
+    /* ==================== DATA TABLE ==================== */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
         border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        margin-top: 20px;
-        font-size: 0.95rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
-    .table-hover th,
-    .table-hover td {
+    .data-table thead th {
+        background: #2f66f6;
+        color: #fff;
+        font-weight: 600;
         padding: 16px 20px;
         text-align: left;
-        color: #555;
-    }
-
-    .table-hover th {
-        background-color: #3DC2EC;
-        color: white;
-        font-weight: 600;
         text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.85rem;
     }
 
-    .table-hover tr:nth-child(odd) {
-        background-color: #f8faff;
+    .data-table tbody td {
+        padding: 14px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        color: #333;
+        font-size: 0.9rem;
     }
 
-    .table-hover tr:nth-child(even) {
-        background-color: #e8f4fc;
+    .data-table tbody tr:nth-child(odd) {
+        background-color: #f8fafc;
     }
 
-    .table-hover tr:hover {
-        background-color: rgba(61, 194, 236, 0.2);
+    .data-table tbody tr:nth-child(even) {
+        background-color: #fff;
+    }
+
+    .data-table tbody tr:hover {
+        background-color: rgba(47, 102, 246, 0.08);
+    }
+
+    .data-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Clickable name */
+    .open-detail {
+        color: #2f66f6;
         cursor: pointer;
+        font-weight: 500;
+        transition: color 0.2s ease;
     }
 
-    .rounded-table {
-        border-radius: 12px;
+    .open-detail:hover {
+        color: #1e4fd8;
+        text-decoration: underline;
+    }
+
+    /* ==================== MODAL STYLES ==================== */
+    .modal-wawancara .modal-content {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
         overflow: hidden;
     }
 
-    /* Action Buttons */
-    .edit-button,
-    .delete-button {
-        width: 24px;
-        height: 24px;
-        transition: transform 0.3s ease;
+    .modal-wawancara .modal-header {
+        background: linear-gradient(135deg, #2f66f6 0%, #1e4fd8 100%);
+        color: #fff;
+        border-radius: 0;
+        padding: 20px 24px;
+        border: none;
     }
 
-    .edit-button:hover,
-    .delete-button:hover {
-        transform: scale(1.2);
-    }
-
-    /* Modal Styles */
-    .modal-content {
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .modal-header {
-        background: linear-gradient(135deg, #3DC2EC, #3392cc);
-        color: white;
-        border-bottom: none;
-        border-radius: 12px 12px 0 0;
-        padding: 20px;
-    }
-
-    .modal-header h5 {
-        font-size: 1.2rem;
+    .modal-wawancara .modal-header h5 {
+        font-size: 1.15rem;
         font-weight: 600;
+        margin: 0;
     }
 
-    .modal-body {
-        padding: 20px;
-        color: #555;
+    .modal-wawancara .btn-close {
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
     }
 
-    .modal-footer {
-        border-top: none;
-        padding: 20px;
+    .modal-wawancara .btn-close:hover {
+        opacity: 1;
+    }
+
+    .modal-wawancara .modal-body {
+        padding: 24px;
+        color: #333;
+    }
+
+    .modal-wawancara .modal-footer {
+        border-top: 1px solid #f0f0f0;
+        padding: 16px 24px;
         display: flex;
         justify-content: flex-end;
         gap: 10px;
     }
 
+    /* ==================== FORM STYLES ==================== */
+    .form-label {
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 6px;
+        font-size: 0.9rem;
+    }
+
     .form-control,
     .form-select {
         border-radius: 8px;
-        border: 1px solid #ccc;
-        padding: 10px 15px;
-        font-size: 1rem;
-        transition: border-color 0.3s ease;
+        border: 2px solid #e5e7eb;
+        padding: 10px 14px;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
     }
 
     .form-control:focus,
     .form-select:focus {
-        border-color: #3DC2EC;
-        box-shadow: 0 0 5px rgba(61, 194, 236, 0.5);
+        border-color: #2f66f6;
+        box-shadow: 0 0 0 3px rgba(47, 102, 246, 0.15);
         outline: none;
     }
 
     .form-select {
         appearance: none;
-        background: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%233DC2EC' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 5.646a.5.5 0 0 1 .708 0L8 11.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E") no-repeat right 12px center;
+        background: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%232f66f6' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 5.646a.5.5 0 0 1 .708 0L8 11.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E") no-repeat right 12px center;
+        background-color: #fff;
         background-size: 12px 12px;
+    }
+
+    .form-control-plaintext {
+        padding: 8px 0;
+        font-size: 0.95rem;
+        color: #1f2937;
+        font-weight: 500;
+    }
+
+    /* ==================== BUTTONS ==================== */
+    .btn-primary {
+        background: linear-gradient(135deg, #2f66f6 0%, #1e4fd8 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #1e4fd8 0%, #1a3fc0 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(47, 102, 246, 0.35);
+    }
+
+    .btn-secondary {
+        background: #f1f5f9;
+        color: #475569;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+        background: #e2e8f0;
+        color: #334155;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        color: white;
+        border: none;
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+        color: white;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        color: white;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+        color: white;
+    }
+
+    /* ==================== LIST GROUP ==================== */
+    .list-group-item {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px !important;
+        margin-bottom: 6px;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 25px 20px;
+        }
+
+        .page-header h1 {
+            font-size: 1.4rem;
+        }
+
+        .card-content {
+            padding: 16px;
+        }
+
+        .table-controls {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filter-buttons {
+            justify-content: center;
+        }
+
+        .data-table thead th,
+        .data-table tbody td {
+            padding: 12px 14px;
+            font-size: 0.85rem;
+        }
     }
 </style>
 
 <main>
-    <h1 class="dashboard">Jadwal Kegiatan</h1>
-    <button type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal" class="btn btn-primary mb-3">
-        Tambah Jadwal Kegiatan
-    </button>
-
-    <div class="d-flex gap-2 mb-3">
-        <?php foreach ($ruanganList as $index => $ruangan): ?>
-            <button id="filter-<?= $ruangan['id'] ?>" class="btn text-white filter-btn"
-                data-id="<?= (int) $ruangan['id'] ?>"
-                style="background-color: <?= $colors[$index % count($colors)] ?>; width: 200px;">
-                <?= $ruangan['nama'] ?>
-            </button>
-        <?php endforeach; ?>
-        <button id="filter-all" class="btn btn-dark filter-btn" data-id=0>Semua</button>
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="bi bi-calendar-event"></i> Jadwal Kegiatan</h1>
+        <p class="subtitle">Kelola jadwal wawancara dan kegiatan seleksi</p>
     </div>
 
-    <table id="wawancaraMahasiswa" class="table table-hover rounded-table">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama Lengkap</th>
-                <th>Stambuk</th>
-                <th>Ruangan</th>
-                <th>Jadwal Kegiatan</th>
-                <th>Waktu</th>
-                <th>Tanggal</th>
-            </tr>
-        </thead>
-        <tbody id="table-body">
-            <?php $i = 1; ?>
-            <?php foreach ($wawancara as $row) { ?>
-                <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
-                    <td><?= $i ?></td>
-                    <td>
-                        <span class="open-detail" data-bs-toggle="modal" data-bs-target="#wawancaraModal"
-                            data-nama="<?= $row['nama_lengkap'] ?>" data-stambuk="<?= $row['stambuk'] ?>"
-                            data-ruangan="<?= $row['ruangan'] ?>" data-jeniswawancara="<?= $row['jenis_wawancara'] ?>"
-                            data-waktu="<?= $row['waktu'] ?>" data-tanggal="<?= $row['tanggal'] ?>">
-                            <?= $row['nama_lengkap'] ?>
-                        </span>
-                    </td>
-                    <td><?= $row['stambuk'] ?></td>
-                    <td><?= $row['ruangan'] ?></td>
-                    <td><?= $row['jenis_wawancara'] ?></td>
-                    <td><?= $row['waktu'] ?></td>
-                    <td><?= $row['tanggal'] ?></td>
+    <!-- Card Content -->
+    <div class="card-content">
+        <!-- Table Controls -->
+        <div class="table-controls">
+            <div class="filter-buttons">
+                <?php foreach ($ruanganList as $index => $ruangan): ?>
+                    <button id="filter-<?= $ruangan['id'] ?>" class="btn text-white filter-btn"
+                        data-id="<?= (int) $ruangan['id'] ?>"
+                        style="background-color: <?= $colors[$index % count($colors)] ?>;">
+                        <?= htmlspecialchars($ruangan['nama']) ?>
+                    </button>
+                <?php endforeach; ?>
+                <button id="filter-all" class="btn btn-dark filter-btn" data-id=0>Semua</button>
+            </div>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal" class="btn btn-add">
+                <i class="bi bi-plus-circle"></i> Tambah Jadwal
+            </button>
+        </div>
+
+        <!-- Data Table -->
+        <table id="wawancaraMahasiswa" class="data-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Lengkap</th>
+                    <th>Stambuk</th>
+                    <th>Ruangan</th>
+                    <th>Jadwal Kegiatan</th>
+                    <th>Waktu</th>
+                    <th>Tanggal</th>
                 </tr>
-                <?php $i++; ?>
-            <?php } ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody id="table-body">
+                <?php $i = 1; ?>
+                <?php foreach ($wawancara as $row) { ?>
+                    <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
+                        <td><?= $i ?></td>
+                        <td>
+                            <span class="open-detail" data-bs-toggle="modal" data-bs-target="#wawancaraModal"
+                                data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>" data-stambuk="<?= htmlspecialchars($row['stambuk']) ?>"
+                                data-ruangan="<?= htmlspecialchars($row['ruangan']) ?>" data-jeniswawancara="<?= htmlspecialchars($row['jenis_wawancara']) ?>"
+                                data-waktu="<?= htmlspecialchars($row['waktu']) ?>" data-tanggal="<?= htmlspecialchars($row['tanggal']) ?>">
+                                <?= htmlspecialchars($row['nama_lengkap']) ?>
+                            </span>
+                        </td>
+                        <td><?= htmlspecialchars($row['stambuk']) ?></td>
+                        <td><?= htmlspecialchars($row['ruangan']) ?></td>
+                        <td><?= htmlspecialchars($row['jenis_wawancara']) ?></td>
+                        <td><?= htmlspecialchars($row['waktu']) ?></td>
+                        <td><?= htmlspecialchars($row['tanggal']) ?></td>
+                    </tr>
+                    <?php $i++; ?>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
 </main>
 
-<div class="modal fade" id="addJadwalModal" tabindex="-1" aria-labelledby="addJadwalModalLabel" aria-hidden="true">
+<div class="modal fade modal-wawancara" id="addJadwalModal" tabindex="-1" aria-labelledby="addJadwalModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addJadwalModalLabel">Tambah Jadwal</h5>
+                <h5 class="modal-title" id="addJadwalModalLabel"><i class="bi bi-plus-circle me-2"></i>Tambah Jadwal</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -271,11 +494,11 @@ $colors = ['#3357FF'];
     </div>
 </div>
 
-<div class="modal fade" id="wawancaraModal" tabindex="-1" aria-labelledby="presentasiModalLabel" aria-hidden="true">
+<div class="modal fade modal-wawancara" id="wawancaraModal" tabindex="-1" aria-labelledby="presentasiModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="presentasiModalLabel">Detail Wawancara</h5>
+                <h5 class="modal-title" id="presentasiModalLabel"><i class="bi bi-info-circle me-2"></i>Detail Wawancara</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -313,12 +536,12 @@ $colors = ['#3357FF'];
     </div>
 </div>
 
-<div class="modal fade" id="updateWawancaraModal" tabindex="-1" aria-labelledby="updateWawancaraModalLabel"
+<div class="modal fade modal-wawancara" id="updateWawancaraModal" tabindex="-1" aria-labelledby="updateWawancaraModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="updateWawancaraModalLabel">Update Wawancara</h5>
+                <h5 class="modal-title" id="updateWawancaraModalLabel"><i class="bi bi-pencil-square me-2"></i>Update Wawancara</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

@@ -947,13 +947,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
     </div>
 </div>
 
-<!-- Alert Modal -->
-<div id="alertModal" class="alert-modal">
-    <div class="alert-content">
-        <img id="alertGif" src="" alt="Status">
-        <p id="alertMessage">-</p>
-    </div>
-</div>
+
 
 <script>
 $(document).ready(function() {
@@ -974,19 +968,7 @@ $(document).ready(function() {
         }
     });
 
-    // Show alert
-    function showAlert(message, isSuccess = true) {
-        const gifUrl = isSuccess
-            ? APP_URL + '/public/Assets/gif/success.gif'
-            : APP_URL + '/public/Assets/gif/failed.gif';
-        $('#alertGif').attr('src', gifUrl);
-        $('#alertMessage').text(message);
-        $('#alertModal').addClass('show');
-        setTimeout(() => {
-            $('#alertModal').removeClass('show');
-            if (isSuccess) location.reload();
-        }, 2000);
-    }
+
 
     // Search functionality
     $('#searchPengajuan').on('input', function() {

@@ -26,6 +26,9 @@
 <body>
     <?php require_once "sidebarAdmin.php" ?>
 
+    <!-- Global Toast Container -->
+    <div id="toast-container"></div>
+
     <div class="main-content" id="content">
         <?php require_once "dashboardAdmin.php" ?>
     </div>

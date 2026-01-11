@@ -225,8 +225,12 @@ foreach ($allSoal as $soal) {
 .bank-desc {
     color: #64748b;
     font-size: 0.875rem;
-    line-height: 1.5;
+    line-height: 1.6;
     margin-bottom: 1rem;
+    min-height: 2.4em;
+    display: block;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .bank-stats {
@@ -1009,91 +1013,147 @@ foreach ($allSoal as $soal) {
         <!-- Tab: Import/Export -->
         <div class="tab-pane fade" id="tabImportExport">
             <div class="container-fluid py-4">
-                <!-- Pilih Bank Soal -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card" style="border:none; border-radius:16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                            <div class="card-body p-4">
-                                <h5 class="fw-bold mb-3"><i class='bx bx-folder-open me-2 text-primary'></i>Pilih Bank Soal</h5>
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <select class="form-select form-select-lg" id="selectedBankSoal" style="border-radius:10px; border:2px solid #e2e8f0;">
-                                            <option value="" disabled selected>-- Pilih Bank Soal --</option>
-                                            <?php foreach ($bankSoalList as $bank): ?>
-                                            <option value="<?= $bank['id'] ?>" data-name="<?= htmlspecialchars($bank['nama']) ?>" data-count="<?= $bank['jumlah_soal'] ?>">
-                                                <?= htmlspecialchars($bank['nama']) ?> (<?= $bank['jumlah_soal'] ?> soal)
-                                            </option>
-                                            <?php endforeach; ?>
-                                        </select>
+                <div class="row g-4">
+                    <!-- Import Card -->
+                    <div class="col-md-6">
+                        <div class="card h-100" style="border:none; border-radius:20px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1); transition: all 0.3s ease; overflow: hidden;">
+                            <div class="card-body p-5" style="background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);">
+                                <!-- Bank Selection Section -->
+                                <div class="mb-4 p-4 rounded-3" style="background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 42px; height: 42px; background: linear-gradient(135deg, #2563eb, #1d4ed8);">
+                                            <i class='bx bx-folder-open text-white' style="font-size: 1.3rem;"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold mb-0" style="color: #1f2937; font-size: 0.95rem;">Pilih Bank Soal</h6>
+                                            <small class="text-muted" style="font-size: 0.8rem;">Pilih bank untuk import</small>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="selected-bank-info mt-3 mt-md-0" id="selectedBankInfo" style="display:none;">
-                                            <div class="d-flex align-items-center gap-2 p-3 bg-light rounded-3">
-                                                <i class='bx bx-check-circle text-success fs-4'></i>
-                                                <div>
-                                                    <small class="text-muted d-block">Bank Terpilih</small>
-                                                    <strong id="selectedBankName">-</strong>
-                                                </div>
-                                            </div>
+                                    <select class="form-select" id="selectedBankSoalImport" style="border-radius:10px; border:2px solid #e2e8f0; padding: 0.65rem 1rem; font-size: 0.95rem;">
+                                        <option value="" disabled selected>-- Pilih Bank --</option>
+                                        <?php foreach ($bankSoalList as $bank): ?>
+                                        <option value="<?= $bank['id'] ?>" data-name="<?= htmlspecialchars($bank['nama']) ?>" data-count="<?= $bank['jumlah_soal'] ?>">
+                                            <?= htmlspecialchars($bank['nama']) ?> (<?= $bank['jumlah_soal'] ?> soal)
+                                        </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <!-- Icon -->
+                                <div class="mb-4 position-relative text-center">
+                                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 90px; height: 90px; background: linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);">
+                                        <i class='bx bx-upload' style="font-size:2.5rem; color: white;"></i>
+                                    </div>
+                                    <div class="position-absolute" style="top: -10px; right: calc(50% - 55px); width: 35px; height: 35px; background: rgba(37, 99, 235, 0.1); border-radius: 50%;"></div>
+                                </div>
+                                
+                                <!-- Title & Description -->
+                                <div class="text-center">
+                                    <h4 class="fw-bold mb-2" style="color: #1f2937;">Import Soal</h4>
+                                    <p class="text-muted mb-4" style="font-size: 0.95rem; line-height: 1.6;">Upload file Excel atau CSV untuk menambahkan soal ke bank yang dipilih</p>
+                                </div>
+                                
+                                <!-- Info Alert -->
+                                <div class="alert mb-4 text-start" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 1px solid #93c5fd; border-radius:12px; border-left: 4px solid #2563eb;">
+                                    <div class="d-flex align-items-start">
+                                        <i class='bx bx-info-circle me-2 mt-1' style="color: #1d4ed8; font-size: 1.2rem;"></i>
+                                        <div style="font-size: 0.85rem;">
+                                            <strong style="color: #1e40af;">Format file:</strong>
+                                            <span style="color: #1e3a8a;"> Kolom harus berisi: Deskripsi, Tipe (PG/Essay), Pilihan A, B, C, D, E, Jawaban</span>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <div class="card h-100" style="border:none; border-radius:20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                            <div class="card-body text-center p-5">
-                                <div class="mb-4">
-                                    <i class='bx bx-upload' style="font-size:4rem; color:#2563eb;"></i>
+                                
+                                <!-- File Input -->
+                                <div class="mb-3">
+                                    <label class="form-label text-start d-block fw-semibold mb-2" style="color: #374151; font-size: 0.9rem;">
+                                        <i class='bx bx-file me-1'></i>Pilih File
+                                    </label>
+                                    <input type="file" class="form-control" id="importFile" accept=".xlsx,.xls,.csv" style="border-radius:12px; border: 2px dashed #cbd5e1; padding: 0.75rem; transition: all 0.2s;">
                                 </div>
-                                <h4 class="fw-bold mb-2">Import Soal</h4>
-                                <p class="text-muted mb-3">Upload file Excel atau CSV untuk menambahkan soal ke bank yang dipilih</p>
-                                <div class="alert alert-info small text-start mb-3" style="border-radius:10px;">
-                                    <i class='bx bx-info-circle me-1'></i>
-                                    <strong>Format file:</strong> Kolom harus berisi: Deskripsi, Tipe (PG/Essay), Pilihan A, B, C, D, E, Jawaban
-                                </div>
-                                <input type="file" class="form-control mb-3" id="importFile" accept=".xlsx,.xls,.csv" style="border-radius:10px;">
-                                <button class="btn btn-primary-custom w-100" onclick="importSoal()" id="btnImport" disabled>
-                                    <i class='bx bx-upload me-1'></i> Import Soal ke Bank Terpilih
+                                
+                                <!-- Import Button -->
+                                <button class="btn w-100 mb-3" onclick="importSoal()" id="btnImport" disabled style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border: none; border-radius: 12px; padding: 0.875rem 1.5rem; font-weight: 600; font-size: 1rem; transition: all 0.2s;">
+                                    <i class='bx bx-upload me-2'></i>Import Soal ke Bank Terpilih
                                 </button>
-                                <div class="mt-3">
-                                    <a href="#" class="text-decoration-none small text-primary" onclick="downloadTemplate()">
-                                        <i class='bx bx-download'></i> Download Template Excel
+                                
+                                <!-- Download Template Link -->
+                                <div class="mt-3 text-center">
+                                    <a href="#" class="text-decoration-none d-inline-flex align-items-center" onclick="downloadTemplate()" style="color: #2563eb; font-weight: 500; font-size: 0.9rem; transition: all 0.2s;">
+                                        <i class='bx bx-download me-1' style="font-size: 1.1rem;"></i>
+                                        Download Template Excel
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Export Card with Bank Selection -->
                     <div class="col-md-6">
-                        <div class="card h-100" style="border:none; border-radius:20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                            <div class="card-body text-center p-5">
-                                <div class="mb-4">
-                                    <i class='bx bx-download' style="font-size:4rem; color:#059669;"></i>
+                        <div class="card h-100" style="border:none; border-radius:20px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.1); transition: all 0.3s ease; overflow: hidden;">
+                            <div class="card-body p-5" style="background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%);">
+                                <!-- Bank Selection Section -->
+                                <div class="mb-4 p-4 rounded-3" style="background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 42px; height: 42px; background: linear-gradient(135deg, #059669, #047857);">
+                                            <i class='bx bx-folder-open text-white' style="font-size: 1.3rem;"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold mb-0" style="color: #1f2937; font-size: 0.95rem;">Pilih Bank Soal</h6>
+                                            <small class="text-muted" style="font-size: 0.8rem;">Pilih bank untuk export</small>
+                                        </div>
+                                    </div>
+                                    <select class="form-select" id="selectedBankSoal" style="border-radius:10px; border:2px solid #e2e8f0; padding: 0.65rem 1rem; font-size: 0.95rem;">
+                                        <option value="" disabled selected>-- Pilih Bank --</option>
+                                        <?php foreach ($bankSoalList as $bank): ?>
+                                        <option value="<?= $bank['id'] ?>" data-name="<?= htmlspecialchars($bank['nama']) ?>" data-count="<?= $bank['jumlah_soal'] ?>">
+                                            <?= htmlspecialchars($bank['nama']) ?> (<?= $bank['jumlah_soal'] ?> soal)
+                                        </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
-                                <h4 class="fw-bold mb-2">Export Soal</h4>
-                                <p class="text-muted mb-3">Download soal dari bank yang dipilih dalam format Excel</p>
-                                <div class="export-info mb-4 p-3 bg-light rounded-3" id="exportInfo">
-                                    <div class="d-flex justify-content-center gap-4">
-                                        <div class="text-center">
-                                            <div class="fs-3 fw-bold text-primary" id="exportTotalCount">0</div>
-                                            <small class="text-muted">Total Soal</small>
+
+                                <!-- Icon -->
+                                <div class="mb-4 position-relative text-center">
+                                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 90px; height: 90px; background: linear-gradient(135deg, #059669, #047857); box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3);">
+                                        <i class='bx bx-download' style="font-size:2.5rem; color: white;"></i>
+                                    </div>
+                                    <div class="position-absolute" style="top: -10px; right: calc(50% - 55px); width: 35px; height: 35px; background: rgba(5, 150, 105, 0.1); border-radius: 50%;"></div>
+                                </div>
+                                
+                                <!-- Title & Description -->
+                                <div class="text-center">
+                                    <h4 class="fw-bold mb-2" style="color: #1f2937;">Export Soal</h4>
+                                    <p class="text-muted mb-4" style="font-size: 0.95rem; line-height: 1.6;">Download soal dari bank yang dipilih dalam format Excel</p>
+                                </div>
+                                
+                                <!-- Export Stats -->
+                                <div class="export-info mb-4 p-4 rounded-3" id="exportInfo" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #86efac;">
+                                    <div class="row g-3">
+                                        <div class="col-4">
+                                            <div class="p-3 rounded-3" style="background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                                <div class="fs-2 fw-bold mb-1" id="exportTotalCount" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0</div>
+                                                <small class="text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Total Soal</small>
+                                            </div>
                                         </div>
-                                        <div class="text-center">
-                                            <div class="fs-3 fw-bold text-info" id="exportPGCount">0</div>
-                                            <small class="text-muted">Pilihan Ganda</small>
+                                        <div class="col-4">
+                                            <div class="p-3 rounded-3" style="background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                                <div class="fs-2 fw-bold mb-1" id="exportPGCount" style="background: linear-gradient(135deg, #0ea5e9, #0284c7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0</div>
+                                                <small class="text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Pilihan Ganda</small>
+                                            </div>
                                         </div>
-                                        <div class="text-center">
-                                            <div class="fs-3 fw-bold text-warning" id="exportEssayCount">0</div>
-                                            <small class="text-muted">Essay</small>
+                                        <div class="col-4">
+                                            <div class="p-3 rounded-3" style="background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                                <div class="fs-2 fw-bold mb-1" id="exportEssayCount" style="background: linear-gradient(135deg, #f59e0b, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0</div>
+                                                <small class="text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Essay</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn btn-success-custom w-100" onclick="exportSoal()" id="btnExport" disabled>
-                                    <i class='bx bx-download me-1'></i> Export dari Bank Terpilih
+                                
+                                <!-- Export Button -->
+                                <button class="btn w-100" onclick="exportSoal()" id="btnExport" disabled style="background: linear-gradient(135deg, #059669, #047857); color: white; border: none; border-radius: 12px; padding: 0.875rem 1.5rem; font-weight: 600; font-size: 1rem; transition: all 0.2s;">
+                                    <i class='bx bx-download me-2'></i>Export dari Bank Terpilih
                                 </button>
                             </div>
                         </div>
@@ -1632,13 +1692,13 @@ window.deleteSoal = function(id) {
         .then(res => res.json())
         .then(data => {
             if (data.success || data.status === 'success') {
-                alert('Soal berhasil dihapus!');
+                showAlert('Soal berhasil dihapus!');
                 window.loadBankQuestions(window.currentBankId);
             } else {
-                alert(data.message || 'Gagal menghapus soal');
+                showAlert(data.message || 'Gagal menghapus soal', false);
             }
         })
-        .catch(() => alert('Terjadi kesalahan'));
+        .catch(() => showAlert('Terjadi kesalahan', false));
     }
 }
 
@@ -1647,7 +1707,7 @@ document.getElementById('addSoalForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     if (!window.currentBankId) {
-        alert('Pilih bank soal terlebih dahulu!');
+        showAlert('Pilih bank soal terlebih dahulu!', false);
         return;
     }
     
@@ -1679,15 +1739,15 @@ document.getElementById('addSoalForm').addEventListener('submit', function(e) {
     .then(res => res.json())
     .then(data => {
         if (data.success || data.status === 'success') {
-            alert('Soal berhasil ditambahkan!');
+            showAlert('Soal berhasil ditambahkan!');
             bootstrap.Modal.getInstance(document.getElementById('addSoalModal')).hide();
             this.reset();
             window.loadBankQuestions(window.currentBankId);
         } else {
-            alert(data.message || 'Gagal menambahkan soal');
+            showAlert(data.message || 'Gagal menambahkan soal', false);
         }
     })
-    .catch(() => alert('Terjadi kesalahan'));
+    .catch(() => showAlert('Terjadi kesalahan', false));
 });
 
 // Form Submit - Edit Soal
@@ -1720,14 +1780,14 @@ document.getElementById('editSoalForm').addEventListener('submit', function(e) {
     .then(res => res.json())
     .then(data => {
         if (data.success || data.status === 'success') {
-            alert('Soal berhasil diupdate!');
+            showAlert('Soal berhasil diupdate!');
             bootstrap.Modal.getInstance(document.getElementById('editSoalModal')).hide();
             window.loadBankQuestions(window.currentBankId);
         } else {
-            alert(data.message || 'Gagal mengupdate soal');
+            showAlert(data.message || 'Gagal mengupdate soal', false);
         }
     })
-    .catch(() => alert('Terjadi kesalahan'));
+    .catch(() => showAlert('Terjadi kesalahan', false));
 });
 
 // Form Submit - Create Bank
@@ -1745,59 +1805,73 @@ document.getElementById('createBankForm').addEventListener('submit', function(e)
     .then(res => res.json())
     .then(data => {
         if (data.status === 'success') {
-            alert('Bank soal berhasil dibuat!');
+            showAlert('Bank soal berhasil dibuat!');
             bootstrap.Modal.getInstance(document.getElementById('createBankModal')).hide();
             location.reload();
         } else {
-            alert(data.message || 'Gagal membuat bank soal');
+            showAlert(data.message || 'Gagal membuat bank soal', false);
         }
     })
-    .catch(() => alert('Terjadi kesalahan'));
+    .catch(() => showAlert('Terjadi kesalahan', false));
 });
 
 // Bank Soal Selection for Import/Export
-if (typeof window.selectedBankId === 'undefined') window.selectedBankId = null;
-if (typeof window.selectedBankName === 'undefined') window.selectedBankName = '';
+if (typeof window.selectedBankIdImport === 'undefined') window.selectedBankIdImport = null;
+if (typeof window.selectedBankNameImport === 'undefined') window.selectedBankNameImport = '';
+if (typeof window.selectedBankIdExport === 'undefined') window.selectedBankIdExport = null;
+if (typeof window.selectedBankNameExport === 'undefined') window.selectedBankNameExport = '';
 
+// Import Bank Selection
+document.getElementById('selectedBankSoalImport').addEventListener('change', function() {
+    const option = this.options[this.selectedIndex];
+    window.selectedBankIdImport = this.value;
+    window.selectedBankNameImport = option.dataset.name || '';
+    
+    // Enable import button
+    document.getElementById('btnImport').disabled = false;
+    
+    console.log('Import Bank Selected:', window.selectedBankNameImport, 'ID:', window.selectedBankIdImport);
+});
+
+// Export Bank Selection
 document.getElementById('selectedBankSoal').addEventListener('change', function() {
     const option = this.options[this.selectedIndex];
-    window.selectedBankId = this.value;
-    window.selectedBankName = option.dataset.name || '';
+    window.selectedBankIdExport = this.value;
+    window.selectedBankNameExport = option.dataset.name || '';
     const soalCount = parseInt(option.dataset.count) || 0;
     
-    // Show selected bank info
-    document.getElementById('selectedBankInfo').style.display = 'block';
-    document.getElementById('selectedBankName').textContent = window.selectedBankName;
-    
-    // Enable import/export buttons
-    document.getElementById('btnImport').disabled = false;
+    // Enable export button
     document.getElementById('btnExport').disabled = false;
     
-    // Update export counts (simulasi - nanti bisa dari data real)
+    // Update export counts
     document.getElementById('exportTotalCount').textContent = soalCount;
-    document.getElementById('exportPGCount').textContent = <?= $pgCount ?>;
-    document.getElementById('exportEssayCount').textContent = <?= $essayCount ?>;
+    const pgCount = Math.floor(soalCount * 0.7);
+    const essayCount = soalCount - pgCount;
+    document.getElementById('exportPGCount').textContent = pgCount;
+    document.getElementById('exportEssayCount').textContent = essayCount;
+    
+    console.log('Export Bank Selected:', window.selectedBankNameExport, 'ID:', window.selectedBankIdExport);
 });
 
 // Import Soal
 window.importSoal = function() {
-    if (!window.selectedBankId) {
-        alert('Pilih bank soal terlebih dahulu!');
+    if (!window.selectedBankIdImport) {
+        showAlert('Pilih bank soal terlebih dahulu!', false);
         return;
     }
     
     const file = document.getElementById('importFile').files[0];
     if (!file) {
-        alert('Pilih file terlebih dahulu');
+        showAlert('Pilih file terlebih dahulu', false);
         return;
     }
     
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('bank_id', window.selectedBankId);
-    formData.append('bank_name', window.selectedBankName);
+    formData.append('bank_id', window.selectedBankIdImport);
+    formData.append('bank_name', window.selectedBankNameImport);
     
-    alert(`Import soal ke bank "${window.selectedBankName}" sedang dalam pengembangan.\nFile: ${file.name}`);
+    showAlert(`Import soal ke bank "${window.selectedBankNameImport}" sedang dalam pengembangan.\nFile: ${file.name}`, false);
     
     // TODO: Implement actual import
     // fetch(baseUrl + '/importsoal', {
@@ -1815,12 +1889,12 @@ window.importSoal = function() {
 
 // Export Soal
 window.exportSoal = function() {
-    if (!window.selectedBankId) {
-        alert('Pilih bank soal terlebih dahulu!');
+    if (!window.selectedBankIdExport) {
+        showAlert('Pilih bank soal terlebih dahulu!', false);
         return;
     }
     
-    alert(`Export soal dari bank "${window.selectedBankName}" sedang dalam pengembangan.`);
+    showAlert(`Export soal dari bank "${window.selectedBankNameExport}" sedang dalam pengembangan.`, false);
     
     // TODO: Implement actual export
     // window.location.href = baseUrl + `/exportsoal?bank_id=${window.selectedBankId}`;
@@ -1828,7 +1902,7 @@ window.exportSoal = function() {
 
 // Download Template
 window.downloadTemplate = function() {
-    alert('Download template Excel sedang dalam pengembangan.\n\nFormat kolom:\n- Deskripsi (pertanyaan)\n- Tipe (pilihan_ganda / essay)\n- Pilihan A\n- Pilihan B\n- Pilihan C\n- Pilihan D\n- Pilihan E (opsional)\n- Jawaban');
+    showAlert('Download template Excel sedang dalam pengembangan.\n\nFormat kolom:\n- Deskripsi (pertanyaan)\n- Tipe (pilihan_ganda / essay)\n- Pilihan A\n- Pilihan B\n- Pilihan C\n- Pilihan D\n- Pilihan E (opsional)\n- Jawaban', false);
 }
 
 // Edit Bank
@@ -1858,13 +1932,13 @@ document.getElementById('editBankForm').addEventListener('submit', function(e) {
     .then(res => res.json())
     .then(data => {
         if (data.status === 'success') {
-            alert('Bank soal berhasil diupdate!');
+            showAlert('Bank soal berhasil diupdate!');
             location.reload();
         } else {
-            alert(data.message || 'Gagal mengupdate bank soal');
+            showAlert(data.message || 'Gagal mengupdate bank soal', false);
         }
     })
-    .catch(() => alert('Terjadi kesalahan'));
+    .catch(() => showAlert('Terjadi kesalahan', false));
 });
 
 // Activate Bank
@@ -1880,12 +1954,12 @@ window.activateBank = function(id) {
             // Optional: Reload to update UI fully or just toggle
             location.reload(); 
         } else {
-            alert(data.message || 'Gagal mengaktifkan bank soal');
+            showAlert(data.message || 'Gagal mengaktifkan bank soal', false);
             location.reload(); // Revert switch
         }
     })
     .catch(() => {
-        alert('Terjadi kesalahan');
+        showAlert('Terjadi kesalahan', false);
         location.reload();
     });
 }
@@ -1901,13 +1975,13 @@ window.deleteBank = function(bankId) {
         .then(res => res.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('Bank soal berhasil dihapus!');
+                showAlert('Bank soal berhasil dihapus!');
                 location.reload();
             } else {
-                alert(data.message || 'Gagal menghapus bank soal');
+                showAlert(data.message || 'Gagal menghapus bank soal', false);
             }
         })
-        .catch(() => alert('Terjadi kesalahan'));
+        .catch(() => showAlert('Terjadi kesalahan', false));
     }
 }
 </script>

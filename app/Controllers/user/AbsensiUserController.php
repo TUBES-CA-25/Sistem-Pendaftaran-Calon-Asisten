@@ -94,4 +94,41 @@ class AbsensiUserController extends Controller
 
 
     }
+
+    public function deleteData() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+            return;
+        }
+
+        if (!isset($_SESSION['user']['id'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
+            return;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id = $input['id'] ?? null;
+
+        if (!$id) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => 'ID is required']);
+            return;
+        }
+
+        try {
+            $absensi = new Absensi();
+            if ($absensi->deleteAbsensi($id)) {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'success', 'message' => 'Absensi berhasil dihapus']);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus absensi']);
+            }
+        } catch (\Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
 }

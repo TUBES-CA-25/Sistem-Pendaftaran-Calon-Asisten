@@ -115,3 +115,62 @@ function sendAjax(url, data, onSuccess, onError) {
         }
     });
 }
+
+/**
+ * Global Toast Notification Function
+ * @param {string} message - Message to display
+ * @param {boolean} isSuccess - True for success (green), False for error (red)
+ * @param {string|null} redirectUrl - Optional URL to redirect after toast closes
+ */
+function showAlert(message, isSuccess = true, redirectUrl = null) {
+    // Ensure toast container exists
+    if ($('#toast-container').length === 0) {
+        $('body').append('<div id="toast-container"></div>');
+    }
+
+    const type = isSuccess ? 'success' : 'error';
+    const title = isSuccess ? 'Berhasil' : 'Gagal';
+    const icon = isSuccess ? 'bi-check-lg' : 'bi-exclamation-triangle';
+    const duration = 3000; // 3 seconds
+
+    const toastHtml = `
+        <div class="toast-notification ${type}">
+            <div class="toast-icon">
+                <i class="bi ${icon}"></i>
+            </div>
+            <div class="toast-content">
+                <div class="toast-title">${title}</div>
+                <div class="toast-message">${message}</div>
+            </div>
+            <div class="toast-close" onclick="$(this).parent().remove()">
+                <i class="bi bi-x"></i>
+            </div>
+            <div class="toast-progress">
+                <div class="toast-progress-bar"></div>
+            </div>
+        </div>
+    `;
+
+    const $toast = $(toastHtml);
+    $('#toast-container').append($toast);
+
+    // Trigger reflow for animation
+    setTimeout(() => $toast.addClass('show'), 10);
+
+    // Progress bar animation
+    const $progressBar = $toast.find('.toast-progress-bar');
+    $progressBar.css('transition', `transform ${duration}ms linear`);
+    setTimeout(() => $progressBar.css('transform', 'scaleX(0)'), 10);
+
+    // Auto remove
+    setTimeout(() => {
+        $toast.removeClass('show');
+        setTimeout(() => {
+            $toast.remove();
+            // Handle redirect if provided
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            }
+        }, 400); // Wait for slide out animation
+    }, duration);
+}

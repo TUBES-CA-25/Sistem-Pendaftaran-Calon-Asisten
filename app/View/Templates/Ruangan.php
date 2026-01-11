@@ -500,7 +500,7 @@ $ruanganList = $ruanganList ?? [];
                             `);
                         });
                     } else {
-                        alert('Gagal memuat detail: ' + res.message);
+                        showAlert('Gagal memuat detail: ' + res.message, false);
                     }
                 }
             });
@@ -525,8 +525,8 @@ $ruanganList = $ruanganList ?? [];
                 data: { namaRuangan: $('#namaRuangan').val() },
                 dataType: 'json',
                 success: function (res) {
-                    if (res.status === 'success') { alert('Berhasil!'); location.reload(); }
-                    else { alert('Gagal: ' + res.message); }
+                    if (res.status === 'success') { showAlert('Berhasil!', true); location.reload(); }
+                    else { showAlert('Gagal: ' + res.message, false); }
                 }
             });
         });
@@ -539,8 +539,8 @@ $ruanganList = $ruanganList ?? [];
                 data: { id: $('#updateRuanganId').val(), namaRuangan: $('#updateNamaRuangan').val() },
                 dataType: 'json',
                 success: function (res) {
-                    if (res.status === 'success') { alert('Berhasil!'); location.reload(); }
-                    else { alert('Gagal: ' + res.message); }
+                    if (res.status === 'success') { showAlert('Berhasil!', true); location.reload(); }
+                    else { showAlert('Gagal: ' + res.message, false); }
                 }
             });
         });
@@ -554,7 +554,7 @@ $ruanganList = $ruanganList ?? [];
                 dataType: 'json',
                 success: function (res) {
                     if (res.status === 'success') location.reload();
-                    else alert('Gagal hapus: ' + res.message);
+                    else showAlert('Gagal hapus: ' + res.message, false);
                 }
             });
         });
@@ -604,7 +604,7 @@ $ruanganList = $ruanganList ?? [];
                         renderParticipants(res.assigned);
                         renderAvailableOptions(res.available);
                     } else {
-                        alert('Gagal memuat peserta: ' + res.message);
+                        showAlert('Gagal memuat peserta: ' + res.message, false);
                     }
                 },
                 error: function() {
@@ -657,7 +657,7 @@ $ruanganList = $ruanganList ?? [];
                     if(res.status === 'success') {
                         loadParticipants(); 
                     } else {
-                        alert(res.message);
+                        showAlert(res.message, false);
                     }
                 }
             });
@@ -676,7 +676,7 @@ $ruanganList = $ruanganList ?? [];
                     if(res.status === 'success') {
                         loadParticipants();
                     } else {
-                        alert(res.message);
+showAlert(res.message, false);
                     }
                 }
             });

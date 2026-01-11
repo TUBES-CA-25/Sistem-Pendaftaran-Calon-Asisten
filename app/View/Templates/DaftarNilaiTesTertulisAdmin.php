@@ -805,23 +805,7 @@ $(document).ready(function() {
         });
     });
 
-    // Show alert modal
-    function showAlert(message, isSuccess = true) {
-        const gifUrl = isSuccess
-            ? '<?= APP_URL ?>/public/Assets/gif/success.gif'
-            : '<?= APP_URL ?>/public/Assets/gif/failed.gif';
 
-        $('#alertGif').attr('src', gifUrl);
-        $('#alertMessage').text(message);
-        $('#alertModal').addClass('show');
-
-        setTimeout(function() {
-            $('#alertModal').removeClass('show');
-            if (isSuccess) {
-                location.reload();
-            }
-        }, 2000);
-    }
 
     // Input validation
     $('#nilaiAkhir').on('input', function() {

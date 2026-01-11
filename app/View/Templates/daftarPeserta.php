@@ -252,10 +252,10 @@ $result = $result ?? [];
         font-size: 0.9rem;
     }
 
-    /* Status Badges - Modern Style */
+    /* Status Badges - Flat Style (No Gradient) */
     .badge-status {
-        padding: 8px 16px;
-        border-radius: 8px;
+        padding: 6px 16px;
+        border-radius: 6px;
         font-size: 0.75rem;
         font-weight: 600;
         display: inline-flex;
@@ -266,13 +266,11 @@ $result = $result ?? [];
         white-space: nowrap;
         text-transform: capitalize;
         letter-spacing: 0.3px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: all 0.2s ease;
+        transition: opacity 0.2s ease;
     }
 
     .badge-status:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        opacity: 0.85;
     }
 
     .badge-status i {
@@ -282,23 +280,23 @@ $result = $result ?? [];
     }
 
     .badge-diterima {
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        background: #d1fae5;
         color: #047857;
     }
 
     .badge-process {
-        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        background: #dbeafe;
         color: #1d4ed8;
     }
 
     .badge-ditolak {
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        background: #fee2e2;
         color: #b91c1c;
     }
 
     .badge-pending {
-        background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-        color: #334155;
+        background: #e2e8f0;
+        color: #64748b;
     }
 
     /* Action Buttons */
@@ -651,7 +649,7 @@ $result = $result ?? [];
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
             <!-- Header dengan Background Gradient -->
-            <div class="position-relative" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px 30px 90px 30px;">
+            <div class="position-relative" style="background: #2563EB; padding: 25px 30px 90px 30px;">
                 <button type="button" class="btn-close btn-close-white position-absolute" style="top: 15px; right: 15px; opacity: 0.8; z-index: 20;" data-bs-dismiss="modal" aria-label="Close"></button>
                 
                 <!-- Decorative Elements -->
@@ -929,23 +927,23 @@ $result = $result ?? [];
     }
     
     .badge-diterima {
-        background: linear-gradient(135deg, #10b981 0%, #059b70 100%) !important;
-        color: white !important;
+        background: #d1fae5 !important;
+        color: #047857 !important;
     }
-    
+
     .badge-process {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
-        color: white !important;
+        background: #dbeafe !important;
+        color: #1d4ed8 !important;
     }
-    
+
     .badge-pending {
-        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
-        color: white !important;
+        background: #e2e8f0 !important;
+        color: #64748b !important;
     }
-    
+
     .badge-ditolak {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-        color: white !important;
+        background: #fee2e2 !important;
+        color: #b91c1c !important;
     }
     
     #detailModal .btn:hover {
@@ -988,17 +986,17 @@ $result = $result ?? [];
     
     /* Status Icon Styles */
     .status-icon-verified {
-        background: linear-gradient(135deg, #10b981 0%, #059b70 100%);
+        background: #10b981;
         color: white;
     }
-    
+
     .status-icon-pending {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        background: #f59e0b;
         color: white;
     }
-    
+
     .status-icon-none {
-        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        background: #6b7280;
         color: white;
     }
     
@@ -1262,7 +1260,7 @@ $result = $result ?? [];
         var message = document.getElementById('individualMessage').value;
         
         if (!message.trim()) {
-            alert('Pesan tidak boleh kosong');
+            showAlert('Pesan tidak boleh kosong', false);
             return;
         }
         
@@ -1280,16 +1278,16 @@ $result = $result ?? [];
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('Pesan berhasil dikirim!');
+                showAlert('Pesan berhasil dikirim!', true);
                 var modal = bootstrap.Modal.getInstance(document.getElementById('sendMessageModal'));
                 if (modal) modal.hide();
             } else {
-                alert('Gagal: ' + (data.message || 'Terjadi kesalahan'));
+                showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan saat mengirim pesan');
+            showAlert('Terjadi kesalahan saat mengirim pesan', false);
         });
     });
 
@@ -1300,7 +1298,7 @@ $result = $result ?? [];
             if (url) {
                 window.open(url, '_blank');
             } else {
-                alert('File tidak tersedia');
+                showAlert('File tidak tersedia', false);
             }
         });
     });
@@ -1330,7 +1328,7 @@ $result = $result ?? [];
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('Berkas berhasil diverifikasi!');
+                showAlert('Berkas berhasil diverifikasi!', true);
                 
                 // Update button state if from table
                 if (button) {
@@ -1362,12 +1360,12 @@ $result = $result ?? [];
                     if (modal) modal.hide();
                 }
             } else {
-                alert('Gagal: ' + (data.message || 'Terjadi kesalahan'));
+                showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan saat memverifikasi berkas');
+            showAlert('Terjadi kesalahan saat memverifikasi berkas', false);
         });
     }
 
@@ -1395,17 +1393,17 @@ $result = $result ?? [];
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    alert('Data berhasil dihapus!');
+                    showAlert('Data berhasil dihapus!', true);
                     var modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
                     if (modal) modal.hide();
                     location.reload();
                 } else {
-                    alert('Gagal: ' + (data.message || 'Terjadi kesalahan'));
+                    showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat menghapus data');
+                showAlert('Terjadi kesalahan saat menghapus data', false);
             });
         }
     });
@@ -1462,10 +1460,10 @@ $result = $result ?? [];
                 });
                 renderSelectedMahasiswa();
             } else {
-                alert('Peserta sudah dipilih');
+                showAlert('Peserta sudah dipilih', false);
             }
         } else {
-            alert('Pilih peserta terlebih dahulu');
+            showAlert('Pilih peserta terlebih dahulu', false);
         }
     });
     
@@ -1492,12 +1490,12 @@ $result = $result ?? [];
         var message = document.getElementById('notifMessage').value;
         
         if (selectedMahasiswa.length === 0) {
-            alert('Pilih peserta terlebih dahulu');
+            showAlert('Pilih peserta terlebih dahulu', false);
             return;
         }
         
         if (!message.trim()) {
-            alert('Pesan tidak boleh kosong');
+            showAlert('Pesan tidak boleh kosong', false);
             return;
         }
         
@@ -1516,7 +1514,7 @@ $result = $result ?? [];
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('Notifikasi berhasil dikirim ke ' + selectedMahasiswa.length + ' peserta!');
+                showAlert('Notifikasi berhasil dikirim ke ' + selectedMahasiswa.length + ' peserta!', true);
                 var modal = bootstrap.Modal.getInstance(document.getElementById('addNotification'));
                 if (modal) modal.hide();
                 
@@ -1526,12 +1524,12 @@ $result = $result ?? [];
                 document.getElementById('notifMessage').value = '';
                 document.getElementById('mahasiswa').selectedIndex = 0;
             } else {
-                alert('Gagal: ' + (data.message || 'Terjadi kesalahan'));
+                showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan saat mengirim notifikasi');
+            showAlert('Terjadi kesalahan saat mengirim notifikasi', false);
         });
     });
     

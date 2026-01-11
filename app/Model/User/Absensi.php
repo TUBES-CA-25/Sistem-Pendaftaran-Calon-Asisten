@@ -114,6 +114,11 @@ class Absensi extends Model {
         }
         return true;
     }
-    
-    
+
+    public function deleteAbsensi($id) {
+        $sql = "DELETE FROM " . self::$table . " WHERE id = ?";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindValue(1, $id);
+        return $stmt->execute();
+    }
 }
