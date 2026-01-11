@@ -29,6 +29,33 @@
     <!-- Global Toast Container -->
     <div id="toast-container"></div>
 
+    <!-- Global Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal-confirm-delete">
+        <div class="modal-content-delete">
+            <div class="delete-header">
+                <h5><i class="bi bi-exclamation-triangle-fill"></i> Konfirmasi Hapus</h5>
+                <button class="delete-close-btn" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="delete-body">
+                <div class="delete-icon-container">
+                    <i class="bi bi-trash3 delete-icon"></i>
+                </div>
+                <div class="delete-message-title">Apakah Anda yakin?</div>
+                <div class="delete-message-text" id="deleteModalMessage">
+                    Data yang dihapus tidak dapat dikembalikan.
+                </div>
+            </div>
+            <div class="delete-footer">
+                <button class="btn-delete-cancel" onclick="closeDeleteModal()">
+                    <i class="bi bi-x-circle"></i> Batal
+                </button>
+                <button class="btn-delete-confirm" id="btnConfirmDelete">
+                    <i class="bi bi-trash"></i> Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="main-content" id="content">
         <?php require_once "dashboardAdmin.php" ?>
     </div>

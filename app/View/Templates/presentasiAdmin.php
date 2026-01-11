@@ -1290,17 +1290,20 @@ $(document).ready(function() {
     });
 
     // Delete Jadwal
+    // Delete Jadwal
     $(document).on('click', '.btn-delete-jadwal', function() {
-        const id = $(this).data('id');
-        if (confirm('Yakin ingin menghapus jadwal ini?')) {
+        const btn = $(this);
+        const id = btn.data('id');
+        showConfirmDelete(function() {
             $.post(APP_URL + '/deletejadwalpresentasi', { id: id }, function(res) {
                 if (res.status === 'success') {
                     showAlert('Jadwal berhasil dihapus!');
+                    btn.closest('tr').fadeOut(300, function() { $(this).remove(); });
                 } else {
                     showAlert(res.message || 'Gagal hapus jadwal', false);
                 }
             }, 'json');
-        }
+        }, 'Yakin ingin menghapus jadwal ini?');
     });
 
     // Close alert on click

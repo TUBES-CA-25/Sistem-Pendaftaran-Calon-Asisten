@@ -1683,7 +1683,7 @@ window.editSoal = function(id) {
 
 // Delete Soal
 window.deleteSoal = function(id) {
-    if (confirm('Apakah Anda yakin ingin menghapus soal ini?')) {
+    showConfirmDelete(function() {
         fetch(baseUrl + '/deletesoal', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -1699,7 +1699,7 @@ window.deleteSoal = function(id) {
             }
         })
         .catch(() => showAlert('Terjadi kesalahan', false));
-    }
+    }, 'Apakah Anda yakin ingin menghapus soal ini?');
 }
 
 // Form Submit - Add Soal
@@ -1966,7 +1966,7 @@ window.activateBank = function(id) {
 
 // Delete Bank
 window.deleteBank = function(bankId) {
-    if (confirm('Apakah Anda yakin ingin menghapus bank soal ini?\nSemua soal di dalam bank ini juga akan dihapus!')) {
+    showConfirmDelete(function() {
         fetch(baseUrl + '/deleteBank', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -1976,12 +1976,12 @@ window.deleteBank = function(bankId) {
         .then(data => {
             if (data.status === 'success') {
                 showAlert('Bank soal berhasil dihapus!');
-                location.reload();
+                setTimeout(() => location.reload(), 1500);
             } else {
                 showAlert(data.message || 'Gagal menghapus bank soal', false);
             }
         })
         .catch(() => showAlert('Terjadi kesalahan', false));
-    }
+    }, 'Apakah Anda yakin ingin menghapus bank soal ini?<br>Semua soal di dalam bank ini juga akan dihapus!');
 }
 </script>

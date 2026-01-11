@@ -1370,42 +1370,35 @@ $result = $result ?? [];
     }
 
     // Handle delete button click
+    // Handle delete button click
     document.querySelectorAll('.btn-delete').forEach(function(btn) {
         btn.addEventListener('click', function() {
             var row = this.closest('tr');
-            currentRowData = {
-                id: row.getAttribute('data-id'),
-                userId: row.getAttribute('data-userid')
-            };
+            var userId = row.getAttribute('data-userid');
+            
+            showConfirmDelete(function() {
+                fetch('/Sistem-Pendaftaran-Calon-Asisten/deletemahasiswa', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'id=' + userId
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('Data berhasil dihapus!', true);
+                        location.reload();
+                    } else {
+                        showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('Terjadi kesalahan saat menghapus data', false);
+                });
+            }, 'Apakah Anda yakin ingin menghapus data peserta ini?<br>Tindakan ini tidak dapat dibatalkan.');
         });
-    });
-
-    // Handle confirm delete
-    document.getElementById('confirmDelete').addEventListener('click', function() {
-        if (currentRowData && currentRowData.userId) {
-            fetch('/Sistem-Pendaftaran-Calon-Asisten/deletemahasiswa', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'id=' + currentRowData.userId
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showAlert('Data berhasil dihapus!', true);
-                    var modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
-                    if (modal) modal.hide();
-                    location.reload();
-                } else {
-                    showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('Terjadi kesalahan saat menghapus data', false);
-            });
-        }
     });
 
     // ============ NOTIFICATION FORM HANDLERS ============

@@ -546,17 +546,23 @@ $ruanganList = $ruanganList ?? [];
         });
 
         $(document).on('click', '.delete-button', function() {
-            if(!confirm('Hapus ruangan ini?')) return;
-            $.ajax({
-                url: '<?= APP_URL ?>/deleteruangan',
-                type: 'POST',
-                data: { id: $(this).data('id') },
-                dataType: 'json',
-                success: function (res) {
-                    if (res.status === 'success') location.reload();
-                    else showAlert('Gagal hapus: ' + res.message, false);
-                }
-            });
+            const btn = $(this);
+            showConfirmDelete(function() {
+                $.ajax({
+                    url: '<?= APP_URL ?>/deleteruangan',
+                    type: 'POST',
+                    data: { id: btn.data('id') },
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status === 'success') {
+                            showAlert('Ruangan berhasil dihapus!', true);
+                            // Remove card column
+                            btn.closest('.room-card').parent().fadeOut(300, function() { $(this).remove(); });
+                        }
+                        else showAlert('Gagal hapus: ' + res.message, false);
+                    }
+                });
+            }, 'Apakah Anda yakin ingin menghapus ruangan ini?');
         });
 
         // --- PARTICIPANT MANAGEMENT (ASSIGNMENT) ---

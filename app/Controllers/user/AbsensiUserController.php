@@ -26,15 +26,16 @@ class AbsensiUserController extends Controller
                 return;
             }
             $input = json_decode(file_get_contents('php://input'), true);
-            $id = $input['mahasiswa'] ?? "tidak ada mahasiswa";
-            $wawancaraI = $input['wawancara1'] ?? "tidak ada wawancara1";
-            $wawancaraII = $input['wawancara2'] ?? "tidak ada wawancara2";
-            $wawancaraIII = $input['wawancara3'] ?? "tidak ada wawancara3";
-            $tesTertulis = $input['tesTertulis'] ?? "tidak ada tes tertulis";
-            $presentasi = $input['presentasi'] ?? "tidak ada presentasi";
-            if (empty($id) || empty($wawancaraI) || empty($wawancaraII) || empty($wawancaraIII) || empty($tesTertulis) || empty($presentasi)) {
+            $id = $input['mahasiswa'] ?? null;
+            $wawancaraI = !empty($input['wawancara1']) ? $input['wawancara1'] : '-';
+            $wawancaraII = !empty($input['wawancara2']) ? $input['wawancara2'] : '-';
+            $wawancaraIII = !empty($input['wawancara3']) ? $input['wawancara3'] : '-';
+            $tesTertulis = !empty($input['tesTertulis']) ? $input['tesTertulis'] : '-';
+            $presentasi = !empty($input['presentasi']) ? $input['presentasi'] : '-';
+
+            if (empty($id)) {
                 header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'All fields are required' . 'mahasiswa : ' . $id . 'wawancaraI : ' . $wawancaraI . 'wawancaraII : ' . $wawancaraII . 'wawancaraIII : ' . $wawancaraIII . 'tesTertulis : ' . $tesTertulis . 'presentasi : ' . $presentasi]);
+                echo json_encode(['status' => 'error', 'message' => 'Mahasiswa belum dipilih']);
                 return;
             }
             

@@ -826,26 +826,29 @@ $colors = ['#2f66f6'];
         $(document).on("click", "#deleteButton", function () {
             const id = $(this).data("id");
 
-            if (!confirm("Apakah Anda yakin ingin menghapus jadwal wawancara ini?")) return;
-
-            $.ajax({
-                url: "<?= APP_URL ?>/deletewawancara",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ id }),
-                success: function (response) {
-                    if (response.status === "success") {
-                        showModal("Jadwal berhasil dihapus");
-                        document.querySelector('a[data-page="wawancara"]').click();
-                    } else {
-                        showModal("Gagal menghapus jadwal");
-                    }
-                },
-                error: function (xhr) {
-                    console.error("Error:", xhr.responseText);
-                    alert("Gagal menghapus jadwal wawancara. Silakan coba lagi.");
-                },
-            });
+            showConfirmDelete(function() {
+                $.ajax({
+                    url: "<?= APP_URL ?>/deletewawancara",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ id }),
+                    success: function (response) {
+                        if (response.status === "success") {
+                            showAlert("Jadwal berhasil dihapus");
+                            // Close the detail modal
+                            $('#wawancaraModal').modal('hide');
+                            // Remove the row from the table
+                            $(`tr[data-id="${id}"]`).fadeOut(300, function() { $(this).remove(); });
+                        } else {
+                            showAlert("Gagal menghapus jadwal", false);
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error("Error:", xhr.responseText);
+                        alert("Gagal menghapus jadwal wawancara. Silakan coba lagi.");
+                    },
+                });
+            }, "Apakah Anda yakin ingin menghapus jadwal wawancara ini?");
         });
 
         $(".filter-btn").click(function () {

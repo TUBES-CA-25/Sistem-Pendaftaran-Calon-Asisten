@@ -948,7 +948,12 @@ $(document).ready(function() {
             data: JSON.stringify(data),
             success: function(res) {
                 if(res.status === 'success') {
-                    showAlert('Data kehadiran berhasil disimpan!');
+                    // Flash Message for Add
+                    sessionStorage.setItem('pendingToast', JSON.stringify({ 
+                        message: 'Data kehadiran berhasil disimpan!', 
+                        isSuccess: true 
+                    }));
+                    location.reload();
                 } else {
                     showAlert(res.message || 'Terjadi kesalahan', false);
                 }
@@ -965,26 +970,50 @@ $(document).ready(function() {
         const id = btn.data('id');
         const nama = btn.data('nama');
 
-        if (!confirm(`Hapus data kehadiran untuk ${nama}?`)) {
-            return;
-        }
 
-        $.ajax({
-            url: APP_URL + "/deleteabsensi",
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ id: id }),
-            success: function(res) {
-                if(res.status === 'success') {
-                    showAlert('Data kehadiran berhasil dihapus!');
-                } else {
-                    showAlert(res.message || 'Gagal menghapus data', false);
-                }
-            },
-            error: function(xhr, status, error) {
-                showAlert('Gagal menghubungi server', false);
-            }
-        });
+        if (typeof showConfirmDelete === 'function') {
+            showConfirmDelete(function() {
+                $.ajax({
+                    url: APP_URL + "/deleteabsensi",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ id: id }),
+                    success: function(res) {
+                        if(res.status === 'success') {
+                            // Use Flash Message pattern - No delay needed
+                            sessionStorage.setItem('pendingToast', JSON.stringify({ 
+                                message: 'Data kehadiran berhasil dihapus!', 
+                                isSuccess: true 
+                            }));
+                            location.reload(); 
+                        } else {
+                            showAlert(res.message || 'Gagal menghapus data', false);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('Gagal menghubungi server', false);
+                    }
+                });
+            }, `Hapus data kehadiran untuk ${nama}?`);
+        } else {
+             if (confirm(`Hapus data kehadiran untuk ${nama}?`)) {
+                 // Fallback AJAX
+                 $.ajax({
+                    url: APP_URL + "/deleteabsensi",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ id: id }),
+                    success: function(res) {
+                        if(res.status === 'success') {
+                            alert('Data kehadiran berhasil dihapus!');
+                            location.reload();
+                        } else {
+                            alert(res.message || 'Gagal menghapus data');
+                        }
+                    }
+                });
+             }
+        }
     });
 
     // --- EDIT LOGIC ---
