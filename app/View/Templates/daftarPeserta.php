@@ -84,7 +84,7 @@ $result = $result ?? [];
     }
 
     /* Card Container */
-    .card-table {
+    .card-content {
         background: #fff;
         border-radius: 0;
         padding: 24px;
@@ -107,127 +107,112 @@ $result = $result ?? [];
         align-items: center;
         gap: 8px;
         font-size: 0.875rem;
-        color: #6c757d;
+        color: #64748b;
     }
 
     .entries-select select {
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
         padding: 6px 12px;
         font-size: 0.875rem;
         background: white;
         cursor: pointer;
+        transition: all 0.2s;
     }
 
     .entries-select select:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        border-color: #2f66f6;
         outline: none;
     }
 
     .search-box {
         position: relative;
-        min-width: 250px;
+        width: 280px;
     }
 
     .search-box input {
         width: 100%;
-        padding: 8px 12px 8px 38px;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        font-size: 0.875rem;
+        padding: 10px 16px 10px 40px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
     }
 
     .search-box input:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
         outline: none;
+        border-color: #2f66f6;
+        box-shadow: 0 0 0 3px rgba(47, 102, 246, 0.1);
     }
 
     .search-box i {
         position: absolute;
-        left: 12px;
+        left: 14px;
         top: 50%;
         transform: translateY(-50%);
-        color: #6c757d;
+        color: #94a3b8;
     }
 
-    /* Table Responsive Container with Scrollbar */
+    /* Table Responsive Container */
     .table-responsive {
         overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        border-radius: 8px;
-        box-shadow: 0 0 0 1px #e9ecef;
+        border-radius: 12px;
+        padding-bottom: 20px; /* Space for bottom shadow */
     }
 
-    /* Custom Scrollbar */
-    .table-responsive::-webkit-scrollbar {
-        height: 10px;
-    }
-
-    .table-responsive::-webkit-scrollbar-track {
-        background: #f1f3f5;
-        border-radius: 5px;
-        margin: 0 8px;
-    }
-
-    .table-responsive::-webkit-scrollbar-thumb {
-        background: #2f66f6;
-        border-radius: 5px;
-    }
-
-    .table-responsive::-webkit-scrollbar-thumb:hover {
-        background: #1e4fd8;
-    }
-
-    /* Bootstrap Table Override - No Borders */
-    .table {
-        margin-bottom: 0;
+    /* Data Table Styling (Reference: PresentasiAdmin.php) */
+    .data-table {
+        width: 100%;
         border-collapse: separate;
         border-spacing: 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05); /* Increased bottom presence */
+        margin-bottom: 4px;
     }
 
-    .table > thead {
-        background-color: #2f66f6;
-    }
-
-    .table > thead > tr > th {
-        background-color: #2f66f6;
+    .data-table thead th {
+        background: #2f66f6;
         color: #fff;
         font-weight: 600;
-        font-size: 0.8rem;
+        padding: 16px 20px;
+        text-align: left;
+        vertical-align: middle;
+        font-size: 0.9rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        padding: 14px 12px;
         border: none;
+    }
+
+    .data-table tbody tr {
+        transition: all 0.2s ease;
+        background-color: #fff;
+    }
+
+    .data-table tbody tr:nth-child(odd) {
+        background-color: #f8fafc;
+    }
+
+    .data-table tbody tr:hover {
+        background-color: rgba(47, 102, 246, 0.08) !important;
+    }
+
+    .data-table td {
+        padding: 14px 20px;
+        color: #475569;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #e2e8f0;
         vertical-align: middle;
     }
-
-    .table > tbody > tr {
-        transition: background-color 0.15s ease-in-out;
-    }
-
-    .table > tbody > tr:hover {
-        background-color: #f0f5ff;
-    }
-
-    .table > tbody > tr > td {
-        padding: 14px 12px;
-        vertical-align: middle;
-        border: none;
-        border-bottom: 1px solid #f1f3f5;
-        color: #212529;
-    }
-
-    .table > tbody > tr:last-child > td {
+    
+    .data-table tbody tr:last-child td {
         border-bottom: none;
     }
 
-    .table > tbody > tr > td:first-child {
+    .data-table td:first-child {
+        text-align: center;
         font-weight: 600;
         color: #2f66f6;
-        text-align: center;
-        width: 50px;
     }
 
     /* User Info */
@@ -246,7 +231,7 @@ $result = $result ?? [];
     }
 
     .user-name {
-        font-weight: 500;
+        font-weight: bold;
         color: #212529;
         margin: 0;
         font-size: 0.9rem;
@@ -254,15 +239,15 @@ $result = $result ?? [];
 
     /* Badge Styles - Deep Solid Compact */
     .badge-status {
-        padding: 2px 8px; /* Compact padding */
-        border-radius: 6px; /* Rounded rectangle */
+        padding: 4px 10px;
+        border-radius: 6px;
         font-size: 0.8rem;
         font-weight: 600;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 6px;
-        min-width: 80px; /* Reduced min-width */
+        min-width: 90px;
         white-space: nowrap;
         text-transform: capitalize;
         letter-spacing: 0.3px;
@@ -291,8 +276,8 @@ $result = $result ?? [];
     }
 
     .badge-ditolak {
-        background: #dc3545;
-        color: #fff;
+        background: #fee2e2;
+        color: #dc2626;
     }
 
     .badge-pending {
@@ -301,45 +286,51 @@ $result = $result ?? [];
     }
 
     /* Action Buttons */
-    .action-buttons {
+    .action-btns {
         display: flex;
-        gap: 6px;
+        gap: 8px;
+        flex-wrap: nowrap;
+        align-items: center;
         justify-content: center;
     }
 
     .btn-action {
-        width: 34px;
-        height: 34px;
-        border-radius: 6px;
-        display: flex;
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: none;
-        cursor: pointer;
         transition: all 0.2s ease;
+        font-size: 1rem;
+        padding: 0;
     }
 
     .btn-action:hover {
         transform: translateY(-2px);
-        opacity: 0.9;
     }
 
     .btn-view {
-        background-color: #2f66f6;
-        color: white;
+        background: #e0f2fe;
+        color: #0284c7;
     }
 
     .btn-view:hover {
-        background-color: #1e4fd8;
-    }
-
-    .btn-delete {
-        background-color: #dc3545;
+        background: #0284c7;
         color: white;
     }
 
+    .btn-delete {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
     .btn-delete:hover {
-        background-color: #bb2d3b;
+        background: #dc2626;
+        color: white;
     }
 
     /* DataTables Override */
@@ -448,7 +439,7 @@ $result = $result ?? [];
     </div>
 
     <!-- Table Card -->
-    <div class="card-table">
+    <div class="card-content">
         <!-- Table Controls -->
         <div class="table-controls">
             <div class="entries-select">
@@ -470,7 +461,7 @@ $result = $result ?? [];
 
         <!-- Data Table -->
         <div class="table-responsive">
-            <table id="daftarPesertaTable" class="table table-hover align-middle">
+            <table id="daftarPesertaTable" class="data-table">
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 50px;">No</th>
@@ -533,7 +524,7 @@ $result = $result ?? [];
                                 </span>
                             </td>
                             <td>
-                                <div class="action-buttons">
+                                <div class="action-btns">
                                     <button class="btn-action btn-view" title="Lihat Detail" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#detailModal"
