@@ -218,29 +218,32 @@ $nilai = $nilai ?? [];
     /* Badge Styles */
     .badge-nilai {
         display: inline-block;
-        padding: 6px 14px;
-        border-radius: 20px;
+        padding: 2px 8px; /* Extremely reduced top/bottom padding */
+        border-radius: 6px; /* Slightly tighter radius for smaller badge */
         font-weight: 600;
         font-size: 0.85rem;
+        width: auto;
+        text-align: center;
+        line-height: 1.5; /* Ensure text fits snugly */
     }
 
     .badge-nilai.tinggi {
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-        color: #047857;
+        background: #198754;
+        color: #fff;
     }
 
     .badge-nilai.sedang {
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-        color: #b45309;
+        background: #ffc107;
+        color: #000;
     }
 
     .badge-nilai.rendah {
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        color: #b91c1c;
+        background: #dc3545;
+        color: #fff;
     }
 
     .badge-nilai.belum {
-        background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        background: #e2e8f0;
         color: #475569;
     }
 
@@ -668,7 +671,7 @@ $nilai = $nilai ?? [];
                         <th>Nama Mahasiswa</th>
                         <th>Stambuk</th>
                         <th style="width: 140px;">Nilai Tes</th>
-                        <th style="width: 140px;">Nilai Akhir</th>
+                        <th style="width: 140px;">Status</th>
                         <th style="width: 120px;">Aksi</th>
                     </tr>
                 </thead>
@@ -700,8 +703,23 @@ $nilai = $nilai ?? [];
                                 <span class="badge-nilai sedang"><?= htmlspecialchars($nilaiTes) ?></span>
                             </td>
                             <td>
-                                <span class="badge-nilai <?= $badgeClass ?>">
-                                    <?= $nilaiTotal !== null && $nilaiTotal !== '' ? htmlspecialchars($nilaiTotal) : 'Belum dinilai' ?>
+                                <?php
+                                $statusLabel = 'Belum Dinilai';
+                                $statusClass = 'badge-nilai belum';
+                                
+                                if ($nilaiTes !== '-' && $nilaiTes !== null && $nilaiTes !== '') {
+                                    $score = (int)$nilaiTes;
+                                    if ($score >= 70) {
+                                        $statusLabel = 'Memenuhi';
+                                        $statusClass = 'badge-nilai tinggi';
+                                    } else {
+                                        $statusLabel = 'Tidak Memenuhi';
+                                        $statusClass = 'badge-nilai rendah';
+                                    }
+                                }
+                                ?>
+                                <span class="<?= $statusClass ?>">
+                                    <?= $statusLabel ?>
                                 </span>
                             </td>
                             <td>
@@ -768,7 +786,7 @@ $nilai = $nilai ?? [];
                                placeholder="Masukkan nilai (0-100)"
                                min="0"
                                max="100"
-                               required>
+                               max="100">
                         <button type="submit">
                             <i class="bi bi-check-lg"></i> Simpan Nilai
                         </button>
@@ -903,8 +921,9 @@ $(document).ready(function() {
             return;
         }
 
-        if (!nilaiAkhir || nilaiAkhir === '') {
-            showAlert('Mohon masukkan nilai terlebih dahulu', false);
+        if (typeof nilaiAkhir === 'undefined') {
+            // Allow empty string or 0
+            showAlert('Mohon masukkan nilai', false);
             return;
         }
 
@@ -916,6 +935,45 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.status === 'success') {
                     showAlert('Nilai berhasil disimpan!', true);
+
+                    // Real-time Update Logic
+                    const btn = $(`.btn-detail[data-id="${currentMahasiswaId}"]`);
+                    const tr = btn.closest('tr');
+
+                    if (tr.length) {
+                        // Determine badge class based on score
+                        let badgeClass = 'badge-nilai belum';
+                        let displayScore = 'Belum Dinilai';
+                        let statusText = 'Belum Dinilai';
+
+                        if (nilaiAkhir !== '') {
+                            const score = parseInt(nilaiAkhir);
+                            displayScore = score;
+                            
+                            // Update Status Logic
+                            if (score >= 70) {
+                                badgeClass = 'badge-nilai tinggi';
+                                statusText = 'Memenuhi';
+                            } else {
+                                badgeClass = 'badge-nilai rendah';
+                                statusText = 'Tidak Memenuhi';
+                            }
+                        }
+                        
+                        // Update Nilai Tes Column (Index 3)
+                        tr.find('td:eq(3) span').text(displayScore);
+
+                        // Update Status Column (Index 4)
+                        tr.find('td:eq(4)').html(`<span class="${badgeClass}">${statusText}</span>`);
+
+                        // Update Button Data Attribute for next open
+                        btn.data('total', nilaiAkhir);
+                        btn.data('nilai', nilaiAkhir); // Sync both
+                    }
+
+                    // Close Modal
+                    $('#detailModal').removeClass('show');
+                    currentMahasiswaId = null;
                 } else {
                     showAlert(response.message || 'Gagal menyimpan nilai', false);
                 }

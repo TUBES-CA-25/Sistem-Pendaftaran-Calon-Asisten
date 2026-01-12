@@ -1,9 +1,26 @@
 
 
 $(document).ready(function () {
+  // Restore active page on load
+  const activePage = localStorage.getItem('activePage');
+  if (activePage && activePage !== 'dashboard') {
+      const link = $(`.sidebar a[data-page="${activePage}"]`);
+      if (link.length) {
+          // Temporarily disable animation or focus if needed
+          link.click();
+      }
+  }
+
   // Menggunakan event delegation untuk menghindari multiple event handlers
   $(document).on('click', '.sidebar a, .profile a, .dashboard a', function (e) {
-    if (this.id === "startTestButton") return; 
+    if (this.id === "startTestButton" || this.id === "logout-btn") return; 
+    
+    // Check if it's a logout link
+    if ($(this).data('page') === 'logout') {
+        localStorage.removeItem('activePage');
+        return; // Sidebar script handles logout usually, or let it bubble
+    }
+
     e.preventDefault();
 
     var page = $(this).data('page');
@@ -13,6 +30,7 @@ $(document).ready(function () {
     }
 
     console.log("Memuat halaman:", page);
+    localStorage.setItem('activePage', page);
 
     // Update active state
     $('.sidebar a').removeClass('active');
@@ -34,7 +52,8 @@ $(document).ready(function () {
         $('#content').html(response);
       },
       error: function (xhr, status, error) {
-        $('#content').html('<p>Error: Halaman tidak ditemukan.</p>');
+        console.error("Error loading page:", error);
+        // Fallback or Alert?
       },
     });
   });

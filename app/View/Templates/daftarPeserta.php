@@ -252,25 +252,26 @@ $result = $result ?? [];
         font-size: 0.9rem;
     }
 
-    /* Status Badges - Flat Style (No Gradient) */
+    /* Badge Styles - Deep Solid Compact */
     .badge-status {
-        padding: 6px 16px;
-        border-radius: 6px;
-        font-size: 0.75rem;
+        padding: 2px 8px; /* Compact padding */
+        border-radius: 6px; /* Rounded rectangle */
+        font-size: 0.8rem;
         font-weight: 600;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 6px;
-        min-width: 100px;
+        min-width: 80px; /* Reduced min-width */
         white-space: nowrap;
         text-transform: capitalize;
         letter-spacing: 0.3px;
         transition: opacity 0.2s ease;
+        line-height: 1.5;
     }
 
     .badge-status:hover {
-        opacity: 0.85;
+        opacity: 0.9;
     }
 
     .badge-status i {
@@ -280,23 +281,23 @@ $result = $result ?? [];
     }
 
     .badge-diterima {
-        background: #d1fae5;
-        color: #047857;
+        background: #198754;
+        color: #fff;
     }
 
     .badge-process {
-        background: #dbeafe;
-        color: #1d4ed8;
+        background: #0d6efd;
+        color: #fff;
     }
 
     .badge-ditolak {
-        background: #fee2e2;
-        color: #b91c1c;
+        background: #dc3545;
+        color: #fff;
     }
 
     .badge-pending {
-        background: #e2e8f0;
-        color: #64748b;
+        background: #ffc107;
+        color: #000;
     }
 
     /* Action Buttons */

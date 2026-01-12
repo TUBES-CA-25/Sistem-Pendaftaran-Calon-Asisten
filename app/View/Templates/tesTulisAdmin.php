@@ -913,7 +913,7 @@ foreach ($allSoal as $soal) {
                 <div class="bank-grid">
                     <!-- Existing Banks -->
                     <?php foreach ($bankSoalList as $bank): ?>
-                    <div class="bank-card">
+                    <div class="bank-card" id="bank-card-<?= $bank['id'] ?>">
                         <div class="bank-card-header" onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama']) ?>')">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div class="bank-icon">
@@ -1791,23 +1791,85 @@ document.getElementById('editSoalForm').addEventListener('submit', function(e) {
 });
 
 // Form Submit - Create Bank
+// Form Submit - Create Bank
 document.getElementById('createBankForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const formData = new FormData(this);
+    const nama = formData.get('nama_bank');
+    const deskripsi = formData.get('deskripsi_bank');
+    const token = formData.get('token_bank');
     
     fetch(baseUrl + '/createBank', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'nama=' + encodeURIComponent(formData.get('nama_bank')) + 
-              '&deskripsi=' + encodeURIComponent(formData.get('deskripsi_bank')) +
-              '&token=' + encodeURIComponent(formData.get('token_bank'))
+        body: 'nama=' + encodeURIComponent(nama) + 
+              '&deskripsi=' + encodeURIComponent(deskripsi) +
+              '&token=' + encodeURIComponent(token)
     })
     .then(res => res.json())
     .then(data => {
         if (data.status === 'success') {
             showAlert('Bank soal berhasil dibuat!');
             bootstrap.Modal.getInstance(document.getElementById('createBankModal')).hide();
-            location.reload();
+            
+            // Remove empty state if exists
+            const emptyState = document.querySelector('.bank-grid').previousElementSibling;
+            if (emptyState && emptyState.classList.contains('text-center') && emptyState.textContent.includes('Belum Ada Bank Soal')) {
+                emptyState.remove();
+            }
+
+            // Create new card HTML
+            const newId = data.id || Date.now(); // Fallback if ID not returned
+            const newCard = document.createElement('div');
+            newCard.className = 'bank-card';
+            newCard.id = 'bank-card-' + newId;
+            newCard.innerHTML = `
+                <div class="bank-card-header" onclick="openBankDetail(${newId}, '${escapeHtml(nama)}')">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="bank-icon">
+                            <i class='bx bx-book-content'></i>
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deleteBank(${newId})" title="Hapus Bank">
+                            <i class='bx bx-trash'></i>
+                        </button>
+                    </div>
+                    <h3 class="bank-title mt-2">${escapeHtml(nama)}</h3>
+                    <p class="bank-desc">${escapeHtml(deskripsi)}</p>
+                    <div class="bank-stats">
+                        <span class="bank-stat-item total">
+                            <i class='bx bx-file'></i> 0 Soal
+                        </span>
+                        <span class="bank-stat-item pg">
+                            <i class='bx bx-key'></i> Token: <strong>${escapeHtml(token)}</strong>
+                        </span>
+                    </div>
+                    <div class="mt-3 d-flex justify-content-between align-items-center">
+                        <div class="form-check form-switch cursor-pointer" onclick="event.stopPropagation()">
+                            <input class="form-check-input" type="checkbox" id="activeSwitch_${newId}" 
+                                onchange="window.activateBank(${newId})">
+                            <label class="form-check-label small text-muted" for="activeSwitch_${newId}">
+                                Tidak Aktif
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="bank-card-footer">
+                        <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); window.editBankModal(${newId})" title="Edit Bank">
+                            <i class='bx bx-edit'></i> Edit
+                        </button>
+                    </div>
+                    <span class="bank-date">Baru saja</span>
+                </div>
+            `;
+            
+            // Append to grid
+            const grid = document.querySelector('.bank-grid');
+            if(grid) {
+                grid.insertBefore(newCard, grid.firstChild);
+            }
+            
+            this.reset();
         } else {
             showAlert(data.message || 'Gagal membuat bank soal', false);
         }
@@ -1920,20 +1982,45 @@ window.editBankModal = function(bankId) {
 }
 
 // Handler Edit Bank Submit
+// Handler Edit Bank Submit
 document.getElementById('editBankForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const formData = new FormData(this);
+    const id = formData.get('id');
+    const nama = formData.get('nama');
+    const deskripsi = formData.get('deskripsi');
+    const token = formData.get('token');
     
     fetch(baseUrl + '/updateBank', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${formData.get('id')}&nama=${encodeURIComponent(formData.get('nama'))}&deskripsi=${encodeURIComponent(formData.get('deskripsi'))}&token=${encodeURIComponent(formData.get('token'))}`
+        body: `id=${id}&nama=${encodeURIComponent(nama)}&deskripsi=${encodeURIComponent(deskripsi)}&token=${encodeURIComponent(token)}`
     })
     .then(res => res.json())
     .then(data => {
         if (data.status === 'success') {
             showAlert('Bank soal berhasil diupdate!');
-            location.reload();
+            bootstrap.Modal.getInstance(document.getElementById('editBankModal')).hide();
+            
+            // Update DOM
+            const card = document.getElementById('bank-card-' + id);
+            if (card) {
+                // Update Title
+                const title = card.querySelector('.bank-title');
+                if (title) title.textContent = nama;
+                
+                // Update Desc
+                const desc = card.querySelector('.bank-desc');
+                if (desc) desc.textContent = deskripsi;
+                
+                // Update Token
+                const tokenEl = card.querySelector('.bank-stat-item.pg strong');
+                if (tokenEl) tokenEl.textContent = token;
+                
+                // Update onclick handlers
+                const header = card.querySelector('.bank-card-header');
+                if (header) header.setAttribute('onclick', `openBankDetail(${id}, '${escapeHtml(nama)}')`);
+            }
         } else {
             showAlert(data.message || 'Gagal mengupdate bank soal', false);
         }
@@ -1942,7 +2029,13 @@ document.getElementById('editBankForm').addEventListener('submit', function(e) {
 });
 
 // Activate Bank
+// Activate Bank
 window.activateBank = function(id) {
+    // Optimistic UI Update first
+    const checkbox = document.getElementById('activeSwitch_' + id);
+    const label = checkbox.nextElementSibling;
+    const wasChecked = !checkbox.checked; // Before click state
+    
     fetch(baseUrl + '/exam/activateBank', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -1951,19 +2044,30 @@ window.activateBank = function(id) {
     .then(res => res.json())
     .then(data => {
         if (data.status === 'success') {
-            // Optional: Reload to update UI fully or just toggle
-            location.reload(); 
+            // Update UI on success (already toggled by user click, just update label)
+            if (checkbox.checked) {
+                label.textContent = 'Aktif';
+                label.classList.remove('text-muted');
+                label.classList.add('text-primary', 'fw-bold');
+            } else {
+                label.textContent = 'Tidak Aktif';
+                label.classList.remove('text-primary', 'fw-bold');
+                label.classList.add('text-muted');
+            }
         } else {
             showAlert(data.message || 'Gagal mengaktifkan bank soal', false);
-            location.reload(); // Revert switch
+            // Revert on failure
+            checkbox.checked = wasChecked;
         }
     })
     .catch(() => {
         showAlert('Terjadi kesalahan', false);
-        location.reload();
+        // Revert on failure
+        checkbox.checked = wasChecked;
     });
 }
 
+// Delete Bank
 // Delete Bank
 window.deleteBank = function(bankId) {
     showConfirmDelete(function() {
@@ -1976,7 +2080,33 @@ window.deleteBank = function(bankId) {
         .then(data => {
             if (data.status === 'success') {
                 showAlert('Bank soal berhasil dihapus!');
-                setTimeout(() => location.reload(), 1500);
+                
+                // Remove card from DOM
+                const card = document.getElementById('bank-card-' + bankId);
+                if (card) {
+                    card.style.transition = 'all 0.3s ease';
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                        card.remove();
+                        // Check if empty
+                        const remainingCards = document.querySelectorAll('.bank-card');
+                        if (remainingCards.length === 0) {
+                            const grid = document.querySelector('.bank-grid');
+                            // Insert empty state
+                            const emptyHtml = `
+                                <div class="text-center py-5">
+                                    <i class='bx bx-folder-open' style="font-size: 5rem; color: #cbd5e1;"></i>
+                                    <h4 class="mt-3 text-muted">Belum Ada Bank Soal</h4>
+                                    <p class="text-muted">Klik tombol "Buat Bank Soal Baru" untuk membuat bank soal pertama</p>
+                                </div>`;
+                            if (grid) {
+                                grid.innerHTML = ''; // Clear grid
+                                grid.insertAdjacentHTML('beforebegin', emptyHtml);
+                            }
+                        }
+                    }, 300);
+                }
             } else {
                 showAlert(data.message || 'Gagal menghapus bank soal', false);
             }

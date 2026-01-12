@@ -325,27 +325,47 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
     }
 
     /* Badge Styles */
+    /* Badge Styles - Deep Solid Compact */
     .badge-status {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
+        padding: 2px 8px; /* Compact padding */
+        border-radius: 6px; /* Rounded rectangle */
         font-size: 0.8rem;
         font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-width: 80px; /* Reduced min-width */
+        white-space: nowrap;
+        text-transform: capitalize;
+        letter-spacing: 0.3px;
+        transition: opacity 0.2s ease;
+        line-height: 1.5;
+    }
+
+    .badge-status:hover {
+        opacity: 0.9;
+    }
+
+    .badge-status i {
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
     }
 
     .badge-pending {
-        background: #fef3c7;
-        color: #b45309;
+        background: #ffc107;
+        color: #000;
     }
 
     .badge-accepted {
-        background: #d1fae5;
-        color: #047857;
+        background: #198754;
+        color: #fff;
     }
 
     .badge-scheduled {
-        background: #dbeafe;
-        color: #1d4ed8;
+        background: #0d6efd;
+        color: #fff;
     }
 
     .badge-rejected {

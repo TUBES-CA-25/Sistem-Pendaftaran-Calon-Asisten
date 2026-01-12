@@ -273,25 +273,28 @@ $mahasiswaList = $mahasiswaList ?? [];
     /* Badge Styles */
     .badge-status {
         display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
+        padding: 2px 8px; /* Extremely reduced top/bottom padding */
+        border-radius: 6px; /* Slightly tighter radius */
         font-size: 0.8rem;
         font-weight: 600;
+        width: auto;
+        text-align: center;
+        line-height: 1.5;
     }
 
     .badge-hadir {
-        background: #d1fae5;
-        color: #047857;
+        background: #198754;
+        color: #fff;
     }
 
     .badge-alpha {
-        background: #fee2e2;
-        color: #dc2626;
+        background: #dc3545;
+        color: #fff;
     }
 
     .badge-izin {
-        background: #fef3c7;
-        color: #b45309;
+        background: #ffc107;
+        color: #000;
     }
 
     .badge-empty {
@@ -1053,7 +1056,46 @@ $(document).ready(function() {
             data: JSON.stringify(data),
             success: function(res) {
                 if(res.status === 'success') {
-                    showAlert('Data kehadiran berhasil diperbarui!');
+                    showAlert('Perubahan berhasil disimpan!', true);
+                    
+                    // Update DOM Row
+                    const btn = $(`.open-detail[data-userid="${data.id}"]`);
+                    const tr = btn.closest('tr');
+                    
+                    if (tr.length) {
+                        const getBadge = (val) => {
+                            if(!val || typeof val !== 'string' || val.trim() === '' || val === '-') {
+                                return '<span class="badge-status badge-empty">Belum Ada</span>';
+                            }
+                            const v = val.toLowerCase().trim();
+                            
+                            if(v === 'hadir') return '<span class="badge-status badge-hadir">Hadir</span>';
+                            if(v === 'alpha') return '<span class="badge-status badge-alpha">Alpha</span>';
+                            if(v === 'tidak hadir') return '<span class="badge-status badge-alpha">Tidak Hadir</span>';
+                            if(v === 'izin') return '<span class="badge-status badge-izin">Izin</span>';
+                            if(v === 'sakit') return '<span class="badge-status badge-izin">Sakit</span>';
+                            
+                            return `<span class="badge-status badge-process">${val}</span>`;
+                        };
+
+                        // Update btn data attrs (for next open)
+                        btn.data('absensitestertulis', data.tesTertulis);
+                        btn.data('absensipresentasi', data.presentasi);
+                        btn.data('absensiwawancarai', data.wawancaraI);
+                        btn.data('absensiwawancaraii', data.wawancaraII);
+                        btn.data('absensiwawancaraiii', data.wawancaraIII);
+
+                        // Update Table Columns (Wawancara I, II, III, Tes, Presentasi)
+                        // Indices: 3, 4, 5, 6, 7
+                        tr.find('td:eq(3)').html(getBadge(data.wawancaraI));
+                        tr.find('td:eq(4)').html(getBadge(data.wawancaraII));
+                        tr.find('td:eq(5)').html(getBadge(data.wawancaraIII));
+                        tr.find('td:eq(6)').html(getBadge(data.tesTertulis));
+                        tr.find('td:eq(7)').html(getBadge(data.presentasi));
+                    }
+                    
+                    // Close Modal (as requested)
+                    $('#detailAbsensiModal').modal('hide'); 
                 } else {
                     showAlert(res.message || 'Terjadi kesalahan', false);
                 }
