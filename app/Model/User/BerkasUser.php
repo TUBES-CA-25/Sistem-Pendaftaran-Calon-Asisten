@@ -79,7 +79,7 @@ class BerkasUser extends Model {
     
         $idMahasiswaData = $this->getIdMahasiswa($berkas->id_mahasiswa);
         if (!$idMahasiswaData || !isset($idMahasiswaData['id'])) {
-            throw new Exception("Mahasiswa tidak ditemukan" + var_dump($idMahasiswaData)); 
+            throw new Exception("Mahasiswa tidak ditemukan" . var_export($idMahasiswaData, true)); 
         }
         $idMahasiswa = $idMahasiswaData['id']; 
         
@@ -234,11 +234,12 @@ class BerkasUser extends Model {
     }
     
     
-    public function updateAccepted($id) {
-        $query = "UPDATE " . static::$table . " SET accepted = 1 WHERE id_mahasiswa = ?";
+    public function updateAccepted($id, $status = 1) {
+        $query = "UPDATE " . static::$table . " SET accepted = ? WHERE id_mahasiswa = ?";
         $stmt = self::getDB()->prepare($query);
-        $stmt->bindParam(1,$id);
-        return $stmt->execute();;
+        $stmt->bindParam(1, $status, PDO::PARAM_INT);
+        $stmt->bindParam(2, $id);
+        return $stmt->execute();
     }
 
     public function update(BerkasUser $berkasUser) {
