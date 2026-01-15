@@ -83,7 +83,7 @@ class NilaiAkhir extends Model
 
     public function updateTotalNilai($id,$nilai)
     {
-        $sql = "UPDATE " . static::$table . " SET total_nilai = :nilai, nilai = :nilai WHERE id_mahasiswa = :id_mahasiswa";
+        $sql = "UPDATE " . static::$table . " SET total_nilai = :nilai WHERE id_mahasiswa = :id_mahasiswa";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindValue(':nilai', $nilai);
         $stmt->bindValue(':id_mahasiswa', $id);

@@ -369,61 +369,39 @@ $nilai = $nilai ?? [];
         background: #fff;
         border: 1px solid #e2e8f0;
         border-radius: 12px;
-        padding: 16px;
-        transition: all 0.2s ease;
+        padding: 20px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
 
     .soal-card:hover {
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transform: translateY(-4px);
+        border-color: #cbd5e1;
+    }
+
+    .soal-card.correct {
+        border-left: 5px solid #10b981;
+    }
+
+    .soal-card.wrong {
+        border-left: 5px solid #ef4444;
     }
 
     .soal-card .soal-number {
         background: #2f66f6;
         color: #fff;
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px; /* Softer shape */
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.85rem;
-        font-weight: 600;
+        font-size: 0.9rem;
+        font-weight: 700;
         margin-bottom: 12px;
-    }
-
-    .soal-card .question {
-        font-size: 0.95rem;
-        color: #334155;
-        margin-bottom: 12px;
-        line-height: 1.5;
-    }
-
-    .soal-card .answers {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .soal-card .answer-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 8px;
-        font-size: 0.85rem;
-    }
-
-    .soal-card .answer-label {
-        font-weight: 600;
-        color: #64748b;
-        min-width: 100px;
-    }
-
-    .soal-card .answer-correct {
-        color: #10b981;
-    }
-
-    .soal-card .answer-wrong {
-        color: #ef4444;
+        box-shadow: 0 4px 10px rgba(47, 102, 246, 0.3);
     }
 
     /* Form Input */
@@ -628,176 +606,179 @@ $nilai = $nilai ?? [];
         }
         ?>
 
-        <!-- Stats Row -->
-        <div class="stats-row">
-            <div class="stat-card">
-                <div class="stat-value"><?= $totalMahasiswa ?></div>
-                <div class="stat-label">Total Peserta</div>
+        <!-- View List -->
+        <div id="view-list">
+            <!-- Stats Row -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-value"><?= $totalMahasiswa ?></div>
+                    <div class="stat-label">Total Peserta</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-value"><?= $nilaiTinggi ?></div>
+                    <div class="stat-label">Lulus (≥70)</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-value"><?= $nilaiRendah ?></div>
+                    <div class="stat-label">Tidak Lulus (<70)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value"><?= $belumDinilai ?></div>
+                    <div class="stat-label">Belum Dinilai</div>
+                </div>
             </div>
-            <div class="stat-card success">
-                <div class="stat-value"><?= $nilaiTinggi ?></div>
-                <div class="stat-label">Lulus (≥70)</div>
-            </div>
-            <div class="stat-card warning">
-                <div class="stat-value"><?= $nilaiRendah ?></div>
-                <div class="stat-label">Tidak Lulus (<70)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value"><?= $belumDinilai ?></div>
-                <div class="stat-label">Belum Dinilai</div>
-            </div>
-        </div>
 
-        <!-- Table Controls -->
-        <div class="table-controls">
-            <div class="search-box">
-                <i class="bi bi-search"></i>
-                <input type="text" id="searchInput" placeholder="Cari nama atau stambuk...">
+            <!-- Table Controls -->
+            <div class="table-controls">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="searchInput" placeholder="Cari nama atau stambuk...">
+                </div>
             </div>
-        </div>
 
-        <?php if (empty($nilai)): ?>
-            <div class="empty-state">
-                <i class="bi bi-inbox"></i>
-                <h3>Belum Ada Data Nilai</h3>
-                <p>Data nilai akan muncul setelah mahasiswa mengerjakan tes tertulis</p>
-            </div>
-        <?php else: ?>
-            <!-- Data Table -->
-            <table class="table-nilai" id="tableNilai">
-                <thead>
-                    <tr>
-                        <th style="width: 60px;">No</th>
-                        <th>Nama Mahasiswa</th>
-                        <th>Stambuk</th>
-                        <th style="width: 140px;">Nilai Tes</th>
-                        <th style="width: 140px;">Status</th>
-                        <th style="width: 120px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php $i = 1; foreach ($nilai as $value): ?>
-                        <?php
-                        $nilaiTes = $value['nilai'] ?? '-';
-                        $nilaiTotal = $value['total'] ?? null;
-
-                        // Determine badge class
-                        $badgeClass = 'belum';
-                        if ($nilaiTotal !== null && $nilaiTotal !== '') {
-                            if ((int)$nilaiTotal >= 70) {
-                                $badgeClass = 'tinggi';
-                            } elseif ((int)$nilaiTotal >= 50) {
-                                $badgeClass = 'sedang';
-                            } else {
-                                $badgeClass = 'rendah';
-                            }
-                        }
-                        ?>
+            <?php if (empty($nilai)): ?>
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h3>Belum Ada Data Nilai</h3>
+                    <p>Data nilai akan muncul setelah mahasiswa mengerjakan tes tertulis</p>
+                </div>
+            <?php else: ?>
+                <!-- Data Table -->
+                <table class="table-nilai" id="tableNilai">
+                    <thead>
                         <tr>
-                            <td class="text-center"><?= $i ?></td>
-                            <td>
-                                <strong><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></strong>
-                            </td>
-                            <td><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>
-                            <td>
-                                <span class="badge-nilai sedang"><?= htmlspecialchars($nilaiTes) ?></span>
-                            </td>
-                            <td>
-                                <?php
-                                $statusLabel = 'Belum Dinilai';
-                                $statusClass = 'badge-nilai belum';
-                                
-                                if ($nilaiTes !== '-' && $nilaiTes !== null && $nilaiTes !== '') {
-                                    $score = (int)$nilaiTes;
-                                    if ($score >= 70) {
-                                        $statusLabel = 'Memenuhi';
-                                        $statusClass = 'badge-nilai tinggi';
-                                    } else {
-                                        $statusLabel = 'Tidak Memenuhi';
-                                        $statusClass = 'badge-nilai rendah';
-                                    }
-                                }
-                                ?>
-                                <span class="<?= $statusClass ?>">
-                                    <?= $statusLabel ?>
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn-detail"
-                                        data-id="<?= htmlspecialchars($value['id'] ?? '') ?>"
-                                        data-nama="<?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?>"
-                                        data-stambuk="<?= htmlspecialchars($value['stambuk'] ?? '-') ?>"
-                                        data-nilai="<?= htmlspecialchars($nilaiTes) ?>"
-                                        data-total="<?= htmlspecialchars($nilaiTotal ?? '') ?>">
-                                    <i class="bi bi-eye"></i> Detail
-                                </button>
-                            </td>
+                            <th style="width: 60px;">No</th>
+                            <th>Nama Mahasiswa</th>
+                            <th>Stambuk</th>
+                            <th style="width: 140px;">Nilai Tes</th>
+                            <th style="width: 140px;">Status</th>
+                            <th style="width: 120px;">Aksi</th>
                         </tr>
-                    <?php $i++; endforeach; ?>
-                </tbody>
-            </table>
-        <?php endif; ?>
+                    </thead>
+                    <tbody>
+                        <?php $i = 1; foreach ($nilai as $value): ?>
+                            <?php
+                            $nilaiTes = $value['nilai'] ?? '-';
+                            $nilaiTotal = $value['total'] ?? null;
+
+                            // Determine badge class
+                            $badgeClass = 'belum';
+                            if ($nilaiTotal !== null && $nilaiTotal !== '') {
+                                if ((int)$nilaiTotal >= 70) {
+                                    $badgeClass = 'tinggi';
+                                } elseif ((int)$nilaiTotal >= 50) {
+                                    $badgeClass = 'sedang';
+                                } else {
+                                    $badgeClass = 'rendah';
+                                }
+                            }
+                            ?>
+                            <tr>
+                                <td class="text-center"><?= $i ?></td>
+                                <td>
+                                    <strong><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></strong>
+                                </td>
+                                <td><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>
+                                <td>
+                                    <span class="badge-nilai sedang"><?= htmlspecialchars($nilaiTes) ?></span>
+                                </td>
+                                <td>
+                                    <?php
+                                    $statusLabel = 'Belum Dinilai';
+                                    $statusClass = 'badge-nilai belum';
+                                    
+                                    if ($nilaiTes !== '-' && $nilaiTes !== null && $nilaiTes !== '') {
+                                        $score = (int)$nilaiTes;
+                                        if ($score >= 70) {
+                                            $statusLabel = 'Memenuhi';
+                                            $statusClass = 'badge-nilai tinggi';
+                                        } else {
+                                            $statusLabel = 'Tidak Memenuhi';
+                                            $statusClass = 'badge-nilai rendah';
+                                        }
+                                    }
+                                    ?>
+                                    <span class="<?= $statusClass ?>">
+                                        <?= $statusLabel ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn-detail"
+                                            data-id="<?= htmlspecialchars($value['id'] ?? '') ?>"
+                                            data-nama="<?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?>"
+                                            data-stambuk="<?= htmlspecialchars($value['stambuk'] ?? '-') ?>"
+                                            data-nilai="<?= htmlspecialchars($nilaiTes) ?>"
+                                            data-total="<?= htmlspecialchars($nilaiTotal ?? '') ?>">
+                                        <i class="bi bi-eye"></i> Detail
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php $i++; endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+        </div>
+
+        <!-- View Detail (Inline) -->
+        <div id="view-detail" style="display: none; padding-top: 20px;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 style="font-size: 1.5rem; font-weight: 600; color: #1e293b; margin: 0;">
+                    <i class="bi bi-person-badge"></i> Detail Nilai Mahasiswa
+                </h2>
+                <button class="btn-back" id="btnBack" style="background: #e2e8f0; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; color: #475569; cursor: pointer; transition: all 0.2s;">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </button>
+            </div>
+
+            <div class="card-table" style="background: #f8fafc; border: 1px solid #e2e8f0; box-shadow: none;">
+                <!-- Info Grid -->
+                <div class="info-grid">
+                    <div class="info-card" style="background: #fff; border-left-color: #2f66f6;">
+                        <label>Nama Lengkap</label>
+                        <span id="detailNama">-</span>
+                    </div>
+                    <div class="info-card" style="background: #fff; border-left-color: #2f66f6;">
+                        <label>Stambuk</label>
+                        <span id="detailStambuk">-</span>
+                    </div>
+                    <!-- Nilai Tes Tertulis Removed -->
+                    <div class="info-card" style="background: #fff; border-left-color: #2f66f6;">
+                        <label>Nilai Akhir</label>
+                        <span id="detailTotalNilai">-</span>
+                    </div>
+                </div>
+
+                <!-- Soal Jawaban Section -->
+                <div class="soal-section">
+                    <h5><i class="bi bi-list-check"></i> Soal dan Jawaban</h5>
+                    <div id="soalJawabanList" class="soal-jawaban-grid">
+                        <p class="text-muted">Memuat data...</p>
+                    </div>
+                </div>
+
+                <!-- Nilai Form -->
+                <div class="nilai-form-section">
+                    <h5><i class="bi bi-pencil-square"></i> Input Nilai Akhir</h5>
+                    <form id="formNilaiAkhir">
+                        <div class="nilai-input-group">
+                            <input type="number"
+                                   id="nilaiAkhir"
+                                   placeholder="Masukkan nilai (0-100)"
+                                   min="0"
+                                   max="100"
+                                   max="100">
+                            <button type="submit">
+                                <i class="bi bi-check-lg"></i> Simpan Nilai
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
-<!-- Detail Modal -->
-<div id="detailModal" class="modal-nilai">
-    <div class="modal-nilai-content">
-        <div class="modal-nilai-header">
-            <h2><i class="bi bi-person-badge"></i> Detail Nilai Mahasiswa</h2>
-            <button class="modal-nilai-close" id="closeDetailModal">&times;</button>
-        </div>
-        <div class="modal-nilai-body">
-            <!-- Info Grid -->
-            <div class="info-grid">
-                <div class="info-card">
-                    <label>Nama Lengkap</label>
-                    <span id="modalNama">-</span>
-                </div>
-                <div class="info-card">
-                    <label>Stambuk</label>
-                    <span id="modalStambuk">-</span>
-                </div>
-                <div class="info-card">
-                    <label>Nilai Tes Tertulis</label>
-                    <span id="modalNilai">-</span>
-                </div>
-                <div class="info-card">
-                    <label>Nilai Akhir</label>
-                    <span id="modalTotalNilai">-</span>
-                </div>
-            </div>
-
-            <!-- Soal Jawaban Section -->
-            <div class="soal-section">
-                <h5><i class="bi bi-list-check"></i> Soal dan Jawaban</h5>
-                <div id="soalJawabanList" class="soal-jawaban-grid">
-                    <p class="text-muted">Memuat data...</p>
-                </div>
-            </div>
-
-            <!-- Nilai Form -->
-            <div class="nilai-form-section">
-                <h5><i class="bi bi-pencil-square"></i> Input Nilai Akhir</h5>
-                <form id="formNilaiAkhir">
-                    <div class="nilai-input-group">
-                        <input type="number"
-                               id="nilaiAkhir"
-                               placeholder="Masukkan nilai (0-100)"
-                               min="0"
-                               max="100"
-                               max="100">
-                        <button type="submit">
-                            <i class="bi bi-check-lg"></i> Simpan Nilai
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Alert Modal -->
+<!-- Alert Modal (Keep as popup for notifications) -->
 <div id="alertModal" class="alert-modal">
     <div class="alert-content">
         <img id="alertGif" src="" alt="Status">
@@ -823,8 +804,6 @@ $(document).ready(function() {
         });
     });
 
-
-
     // Input validation
     $('#nilaiAkhir').on('input', function() {
         let value = parseInt(this.value);
@@ -832,7 +811,7 @@ $(document).ready(function() {
         if (value < 0) this.value = 0;
     });
 
-    // Open detail modal
+    // Open Detail View
     $('.btn-detail').on('click', function() {
         const id = $(this).data('id');
         const nama = $(this).data('nama');
@@ -842,15 +821,17 @@ $(document).ready(function() {
 
         currentMahasiswaId = id;
 
-        $('#modalNama').text(nama);
-        $('#modalStambuk').text(stambuk);
-        $('#modalNilai').text(nilai);
-        $('#modalTotalNilai').text(total || 'Belum dinilai');
+        // Populate Data
+        $('#detailNama').text(nama);
+        $('#detailStambuk').text(stambuk);
+        // $('#detailNilai').text(nilai); // Removed
+        $('#detailTotalNilai').text(total || 'Belum dinilai');
         $('#nilaiAkhir').val(total || '');
 
-        // Load soal jawaban
+        // Loading State for Questions
         $('#soalJawabanList').html('<p class="text-muted">Memuat data...</p>');
 
+        // Fetch Questions
         $.ajax({
             url: '<?= APP_URL ?>/getsoaljawaban',
             type: 'POST',
@@ -861,11 +842,18 @@ $(document).ready(function() {
                     let html = '';
                     response.data.forEach((item, index) => {
                         const isCorrect = item.jawaban === item.jawaban_user;
+                        const cardClass = isCorrect ? 'correct' : 'wrong';
                         const answerClass = isCorrect ? 'answer-correct' : 'answer-wrong';
+                        const icon = isCorrect 
+                            ? '<i class="bi bi-check-circle-fill text-success"></i>' 
+                            : '<i class="bi bi-x-circle-fill text-danger"></i>';
 
                         html += `
-                            <div class="soal-card">
-                                <div class="soal-number">${index + 1}</div>
+                            <div class="soal-card ${cardClass}">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="soal-number">${index + 1}</div>
+                                    <div class="status-icon" style="font-size: 1.2rem;">${icon}</div>
+                                </div>
                                 <div class="question">${item.deskripsi}</div>
                                 <div class="answers">
                                     <div class="answer-item">
@@ -877,8 +865,8 @@ $(document).ready(function() {
                                         <span class="answer-correct">${item.jawaban}</span>
                                     </div>
                                     <div class="answer-item">
-                                        <span class="answer-label">Jawaban User:</span>
-                                        <span class="${answerClass}">${item.jawaban_user || '-'}</span>
+                                        <span class="answer-label">Jawaban Mahasiswa:</span>
+                                        <span class="${answerClass}">${item.jawaban_user || '<span class="text-muted fst-italic">Tidak menjawab</span>'}</span>
                                     </div>
                                 </div>
                             </div>
@@ -894,20 +882,17 @@ $(document).ready(function() {
             }
         });
 
-        $('#detailModal').addClass('show');
+        // Switch View
+        $('#view-list').hide();
+        $('#view-detail').fadeIn(200);
+        window.scrollTo(0, 0);
     });
 
-    // Close modal
-    $('#closeDetailModal, #detailModal').on('click', function(e) {
-        if (e.target === this) {
-            $('#detailModal').removeClass('show');
-            currentMahasiswaId = null;
-        }
-    });
-
-    // Prevent modal content click from closing
-    $('.modal-nilai-content').on('click', function(e) {
-        e.stopPropagation();
+    // Back Button Logic
+    $('#btnBack').on('click', function() {
+        $('#view-detail').hide();
+        $('#view-list').fadeIn(200);
+        currentMahasiswaId = null;
     });
 
     // Submit nilai form
@@ -927,12 +912,19 @@ $(document).ready(function() {
             return;
         }
 
+        // Show loading state
+        const btnSubmit = $(this).find('button[type="submit"]');
+        const originalBtnText = btnSubmit.html();
+        btnSubmit.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menyimpan...');
+
         $.ajax({
             url: '<?= APP_URL ?>/updatenilaiakhir',
             type: 'POST',
             data: { id: currentMahasiswaId, nilai: nilaiAkhir },
             dataType: 'json',
             success: function(response) {
+                btnSubmit.prop('disabled', false).html(originalBtnText);
+                
                 if (response.status === 'success') {
                     showAlert('Nilai berhasil disimpan!', true);
 
@@ -943,14 +935,12 @@ $(document).ready(function() {
                     if (tr.length) {
                         // Determine badge class based on score
                         let badgeClass = 'badge-nilai belum';
-                        let displayScore = 'Belum Dinilai';
                         let statusText = 'Belum Dinilai';
 
                         if (nilaiAkhir !== '') {
                             const score = parseInt(nilaiAkhir);
-                            displayScore = score;
                             
-                            // Update Status Logic
+                            // Update Status Logic - Status reflects Final Grade (Nilai Akhir)
                             if (score >= 70) {
                                 badgeClass = 'badge-nilai tinggi';
                                 statusText = 'Memenuhi';
@@ -960,25 +950,21 @@ $(document).ready(function() {
                             }
                         }
                         
-                        // Update Nilai Tes Column (Index 3)
-                        tr.find('td:eq(3) span').text(displayScore);
-
                         // Update Status Column (Index 4)
                         tr.find('td:eq(4)').html(`<span class="${badgeClass}">${statusText}</span>`);
 
                         // Update Button Data Attribute for next open
                         btn.data('total', nilaiAkhir);
-                        btn.data('nilai', nilaiAkhir); // Sync both
+                        
+                        // Update the text in the detail view as well
+                        $('#detailTotalNilai').text(nilaiAkhir);
                     }
-
-                    // Close Modal
-                    $('#detailModal').removeClass('show');
-                    currentMahasiswaId = null;
                 } else {
                     showAlert(response.message || 'Gagal menyimpan nilai', false);
                 }
             },
             error: function() {
+                btnSubmit.prop('disabled', false).html(originalBtnText);
                 showAlert('Terjadi kesalahan saat menyimpan nilai', false);
             }
         });
