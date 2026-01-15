@@ -55,32 +55,42 @@ class MahasiswaController extends Controller {
         header('Content-Type: application/json');
         ob_clean();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
             echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
             return;
         }
 
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
             echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
             return;
         }
-        $id = $_POST['id'] ?? '';
-        if (!$id) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Semua field wajib diisi']);
+
+        $idUser = $_POST['id'] ?? '';
+        $idMahasiswa = $_POST['mahasiswaId'] ?? '';
+
+        if (!$idUser && !$idMahasiswa) {
+            echo json_encode(['status' => 'error', 'message' => 'ID peserta tidak ditemukan']);
             return;
         }
+
         try {
-            if (UserModel::deleteUser($id)) {
-                header('Content-Type: application/json');
-                ob_clean(); 
-                echo json_encode(['status' => 'success', 'message' => 'Mahasiswa berhasil dihapus']);
+            if ($idUser) {
+                // Primary: Delete User (Cascades to Mahasiswa usually)
+                if (UserModel::deleteUser($idUser)) {
+                    echo json_encode(['status' => 'success', 'message' => 'Mahasiswa berhasil dihapus']);
+                    return;
+                }
+            } elseif ($idMahasiswa) {
+                // Fallback: Delete Mahasiswa Record Only
+                $mahasiswa = new Mahasiswa();
+                $mahasiswa->deleteMahasiswaById($idMahasiswa);
+                echo json_encode(['status' => 'success', 'message' => 'Data mahasiswa berhasil dihapus']);
                 return;
             }
-        }catch (\Exception $e) {
-            header('Content-Type: application/json');
-            ob_clean(); 
+            
+            // If we get here without return, something failed silently or logic gap
+            throw new \Exception('Gagal menghapus data');
+
+        } catch (\Exception $e) {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
             return;
         }

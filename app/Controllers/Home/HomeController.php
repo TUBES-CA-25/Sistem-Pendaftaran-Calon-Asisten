@@ -336,6 +336,22 @@ class HomeController extends Controller
     private function getDaftarPesertaData(): array
     {
         $mahasiswa = MahasiswaController::viewAllMahasiswa() ?? [];
+        
+        // Root dir relative to this file (app/Controllers/Home) -> 3 levels up
+        $imageDir = dirname(__DIR__, 3) . '/res/imageUser/';
+
+        foreach ($mahasiswa as &$mhs) {
+            // Check if foto is set and not empty
+            if (!empty($mhs['foto'])) {
+                $filePath = $imageDir . $mhs['foto'];
+                if (!file_exists($filePath)) {
+                    // File record exists in DB but not on disk -> Set to null to trigger default
+                    $mhs['foto'] = null; 
+                }
+            }
+        }
+        unset($mhs); // Break reference
+
         return [
             'mahasiswaList' => $mahasiswa,
             'result' => $mahasiswa

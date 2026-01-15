@@ -454,6 +454,81 @@ $result = $result ?? [];
             font-size: 0.75rem;
         }
     }
+
+    /* Status Badge Colors */
+    .badge-diterima {
+        background-color: #d1fae5;
+        color: #065f46;
+        font-weight: 600;
+    }
+
+    .badge-ditolak {
+        background-color: #fee2e2;
+        color: #991b1b;
+        font-weight: 600;
+    }
+
+    .badge-process {
+        background-color: #fef3c7;
+        color: #92400e;
+        font-weight: 600;
+    }
+
+    .badge-pending {
+        background-color: #e5e7eb;
+        color: #374151;
+        font-weight: 600;
+    }
+
+    /* Action Buttons Styling */
+    .action-btns {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .btn-action {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: white;
+        font-size: 0.9rem;
+    }
+
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-action.btn-view {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    }
+
+    .btn-action.btn-view:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    }
+
+    .btn-action.btn-delete {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+
+    .btn-action.btn-delete:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    }
+
+    .btn-action.btn-reminder {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    .btn-action.btn-reminder:hover {
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    }
 </style>
 
 <main>
@@ -506,18 +581,18 @@ $result = $result ?? [];
                             // Determine status
                             $status = $row['status'] ?? 'pending';
                             $statusClass = 'badge-pending';
-                            $statusText = 'Pending';
-                            $statusIcon = 'bi-hourglass';
+                            $statusText = 'Belum Upload';
 
                             if (isset($row['berkas']['accepted'])) {
                                 if ($row['berkas']['accepted'] == 1) {
                                     $statusClass = 'badge-diterima';
-                                    $statusText = 'Diterima';
-                                    $statusIcon = 'bi-check-circle-fill';
+                                    $statusText = 'Disetujui';
+                                } elseif ($row['berkas']['accepted'] == 2) {
+                                    $statusClass = 'badge-ditolak';
+                                    $statusText = 'Ditolak';
                                 } elseif ($row['berkas']['accepted'] == 0) {
                                     $statusClass = 'badge-process';
-                                    $statusText = 'Process';
-                                    $statusIcon = 'bi-clock-fill';
+                                    $statusText = 'Proses';
                                 }
                             }
                             
@@ -544,15 +619,12 @@ $result = $result ?? [];
                             <td><?= htmlspecialchars($row['kelas'] ?? '-') ?></td>
                             <td class="text-center">
                                 <span class="badge-status <?= $statusClass ?>">
-                                    <i class="bi <?= $statusIcon ?>"></i>
                                     <?= $statusText ?>
                                 </span>
                             </td>
                             <td>
                                     <div class="action-btns">
                                         <button class="btn-action btn-view" title="Lihat Detail"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#detailModal"
                                                 data-id="<?= $row['id'] ?>"
                                                 data-userid="<?= $row['idUser'] ?>"
                                                 data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>"
@@ -574,6 +646,18 @@ $result = $result ?? [];
                                                 data-ppt="<?= $row['presentasi']['ppt'] ?? ''?>">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
+                                        
+                                        <?php if (!isset($row['berkas']['accepted']) || $row['berkas']['accepted'] === null): ?>
+                                            <!-- Button Kirim Reminder untuk yang belum upload -->
+                                            <button class="btn-action btn-reminder" 
+                                                    title="Kirim Reminder" 
+                                                    data-id="<?= $row['id'] ?>"
+                                                    data-userid="<?= $row['idUser'] ?>"
+                                                    data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>">
+                                                <i class="bi bi-bell"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                        
                                         <button class="btn-action btn-delete" title="Hapus" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                             <i class="bi bi-trash3"></i>
                                         </button>
@@ -943,13 +1027,24 @@ $result = $result ?? [];
                         <button type="button" class="btn px-4 py-2" id="btnSendMessageToUser" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);">
                             <i class="bi bi-envelope me-2"></i>Kirim Pesan
                         </button>
+                        
+                        <!-- ACCEPT BUTTON FOR BELUM UPLOAD STATUS -->
+                        <button type="button" class="btn px-4 py-2" id="btnTerimaModal" onclick="acceptParticipant()" style="background: linear-gradient(135deg, #10b981 0%, #059b70 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3); display: none;">
+                            <i class="bi bi-check-circle me-2"></i>Verifikasi Berkas
+                        </button>
+                        
+                        <!-- REJECT BUTTON FOR BELUM UPLOAD STATUS -->
+                        <button type="button" class="btn px-4 py-2" id="btnTolakModal" onclick="rejectParticipant()" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3); display: none;">
+                            <i class="bi bi-x-circle me-2"></i>Batalkan Verifikasi Berkas
+                        </button>
+                        
                         <!-- VERIFICATION BUTTON WITH POPUP -->
                         <button type="button" class="btn px-4 py-2" id="btnVerifikasiModal" onclick="triggerVerificationFromModal()" style="background: linear-gradient(135deg, #10b981 0%, #059b70 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);">
                             <i class="bi bi-check-circle me-2"></i>Verifikasi Berkas
                         </button>
                         <!-- REJECT BUTTON - HIDDEN BY DEFAULT -->
                         <button type="button" class="btn px-4 py-2" id="btnBatalkanModal" onclick="cancelVerification()" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3); display: none;">
-                            <i class="bi bi-x-circle me-2"></i>Batalkan Verifikasi
+                            <i class="bi bi-x-circle me-2"></i>Batal kan Verifikasi
                         </button>
                     </div>
                 </div>
@@ -1259,6 +1354,10 @@ $result = $result ?? [];
             var btnVerifikasi = document.getElementById('btnVerifikasiModal');
             var btnBatalkan = document.getElementById('btnBatalkanModal');
             
+            // Get Terima/Tolak button elements
+            var btnTerima = document.getElementById('btnTerimaModal');
+            var btnTolak = document.getElementById('btnTolakModal');
+            
             // Check if elements exist before manipulating
             if (!btnVerifikasi || !btnBatalkan) {
                 console.error('Verification buttons not found!');
@@ -1273,6 +1372,10 @@ $result = $result ?? [];
             btnVerifikasi.style.cursor = 'pointer';
             btnVerifikasi.style.display = 'none';
             btnBatalkan.style.display = 'none';
+            
+            // Reset Terima/Tolak buttons
+            if (btnTerima) btnTerima.style.display = 'none';
+            if (btnTolak) btnTolak.style.display = 'none';
             
             // Check if status elements exist
             if (!statusBadge || !statusIcon) {
@@ -1306,12 +1409,19 @@ $result = $result ?? [];
                 btnBatalkan.style.display = 'none';
                 
             } else {
-                // BELUM UPLOAD - Hide both buttons
+                // BELUM UPLOAD - Show Terima/Tolak buttons, hide Verifikasi button
                 statusBadge.className = 'badge rounded-pill px-4 py-2 badge-pending';
                 statusBadge.innerHTML = '<i class="bi bi-file-earmark-x me-1"></i>Belum Upload Berkas';
                 statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow status-icon-none';
                 statusIcon.innerHTML = '<i class="bi bi-x-lg"></i>';
-                // acceptButton removed as it does not exist
+                
+                // Hide verification buttons
+                btnVerifikasi.style.display = 'none';
+                btnBatalkan.style.display = 'none';
+                
+                // Show Terima/Tolak buttons
+                if (btnTerima) btnTerima.style.display = 'inline-block';
+                if (btnTolak) btnTolak.style.display = 'inline-block';
             }
             
             // Set photo
@@ -1361,6 +1471,11 @@ $result = $result ?? [];
             if (noPresentasiFiles) {
                 noPresentasiFiles.style.display = hasPresentasiFiles ? 'none' : 'inline-block';
             }
+            
+            // SHOW MODAL MANUALLY NOW
+            // This prevents race condition with data-bs-toggle vs JS data population
+            var detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
+            detailModal.show();
             
             } catch (error) {
                 console.error('Error opening detail modal:', error);
@@ -1886,10 +2001,23 @@ function showCancellationPopup(mahasiswaId, namaLengkap) {
     const modal = new bootstrap.Modal(document.getElementById('cancellationModal'));
     modal.show();
     
-    // Remove modal from DOM after it's hidden
+    // Remove modal from DOM after it's hidden AND cleanup backdrop
     document.getElementById('cancellationModal').addEventListener('hidden.bs.modal', function() {
         this.remove();
-    });
+        
+        // Clean up all backdrops
+        setTimeout(function() {
+            var backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(function(backdrop) {
+                backdrop.remove();
+            });
+            
+            // Reset body state
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }, 100);
+    }, { once: true });
 }
 
 function confirmCancellation(mahasiswaId) {
@@ -1984,10 +2112,23 @@ function showVerificationPopup(mahasiswaId, namaLengkap) {
     const modal = new bootstrap.Modal(document.getElementById('verificationModal'));
     modal.show();
     
-    // Remove modal from DOM after it's hidden
+    // Remove modal from DOM after it's hidden AND cleanup backdrop
     document.getElementById('verificationModal').addEventListener('hidden.bs.modal', function() {
         this.remove();
-    });
+        
+        // Clean up all backdrops
+        setTimeout(function() {
+            var backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(function(backdrop) {
+                backdrop.remove();
+            });
+            
+            // Reset body state
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }, 100);
+    }, { once: true });
 }
 
 function confirmVerification(mahasiswaId) {
@@ -2052,5 +2193,427 @@ function showSuccessPopup(message) {
         });
     }, 1500);
 }
+
+// ============================================
+// REMINDER BUTTON HANDLER
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Event delegation for reminder buttons
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.btn-reminder')) {
+            const btn = e.target.closest('.btn-reminder');
+            const userId = btn.getAttribute('data-userid');
+            const nama = btn.getAttribute('data-nama');
+            
+            // Show confirmation
+            if (confirm(`Kirim reminder ke ${nama} untuk upload berkas?`)) {
+                // Show loading
+                showAlert('Mengirim reminder...', true);
+                
+                // Send reminder (you can customize the endpoint and message)
+                fetch('/Sistem-Pendaftaran-Calon-Asisten/public/sendNotification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `user_id=${userId}&message=Mohon segera upload berkas pendaftaran Anda.&title=Reminder Upload Berkas`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showSuccessPopup('Reminder berhasil dikirim!');
+                    } else {
+                        showAlert('Gagal mengirim reminder: ' + (data.message || 'Unknown error'), false);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('Terjadi kesalahan saat mengirim reminder', false);
+                });
+            }
+        }
+    });
+});
+
+// ============================================
+// ACCEPT/REJECT PARTICIPANT FUNCTIONS
+// ============================================
+function acceptParticipant() {
+    var mahasiswaId = document.getElementById('modalMahasiswaId').value;
+    var nama = document.getElementById('modalNama').textContent;
+    
+    if (!mahasiswaId) {
+        showAlert('ID Mahasiswa tidak ditemukan', false);
+        return;
+    }
+    
+    // Close detail modal first
+    var detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
+    if (detailModal) {
+        detailModal.hide();
+    }
+    
+    // Wait for detail modal to fully close, then show confirmation
+    setTimeout(function() {
+        // Force cleanup any leftover backdrops before showing new modal
+        var existingBackdrops = document.querySelectorAll('.modal-backdrop');
+        existingBackdrops.forEach(function(backdrop) {
+            backdrop.remove();
+        });
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Create custom confirmation popup (premium design)
+        var popupHTML = `
+            <div class="modal fade" id="confirmAcceptModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                        <!-- Header with gradient -->
+                        <div class="modal-header border-0 text-white position-relative" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px;">
+                            <div class="position-absolute" style="top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                            <div class="w-100 text-center position-relative">
+                                <div class="mb-3">
+                                    <i class="bi bi-check-circle" style="font-size: 4rem; opacity: 0.9;"></i>
+                                </div>
+                                <h5 class="modal-title fw-bold mb-0">Konfirmasi Verifikasi Berkas</h5>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white position-absolute" style="top: 15px; right: 15px;" data-bs-dismiss="modal"></button>
+                        </div>
+                        
+                        <!-- Body -->
+                        <div class="modal-body text-center px-4 py-4">
+                            <p class="text-muted mb-2" style="font-size: 0.9rem;">Anda akan memverifikasi berkas untuk:</p>
+                            <h6 class="fw-bold mb-4" style="color: #1f2937; font-size: 1.1rem;">${nama}</h6>
+                            <p class="text-muted" style="font-size: 0.85rem;">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Pastikan semua dokumen telah sesuai sebelum melanjutkan
+                            </p>
+                        </div>
+                        
+                        <!-- Footer -->
+                        <div class="modal-footer border-0 justify-content-center px-4 pb-4 pt-0">
+                            <button type="button" class="btn px-4 py-2" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: none; border-radius: 10px; min-width: 120px;">
+                                <i class="bi bi-x-lg me-2"></i>Batal
+                            </button>
+                            <button type="button" class="btn px-4 py-2" onclick="confirmAccept(${mahasiswaId})" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); min-width: 120px;">
+                                <i class="bi bi-check-circle me-2"></i>Verifikasi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Remove existing modal if any
+        var existingModal = document.getElementById('confirmAcceptModal');
+        if (existingModal) existingModal.remove();
+        
+        // Append to body
+        document.body.insertAdjacentHTML('beforeend', popupHTML);
+        
+        // Show modal
+        var modal = new bootstrap.Modal(document.getElementById('confirmAcceptModal'));
+        modal.show();
+        
+        // Cleanup BEFORE modal is hidden (prevents backdrop accumulation)
+        document.getElementById('confirmAcceptModal').addEventListener('hide.bs.modal', function() {
+            // Remove all backdrops immediately
+            var backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(function(backdrop) {
+                backdrop.remove();
+            });
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }, { once: true });
+        
+        // Cleanup when modal is hidden (including when Batal is clicked)
+        document.getElementById('confirmAcceptModal').addEventListener('hidden.bs.modal', function() {
+            this.remove();
+            
+            // IMMEDIATE cleanup (no delay)
+            var backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(function(backdrop) {
+                backdrop.remove();
+            });
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            
+            // Double check with delay
+            setTimeout(function() {
+                var remainingBackdrops = document.querySelectorAll('.modal-backdrop');
+                remainingBackdrops.forEach(function(backdrop) {
+                    backdrop.remove();
+                });
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }, 100);
+        }, { once: true });
+    }, 400);
+}
+
+function confirmAccept(mahasiswaId) {
+    // Close the modal first
+    var modal = bootstrap.Modal.getInstance(document.getElementById('confirmAcceptModal'));
+    if (modal) modal.hide();
+    
+    // Show loading
+    showAlert('Memproses verifikasi...', true);
+    
+    // Send accept request
+    fetch('/Sistem-Pendaftaran-Calon-Asisten/public/acceptberkas', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'id=' + mahasiswaId + '&status=1'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showSuccessPopup('Berkas berhasil diverifikasi!');
+            setTimeout(function() {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showAlert('Gagal memverifikasi berkas: ' + (data.message || 'Unknown error'), false);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('Terjadi kesalahan saat memverifikasi berkas', false);
+    });
+}
+
+function rejectParticipant() {
+    var mahasiswaId = document.getElementById('modalMahasiswaId').value;
+    var nama = document.getElementById('modalNama').textContent;
+    
+    if (!mahasiswaId) {
+        showAlert('ID Mahasiswa tidak ditemukan', false);
+        return;
+    }
+    
+    // Close detail modal first
+    var detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
+    if (detailModal) {
+        detailModal.hide();
+    }
+    
+    // Wait for detail modal to fully close, then show confirmation
+    setTimeout(function() {
+        // Force cleanup any leftover backdrops before showing new modal
+        var existingBackdrops = document.querySelectorAll('.modal-backdrop');
+        existingBackdrops.forEach(function(backdrop) {
+            backdrop.remove();
+        });
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Create custom confirmation popup (premium design)
+        var popupHTML = `
+            <div class="modal fade" id="confirmRejectModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                        <!-- Header with gradient -->
+                        <div class="modal-header border-0 text-white position-relative" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 30px;">
+                            <div class="position-absolute" style="top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                            <div class="w-100 text-center position-relative">
+                                <div class="mb-3">
+                                    <i class="bi bi-x-circle" style="font-size: 4rem; opacity: 0.9;"></i>
+                                </div>
+                                <h5 class="modal-title fw-bold mb-0">Batalkan Verifikasi Berkas</h5>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white position-absolute" style="top: 15px; right: 15px;" data-bs-dismiss="modal"></button>
+                        </div>
+                        
+                        <!-- Body -->
+                        <div class="modal-body text-center px-4 py-4">
+                            <p class="text-muted mb-2" style="font-size: 0.9rem;">Anda akan membatalkan verifikasi berkas untuk:</p>
+                            <h6 class="fw-bold mb-4" style="color: #1f2937; font-size: 1.1rem;">${nama}</h6>
+                            <p class="text-muted" style="font-size: 0.85rem;">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                Status akan kembali menjadi "Menunggu Verifikasi"
+                            </p>
+                        </div>
+                        
+                        <!-- Footer -->
+                        <div class="modal-footer border-0 justify-content-center px-4 pb-4 pt-0">
+                            <button type="button" class="btn px-4 py-2" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: none; border-radius: 10px; min-width: 120px;">
+                                <i class="bi bi-x-lg me-2"></i>Batal
+                            </button>
+                            <button type="button" class="btn px-4 py-2" onclick="confirmReject(${mahasiswaId})" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); min-width: 120px;">
+                                <i class="bi bi-x-circle me-2"></i>Batalkan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Remove existing modal if any
+        var existingModal = document.getElementById('confirmRejectModal');
+        if (existingModal) existingModal.remove();
+        
+        // Append to body
+        document.body.insertAdjacentHTML('beforeend', popupHTML);
+        
+        // Show modal
+        var modal = new bootstrap.Modal(document.getElementById('confirmRejectModal'));
+        modal.show();
+        
+        // Cleanup BEFORE modal is hidden (prevents backdrop accumulation)
+        document.getElementById('confirmRejectModal').addEventListener('hide.bs.modal', function() {
+            // Remove all backdrops immediately
+            var backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(function(backdrop) {
+                backdrop.remove();
+            });
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }, { once: true });
+        
+        // Cleanup when modal is hidden (including when Batal is clicked)
+        document.getElementById('confirmRejectModal').addEventListener('hidden.bs.modal', function() {
+            this.remove();
+            
+            // IMMEDIATE cleanup (no delay)
+            var backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(function(backdrop) {
+                backdrop.remove();
+            });
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            
+            // Double check with delay
+            setTimeout(function() {
+                var remainingBackdrops = document.querySelectorAll('.modal-backdrop');
+                remainingBackdrops.forEach(function(backdrop) {
+                    backdrop.remove();
+                });
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }, 100);
+        }, { once: true });
+    }, 400);
+}
+
+function confirmReject(mahasiswaId) {
+    // Close the modal first
+    var modal = bootstrap.Modal.getInstance(document.getElementById('confirmRejectModal'));
+    if (modal) modal.hide();
+    
+    // Show loading
+    showAlert('Memproses pembatalan...', true);
+    
+    // Send reject request
+    fetch('/Sistem-Pendaftaran-Calon-Asisten/public/acceptberkas', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'id=' + mahasiswaId + '&status=2'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showSuccessPopup('Verifikasi berkas berhasil dibatalkan!');
+            setTimeout(function() {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showAlert('Gagal membatalkan verifikasi: ' + (data.message || 'Unknown error'), false);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('Terjadi kesalahan saat membatalkan verifikasi', false);
+    });
+}
+
+// ============================================
+// DETAIL MODAL BACKDROP CLEANUP - AGGRESSIVE MODE
+// ============================================
+// DON'T cleanup backdrops in show.bs.modal - let Bootstrap handle it
+// Removing backdrops here causes race condition where Bootstrap creates 2 backdrops
+$(document).on('show.bs.modal', '#detailModal', function(e) {
+    // Only reset body state if needed, but don't touch backdrops
+    // Bootstrap will handle backdrop creation properly
+});
+
+// Cleanup after modal is fully shown
+$(document).on('shown.bs.modal', '#detailModal', function() {
+    // Keep only ONE backdrop
+    setTimeout(function() {
+        var backdrops = document.querySelectorAll('.modal-backdrop');
+        if (backdrops.length > 1) {
+            // Remove all except the last one
+            for (var i = 0; i < backdrops.length - 1; i++) {
+                backdrops[i].remove();
+            }
+        }
+    }, 50);
+});
+
+// Cleanup when modal is hidden
+$(document).on('hidden.bs.modal', '#detailModal', function() {
+    // Aggressive cleanup - remove ALL backdrops
+    setTimeout(function() {
+        var backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(function(backdrop) {
+            backdrop.remove();
+        });
+        
+        // Force reset body state
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Double check after another delay
+        setTimeout(function() {
+            var remainingBackdrops = document.querySelectorAll('.modal-backdrop');
+            if (remainingBackdrops.length > 0) {
+                remainingBackdrops.forEach(function(backdrop) {
+                    backdrop.remove();
+                });
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }
+        }, 100);
+    }, 50);
+});
+
+// Global cleanup function that runs periodically - FASTER INTERVAL
+setInterval(function() {
+    // Check if there are any modals open
+    var openModals = document.querySelectorAll('.modal.show');
+    var backdrops = document.querySelectorAll('.modal-backdrop');
+    
+    // If no modals are open but backdrops exist, remove them
+    if (openModals.length === 0 && backdrops.length > 0) {
+        backdrops.forEach(function(backdrop) {
+            backdrop.remove();
+        });
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+    }
+    
+    // If there are more backdrops than modals, remove extras
+    if (backdrops.length > openModals.length) {
+        var extraBackdrops = backdrops.length - openModals.length;
+        for (var i = 0; i < extraBackdrops; i++) {
+            backdrops[i].remove();
+        }
+    }
+}, 200); // Check every 200ms (faster than before)
 
 </script>
