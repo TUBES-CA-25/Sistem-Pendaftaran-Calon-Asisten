@@ -18,6 +18,7 @@ use App\Controllers\presentasi\JadwalPresentasiController;
 use App\Controllers\user\AbsensiUserController;
 use App\Controllers\Exam\NilaiAkhirController;
 use App\Controllers\exam\ExamController;
+use App\Core\Model;
 
 class HomeController extends Controller
 {
@@ -29,6 +30,8 @@ class HomeController extends Controller
 
         } else if ($this->isLoggedIn() && $this->getRole() == "Admin") {
             $data = $this->getSidebarData();
+            $dashboardData = $this->getDashboardAdminData();
+            $data = array_merge($data, $dashboardData);
             View::render('mainAdmin', 'Templates', $data);
 
         } else {
@@ -168,10 +171,26 @@ class HomeController extends Controller
      */
     private function getDashboardData(): array
     {
+        // Get mahasiswa ID for current user
+        $jadwalPresentasiUser = null;
+        if (isset($_SESSION['user']['id'])) {
+            $id_user = $_SESSION['user']['id'];
+            $sql = "SELECT id FROM mahasiswa WHERE id_user = ?";
+            $stmt = Model::getDB()->prepare($sql);
+            $stmt->bindParam(1, $id_user, \PDO::PARAM_INT);
+            $stmt->execute();
+            $mahasiswa = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if ($mahasiswa) {
+                $jadwalPresentasiUser = JadwalPresentasiController::getJadwalByMahasiswaId($mahasiswa['id']);
+            }
+        }
+
         return [
             'notifikasi' => NotificationControllers::getMessageById() ?? [],
             'tahapanSelesai' => DashboardUserController::getNumberTahapanSelesai(),
             'percentage' => DashboardUserController::getPercentage(),
+            'jadwalPresentasiUser' => $jadwalPresentasiUser,
             'tahapan' => [
                 ["1", "Lengkapi Biodata", DashboardUserController::getBiodataStatus(), "tahap ini"],
                 ["2", "Lengkapi Berkas", DashboardUserController::getBerkasStatus(), "mensubmit berkas"],
@@ -296,7 +315,8 @@ class HomeController extends Controller
             'pendaftarPending' => DashboardAdminController::getPendaftarPending(),
             'pendaftarGagal' => DashboardAdminController::getPendaftarGagal(),
             'statusKegiatan' => DashboardAdminController::getStatusKegiatan(),
-            'kegiatanBulanIni' => DashboardAdminController::getKegiatanByMonth($currentYear, $currentMonth) ?? []
+            'kegiatanBulanIni' => DashboardAdminController::getKegiatanByMonth($currentYear, $currentMonth) ?? [],
+            'jadwalPresentasiMendatang' => JadwalPresentasiController::getUpcomingJadwal(5)
         ];
     }
 
@@ -316,6 +336,22 @@ class HomeController extends Controller
     private function getDaftarPesertaData(): array
     {
         $mahasiswa = MahasiswaController::viewAllMahasiswa() ?? [];
+        
+        // Root dir relative to this file (app/Controllers/Home) -> 3 levels up
+        $imageDir = dirname(__DIR__, 3) . '/res/imageUser/';
+
+        foreach ($mahasiswa as &$mhs) {
+            // Check if foto is set and not empty
+            if (!empty($mhs['foto'])) {
+                $filePath = $imageDir . $mhs['foto'];
+                if (!file_exists($filePath)) {
+                    // File record exists in DB but not on disk -> Set to null to trigger default
+                    $mhs['foto'] = null; 
+                }
+            }
+        }
+        unset($mhs); // Break reference
+
         return [
             'mahasiswaList' => $mahasiswa,
             'result' => $mahasiswa

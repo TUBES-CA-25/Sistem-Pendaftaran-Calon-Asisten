@@ -28,8 +28,10 @@ class BerkasUserController extends Controller
     public function updateAcceptedStatus()
     {
         try {
+            // Ensure no previous output contaminates JSON
+            if (ob_get_length()) ob_clean();
+            
             header('Content-Type: application/json');
-            ob_clean();
             $id = $_POST['id'] ?? null;
             if (!$id) {
                 http_response_code(400);
@@ -37,8 +39,10 @@ class BerkasUserController extends Controller
                 return;
             }
 
+            $status = $_POST['status'] ?? 1;
+            
             $berkas = new BerkasUser();
-            $isAccepted = $berkas->updateAccepted($id);
+            $isAccepted = $berkas->updateAccepted($id, $status);
 
             if ($isAccepted) {
                 echo json_encode(['status' => 'success', 'message' => 'Status berhasil diperbarui']);
@@ -46,9 +50,9 @@ class BerkasUserController extends Controller
                 http_response_code(500);
                 echo json_encode(['status' => 'error', 'message' => 'Gagal memperbarui status']);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             http_response_code(500);
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine()]);
         }
     }
 

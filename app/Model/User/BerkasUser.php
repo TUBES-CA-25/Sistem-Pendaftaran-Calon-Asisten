@@ -79,7 +79,7 @@ class BerkasUser extends Model {
     
         $idMahasiswaData = $this->getIdMahasiswa($berkas->id_mahasiswa);
         if (!$idMahasiswaData || !isset($idMahasiswaData['id'])) {
-            throw new Exception("Mahasiswa tidak ditemukan" + var_dump($idMahasiswaData)); 
+            throw new Exception("Mahasiswa tidak ditemukan" . var_export($idMahasiswaData, true)); 
         }
         $idMahasiswa = $idMahasiswaData['id']; 
         
@@ -234,11 +234,28 @@ class BerkasUser extends Model {
     }
     
     
-    public function updateAccepted($id) {
-        $query = "UPDATE " . static::$table . " SET accepted = 1 WHERE id_mahasiswa = ?";
-        $stmt = self::getDB()->prepare($query);
-        $stmt->bindParam(1,$id);
-        return $stmt->execute();;
+    public function updateAccepted($id, $status = 1) {
+        // Cek apakah data sudah ada
+        $checkQuery = "SELECT id_mahasiswa FROM " . static::$table . " WHERE id_mahasiswa = ?";
+        $stmtCheck = self::getDB()->prepare($checkQuery);
+        $stmtCheck->bindParam(1, $id);
+        $stmtCheck->execute();
+
+        if ($stmtCheck->rowCount() > 0) {
+            // Update jika ada
+            $query = "UPDATE " . static::$table . " SET accepted = ? WHERE id_mahasiswa = ?";
+            $stmt = self::getDB()->prepare($query);
+            $stmt->bindParam(1, $status, PDO::PARAM_INT);
+            $stmt->bindParam(2, $id);
+            return $stmt->execute();
+        } else {
+            // Insert jika belum ada (dengan nilai default kosong untuk file)
+            $query = "INSERT INTO " . static::$table . " (id_mahasiswa, accepted, foto, cv, transkrip_nilai, surat_pernyataan) VALUES (?, ?, '', '', '', '')";
+            $stmt = self::getDB()->prepare($query);
+            $stmt->bindParam(1, $id);
+            $stmt->bindParam(2, $status, PDO::PARAM_INT);
+            return $stmt->execute();
+        }
     }
 
     public function update(BerkasUser $berkasUser) {

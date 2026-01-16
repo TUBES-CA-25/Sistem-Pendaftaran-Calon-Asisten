@@ -47,7 +47,7 @@ class NilaiAkhirController extends Controller
                 throw new \Exception('User tidak terautentikasi');
             }
             $nilai = new NilaiAkhir();
-            return $nilai->getAllNIlai();
+            return $nilai->getAllNilai();
         } catch (\Exception $e) {
             error_log("Error in getAllNilaiAkhirMahasiswa: " . $e->getMessage());
             return [];
@@ -72,12 +72,19 @@ class NilaiAkhirController extends Controller
 
             $id = $_POST['id'] ?? null;
             $nilai = $_POST['nilai'] ?? null;
-            if (!$id || !$nilai) {
+            
+            // Allow 0 but require ID
+            if (!$id || ($nilai === null)) {
                 echo json_encode([
                     'status' => 'error',
                     'message' => 'ID mahasiswa dan nilai harus diisi'
                 ]);
                 return;
+            }
+
+            // Convert empty string to NULL for database
+            if ($nilai === '') {
+                $nilai = null;
             }
             $nilaiAkhir = new NilaiAkhir();
             if ($nilaiAkhir->updateTotalNilai($id, $nilai)) {

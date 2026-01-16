@@ -95,6 +95,7 @@ button#closeModal:hover {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    margin-left: 10px;
   }
   
   .btn-confirm:hover {
@@ -135,4 +136,3 @@ button#closeModal:hover {
         transform: scale(1);
     }
 }
-

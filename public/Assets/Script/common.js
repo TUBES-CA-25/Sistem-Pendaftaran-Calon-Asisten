@@ -115,3 +115,117 @@ function sendAjax(url, data, onSuccess, onError) {
         }
     });
 }
+
+/**
+ * Global Toast Notification Function
+ * @param {string} message - Message to display
+ * @param {boolean} isSuccess - True for success (green), False for error (red)
+ * @param {string|null} redirectUrl - Optional URL to redirect after toast closes
+ */
+function showAlert(message, isSuccess = true, redirectUrl = null) {
+    // Ensure toast container exists
+    if ($('#toast-container').length === 0) {
+        $('body').append('<div id="toast-container"></div>');
+    }
+
+    const type = isSuccess ? 'success' : 'error';
+    const title = isSuccess ? 'Berhasil' : 'Gagal';
+    const icon = isSuccess ? 'bi-check-lg' : 'bi-exclamation-triangle';
+    const duration = 3000; // 3 seconds
+
+    const toastHtml = `
+        <div class="toast-notification ${type}">
+            <div class="toast-icon">
+                <i class="bi ${icon}"></i>
+            </div>
+            <div class="toast-content">
+                <div class="toast-title">${title}</div>
+                <div class="toast-message">${message}</div>
+            </div>
+            <div class="toast-close" onclick="$(this).parent().remove()">
+                <i class="bi bi-x"></i>
+            </div>
+            <div class="toast-progress">
+                <div class="toast-progress-bar"></div>
+            </div>
+        </div>
+    `;
+
+    const $toast = $(toastHtml);
+    $('#toast-container').append($toast);
+
+    // Trigger reflow for animation
+    setTimeout(() => $toast.addClass('show'), 10);
+
+    // Progress bar animation
+    const $progressBar = $toast.find('.toast-progress-bar');
+    $progressBar.css('transition', `transform ${duration}ms linear`);
+    setTimeout(() => $progressBar.css('transform', 'scaleX(0)'), 10);
+
+    // Auto remove
+    setTimeout(() => {
+        $toast.removeClass('show');
+        setTimeout(() => {
+            $toast.remove();
+            // Handle redirect if provided
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            }
+        }, 400); // Wait for slide out animation
+    }, duration);
+}
+
+/**
+ * Show Global Delete Confirmation Modal
+ * @param {function} onConfirm - Callback function to execute when 'Hapus' is clicked
+ * @param {string} message - Optional custom message
+ */
+function showConfirmDelete(onConfirm, message = 'Apakah Anda yakin ingin menghapus data ini?<br>Tindakan ini tidak dapat dibatalkan.') {
+    // 1. Set message if provided
+    if (message) {
+        document.getElementById('deleteModalMessage').innerHTML = message;
+    }
+    
+    // 2. Setup confirm button
+    const btnConfirm = document.getElementById('btnConfirmDelete');
+    
+    // Clone button to remove previous event listeners
+    const newBtn = btnConfirm.cloneNode(true);
+    btnConfirm.parentNode.replaceChild(newBtn, btnConfirm);
+    
+    // Add new event listener
+    newBtn.addEventListener('click', function() {
+        if (typeof onConfirm === 'function') {
+            onConfirm();
+        }
+        closeDeleteModal();
+    });
+    
+    // 3. Show modal
+    const modal = document.getElementById('deleteConfirmModal');
+    modal.style.display = 'flex';
+    
+    // Close on click outside
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeDeleteModal();
+        }
+    }
+}
+
+/**
+ * Close Delete Modal
+ */
+function closeDeleteModal() {
+    document.getElementById('deleteConfirmModal').style.display = 'none';
+}
+
+// Check for pending toasts on load
+document.addEventListener('DOMContentLoaded', function() {
+    const pendingToast = sessionStorage.getItem('pendingToast');
+    if (pendingToast) {
+        const data = JSON.parse(pendingToast);
+        showAlert(data.message, data.isSuccess);
+        sessionStorage.removeItem('pendingToast');
+    }
+});

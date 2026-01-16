@@ -14,6 +14,7 @@ class BankSoal extends Model {
         $query = "SELECT 
                     b.id,
                     b.nama,
+                    b.deskripsi,
                     b.created_at,
                     b.updated_at,
                     b.token,

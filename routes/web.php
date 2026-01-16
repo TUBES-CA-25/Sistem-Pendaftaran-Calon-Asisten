@@ -61,6 +61,7 @@ Router::post("/acceptberkas",[new BerkasUserController, 'updateAcceptedStatus'])
 Router::post("/ruangan/getfilter",[new WawancaraController,'getAllFilterByIdRuangan']);
 Router::post("/updatenilaiakhir",[new NilaiAkhirController, 'updateTotalNilai']);
 Router::post("/updateabsensi",[new AbsensiUserController, 'updateData']);
+Router::post("/deleteabsensi",[new AbsensiUserController, 'deleteData']);
 Router::post("/addallnotif",[new NotificationControllers, 'sendAllMessage']);
 
 // Bank Soal Routes
@@ -76,3 +77,12 @@ Router::post("/getroomparticipants",[new RuanganController, 'getRoomParticipants
 Router::post("/assignparticipant",[new RuanganController, 'assignParticipant']);
 Router::post("/removeparticipant",[new RuanganController, 'removeParticipant']);
 Router::post("/getroomoccupants",[new RuanganController, 'getRoomOccupants']);
+
+// Jadwal Presentasi Routes
+Router::post("/getjadwalpresentasi",[new JadwalPresentasiController, 'getAllJadwal']);
+Router::post("/getjadwalpresentasiuser",[new JadwalPresentasiController, 'getJadwalUser']);
+Router::post("/updatejadwalpresentasi",[new JadwalPresentasiController, 'updateJadwal']);
+Router::post("/deletejadwalpresentasi",[new JadwalPresentasiController, 'deleteJadwal']);
+Router::post("/savejadwalpresentasi",[new JadwalPresentasiController, 'saveSingleJadwal']);
+Router::post("/getavailablemahasiswa",[new JadwalPresentasiController, 'getAvailableMahasiswa']);
+Router::post("/getallruangan",[new JadwalPresentasiController, 'getAllRuangan']);

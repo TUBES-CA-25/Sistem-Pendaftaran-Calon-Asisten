@@ -119,4 +119,179 @@ class JadwalPresentasi extends Model
         $stmt->execute();
         return $stmt->fetch();
     }
+
+    /**
+     * Get all jadwal with full details (untuk admin)
+     */
+    public function getAllJadwalWithDetails()
+    {
+        $sql = "SELECT
+                jp.id,
+                jp.id_presentasi,
+                jp.id_ruangan,
+                jp.tanggal,
+                jp.waktu,
+                m.id as id_mahasiswa,
+                m.stambuk,
+                m.nama_lengkap,
+                p.judul,
+                r.nama as ruangan
+            FROM jadwal_presentasi jp
+            JOIN presentasi p ON jp.id_presentasi = p.id
+            JOIN mahasiswa m ON p.id_mahasiswa = m.id
+            JOIN ruangan r ON jp.id_ruangan = r.id
+            ORDER BY jp.tanggal ASC, jp.waktu ASC";
+
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get jadwal by mahasiswa ID (untuk user dashboard)
+     */
+    public function getJadwalByMahasiswaId($id_mahasiswa)
+    {
+        $sql = "SELECT
+                jp.id,
+                jp.tanggal,
+                jp.waktu,
+                p.judul,
+                r.nama as ruangan
+            FROM jadwal_presentasi jp
+            JOIN presentasi p ON jp.id_presentasi = p.id
+            JOIN ruangan r ON jp.id_ruangan = r.id
+            WHERE p.id_mahasiswa = ?
+            ORDER BY jp.tanggal ASC, jp.waktu ASC
+            LIMIT 1";
+
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $id_mahasiswa, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get upcoming jadwal (untuk dashboard)
+     */
+    public function getUpcomingJadwal($limit = 5)
+    {
+        $sql = "SELECT
+                jp.id,
+                jp.tanggal,
+                jp.waktu,
+                m.nama_lengkap,
+                m.stambuk,
+                p.judul,
+                r.nama as ruangan
+            FROM jadwal_presentasi jp
+            JOIN presentasi p ON jp.id_presentasi = p.id
+            JOIN mahasiswa m ON p.id_mahasiswa = m.id
+            JOIN ruangan r ON jp.id_ruangan = r.id
+            WHERE jp.tanggal >= CURDATE()
+            ORDER BY jp.tanggal ASC, jp.waktu ASC
+            LIMIT ?";
+
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Update jadwal
+     */
+    public function updateJadwal($id, $id_ruangan, $tanggal, $waktu)
+    {
+        $sql = "UPDATE " . static::$table . "
+                SET id_ruangan = ?, tanggal = ?, waktu = ?
+                WHERE id = ?";
+
+        $date = $this->validateAndFormatDate($tanggal);
+        $time = $this->validateAndFormatTime($waktu);
+
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $id_ruangan, \PDO::PARAM_INT);
+        $stmt->bindParam(2, $date);
+        $stmt->bindParam(3, $time);
+        $stmt->bindParam(4, $id, \PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    /**
+     * Delete jadwal
+     */
+    public function deleteJadwal($id)
+    {
+        $sql = "DELETE FROM " . static::$table . " WHERE id = ?";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $id, \PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    /**
+     * Get mahasiswa yang sudah diterima judulnya tapi belum dijadwalkan
+     */
+    public function getMahasiswaWithoutSchedule()
+    {
+        $sql = "SELECT
+                p.id as id_presentasi,
+                m.id as id_mahasiswa,
+                m.nama_lengkap,
+                m.stambuk,
+                p.judul
+            FROM presentasi p
+            JOIN mahasiswa m ON p.id_mahasiswa = m.id
+            LEFT JOIN jadwal_presentasi jp ON jp.id_presentasi = p.id
+            WHERE p.is_accepted = 1 AND jp.id IS NULL
+            ORDER BY m.nama_lengkap ASC";
+
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get all ruangan
+     */
+    public function getAllRuangan()
+    {
+        $sql = "SELECT id, nama FROM ruangan ORDER BY nama ASC";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Check if mahasiswa already has schedule
+     */
+    public function hasSchedule($id_presentasi)
+    {
+        $sql = "SELECT COUNT(*) as count FROM " . static::$table . " WHERE id_presentasi = ?";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $id_presentasi, \PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['count'] > 0;
+    }
+
+    /**
+     * Save single jadwal
+     */
+    public function saveSingle($id_presentasi, $id_ruangan, $tanggal, $waktu)
+    {
+        $sql = "INSERT INTO " . static::$table . " (id_presentasi, id_ruangan, tanggal, waktu) VALUES (?, ?, ?, ?)";
+
+        $date = $this->validateAndFormatDate($tanggal);
+        $time = $this->validateAndFormatTime($waktu);
+
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $id_presentasi, \PDO::PARAM_INT);
+        $stmt->bindParam(2, $id_ruangan, \PDO::PARAM_INT);
+        $stmt->bindParam(3, $date);
+        $stmt->bindParam(4, $time);
+
+        return $stmt->execute();
+    }
 }
