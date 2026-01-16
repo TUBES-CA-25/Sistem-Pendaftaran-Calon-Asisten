@@ -41,7 +41,19 @@ class Ruangan extends Model {
     public function getUsersByRoom($roomId, $type) {
         $column = $this->getColumnByType($type);
         if(!$column) return [];
-        $sql = "SELECT id, username as name, stambuk FROM user WHERE $column = ?";
+
+        if($type === 'tes_tulis') {
+            // Join with mahasiswa and nilai_akhir to check if they have finished
+            $sql = "SELECT u.id, u.username as name, u.stambuk, 
+                           CASE WHEN na.id IS NOT NULL THEN 1 ELSE 0 END as is_finished
+                    FROM user u
+                    LEFT JOIN mahasiswa m ON m.id_user = u.id
+                    LEFT JOIN nilai_akhir na ON na.id_mahasiswa = m.id
+                    WHERE u.$column = ?";
+        } else {
+            $sql = "SELECT id, username as name, stambuk FROM user WHERE $column = ?";
+        }
+
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(1, $roomId);
         $stmt->execute();
