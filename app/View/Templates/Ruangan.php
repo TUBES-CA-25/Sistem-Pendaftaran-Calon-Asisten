@@ -465,8 +465,21 @@ $ruanganList = $ruanganList ?? [];
                                     <h3 class="room-title"><?= htmlspecialchars($ruangan['nama']) ?></h3>
                                     <p class="room-desc">Ruangan Aktivitas Seleksi</p>
                                 </div>
-                                <div class="card-actions">
-                                    <span class="text-primary fw-medium">Kelola Ruangan <i class="bi bi-arrow-right ms-2"></i></span>
+                                <div class="card-actions d-flex justify-content-between align-items-center">
+                                    <span class="text-primary fw-medium small">Kelola <i class="bi bi-arrow-right"></i></span>
+                                    <div>
+                                        <button class="btn btn-sm btn-light text-primary btn-edit-room me-1" 
+                                            data-id="<?= $ruangan['id'] ?>" 
+                                            data-name="<?= htmlspecialchars($ruangan['nama']) ?>" 
+                                            title="Ubah Nama">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-light text-danger btn-delete-room" 
+                                            data-id="<?= $ruangan['id'] ?>" 
+                                            title="Hapus Ruangan">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -868,6 +881,41 @@ $ruanganList = $ruanganList ?? [];
                     else showAlert(res.message, false);
                 }
             });
+        });
+
+        // --- LIST VIEW ACTIONS ---
+        $(document).on('click', '.btn-edit-room', function(e) {
+            e.stopPropagation(); // Prevent card click
+            const id = $(this).data('id');
+            const name = $(this).data('name');
+            
+            $('#updateRuanganId').val(id);
+            $('#updateNamaRuangan').val(name);
+            new bootstrap.Modal(document.getElementById('updateRuanganModal')).show();
+        });
+
+        $(document).on('click', '.btn-delete-room', function(e) {
+            e.stopPropagation(); // Prevent card click
+            const id = $(this).data('id');
+            currentRoomId = id; // Set for delete logic
+            
+            showConfirmDelete(() => {
+                $.ajax({
+                    url: '<?= APP_URL ?>/deleteruangan',
+                    type: 'POST',
+                    data: { id: currentRoomId },
+                    dataType: 'json',
+                    success: function(res) {
+                        if(res.status === 'success') {
+                            sessionStorage.setItem('pendingToast', JSON.stringify({
+                                 message: 'Ruangan berhasil dihapus!',
+                                 isSuccess: true
+                            }));
+                            location.reload();
+                        } else showAlert(res.message, false);
+                    }
+                });
+            }, 'Apakah Anda yakin ingin menghapus ruangan ini beserta seluruh datanya?');
         });
 
         // Search
