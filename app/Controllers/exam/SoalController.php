@@ -643,4 +643,122 @@ class SoalController extends Controller
             http_response_code(500);
         }
     }
+
+    public function exportSoal() {
+        try {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            if (!isset($_SESSION['user']['id'])) {
+                throw new \Exception('User tidak terautentikasi');
+            }
+
+            $bankId = $_GET['bank_id'] ?? null;
+            if (!$bankId) {
+                throw new \Exception('Bank Soal ID tidak valid');
+            }
+
+            // Get Bank Info
+            $bankModel = new \App\Model\Exam\BankSoal();
+            $bank = $bankModel->getBankById($bankId);
+            if (!$bank) {
+                throw new \Exception('Bank soal tidak ditemukan');
+            }
+
+            // Get Soal
+            $soalModel = new SoalExam();
+            $soalList = $soalModel->getSoalByBankId($bankId);
+
+            // Clean output buffer to ensure clean file download
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+            
+            // Use CSV extension to avoid Excel format warning
+            $filename = "Export_Bank_" . preg_replace('/[^a-zA-Z0-9]/', '_', $bank['nama']) . "_" . date('Ymd') . ".csv";
+            
+            // Force download headers
+            header('Content-Type: text/csv; charset=utf-8');
+            header("Content-Disposition: attachment; filename=\"$filename\"");
+            header("Pragma: no-cache");
+            header("Expires: 0");
+
+            // Open output stream
+            $output = fopen('php://output', 'w');
+            
+            // Add BOM (Byte Order Mark) for Excel to recognize UTF-8 automatically
+            fputs($output, "\xEF\xBB\xBF");
+            
+            // Headers
+            $headers = [
+                'Deskripsi Soal',
+                'Tipe Soal (pilihan_ganda/essay)',
+                'Pilihan A',
+                'Pilihan B',
+                'Pilihan C',
+                'Pilihan D',
+                'Pilihan E (Opsional)',
+                'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
+            ];
+            fputcsv($output, $headers);
+
+            foreach ($soalList as $soal) {
+                
+                // 1. Deskripsi
+                $deskripsi = $soal['deskripsi'];
+                
+                // 2. Tipe
+                $isPG = ($soal['status_soal'] ?? '') === 'pilihan_ganda';
+                $tipe = ($isPG ? 'pilihan_ganda' : 'essay');
+                
+                // Prepare options
+                $opts = ['A' => '', 'B' => '', 'C' => '', 'D' => '', 'E' => ''];
+                
+                if ($isPG && !empty($soal['pilihan'])) {
+                    $pilihanRaw = html_entity_decode($soal['pilihan']);
+                    
+                    // Regex to match "A. content" patterns
+                    preg_match_all('/([A-E])\.\s*(.*?)(?=(?:,\s*[A-E]\.)|$)/s', $pilihanRaw, $matches, PREG_SET_ORDER);
+                    
+                    if (!empty($matches)) {
+                        foreach ($matches as $match) {
+                            $opts[$match[1]] = trim($match[2]);
+                        }
+                    } else {
+                        // Fallback manual split
+                        $parts = explode(',', $pilihanRaw);
+                        foreach ($parts as $part) {
+                            $part = trim($part);
+                            $firstChar = strtoupper(substr($part, 0, 1));
+                            if (isset($opts[$firstChar]) && substr($part, 1, 1) === '.') {
+                                $opts[$firstChar] = trim(substr($part, 2));
+                            }
+                        }
+                    }
+                }
+                
+                // Construct Row Array
+                $row = [
+                    $deskripsi,
+                    $tipe,
+                    $opts['A'],
+                    $opts['B'],
+                    $opts['C'],
+                    $opts['D'],
+                    $opts['E'],
+                    $soal['jawaban']
+                ];
+                
+                // Write row to CSV
+                fputcsv($output, $row);
+            }
+
+            fclose($output);
+            exit();
+
+        } catch (\Exception $e) {
+           die("Error export: " . $e->getMessage());
+        }
+    }
 }

@@ -2227,16 +2227,15 @@ window.importSoal = function() {
 }
 
 // Export Soal
+// Export Soal
 window.exportSoal = function() {
     if (!window.selectedBankIdExport) {
         showAlert('Pilih bank soal terlebih dahulu!', false);
         return;
     }
     
-    showAlert(`Export soal dari bank "${window.selectedBankNameExport}" sedang dalam pengembangan.`, false);
-    
-    // TODO: Implement actual export
-    // window.location.href = baseUrl + `/exportsoal?bank_id=${window.selectedBankId}`;
+    // Trigger download via new endpoint
+    window.location.href = baseUrl + `/soal/export?bank_id=${window.selectedBankIdExport}`;
 }
 
 

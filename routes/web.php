@@ -46,6 +46,7 @@ Router::post("/tambahjadwal",[new JadwalPresentasiController,'saveJadwal']);
 
 Router::post("/addingsoal",[new SoalController,'saveSoal']);
 Router::post("/deletesoal",[new SoalController,'deleteSoal']);
+Router::get("/soal/export",[new SoalController,'exportSoal']);
 Router::post("/updatesoal",[new SoalController,'updateSoal']);
 Router::post("/absensi",[new AbsensiUserController, 'saveData']);
 Router::post("/wawancara",[new WawancaraController, 'save']);
