@@ -71,6 +71,8 @@ Router::post("/deleteBank",[new SoalController, 'deleteBank']);
 Router::post("/getBankQuestions",[new SoalController, 'getBankQuestions']);
 Router::post("/exam/verifyToken",[new ExamController, 'verifyToken']);
 Router::post("/exam/activateBank",[new SoalController, 'activateBank']);
+Router::get("/soal/download-template",[new SoalController, 'downloadTemplate']);
+Router::post("/soal/import",[new SoalController, 'importSoal']);
 
 // Room Participant Management Routes
 Router::post("/getroomparticipants",[new RuanganController, 'getRoomParticipants']);

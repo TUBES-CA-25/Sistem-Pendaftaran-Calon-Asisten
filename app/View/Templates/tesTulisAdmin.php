@@ -1079,7 +1079,7 @@ foreach ($allSoal as $soal) {
                                 
                                 <!-- Download Template Link -->
                                 <div class="mt-3 text-center">
-                                    <a href="#" class="text-decoration-none d-inline-flex align-items-center" onclick="downloadTemplate()" style="color: #2563eb; font-weight: 500; font-size: 0.9rem; transition: all 0.2s;">
+                                    <a href="<?= APP_URL ?>/soal/download-template" class="text-decoration-none d-inline-flex align-items-center" style="color: #2563eb; font-weight: 500; font-size: 0.9rem; transition: all 0.2s;">
                                         <i class='bx bx-download me-1' style="font-size: 1.1rem;"></i>
                                         Download Template Excel
                                     </a>
@@ -1933,20 +1933,43 @@ window.importSoal = function() {
     formData.append('bank_id', window.selectedBankIdImport);
     formData.append('bank_name', window.selectedBankNameImport);
     
-    showAlert(`Import soal ke bank "${window.selectedBankNameImport}" sedang dalam pengembangan.\nFile: ${file.name}`, false);
+    showAlert(`Mengupload file: ${file.name}...`, true);
+    document.getElementById('btnImport').disabled = true;
+    document.getElementById('btnImport').innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mengimport...';
     
-    // TODO: Implement actual import
-    // fetch(baseUrl + '/importsoal', {
-    //     method: 'POST',
-    //     body: formData
-    // })
-    // .then(res => res.json())
-    // .then(data => {
-    //     if (data.success) {
-    //         alert('Import berhasil! ' + data.count + ' soal ditambahkan.');
-    //         location.reload();
-    //     }
-    // });
+    fetch(baseUrl + '/soal/import', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success || data.status === 'success') {
+            showAlert('Import berhasil! ' + (data.count || 0) + ' soal ditambahkan.');
+            // Reset form
+            document.getElementById('importFile').value = '';
+            document.getElementById('selectedBankSoalImport').value = '';
+            window.selectedBankIdImport = null;
+            document.getElementById('btnImport').disabled = true;
+            document.getElementById('btnImport').innerHTML = "<i class='bx bx-upload me-2'></i>Import Soal ke Bank Terpilih";
+            
+            // Reload if current bank is the one we imported to
+            if (window.currentBankId == window.selectedBankIdImport) {
+                window.loadBankQuestions(window.currentBankId);
+            }
+            // Reload page to update counts
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showAlert(data.message || 'Gagal mengimport soal', false);
+            document.getElementById('btnImport').disabled = false;
+            document.getElementById('btnImport').innerHTML = "<i class='bx bx-upload me-2'></i>Import Soal ke Bank Terpilih";
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        showAlert('Terjadi kesalahan saat upload', false);
+        document.getElementById('btnImport').disabled = false;
+        document.getElementById('btnImport').innerHTML = "<i class='bx bx-upload me-2'></i>Import Soal ke Bank Terpilih";
+    });
 }
 
 // Export Soal
@@ -1962,10 +1985,7 @@ window.exportSoal = function() {
     // window.location.href = baseUrl + `/exportsoal?bank_id=${window.selectedBankId}`;
 }
 
-// Download Template
-window.downloadTemplate = function() {
-    showAlert('Download template Excel sedang dalam pengembangan.\n\nFormat kolom:\n- Deskripsi (pertanyaan)\n- Tipe (pilihan_ganda / essay)\n- Pilihan A\n- Pilihan B\n- Pilihan C\n- Pilihan D\n- Pilihan E (opsional)\n- Jawaban', false);
-}
+
 
 // Edit Bank
 // Open Edit Bank Modal
