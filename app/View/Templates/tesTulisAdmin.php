@@ -857,19 +857,19 @@ foreach ($allSoal as $soal) {
                 </div>
                 <div class="header-stats">
                     <div class="stat-badge">
-                        <span class="stat-number"><?= count($bankSoalList) ?></span>
+                        <span class="stat-number" id="stat-count-bank"><?= count($bankSoalList) ?></span>
                         <span class="stat-label">Bank Soal</span>
                     </div>
                     <div class="stat-badge">
-                        <span class="stat-number"><?= count($allSoal) ?></span>
+                        <span class="stat-number" id="stat-count-total"><?= count($allSoal) ?></span>
                         <span class="stat-label">Total Soal</span>
                     </div>
                     <div class="stat-badge">
-                        <span class="stat-number"><?= $pgCount ?></span>
+                        <span class="stat-number" id="stat-count-pg"><?= $pgCount ?></span>
                         <span class="stat-label">Pilihan Ganda</span>
                     </div>
                     <div class="stat-badge">
-                        <span class="stat-number"><?= $essayCount ?></span>
+                        <span class="stat-number" id="stat-count-essay"><?= $essayCount ?></span>
                         <span class="stat-label">Essay</span>
                     </div>
                 </div>
@@ -1058,8 +1058,12 @@ foreach ($allSoal as $soal) {
                                     <div class="d-flex align-items-start">
                                         <i class='bx bx-info-circle me-2 mt-1' style="color: #1d4ed8; font-size: 1.2rem;"></i>
                                         <div style="font-size: 0.85rem;">
-                                            <strong style="color: #1e40af;">Format file:</strong>
-                                            <span style="color: #1e3a8a;"> Kolom harus berisi: Deskripsi, Tipe (PG/Essay), Pilihan A, B, C, D, E, Jawaban</span>
+                                            <strong style="color: #1e40af;">Persyaratan Import:</strong>
+                                            <ul style="color: #1e3a8a; margin: 8px 0 0 0; padding-left: 20px;">
+                                                <li>Format file: <strong>CSV (.csv)</strong> atau <strong>Excel (.xls, .xlsx)</strong></li>
+                                                <li>File harus sesuai dengan template yang disediakan</li>
+                                                <li>Kolom: Deskripsi, Tipe (PG/Essay), Pilihan A-E, Jawaban</li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -1554,6 +1558,213 @@ window.escapeHtml = function(text) {
     return div.innerHTML;
 }
 
+// Refresh Bank Dropdowns in Import/Export Tab
+window.refreshBankDropdowns = function(newBankId, newBankName, soalCount) {
+    // Update Import Dropdown
+    const importSelect = document.getElementById('selectedBankSoalImport');
+    if (importSelect) {
+        const newOptionImport = document.createElement('option');
+        newOptionImport.value = newBankId;
+        newOptionImport.setAttribute('data-name', newBankName);
+        newOptionImport.setAttribute('data-count', soalCount || 0);
+        newOptionImport.textContent = `${newBankName} (${soalCount || 0} soal)`;
+        
+        // Insert after the first option (placeholder)
+        if (importSelect.options.length > 1) {
+            importSelect.insertBefore(newOptionImport, importSelect.options[1]);
+        } else {
+            importSelect.appendChild(newOptionImport);
+        }
+    }
+    
+    // Update Export Dropdown
+    const exportSelect = document.getElementById('selectedBankSoal');
+    if (exportSelect) {
+        const newOptionExport = document.createElement('option');
+        newOptionExport.value = newBankId;
+        newOptionExport.setAttribute('data-name', newBankName);
+        newOptionExport.setAttribute('data-count', soalCount || 0);
+        newOptionExport.textContent = `${newBankName} (${soalCount || 0} soal)`;
+        
+        // Insert after the first option (placeholder)
+        if (exportSelect.options.length > 1) {
+            exportSelect.insertBefore(newOptionExport, exportSelect.options[1]);
+        } else {
+            exportSelect.appendChild(newOptionExport);
+        }
+    }
+    
+    // Update window.bankSoalList for consistency
+    if (!window.bankSoalList) {
+        window.bankSoalList = [];
+    }
+    window.bankSoalList.unshift({
+        id: newBankId,
+        nama: newBankName,
+        jumlah_soal: soalCount || 0
+    });
+    
+    console.log('Bank dropdowns refreshed with new bank:', newBankName);
+}
+
+// Remove Bank from Dropdowns when deleted
+window.removeBankFromDropdowns = function(bankId) {
+    console.log('=== Starting bank removal from dropdowns ===');
+    console.log('Bank ID to remove:', bankId);
+    
+    let removedCount = 0;
+    
+    // Remove from Import Dropdown
+    const importSelect = document.getElementById('selectedBankSoalImport');
+    console.log('Import select found:', !!importSelect);
+    if (importSelect) {
+        // Find all options in this select
+        const options = importSelect.querySelectorAll('option');
+        console.log('Total options in import dropdown:', options.length);
+        
+        options.forEach(option => {
+            if (option.value == bankId) {
+                console.log('Found matching option in import dropdown:', option.textContent);
+                option.remove();
+                removedCount++;
+            }
+        });
+    }
+    
+    // Remove from Export Dropdown
+    const exportSelect = document.getElementById('selectedBankSoal');
+    console.log('Export select found:', !!exportSelect);
+    if (exportSelect) {
+        // Find all options in this select
+        const options = exportSelect.querySelectorAll('option');
+        console.log('Total options in export dropdown:', options.length);
+        
+        options.forEach(option => {
+            if (option.value == bankId) {
+                console.log('Found matching option in export dropdown:', option.textContent);
+                option.remove();
+                removedCount++;
+            }
+        });
+    }
+    
+    console.log('Total options removed:', removedCount);
+    
+    // Update window.bankSoalList
+    if (window.bankSoalList) {
+        const beforeLength = window.bankSoalList.length;
+        window.bankSoalList = window.bankSoalList.filter(bank => bank.id != bankId);
+        console.log(`Updated bankSoalList: ${beforeLength} → ${window.bankSoalList.length}`);
+    }
+    
+    console.log('=== Bank removal completed ===');
+}
+
+// Update Dashboard Statistics Real-time
+window.updateDashboardStats = function(type, change) {
+    const ids = {
+        'bank': 'stat-count-bank',
+        'total': 'stat-count-total',
+        'pg': 'stat-count-pg',
+        'essay': 'stat-count-essay'
+    };
+    
+    const element = document.getElementById(ids[type]);
+    if (element) {
+        let currentVal = parseInt(element.textContent) || 0;
+        let newVal = currentVal + change;
+        
+        // Ensure non-negative
+        if (newVal < 0) newVal = 0;
+        
+        // Animate change
+        element.style.transform = 'scale(1.2)';
+        element.style.color = '#3b82f6';
+        element.style.transition = 'all 0.2s ease';
+        
+        setTimeout(() => {
+            element.textContent = newVal;
+            element.style.transform = 'scale(1)';
+            element.style.color = '';
+        }, 200);
+        
+        console.log(`Updated stat [${type}]: ${currentVal} -> ${newVal}`);
+    }
+}
+
+// Delete Bank with Real-time Card Removal
+window.deleteBank = function(bankId) {
+    console.log('DELETE BANK CALLED with ID:', bankId, 'Type:', typeof bankId);
+    
+    showConfirmDelete(function() {
+        console.log('User confirmed deletion, proceeding...');
+        
+        fetch(baseUrl + '/deleteBank', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=' + bankId
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Server response:', data);
+            
+            if (data.status === 'success') {
+                showAlert('Bank soal berhasil dihapus!');
+                
+                // IMMEDIATELY remove from dropdowns FIRST
+                console.log('Calling removeBankFromDropdowns with ID:', bankId);
+                removeBankFromDropdowns(bankId);
+                
+                // Then remove card from DOM with animation
+                const cardToRemove = document.getElementById('bank-card-' + bankId);
+                if (cardToRemove) {
+                    // Update stats before removing
+                    updateDashboardStats('bank', -1);
+                    
+                    // Try to update total soal count
+                    try {
+                        const totalText = cardToRemove.querySelector('.bank-stat-item.total').textContent;
+                        const totalSoal = parseInt(totalText.replace(/\D/g, '')) || 0;
+                        if (totalSoal > 0) {
+                            updateDashboardStats('total', -totalSoal);
+                        }
+                    } catch(e) { console.error('Error updating total stats:', e); }
+
+                    // Add fade-out animation
+                    cardToRemove.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    cardToRemove.style.opacity = '0';
+                    cardToRemove.style.transform = 'scale(0.95)';
+                    
+                    // Remove after animation
+                    setTimeout(() => {
+                        cardToRemove.remove();
+                        
+                        // Check if grid is empty, show empty state
+                        const grid = document.querySelector('.bank-grid');
+                        if (grid && grid.children.length === 0) {
+                            const emptyState = document.createElement('div');
+                            emptyState.className = 'text-center py-5';
+                            emptyState.innerHTML = `
+                                <i class='bx bx-folder-open' style="font-size: 5rem; color: #cbd5e1;"></i>
+                                <h4 class="mt-3 text-muted">Belum Ada Bank Soal</h4>
+                                <p class="text-muted">Klik tombol "Buat Bank Soal Baru" untuk membuat bank soal pertama</p>
+                            `;
+                            grid.parentElement.insertBefore(emptyState, grid);
+                        }
+                    }, 300);
+                }
+                
+            } else {
+                showAlert(data.message || 'Gagal menghapus bank soal', false);
+            }
+        })
+        .catch((err) => {
+            console.error('Error deleting bank:', err);
+            showAlert('Terjadi kesalahan', false);
+        });
+    }, 'Apakah Anda yakin ingin menghapus bank soal ini? Semua soal di dalamnya akan ikut terhapus.');
+}
+
 // Close Bank Detail
 window.closeBankDetail = function() {
     window.currentBankId = null;
@@ -1856,12 +2067,11 @@ document.getElementById('createBankForm').addEventListener('submit', function(e)
                     </div>
                 </div>
                 <div class="bank-card-footer">
-                        <div class="d-flex gap-2">
+                    <div class="d-flex gap-2">
                         <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); window.editBankModal(${newId})" title="Edit Bank">
                             <i class='bx bx-edit'></i> Edit
                         </button>
                     </div>
-                    <span class="bank-date">Baru saja</span>
                 </div>
             `;
             
@@ -1870,6 +2080,12 @@ document.getElementById('createBankForm').addEventListener('submit', function(e)
             if(grid) {
                 grid.insertBefore(newCard, grid.firstChild);
             }
+            
+            // Refresh import/export dropdowns in real-time
+            refreshBankDropdowns(newId, nama, 0);
+            
+            // Update Dashboard Statistics
+            updateDashboardStats('bank', 1);
             
             this.reset();
         } else {
@@ -1891,10 +2107,28 @@ document.getElementById('selectedBankSoalImport').addEventListener('change', fun
     window.selectedBankIdImport = this.value;
     window.selectedBankNameImport = option.dataset.name || '';
     
-    // Enable import button
-    document.getElementById('btnImport').disabled = false;
+    // Enable import button only if both bank and file are selected
+    const fileInput = document.getElementById('importFile');
+    const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+    document.getElementById('btnImport').disabled = !hasFile;
     
     console.log('Import Bank Selected:', window.selectedBankNameImport, 'ID:', window.selectedBankIdImport);
+});
+
+// File Input Change Detection - Real-time update
+document.getElementById('importFile').addEventListener('change', function() {
+    const hasFile = this.files && this.files.length > 0;
+    const hasBankSelected = window.selectedBankIdImport !== null && window.selectedBankIdImport !== '';
+    
+    // Enable button only if both file and bank are selected
+    document.getElementById('btnImport').disabled = !(hasFile && hasBankSelected);
+    
+    // Log for debugging
+    if (hasFile) {
+        console.log('File selected:', this.files[0].name);
+    } else {
+        console.log('File cleared');
+    }
 });
 
 // Export Bank Selection
@@ -1930,12 +2164,20 @@ window.importSoal = function() {
         return;
     }
     
+    // Client-side file type validation
+    const allowedExtensions = ['csv', 'xls', 'xlsx'];
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(fileExtension)) {
+        showAlert(`Format file tidak didukung. Hanya menerima file CSV (.csv) atau Excel (.xls, .xlsx). File Anda: .${fileExtension}`, false);
+        return;
+    }
+    
     const formData = new FormData();
     formData.append('file', file);
     formData.append('bank_id', window.selectedBankIdImport);
     formData.append('bank_name', window.selectedBankNameImport);
     
-    showAlert(`Mengupload file: ${file.name}...`, true);
+    // Show loading state on button only, no alert
     document.getElementById('btnImport').disabled = true;
     document.getElementById('btnImport').innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mengimport...';
     
@@ -1961,7 +2203,17 @@ window.importSoal = function() {
             // Reload page to update counts
             setTimeout(() => location.reload(), 1500);
         } else {
-            showAlert(data.message || 'Gagal mengimport soal', false);
+            // Display validation errors if present
+            if (data.validation_errors && data.validation_errors.length > 0) {
+                let errorMessage = '<div style="text-align: left;"><strong>' + (data.message || 'Terdapat kesalahan pada file:') + '</strong><ul style="margin-top: 10px; padding-left: 20px;">';
+                data.validation_errors.forEach(err => {
+                    errorMessage += '<li style="margin-bottom: 5px;">' + err + '</li>';
+                });
+                errorMessage += '</ul><small style="color: #666;">Silakan perbaiki file dan coba lagi, atau download template yang benar.</small></div>';
+                showAlert(errorMessage, false);
+            } else {
+                showAlert(data.message || 'Gagal mengimport soal', false);
+            }
             document.getElementById('btnImport').disabled = false;
             document.getElementById('btnImport').innerHTML = "<i class='bx bx-upload me-2'></i>Import Soal ke Bank Terpilih";
         }
@@ -2091,49 +2343,17 @@ window.activateBank = function(id) {
 
 // Delete Bank
 // Delete Bank
-window.deleteBank = function(bankId) {
-    showConfirmDelete(function() {
-        fetch(baseUrl + '/deleteBank', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'id=' + bankId
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'success') {
-                showAlert('Bank soal berhasil dihapus!');
-                
-                // Remove card from DOM
-                const card = document.getElementById('bank-card-' + bankId);
-                if (card) {
-                    card.style.transition = 'all 0.3s ease';
-                    card.style.opacity = '0';
-                    card.style.transform = 'scale(0.9)';
-                    setTimeout(() => {
-                        card.remove();
-                        // Check if empty
-                        const remainingCards = document.querySelectorAll('.bank-card');
-                        if (remainingCards.length === 0) {
-                            const grid = document.querySelector('.bank-grid');
-                            // Insert empty state
-                            const emptyHtml = `
-                                <div class="text-center py-5">
-                                    <i class='bx bx-folder-open' style="font-size: 5rem; color: #cbd5e1;"></i>
-                                    <h4 class="mt-3 text-muted">Belum Ada Bank Soal</h4>
-                                    <p class="text-muted">Klik tombol "Buat Bank Soal Baru" untuk membuat bank soal pertama</p>
-                                </div>`;
-                            if (grid) {
-                                grid.innerHTML = ''; // Clear grid
-                                grid.insertAdjacentHTML('beforebegin', emptyHtml);
-                            }
-                        }
-                    }, 300);
-                }
-            } else {
-                showAlert(data.message || 'Gagal menghapus bank soal', false);
-            }
-        })
-        .catch(() => showAlert('Terjadi kesalahan', false));
-    }, 'Apakah Anda yakin ingin menghapus bank soal ini?<br>Semua soal di dalam bank ini juga akan dihapus!');
-}
+
+
+// Reload page when switching to Import/Export tab to refresh dropdown
+document.addEventListener('DOMContentLoaded', function() {
+    const importExportTab = document.querySelector('a[href="#tabImportExport"]');
+    if (importExportTab) {
+        importExportTab.addEventListener('shown.bs.tab', function (event) {
+            console.log('Import/Export tab shown, reloading page...');
+            // Reload page to get fresh data from server
+            location.reload();
+        });
+    }
+});
 </script>

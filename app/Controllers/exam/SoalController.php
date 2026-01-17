@@ -334,6 +334,135 @@ class SoalController extends Controller
         exit();
     }
     
+    /**
+     * Validate file type - only accept CSV and Excel formats
+     */
+    private function validateFileType($filename, $mimeType) {
+        $allowedExtensions = ['csv', 'xls', 'xlsx'];
+        $allowedMimeTypes = [
+            'text/csv',
+            'text/plain',
+            'application/csv',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/octet-stream' // Some browsers send this for Excel files
+        ];
+        
+        $fileExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        
+        if (!in_array($fileExtension, $allowedExtensions)) {
+            return [
+                'valid' => false,
+                'error' => "Format file tidak didukung. Hanya menerima file CSV (.csv) atau Excel (.xls, .xlsx). File Anda: .{$fileExtension}"
+            ];
+        }
+        
+        return ['valid' => true];
+    }
+    
+    /**
+     * Validate template headers match expected format
+     */
+    private function validateTemplateHeaders($headers) {
+        $expectedHeaders = [
+            'Deskripsi Soal',
+            'Tipe Soal (pilihan_ganda/essay)',
+            'Pilihan A',
+            'Pilihan B',
+            'Pilihan C',
+            'Pilihan D',
+            'Pilihan E (Opsional)',
+            'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
+        ];
+        
+        $errors = [];
+        
+        // Check column count
+        if (count($headers) < 8) {
+            $errors[] = "Template harus memiliki 8 kolom. File Anda memiliki " . count($headers) . " kolom.";
+            return ['valid' => false, 'errors' => $errors];
+        }
+        
+        // Check each header name (case-insensitive, trim whitespace)
+        for ($i = 0; $i < 8; $i++) {
+            $expected = trim($expectedHeaders[$i]);
+            $actual = trim($headers[$i] ?? '');
+            
+            // Normalize for comparison (remove extra spaces, case-insensitive)
+            $expectedNorm = strtolower(preg_replace('/\s+/', ' ', $expected));
+            $actualNorm = strtolower(preg_replace('/\s+/', ' ', $actual));
+            
+            if ($expectedNorm !== $actualNorm) {
+                $errors[] = "Kolom ke-" . ($i + 1) . " tidak sesuai. Diharapkan: '{$expected}', Ditemukan: '{$actual}'";
+            }
+        }
+        
+        if (!empty($errors)) {
+            return ['valid' => false, 'errors' => $errors];
+        }
+        
+        return ['valid' => true];
+    }
+    
+    /**
+     * Validate individual row data
+     */
+    private function validateRowData($row, $rowNumber) {
+        $errors = [];
+        
+        // Check minimum column count
+        if (count($row) < 8) {
+            $errors[] = "Baris {$rowNumber}: Jumlah kolom tidak lengkap (minimal 8 kolom diperlukan)";
+            return ['valid' => false, 'errors' => $errors];
+        }
+        
+        // Validate Deskripsi (column 0)
+        $deskripsi = trim($row[0] ?? '');
+        if (empty($deskripsi)) {
+            $errors[] = "Baris {$rowNumber}: Deskripsi soal harus diisi";
+        }
+        
+        // Validate Tipe Soal (column 1)
+        $tipeRaw = strtolower(trim($row[1] ?? ''));
+        $validTypes = ['pilihan_ganda', 'essay', 'pilihan ganda', 'pg'];
+        $isPG = (strpos($tipeRaw, 'ganda') !== false || $tipeRaw === 'pg');
+        $isEssay = (strpos($tipeRaw, 'essay') !== false);
+        
+        if (!$isPG && !$isEssay) {
+            $errors[] = "Baris {$rowNumber}: Tipe soal tidak valid. Gunakan 'pilihan_ganda' atau 'essay'. Ditemukan: '{$row[1]}'";
+        }
+        
+        // Validate Pilihan Ganda options (columns 2-5)
+        if ($isPG) {
+            $requiredOptions = ['A', 'B', 'C', 'D'];
+            for ($i = 2; $i <= 5; $i++) {
+                $option = trim($row[$i] ?? '');
+                if (empty($option)) {
+                    $optionLabel = $requiredOptions[$i - 2];
+                    $errors[] = "Baris {$rowNumber}: Pilihan {$optionLabel} harus diisi untuk soal pilihan ganda";
+                }
+            }
+            
+            // Validate jawaban for PG (should be A/B/C/D/E)
+            $jawaban = strtoupper(trim($row[7] ?? ''));
+            if (!in_array($jawaban, ['A', 'B', 'C', 'D', 'E'])) {
+                $errors[] = "Baris {$rowNumber}: Jawaban untuk pilihan ganda harus berupa huruf A, B, C, D, atau E. Ditemukan: '{$row[7]}'";
+            }
+        }
+        
+        // Validate Jawaban (column 7)
+        $jawaban = trim($row[7] ?? '');
+        if (empty($jawaban)) {
+            $errors[] = "Baris {$rowNumber}: Jawaban harus diisi";
+        }
+        
+        if (!empty($errors)) {
+            return ['valid' => false, 'errors' => $errors];
+        }
+        
+        return ['valid' => true];
+    }
+
     public function importSoal() {
         header('Content-Type: application/json');
         
@@ -356,13 +485,20 @@ class SoalController extends Controller
             }
 
             $fileTmpPath = $_FILES['file']['tmp_name'];
+            $fileName = $_FILES['file']['name'];
             $fileType = mime_content_type($fileTmpPath);
+            
+            // Validate file type
+            $fileValidation = $this->validateFileType($fileName, $fileType);
+            if (!$fileValidation['valid']) {
+                throw new \Exception($fileValidation['error']);
+            }
             
             // Determine parsing method
             $data = [];
+            $headers = [];
             
-            // 1. Try CSV parsing first
-            $csvData = [];
+            // Parse file and extract headers
             if (($handle = fopen($fileTmpPath, "r")) !== FALSE) {
                 // Check if starts with HTML tag (indicating it's our fake XLS)
                 $firstLine = fgets($handle);
@@ -380,13 +516,21 @@ class SoalController extends Controller
                     $isHeader = true;
                     
                     foreach ($rows as $row) {
+                        $cols = $row->getElementsByTagName('td');
+                        if ($cols->length === 0) {
+                            $cols = $row->getElementsByTagName('th');
+                        }
+                        
                         if ($isHeader) {
-                            $isHeader = false; // Skip header row
+                            // Extract headers
+                            foreach ($cols as $col) {
+                                $headers[] = trim($col->textContent);
+                            }
+                            $isHeader = false;
                             continue;
                         }
                         
-                        $cols = $row->getElementsByTagName('td');
-                        if ($cols->length >= 8) { // We expect 8 columns
+                        if ($cols->length >= 8) {
                             $rowData = [];
                             foreach ($cols as $col) {
                                 $rowData[] = trim($col->textContent);
@@ -399,6 +543,7 @@ class SoalController extends Controller
                     $isHeader = true;
                     while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
                         if ($isHeader) {
+                            $headers = $row;
                             $isHeader = false;
                             continue;
                         }
@@ -407,9 +552,45 @@ class SoalController extends Controller
                     fclose($handle);
                 }
             }
+            
+            // Validate headers
+            $headerValidation = $this->validateTemplateHeaders($headers);
+            if (!$headerValidation['valid']) {
+                echo json_encode([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => 'Format template tidak sesuai',
+                    'validation_errors' => $headerValidation['errors']
+                ]);
+                http_response_code(400);
+                return;
+            }
 
             if (empty($data)) {
-                 throw new \Exception('File kosong atau format tidak dikenali');
+                 throw new \Exception('File kosong atau tidak ada data untuk diimport');
+            }
+            
+            // Validate all rows first
+            $validationErrors = [];
+            foreach ($data as $index => $row) {
+                $rowNumber = $index + 2; // +2 because: +1 for 1-based indexing, +1 for header row
+                $rowValidation = $this->validateRowData($row, $rowNumber);
+                
+                if (!$rowValidation['valid']) {
+                    $validationErrors = array_merge($validationErrors, $rowValidation['errors']);
+                }
+            }
+            
+            // If any validation errors, return them all
+            if (!empty($validationErrors)) {
+                echo json_encode([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => 'Terdapat kesalahan pada data yang diimport',
+                    'validation_errors' => $validationErrors
+                ]);
+                http_response_code(400);
+                return;
             }
 
             $successCount = 0;
@@ -418,8 +599,6 @@ class SoalController extends Controller
             foreach ($data as $row) {
                 // Row structure based on template:
                 // 0: Deskripsi, 1: Tipe, 2: A, 3: B, 4: C, 5: D, 6: E, 7: Jawaban
-                
-                if (count($row) < 8) continue; // Skip invalid rows
 
                 $deskripsi = $row[0];
                 $tipeRaw = strtolower($row[1]);
