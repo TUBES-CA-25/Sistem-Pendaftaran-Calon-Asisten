@@ -4,6 +4,10 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 
+// Load Environment Variables
+require_once __DIR__ . '/../app/Core/Env.php';
+App\Core\Env::load(__DIR__ . '/../.env');
+
 $config = glob(__DIR__ . '/../config/*.php');
 foreach ($config as $file) {
     require $file;
