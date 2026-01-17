@@ -10,12 +10,12 @@ App\Core\Env::load(__DIR__ . '/../.env');
 
 $config = glob(__DIR__ . '/../config/*.php');
 foreach ($config as $file) {
-    require $file;
+    require_once $file;
 }
 
 $core = glob(__DIR__ . '/../app/core/*.php');
 foreach ($core as $file) {
-    require $file;
+    require_once $file;
 }
 
 spl_autoload_register(function($class) {
