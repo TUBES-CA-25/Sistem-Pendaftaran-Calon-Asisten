@@ -4,6 +4,7 @@ namespace App\Controllers\Login;
 
 use App\Core\Controller;
 use App\Model\User\UserModel;
+use App\Model\User\Mahasiswa;
 
 class RegisterController extends Controller
 {
@@ -39,7 +40,12 @@ class RegisterController extends Controller
     
                 $user->__construct2($name, $stambuk, $hashedPassword);
     
-                if ($user->save()) {
+                $userId = $user->save();
+    
+                if ($userId) {
+                    // Create Mahasiswa Record
+                    Mahasiswa::create($userId, $stambuk, $name);
+
                     header('Content-Type: application/json');
                     echo json_encode(['status' => 'success', 'message' => 'Registration successful. Please log in.']);
                 } else {

@@ -200,8 +200,6 @@
   margin-left: 260px;
   width: calc(100% - 260px);
   padding: 20px;
-  overflow-x: auto;
-  overflow-y: auto;
   box-sizing: border-box;
 }
 

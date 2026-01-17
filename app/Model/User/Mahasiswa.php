@@ -247,4 +247,13 @@ class Mahasiswa extends Model
             ]
         ];
     }
+    public static function create($idUser, $stambuk, $nama)
+    {
+        $query = "INSERT INTO " . static::$table . " (id_user, stambuk, nama_lengkap) VALUES (:id_user, :stambuk, :nama)";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindValue(':id_user', $idUser);
+        $stmt->bindValue(':stambuk', $stambuk);
+        $stmt->bindValue(':nama', $nama);
+        return $stmt->execute();
+    }
 }

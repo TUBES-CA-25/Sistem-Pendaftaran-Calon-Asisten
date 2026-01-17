@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS kegiatan_admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    judul VARCHAR(255) NOT NULL,
+    tanggal DATE NOT NULL,
+    deskripsi TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
