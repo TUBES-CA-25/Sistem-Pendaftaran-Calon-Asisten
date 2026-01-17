@@ -12,7 +12,7 @@ class DashboardAdmin extends Model
     public static function getTotalPendaftar(): int
     {
         try {
-            $sql = "SELECT COUNT(*) FROM " . self::$tableMahasiswa;
+            $sql = "SELECT COUNT(*) FROM absensi"; // Changed from tableMahasiswa to absensi to match Monitoring view
             $stmt = self::getDB()->prepare($sql);
             $stmt->execute();
             return (int) $stmt->fetchColumn();
@@ -197,22 +197,18 @@ class DashboardAdmin extends Model
     private static function countByNilaiThreshold(string $operator, int $threshold): int
     {
         try {
-            // Prefer total_nilai if exists, else fall back to nilai.
-            $sql = "SELECT COUNT(*) FROM nilai_akhir WHERE COALESCE(total_nilai, nilai) {$operator} :threshold";
+            // Join with absensi to ensure we only count students in the monitoring list
+            $sql = "SELECT COUNT(n.id_mahasiswa) 
+                    FROM nilai_akhir n
+                    JOIN absensi a ON n.id_mahasiswa = a.id_mahasiswa
+                    WHERE COALESCE(n.total_nilai, n.nilai) {$operator} :threshold";
+            
             $stmt = self::getDB()->prepare($sql);
             $stmt->bindValue(':threshold', $threshold, PDO::PARAM_INT);
             $stmt->execute();
             return (int) $stmt->fetchColumn();
         } catch (\Throwable $e) {
-            try {
-                $sql = "SELECT COUNT(*) FROM nilai_akhir WHERE nilai {$operator} :threshold";
-                $stmt = self::getDB()->prepare($sql);
-                $stmt->bindValue(':threshold', $threshold, PDO::PARAM_INT);
-                $stmt->execute();
-                return (int) $stmt->fetchColumn();
-            } catch (\Throwable $e2) {
-                return 0;
-            }
+            return 0;
         }
     }
 

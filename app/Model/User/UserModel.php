@@ -36,11 +36,16 @@ class UserModel extends Model {
 
     public function save() {
         $query = "INSERT INTO user (username, stambuk, password) VALUES (?, ?, ?)";
-        $stmt = self::getDB()->prepare($query);
+        $pdo = self::getDB();
+        $stmt = $pdo->prepare($query);
         $stmt->bindParam(1, $this->username);
         $stmt->bindParam(2, $this->stambuk);
         $stmt->bindParam(3, $this->password);
-        return $stmt->execute();
+        
+        if ($stmt->execute()) {
+            return $pdo->lastInsertId();
+        }
+        return false;
     }
 
     public function getId() {

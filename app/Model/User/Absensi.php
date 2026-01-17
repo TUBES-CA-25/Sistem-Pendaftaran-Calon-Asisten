@@ -34,9 +34,13 @@ class Absensi extends Model {
                     a.absensi_wawancara_II, 
                     a.absensi_wawancara_III, 
                     a.absensi_tes_tertulis, 
-                    a.absensi_presentasi 
+                    a.absensi_presentasi,
+                    COALESCE(na.total_nilai, na.nilai) as nilai_akhir,
+                    bm.accepted as berkas_status
                 FROM " . self::$table . " a 
-                JOIN mahasiswa m ON a.id_mahasiswa = m.id";
+                JOIN mahasiswa m ON a.id_mahasiswa = m.id
+                LEFT JOIN nilai_akhir na ON m.id = na.id_mahasiswa
+                LEFT JOIN berkas_mahasiswa bm ON m.id = bm.id_mahasiswa";
     
         try {
             $stmt = self::getDB()->prepare($sql);

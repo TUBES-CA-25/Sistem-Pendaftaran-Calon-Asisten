@@ -2,7 +2,10 @@
 namespace App\Controllers\Exam;
 
 use App\Core\Controller;
-use app\Model\exam\NilaiAkhir;
+use App\Model\Exam\NilaiAkhir;
+use App\Model\User\NotificationUser;
+use App\Model\User\Mahasiswa;
+
 class NilaiAkhirController extends Controller
 {
     public function saveNilai()
@@ -20,6 +23,14 @@ class NilaiAkhirController extends Controller
 
             $nilaiAkhir = new NilaiAkhir();
             $score = $nilaiAkhir->saveNilai($id_user);
+            
+            // Send Notification
+            $mahasiswaModel = new Mahasiswa();
+            $mhsData = $mahasiswaModel->getMahasiswaId($id_user);
+            if ($mhsData) {
+                $this->sendResultNotification($mhsData['id'], $score);
+            }
+
             error_log("Nilai akhir dihitung: " . $score);
             echo json_encode([
                 'status' => 'success',
@@ -88,6 +99,10 @@ class NilaiAkhirController extends Controller
             }
             $nilaiAkhir = new NilaiAkhir();
             if ($nilaiAkhir->updateTotalNilai($id, $nilai)) {
+                
+                // Send Notification
+                $this->sendResultNotification($id, $nilai);
+
                 echo json_encode([
                     'status' => 'success',
                     'message' => 'Nilai berhasil diupdate'
@@ -144,6 +159,27 @@ class NilaiAkhirController extends Controller
                 'status' => 'error',
                 'message' => $e->getMessage()
             ]);
+        }
+    }
+
+    private function sendResultNotification($mahasiswaId, $score)
+    {
+        try {
+            if ($score === null) return;
+
+            $status = ($score >= 70) ? "LULUS" : "TIDAK LULUS";
+            $message = "Nilai Tes Tertulis Anda telah keluar. Skor: {$score}. Status: {$status}.";
+            
+            if ($score >= 70) {
+                $message .= " Selamat! Silahkan pantau jadwal interview selanjutnya.";
+            } else {
+                $message .= " Jangan berkecil hati, tetap semangat!";
+            }
+
+            $notification = new NotificationUser($mahasiswaId, $message);
+            $notification->insert($notification);
+        } catch (\Exception $e) {
+            error_log("Failed to send notification: " . $e->getMessage());
         }
     }
 

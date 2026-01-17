@@ -94,3 +94,4 @@ Router::post("/getallruangan",[new JadwalPresentasiController, 'getAllRuangan'])
 use App\Controllers\admin\DashboardAdminController;
 Router::post("/addkegiatan", [new DashboardAdminController, 'storeKegiatan']);
 Router::post("/updatedeadline", [new DashboardAdminController, 'saveDeadline']);
+Router::post("/dashboard/stats", [new DashboardAdminController, 'getStats']);

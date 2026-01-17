@@ -607,6 +607,7 @@ $mahasiswaList = $mahasiswaList ?? [];
                         <th>Presentasi</th>
                         <th>Wawancara I</th>
                         <th>Wawancara II</th>
+                        <th>Status Akhir</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -631,7 +632,33 @@ $mahasiswaList = $mahasiswaList ?? [];
                         <td><?= renderStatusBadge($row['absensi_wawancara_I']) ?></td>
                         <td><?= renderStatusBadge($row['absensi_wawancara_II']) ?></td>
                         <td>
+                            <?php 
+                                $nilai = $row['nilai_akhir'] ?? null;
+                                if ($nilai === null) {
+                                    echo '<span class="badge-status badge-process">Pending</span>';
+                                } elseif ($nilai >= 70) {
+                                    echo '<span class="badge-status badge-hadir">Lolos</span>';
+                                } else {
+                                    echo '<span class="badge-status badge-alpha">Tidak Lolos</span>';
+                                }
+                            ?>
+
+                        </td>
+                        <td>
                             <div class="action-btns">
+                                <button class="btn-action btn-info open-rekap"
+                                        style="background: #e0f2fe; color: #0284c7;"
+                                        title="Detail Rekap"
+                                        data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
+                                        data-stambuk="<?= $row['stambuk'] ?>"
+                                        data-berkas="<?= $row['berkas_status'] ?? '0' ?>"
+                                        data-tes="<?= $row['absensi_tes_tertulis'] ?>"
+                                        data-nilai="<?= $row['nilai_akhir'] ?? '' ?>"
+                                        data-presentasi="<?= $row['absensi_presentasi'] ?>"
+                                        data-wawancara1="<?= $row['absensi_wawancara_I'] ?>"
+                                        data-wawancara2="<?= $row['absensi_wawancara_II'] ?>">
+                                    <i class="bi bi-eye"></i>
+                                </button>
                                 <button class="btn-action btn-edit open-detail"
                                         title="Edit"
                                         data-id="<?= $row['id'] ?>"
@@ -775,6 +802,86 @@ function renderStatusBadge($val) {
                 <button type="submit" form="addJadwalForm" class="btn btn-primary">
                     <i class="bi bi-check-lg"></i> Simpan Data
                 </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL REKAP DETAIL -->
+<div class="modal fade modal-kehadiran" id="rekapDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #0f172a 0%, #334155 100%);">
+                <h5 class="modal-title">
+                    <i class="bi bi-card-checklist"></i>
+                    Rekap Peserta
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="p-4 text-center bg-light border-bottom">
+                    <div class="avatar-placeholder-large mx-auto mb-3" style="width:70px; height:70px; font-size:1.75rem;">
+                        <span id="rekapAvatar">U</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" id="rekapNama">Nama Peserta</h5>
+                    <p class="text-muted mb-0" id="rekapStambuk">Stambuk</p>
+                </div>
+                
+                <div class="p-4">
+                    <h6 class="text-uppercase text-muted small fw-bold mb-3 ls-1">Tahapan Seleksi</h6>
+                    
+                    <div class="d-flex flex-column gap-3">
+                        <!-- Berkas -->
+                        <div class="d-flex justify-content-between align-items-center pb-2 border-bottom border-light">
+                            <div>
+                                <h6 class="mb-0 fw-bold">1. Kelengkapan Berkas</h6>
+                                <small class="text-muted">Administrasi Awal</small>
+                            </div>
+                            <span id="statusBerkas"></span>
+                        </div>
+
+                        <!-- Tes Tertulis -->
+                        <div class="d-flex justify-content-between align-items-center pb-2 border-bottom border-light">
+                            <div>
+                                <h6 class="mb-0 fw-bold">2. Tes Tertulis</h6>
+                                <small class="text-muted" id="scoreTes">Nilai: -</small>
+                            </div>
+                            <span id="statusTes"></span>
+                        </div>
+
+                        <!-- Presentasi -->
+                        <div class="d-flex justify-content-between align-items-center pb-2 border-bottom border-light">
+                            <div>
+                                <h6 class="mb-0 fw-bold">3. Presentasi</h6>
+                                <small class="text-muted">Status Kehadiran</small>
+                            </div>
+                            <span id="statusPresentasi"></span>
+                        </div>
+
+                        <!-- Wawancara -->
+                        <div class="d-flex justify-content-between align-items-center pb-2 border-bottom border-light">
+                            <div>
+                                <h6 class="mb-0 fw-bold">4. Wawancara</h6>
+                                <small class="text-muted">Wawancara I & II</small>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <span id="statusWawancara1"></span>
+                                <span id="statusWawancara2"></span>
+                            </div>
+                        </div>
+
+                        <!-- FINAL RESULT -->
+                        <div class="mt-2 p-3 rounded" id="finalResultBox" style="background: #f1f5f9;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 fw-bold">HASIL AKHIR</h6>
+                                <span class="badge bg-secondary" id="finalStatus" style="font-size: 0.9rem; padding: 6px 12px;">PENDING</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
@@ -1085,5 +1192,84 @@ $(document).ready(function() {
             }
         });
     });
+    // --- REKAP DETAIL LOGIC ---
+    $('.open-rekap').click(function() {
+        const btn = $(this);
+        const modal = $('#rekapDetailModal');
+
+        // Basic Info
+        $('#rekapNama').text(btn.data('nama'));
+        $('#rekapStambuk').text(btn.data('stambuk'));
+        $('#rekapAvatar').text(btn.data('nama').charAt(0).toUpperCase());
+
+        // Helper to create badge
+        const createBadge = (status, type = 'attendance') => {
+            if(!status || status === '-' || status === '') 
+                return '<span class="badge bg-light text-secondary border">Belum Ada</span>';
+            
+            const s = status.toString().toLowerCase();
+            
+            if(type === 'berkas') {
+                if(s === '1') return '<span class="badge bg-success">Diterima</span>';
+                if(s === '0') return '<span class="badge bg-warning text-dark">Pending</span>'; // Assuming 0 is pending/not user action
+                return '<span class="badge bg-secondary">Ditolak</span>';
+            }
+            
+            // Attendance
+            if(s === 'hadir') return '<span class="badge bg-success">Hadir</span>';
+            if(s === 'alpha' || s === 'tidak hadir') return '<span class="badge bg-danger">Alpha</span>';
+            if(s === 'izin' || s === 'sakit') return '<span class="badge bg-warning text-dark">Izin</span>';
+            
+            return `<span class="badge bg-info text-dark">${status}</span>`;
+        };
+
+        // 1. Berkas
+        $('#statusBerkas').html(createBadge(btn.data('berkas'), 'berkas'));
+
+        // 2. Tes Tertulis
+        const nilai = btn.data('nilai');
+        const tesStatus = btn.data('tes'); // Hadir/Alpha
+        
+        let tesBadge = createBadge(tesStatus);
+        if(nilai !== '') {
+            $('#scoreTes').text(`Nilai: ${nilai}`);
+            if(nilai >= 70) tesBadge += ' <span class="badge bg-success ms-1">Lulus</span>';
+            else tesBadge += ' <span class="badge bg-danger ms-1">Gagal</span>';
+        } else {
+            $('#scoreTes').text('Nilai: Belum keluar');
+        }
+        $('#statusTes').html(tesBadge);
+
+        // 3. Presentasi
+        $('#statusPresentasi').html(createBadge(btn.data('presentasi')));
+
+        // 4. Wawancara
+        $('#statusWawancara1').html(createBadge(btn.data('wawancara1')));
+        $('#statusWawancara2').html(createBadge(btn.data('wawancara2')));
+
+        // 5. Final Result
+        const box = $('#finalResultBox');
+        const badge = $('#finalStatus');
+        
+        box.removeClass('bg-success-subtle bg-danger-subtle bg-light');
+        badge.removeClass('bg-success bg-danger bg-secondary');
+        
+        if(nilai !== '') {
+            if(nilai >= 70) {
+                box.addClass('bg-success-subtle'); // Light green
+                badge.addClass('bg-success').text('LOLOS');
+                // Could verify all 'Hadir' here too if strictly required
+            } else {
+                box.addClass('bg-danger-subtle'); // Light red
+                badge.addClass('bg-danger').text('TIDAK LOLOS');
+            }
+        } else {
+            box.addClass('bg-light');
+            badge.addClass('bg-secondary').text('PROSES');
+        }
+
+        modal.modal('show');
+    });
+
 });
 </script>

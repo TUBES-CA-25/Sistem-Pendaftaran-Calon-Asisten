@@ -493,7 +493,7 @@ body::-webkit-scrollbar-thumb:hover {
                 </div>
                 <div class="stat-details">
                     <span class="label">Total Pendaftar</span>
-                    <span class="number"><?= $totalPendaftar ?></span>
+                    <span class="number" id="stat-total"><?= $totalPendaftar ?></span>
                 </div>
             </div>
 
@@ -504,7 +504,7 @@ body::-webkit-scrollbar-thumb:hover {
                 </div>
                 <div class="stat-details">
                     <span class="label">Pendaftar Lulus</span>
-                    <span class="number"><?= $pendaftarLulus ?></span>
+                    <span class="number" id="stat-lulus"><?= $pendaftarLulus ?></span>
                 </div>
             </div>
 
@@ -515,7 +515,7 @@ body::-webkit-scrollbar-thumb:hover {
                 </div>
                 <div class="stat-details">
                     <span class="label">Pendaftar Pending</span>
-                    <span class="number"><?= $pendaftarPending ?></span>
+                    <span class="number" id="stat-pending"><?= $pendaftarPending ?></span>
                 </div>
             </div>
 
@@ -526,7 +526,7 @@ body::-webkit-scrollbar-thumb:hover {
                 </div>
                 <div class="stat-details">
                     <span class="label">Pendaftar Gagal</span>
-                    <span class="number"><?= $pendaftarGagal ?></span>
+                    <span class="number" id="stat-gagal"><?= $pendaftarGagal ?></span>
                 </div>
             </div>
         </div>
@@ -775,6 +775,35 @@ body::-webkit-scrollbar-thumb:hover {
             closeEditModal();
         }
     });
+
+    // --- Real-time Stats Polling ---
+    function updateDashboardStats() {
+        if (typeof baseUrl === 'undefined') {
+            var baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
+        }
+
+        fetch(`${baseUrl}/dashboard/stats`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(res => {
+            if (res.status === 'success') {
+                const data = res.data;
+                // Animate numbers or just set text
+                document.getElementById('stat-total').innerText = data.total;
+                document.getElementById('stat-lulus').innerText = data.lulus;
+                document.getElementById('stat-pending').innerText = data.pending;
+                document.getElementById('stat-gagal').innerText = data.gagal;
+            }
+        })
+        .catch(console.error);
+    }
+
+    // Poll every 5 seconds
+    setInterval(updateDashboardStats, 5000);
 
 })();
 </script>

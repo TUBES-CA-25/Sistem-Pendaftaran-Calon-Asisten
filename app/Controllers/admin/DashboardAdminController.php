@@ -87,4 +87,28 @@ class DashboardAdminController extends Controller
             echo json_encode(['status' => 'error', 'message' => 'Failed to update deadline']);
         }
     }
+    public static function getStats(): void
+    {
+        header('Content-Type: application/json');
+        
+        try {
+            $total = self::getTotalPendaftar();
+            $lulus = self::getPendaftarLulus();
+            $pending = self::getPendaftarPending();
+            $gagal = self::getPendaftarGagal();
+
+            echo json_encode([
+                'status' => 'success',
+                'data' => [
+                    'total' => $total,
+                    'lulus' => $lulus,
+                    'pending' => $pending,
+                    'gagal' => $gagal
+                ]
+            ]);
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
 }
