@@ -15,7 +15,7 @@ foreach ($config as $file) {
 
 $core = glob(__DIR__ . '/../app/core/*.php');
 foreach ($core as $file) {
-    require $file;
+    require_once $file;
 }
 
 spl_autoload_register(function($class) {
