@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const navButtons = document.querySelectorAll(".nav button");
   const timerElement = document.getElementById("timer");
-  const endpoint = "/Sistem-Pendaftaran-Calon-Asisten/public/hasil";
+  const endpoint = `${APP_URL}/hasil`;
   let currentQuestion = 0;
   const initialDuration = 30 * 60;
   let remainingTime;
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function submitAndFinish() {
-    const calculateEndpoint = "/Sistem-Pendaftaran-Calon-Asisten/public/calculate";
+    const calculateEndpoint = `${APP_URL}/calculate`;
 
     try {
       const response = await fetch(calculateEndpoint, {
@@ -42,21 +42,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (data.status === "success") {
           setTimeout(() => {
-            window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
+            window.location.href = `${APP_URL}`;
           }, 3000);
         } else {
           setTimeout(() => {
-            window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
+            window.location.href = `${APP_URL}`;
           }, 3000);
         }
       } catch (parseError) {
         setTimeout(() => {
-          window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
+          window.location.href = `${APP_URL}`;
         }, 3000);
       }
     } catch (error) {
       setTimeout(() => {
-        window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
+        window.location.href = `${APP_URL}`;
       }, 3000);
     }
   }
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(countdown);
         showModal(
           "Waktu Habis jawaban akan di kumpul",
-          "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/glasshour.gif"
+          `${APP_URL}/Assets/gif/glasshour.gif`
         );
         submitAllAnswers()
           .then(() => submitAndFinish())
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.status === "success") {
               showModal(
                 "Jawaban berhasil disimpan. Silahkan menunggu pengumuman selanjutnya",
-                "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/glasshour.gif"
+                `${APP_URL}/Assets/gif/glasshour.gif`
               );
               resolve(response);
             } else {

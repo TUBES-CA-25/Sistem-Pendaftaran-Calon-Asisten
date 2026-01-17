@@ -5,16 +5,16 @@ $(document).ready(function() {
         e.preventDefault(); 
 
         $.ajax({
-            url: '/Sistem-Pendaftaran-Calon-Asisten/public/judul', 
+            url: `${APP_URL}/judul`, 
             type: 'POST',
             data: $(this).serialize(),
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                   showModal(response.message || 'Data berhasil disimpan', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
+                   showModal(response.message || 'Data berhasil disimpan', `${APP_URL}/Assets/gif/success.gif`);
                    document.querySelector('a[data-page="presentasi"]').click();
                 } else {
-                    showModal(response.message || 'Data gagal disimpan', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
+                    showModal(response.message || 'Data gagal disimpan', `${APP_URL}/Assets/gif/failed.gif`);
                 }
             },
             error: function(xhr, status, error) {
@@ -35,14 +35,14 @@ $(document).ready(function() {
         }
     
         $.ajax({
-            url: '/Sistem-Pendaftaran-Calon-Asisten/public/presentasi',
+            url: `${APP_URL}/presentasi`,
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             dataType: 'json',
             success: function (response) {
-               showModal(response.message || 'Data berhasil disimpan', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
+               showModal(response.message || 'Data berhasil disimpan', `${APP_URL}/Assets/gif/success.gif`);
                 document.querySelector('a[data-page="presentasi"]').click();
             },
             error: function (xhr, status, error) {

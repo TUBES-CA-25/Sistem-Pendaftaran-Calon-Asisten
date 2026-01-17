@@ -9,12 +9,13 @@
  */
 $role = $role ?? 'User';
 $userName = $userName ?? 'Guest';
-$photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
+$photoName = !empty($photo) ? basename($photo) : 'default.png';
+$photo = APP_URL . '/../res/imageUser/' . $photoName;
 ?>
 <div class="sidebar" id="sidebar">
     <div class="top">
         <div class="logo">
-            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
+            <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
             <span>IC-ASSIST</span>
         </div>
         <i class="bx bx-menu" id="btn"></i>

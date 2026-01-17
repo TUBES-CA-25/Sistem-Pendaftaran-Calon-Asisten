@@ -162,7 +162,7 @@ class HomeController extends Controller
         return [
             'role' => $user['role'] ?? 'User',
             'userName' => $user['username'] ?? 'Guest',
-            'photo' => '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . ($photo['foto'] ?? 'default.png')
+            'photo' => APP_URL . '/../res/imageUser/' . ($photo['foto'] ?? 'default.png')
         ];
     }
 
@@ -245,7 +245,7 @@ class HomeController extends Controller
             'tempatLahir' => $biodata['tempatLahir'] ?? 'Tempat Lahir',
             'tanggalLahir' => $biodata['tanggalLahir'] ?? 'Tanggal Lahir',
             'noHp' => $biodata['noHp'] ?? 'No Telephone',
-            'photo' => '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . ($photo['foto'] ?? 'default.png')
+            'photo' => APP_URL . '/../res/imageUser/' . ($photo['foto'] ?? 'default.png')
         ];
     }
 

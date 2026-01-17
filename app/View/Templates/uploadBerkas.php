@@ -249,4 +249,4 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
 
 
 </main>
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/user/berkas.js"></script>
+<script src="<?= APP_URL ?>/Assets/Script/user/berkas.js"></script>
