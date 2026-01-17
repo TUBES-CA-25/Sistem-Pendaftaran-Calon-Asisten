@@ -86,3 +86,8 @@ Router::post("/deletejadwalpresentasi",[new JadwalPresentasiController, 'deleteJ
 Router::post("/savejadwalpresentasi",[new JadwalPresentasiController, 'saveSingleJadwal']);
 Router::post("/getavailablemahasiswa",[new JadwalPresentasiController, 'getAvailableMahasiswa']);
 Router::post("/getallruangan",[new JadwalPresentasiController, 'getAllRuangan']);
+
+// Admin Dashboard Activities
+use App\Controllers\admin\DashboardAdminController;
+Router::post("/addkegiatan", [new DashboardAdminController, 'storeKegiatan']);
+Router::post("/updatedeadline", [new DashboardAdminController, 'saveDeadline']);

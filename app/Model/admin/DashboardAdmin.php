@@ -45,32 +45,115 @@ class DashboardAdmin extends Model
     }
 
     /**
-     * @return array<int, array{tanggal: string}>
+     * @return array<int, array{tanggal: string, judul: string, jenis: string, deskripsi?: string}>
      */
     public static function getKegiatanByMonth(int $year, int $month): array
     {
         $results = [];
 
         // Try pull from jadwal_wawancara
-        $results = array_merge($results, self::selectTanggalByMonth('jadwal_wawancara', $year, $month));
+        $wawancara = self::selectTanggalByMonth('jadwal_wawancara', $year, $month, 'Wawancara');
+        $results = array_merge($results, $wawancara);
+
         // Try pull from jadwal_presentasi
-        $results = array_merge($results, self::selectTanggalByMonth('jadwal_presentasi', $year, $month));
+        $presentasi = self::selectTanggalByMonth('jadwal_presentasi', $year, $month, 'Presentasi', true);
+        $results = array_merge($results, $presentasi);
+
+        // Try pull from kegiatan_admin
+        $custom = self::selectTanggalByMonth('kegiatan_admin', $year, $month, 'Kegiatan');
+        $results = array_merge($results, $custom);
 
         return $results;
     }
 
+    public static function addKegiatan(array $data): bool
+    {
+        try {
+            $sql = "INSERT INTO kegiatan_admin (judul, tanggal, deskripsi) VALUES (:judul, :tanggal, :deskripsi)";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->bindValue(':judul', $data['judul']);
+            $stmt->bindValue(':tanggal', $data['tanggal']);
+            $stmt->bindValue(':deskripsi', $data['deskripsi'] ?? '');
+            return $stmt->execute();
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    public static function updateDeadline(string $jenis, string $tanggal): bool
+    {
+        try {
+            // Upsert (Insert or Update on duplicate key)
+            $sql = "INSERT INTO deadline_kegiatan (jenis, tanggal) VALUES (:jenis, :tanggal) 
+                    ON DUPLICATE KEY UPDATE tanggal = :tanggal_update";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->bindValue(':jenis', $jenis);
+            $stmt->bindValue(':tanggal', $tanggal);
+            $stmt->bindValue(':tanggal_update', $tanggal);
+            return $stmt->execute();
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
     /**
-     * @return array<string, array{jumlah: int}>
+     * @return array<string, array{jumlah: int, label: string, deadline: ?string, status: string, css_class: string}>
      */
     public static function getStatusKegiatan(): array
     {
+        // 1. Determine Deadlines from DB
+        $deadlines = [];
+        try {
+            $sql = "SELECT jenis, tanggal FROM deadline_kegiatan";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->execute();
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $deadlines[$row['jenis']] = $row['tanggal'];
+            }
+        } catch (\Throwable $e) {}
+
+        // Fallbacks if DB is empty or missing keys
+        $defaultDeadlines = [
+            'kelengkapan_berkas' => '2026-02-01',
+            'tes_tertulis' => '2026-02-05',
+            'tahap_wawancara' => '2026-02-15',
+            'pengumuman' => '2026-02-28'
+        ];
+        
+        foreach ($defaultDeadlines as $key => $val) {
+            if (!isset($deadlines[$key])) {
+                $deadlines[$key] = $val;
+            }
+        }
+
+        // Special dynamic override for Wawancara if desired, 
+        // BUT user asked for "bisa diatur sendiri". So we should probably respect the DB value if set.
+        // However, if the user explicitly saves a date, it will be in the DB.
+        // If not, we can stick to defaults.
+        // Let's REMOVE the dynamic max(date) logic to fully respect the manual setting as requested.
+
+        $today = date('Y-m-d');
+        
+        // Helper to build item
+        $buildItem = function($label, $deadline) use ($today) {
+            $isDone = $deadline && $today > $deadline;
+            return [
+                'label' => $label,
+                'jumlah' => 0,
+                'deadline' => $deadline,
+                'status' => $isDone ? 'Selesai' : 'Sedang Berlangsung',
+                'css_class' => $isDone ? 'success' : 'warning'
+            ];
+        };
+
         $status = [
-            'kelengkapan_berkas' => ['jumlah' => 0],
-            'tes_tertulis' => ['jumlah' => 0],
-            'tahap_wawancara' => ['jumlah' => 0],
-            'pengumuman' => ['jumlah' => 0],
+            'kelengkapan_berkas' => $buildItem('Kelengkapan Berkas', $deadlines['kelengkapan_berkas']),
+            'tes_tertulis' => $buildItem('Tes Tertulis', $deadlines['tes_tertulis']),
+            'tahap_wawancara' => $buildItem('Tahap Wawancara', $deadlines['tahap_wawancara']),
+            'pengumuman' => $buildItem('Pengumuman', $deadlines['pengumuman']),
         ];
 
+        // 2. Fetch Counts
         // Kelengkapan berkas: berkas_mahasiswa.accepted = 1
         try {
             $sql = "SELECT COUNT(*) FROM berkas_mahasiswa WHERE accepted = 1";
@@ -134,12 +217,27 @@ class DashboardAdmin extends Model
     }
 
     /**
-     * @return array<int, array{tanggal: string}>
+     * @return array<int, array{tanggal: string, judul: string, jenis: string}>
      */
-    private static function selectTanggalByMonth(string $table, int $year, int $month): array
+    private static function selectTanggalByMonth(string $table, int $year, int $month, string $jenis, bool $excludePast = false): array
     {
         try {
-            $sql = "SELECT tanggal FROM {$table} WHERE YEAR(tanggal) = :year AND MONTH(tanggal) = :month";
+            // Check if 'judul' column exists or if we need to infer it
+            // For jadwal_wawancara and jadwal_presentasi, we might not have 'judul' directly.
+            // Let's assume they don't have 'judul' for now and just use a generic name, 
+            // OR if table is 'kegiatan_admin', we use 'judul'.
+            
+            $columns = "tanggal";
+            if ($table === 'kegiatan_admin') {
+                $columns .= ", judul, deskripsi";
+            }
+            
+            $sql = "SELECT {$columns} FROM {$table} WHERE YEAR(tanggal) = :year AND MONTH(tanggal) = :month";
+            
+            if ($excludePast) {
+                $sql .= " AND tanggal >= CURDATE()";
+            }
+
             $stmt = self::getDB()->prepare($sql);
             $stmt->bindValue(':year', $year, PDO::PARAM_INT);
             $stmt->bindValue(':month', $month, PDO::PARAM_INT);
@@ -153,7 +251,23 @@ class DashboardAdmin extends Model
                 if (!isset($row['tanggal'])) {
                     continue;
                 }
-                $result[] = ['tanggal' => (string) $row['tanggal']];
+                
+                $title = $jenis;
+                if ($table === 'kegiatan_admin' && !empty($row['judul'])) {
+                    $title = $row['judul'];
+                }
+                
+                $item = [
+                    'tanggal' => (string) $row['tanggal'], 
+                    'judul' => $title,
+                    'jenis' => $jenis
+                ];
+
+                if ($table === 'kegiatan_admin' && isset($row['deskripsi'])) {
+                    $item['deskripsi'] = $row['deskripsi'];
+                }
+
+                $result[] = $item;
             }
             return $result;
         } catch (\Throwable $e) {

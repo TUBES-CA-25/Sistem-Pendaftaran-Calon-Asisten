@@ -607,7 +607,6 @@ $mahasiswaList = $mahasiswaList ?? [];
                         <th>Presentasi</th>
                         <th>Wawancara I</th>
                         <th>Wawancara II</th>
-                        <th>Wawancara III</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -631,7 +630,6 @@ $mahasiswaList = $mahasiswaList ?? [];
                         <td><?= renderStatusBadge($row['absensi_presentasi']) ?></td>
                         <td><?= renderStatusBadge($row['absensi_wawancara_I']) ?></td>
                         <td><?= renderStatusBadge($row['absensi_wawancara_II']) ?></td>
-                        <td><?= renderStatusBadge($row['absensi_wawancara_III']) ?></td>
                         <td>
                             <div class="action-btns">
                                 <button class="btn-action btn-edit open-detail"
@@ -642,7 +640,6 @@ $mahasiswaList = $mahasiswaList ?? [];
                                         data-stambuk="<?= $row['stambuk'] ?>"
                                         data-absensiwawancarai="<?= $row['absensi_wawancara_I'] ?? '' ?>"
                                         data-absensiwawancaraii="<?= $row['absensi_wawancara_II'] ?? '' ?>"
-                                        data-absensiwawancaraiii="<?= $row['absensi_wawancara_III'] ?? '' ?>"
                                         data-absensitestertulis="<?= $row['absensi_tes_tertulis'] ?? '' ?>"
                                         data-absensipresentasi="<?= $row['absensi_presentasi'] ?? '' ?>">
                                     <i class="bi bi-pencil"></i>
@@ -770,14 +767,6 @@ function renderStatusBadge($val) {
                                 <option value="Izin">Izin</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <select class="form-select form-select-custom" id="absensiWawancara3">
-                                <option value="" selected>Wawancara III...</option>
-                                <option value="Hadir">Hadir</option>
-                                <option value="Alpha">Alpha</option>
-                                <option value="Izin">Izin</option>
-                            </select>
-                        </div>
                     </div>
                 </form>
             </div>
@@ -843,15 +832,6 @@ function renderStatusBadge($val) {
                     <div class="col-4">
                         <label class="small text-muted mb-1">Wawancara II</label>
                         <select id="wawancaraII" class="form-select form-select-custom">
-                            <option value="">-</option>
-                            <option value="Hadir">Hadir</option>
-                            <option value="Alpha">Alpha</option>
-                            <option value="Izin">Izin</option>
-                        </select>
-                    </div>
-                    <div class="col-4">
-                        <label class="small text-muted mb-1">Wawancara III</label>
-                        <select id="wawancaraIII" class="form-select form-select-custom">
                             <option value="">-</option>
                             <option value="Hadir">Hadir</option>
                             <option value="Alpha">Alpha</option>
@@ -941,7 +921,6 @@ $(document).ready(function() {
             presentasi: $('#absensiPresentasi').val(),
             wawancara1: $('#absensiWawancara1').val(),
             wawancara2: $('#absensiWawancara2').val(),
-            wawancara3: $('#absensiWawancara3').val()
         };
 
         $.ajax({
@@ -1034,7 +1013,6 @@ $(document).ready(function() {
         $('#presentasi').val(btn.data('absensipresentasi') || '');
         $('#wawancaraI').val(btn.data('absensiwawancarai') || '');
         $('#wawancaraII').val(btn.data('absensiwawancaraii') || '');
-        $('#wawancaraIII').val(btn.data('absensiwawancaraiii') || '');
 
         modal.modal('show');
     });
@@ -1046,7 +1024,6 @@ $(document).ready(function() {
             presentasi: $('#presentasi').val(),
             wawancaraI: $('#wawancaraI').val(),
             wawancaraII: $('#wawancaraII').val(),
-            wawancaraIII: $('#wawancaraIII').val()
         };
 
         $.ajax({
@@ -1083,15 +1060,18 @@ $(document).ready(function() {
                         btn.data('absensipresentasi', data.presentasi);
                         btn.data('absensiwawancarai', data.wawancaraI);
                         btn.data('absensiwawancaraii', data.wawancaraII);
-                        btn.data('absensiwawancaraiii', data.wawancaraIII);
 
-                        // Update Table Columns (Wawancara I, II, III, Tes, Presentasi)
-                        // Indices: 3, 4, 5, 6, 7
-                        tr.find('td:eq(3)').html(getBadge(data.wawancaraI));
-                        tr.find('td:eq(4)').html(getBadge(data.wawancaraII));
-                        tr.find('td:eq(5)').html(getBadge(data.wawancaraIII));
-                        tr.find('td:eq(6)').html(getBadge(data.tesTertulis));
-                        tr.find('td:eq(7)').html(getBadge(data.presentasi));
+                        // Update Table Columns (Tes, Presentasi, Wawancara I, II)
+                        // Correct Indices: 
+                        // 3: Tes Tertulis
+                        // 4: Presentasi
+                        // 5: Wawancara I
+                        // 6: Wawancara II
+                        
+                        tr.find('td:eq(3)').html(getBadge(data.tesTertulis));
+                        tr.find('td:eq(4)').html(getBadge(data.presentasi));
+                        tr.find('td:eq(5)').html(getBadge(data.wawancaraI));
+                        tr.find('td:eq(6)').html(getBadge(data.wawancaraII));
                     }
                     
                     // Close Modal (as requested)

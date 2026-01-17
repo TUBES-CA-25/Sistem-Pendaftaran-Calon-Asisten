@@ -791,11 +791,26 @@ main .recent-tahapan table:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  gap: 1rem;
+  padding: 1rem 1.25rem; /* Reduced padding for better fit */
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.status-item h6 {
+    font-size: 1rem !important; /* Standard title size */
+    margin-bottom: 0.25rem;
+}
+
+.status-item p {
+    font-size: 0.85rem !important; /* Smaller text */
+    margin: 0;
+}
+
+.badge-status {
+    padding: 0.5rem 1rem !important; /* Balanced badge size */
+    font-size: 0.8rem !important;
 }
 
 .status-item h6 {

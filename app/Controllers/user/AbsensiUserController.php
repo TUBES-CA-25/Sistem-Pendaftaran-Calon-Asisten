@@ -29,7 +29,7 @@ class AbsensiUserController extends Controller
             $id = $input['mahasiswa'] ?? null;
             $wawancaraI = !empty($input['wawancara1']) ? $input['wawancara1'] : '-';
             $wawancaraII = !empty($input['wawancara2']) ? $input['wawancara2'] : '-';
-            $wawancaraIII = !empty($input['wawancara3']) ? $input['wawancara3'] : '-';
+            $wawancaraIII = '-'; // Removed Wawancara III
             $tesTertulis = !empty($input['tesTertulis']) ? $input['tesTertulis'] : '-';
             $presentasi = !empty($input['presentasi']) ? $input['presentasi'] : '-';
 
@@ -73,7 +73,7 @@ class AbsensiUserController extends Controller
         $id = $input['id'];
         $wawancaraI = $input['wawancaraI'];
         $wawancaraII = $input['wawancaraII'];
-        $wawancaraIII = $input['wawancaraIII'];
+        $wawancaraIII = '-'; // Removed Wawancara III
         $tesTertulis = $input['tesTertulis'];
         $presentasi = $input['presentasi'];
 

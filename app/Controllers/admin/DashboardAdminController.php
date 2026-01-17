@@ -45,4 +45,46 @@ class DashboardAdminController extends Controller
     {
         return DashboardAdmin::getStatusKegiatan();
     }
+
+    public static function storeKegiatan(): void
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!isset($data['judul']) || !isset($data['tanggal'])) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+            return;
+        }
+
+        $success = DashboardAdmin::addKegiatan($data);
+
+        if ($success) {
+            echo json_encode(['status' => 'success', 'message' => 'Kegiatan berhasil ditambahkan']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan kegiatan']);
+        }
+    }
+
+    public static function saveDeadline(): void
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!isset($data['jenis']) || !isset($data['tanggal'])) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+            return;
+        }
+
+        $success = DashboardAdmin::updateDeadline($data['jenis'], $data['tanggal']);
+
+        if ($success) {
+            echo json_encode(['status' => 'success', 'message' => 'Deadline updated']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => 'Failed to update deadline']);
+        }
+    }
 }
