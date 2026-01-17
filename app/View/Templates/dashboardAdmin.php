@@ -742,7 +742,9 @@ body::-webkit-scrollbar-thumb:hover {
                 tanggal: document.getElementById('editDeadlineDate').value
             };
             
-            const baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
+            if (typeof baseUrl === 'undefined') {
+                var baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
+            }
             
             fetch(`${baseUrl}/updatedeadline`, {
                 method: 'POST',
@@ -1111,7 +1113,9 @@ td.event::after {
         
         // Use absolute path including public folder as seen in sidebar images
         // Ideally this should be dynamic but hardcoding based on project structure for now.
-        const baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
+        if (typeof baseUrl === 'undefined') {
+            var baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
+        }
         
         fetch(`${baseUrl}/addkegiatan`, {
             method: 'POST',

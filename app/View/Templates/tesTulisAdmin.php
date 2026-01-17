@@ -1562,8 +1562,10 @@ window.closeBankDetail = function() {
     document.getElementById('bankListView').classList.remove('hidden');
 }
 
-// Global Base URL for JS
-const baseUrl = '<?= APP_URL ?>';
+// Global Base URL for JS (avoid redeclaration if already defined)
+if (typeof baseUrl === 'undefined') {
+    var baseUrl = '<?= APP_URL ?>';
+}
 
 // Type Selector for Add Modal
 document.querySelectorAll('#addSoalModal .type-option').forEach(option => {
