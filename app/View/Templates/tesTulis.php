@@ -6,10 +6,12 @@
  * @var bool $absensiTesTertulis - Status sudah absen tes tertulis
  * @var bool $berkasStatus - Status berkas sudah lengkap
  * @var bool $biodataStatus - Status biodata sudah lengkap
+ * @var array|null $nilaiAkhir - Data nilai akhir (nilai, total_nilai)
  */
 $absensiTesTertulis = $absensiTesTertulis ?? false;
 $berkasStatus = $berkasStatus ?? false;
 $biodataStatus = $biodataStatus ?? false;
+$nilaiAkhir = $nilaiAkhir ?? null;
 $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
 ?>
 <style>
@@ -128,16 +130,52 @@ $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
     .exam-container button:active {
         transform: translateY(0);
     }
+
+    .modal {
+        z-index: 1051;
+    }
+
+    .modal-backdrop {
+        z-index: 1050;
+    }
 </style>
 
 <main>
     <h1 class="dashboard">Tes Tertulis</h1>
     <div class="exam-container">
         <?php 
+        // DEBUG: Check variables
+        echo "<!-- DEBUG: absensiTesTertulis=" . ($absensiTesTertulis ? 'true' : 'false') . " -->";
+        if (isset($nilaiAkhir)) {
+             echo "<!-- DEBUG: nilaiAkhir=" . json_encode($nilaiAkhir) . " -->";
+        } else {
+             echo "<!-- DEBUG: nilaiAkhir=NULL -->";
+        }
+
         if($absensiTesTertulis){
-            echo '<h2>Anda sudah mengikuti tes tertulis</h2>';
-            echo '<p>Anda tidak bisa mengikuti tes tertulis lebih dari sekali.</p>';
-            echo '<p>Terima kasih.</p>';
+            $nilai = $nilaiAkhir ?? null;
+            $finalScore = $nilai['total_nilai'] ?? null;
+            
+            echo '<div class="text-center mt-5">';
+            if ($finalScore !== null) {
+                // Score is available
+                $status = $finalScore >= 70 ? 'LULUS' : 'TIDAK LULUS';
+                $color = $finalScore >= 70 ? 'success' : 'danger';
+                
+                echo '<h2 class="text-primary mb-3">Hasil Tes Tertulis</h2>';
+                echo '<div class="display-1 fw-bold text-' . $color . ' mb-3">' . htmlspecialchars($finalScore) . '</div>';
+                echo '<h4 class="badge bg-' . $color . ' fs-5 px-4 py-2 mb-4">' . $status . '</h4>';
+                echo '<p class="text-muted">Terima kasih telah mengikuti ujian tes tertulis.</p>';
+                echo '<p>Silahkan pantau terus website ini untuk informasi tahapan selanjutnya.</p>';
+            } else {
+                // Score is pending
+                echo '<img src="' . APP_URL . '/Assets/gif/glasshour.gif" alt="Waiting" style="width: 120px; margin-bottom: 20px;">';
+                echo '<h2 class="text-info">Menunggu Penilaian</h2>';
+                echo '<p class="lead mt-3">Jawaban Anda sudah kami terima.</p>';
+                echo '<p class="text-muted">Nilai akan muncul di halaman ini setelah diperiksa oleh admin/asisten.</p>';
+                echo '<p>Mohon bersabar dan cek secara berkala.</p>';
+            }
+            echo '</div>';
             return;
         }
         if(!$berkasStatus){
@@ -181,7 +219,7 @@ $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
 </main>
 
 <!-- Token Modal -->
-<div class="modal fade" id="tokenModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="tokenModal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header border-0 pb-0">
@@ -263,7 +301,3 @@ $(document).ready(function () {
 });
 
 </script>
-
-
-
-

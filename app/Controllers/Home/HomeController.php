@@ -272,7 +272,8 @@ class HomeController extends Controller
             'absensiTesTertulis' => DashboardUserController::getAbsensiTesTertulis(),
             'berkasStatus' => DashboardUserController::getBerkasStatus(),
             'biodataStatus' => DashboardUserController::getBiodataStatus(),
-            'activeBank' => ExamController::getActiveBank()
+            'activeBank' => ExamController::getActiveBank(),
+            'nilaiAkhir' => (new \App\Model\Exam\NilaiAkhir())->getNilai($_SESSION['user']['id'])
         ];
     }
 

@@ -60,14 +60,17 @@ class NilaiAkhir extends Model
         return $total_nilai;
     }
 
-    public function getNilai($id)
+    public function getNilai($idUser)
     {
-        $query = "SELECT nilai FROM " . self::$table . " WHERE id_mahasiswa = :id_mahasiswa";
+        $mhs = $this->getIdMahasiswa($idUser);
+        if (!$mhs) return null;
+        
+        $id_mahasiswa = $mhs['id'];
+        $query = "SELECT nilai, total_nilai FROM " . self::$table . " WHERE id_mahasiswa = :id_mahasiswa";
         $stmt = self::getDB()->prepare($query);
-        $id_mahasiswa = $this->getIdMahasiswa($id);
         $stmt->bindParam(':id_mahasiswa', $id_mahasiswa);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     private function getIdMahasiswa($idUser)

@@ -121,6 +121,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Jawaban berhasil disimpan. Silahkan menunggu pengumuman selanjutnya",
                 `${APP_URL}/Assets/gif/glasshour.gif`
               );
+              localStorage.removeItem("remainingTime");
+              localStorage.removeItem("examAnswers");
               resolve(response);
             } else {
               console.error(
@@ -219,6 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function saveAnswer(idSoal, answer) {
     answers[idSoal] = answer;
+    localStorage.setItem("examAnswers", JSON.stringify(answers));
   }
 
   navButtons.forEach((button, index) => {
@@ -228,10 +231,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Load answers from localStorage
+  const savedAnswers = JSON.parse(localStorage.getItem("examAnswers")) || {};
+  Object.assign(answers, savedAnswers);
+
   questions.forEach((question, index) => {
     const options = question.querySelectorAll("input[type='radio']");
     const textarea = question.querySelector("textarea.text-answer");
     const idSoal = question.getAttribute("data-id-soal");
+
+    // Restore state from saved answers
+    if (answers[idSoal]) {
+      if (textarea) {
+        textarea.value = answers[idSoal];
+      } else {
+        options.forEach((option) => {
+          if (option.value === answers[idSoal]) {
+            option.checked = true;
+          }
+        });
+      }
+      markAnsweredQuestion(index);
+    }
 
     options.forEach((option) => {
       option.addEventListener("change", () => {
@@ -260,6 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("beforeunload", () => {
     if (remainingTime <= 0) {
       localStorage.removeItem("remainingTime");
+      localStorage.removeItem("examAnswers");
     }
   });
 });

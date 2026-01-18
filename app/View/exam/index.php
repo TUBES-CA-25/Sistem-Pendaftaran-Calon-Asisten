@@ -52,68 +52,81 @@ $results = $results ?? [];
         <div class="main-content">
             <div class="timer">Time Remaining: <span id="timer">30:00</span></div>
             <div class="questions-container">
-            <?php
-foreach ($results as $index => $result): ?>
-    <div class="question" data-id-soal="<?= htmlspecialchars($result['id']) ?>" style="display: none;">
-        <h3>Soal <?= $index + 1 ?></h3>
-        <p><?= htmlspecialchars($result['deskripsi']) ?></p>
-        <?php if ($result['status_soal'] === 'pilihan_ganda'): ?>
-            <ul class="options">
-                <?php
-                $options = json_decode($result['pilihan']);
-                foreach ($options as $optionIndex => $option): ?>
-                    <li>
-                        <label>
-                            <input type="radio" name="answer[<?= htmlspecialchars($result['id']) ?>]"
-                                value="<?= htmlspecialchars($optionIndex) ?>">
-                            <?= htmlspecialchars($option) ?>
-                        </label>
-                    </li>
+                <?php foreach ($results as $index => $result): ?>
+                    <div class="question" data-id-soal="<?= htmlspecialchars($result['id']) ?>" style="display: none;">
+                        <h3>Soal <?= $index + 1 ?></h3>
+                        <p><?= htmlspecialchars($result['deskripsi']) ?></p>
+
+                        <?php if ($result['status_soal'] === 'pilihan_ganda'): ?>
+                            <ul class="options">
+                                <?php
+                                $options = json_decode($result['pilihan']);
+                                
+                                // Fallback: If not valid JSON, assume it's a comma-separated string (Legacy format)
+                                if (!is_array($options) && !is_object($options)) {
+                                     $options = array_map('trim', explode(',', $result['pilihan']));
+                                }
+
+                                if (is_array($options) || is_object($options)):
+                                    foreach ($options as $optionIndex => $option): 
+                                        $optionValue = chr(65 + $optionIndex); // 0 -> A, 1 -> B, etc.
+                                    ?>
+                                        <li>
+                                            <label>
+                                                <input type="radio" name="answer[<?= htmlspecialchars($result['id']) ?>]"
+                                                       value="<?= $optionValue ?>">
+                                                <?= htmlspecialchars($option) ?>
+                                            </label>
+                                        </li>
+                                    <?php endforeach; 
+                                endif;
+                                ?>
+                            </ul>
+                        <?php else: ?>
+                            <textarea name="answer[<?= htmlspecialchars($result['id']) ?>]" 
+                                      class="text-answer" 
+                                      placeholder="Write your answer here..." 
+                                      style="width: 60%; margin: 0 auto; margin-top: 1.5rem; display: block; padding: 15px; border-radius: 10px; border: 1px solid #ddd; font-family: 'Poppins', sans-serif; font-size: 16px; line-height: 1.5; resize: none; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); background-color: #f9f9f9; color: #333;">
+                            </textarea>
+                        <?php endif; ?>
+
+                        <div class="navigation-buttons">
+                            <button class="nav-button back">Back</button>
+                            <button class="nav-button next">Next</button>
+                        </div>
+                    </div>
                 <?php endforeach; ?>
-            </ul>
-        <?php else: ?>
-            <textarea name="answer[<?= htmlspecialchars($result['id']) ?>]" 
-          class="text-answer" 
-          placeholder="Write your answer here..." 
-          style="width: 60%; margin: 0 auto; margin-top: 1.5rem; display: block; padding: 15px; border-radius: 10px; border: 1px solid #ddd; font-family: 'Poppins', sans-serif; font-size: 16px; line-height: 1.5; resize: none; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); background-color: #f9f9f9; color: #333;">
-</textarea>
-
-        <?php endif; ?>
-
-        <div class="navigation-buttons">
-            <button class="nav-button back">Back</button>
-            <button class="nav-button next">Next</button>
-        </div>
-    </div>
-<?php endforeach; ?>
-
             </div>
         </div>
     </div>
-    <div id="customModal" class="alertmodal">
-    <div class="modal-content">
-        <img id="modalGif" src="" alt="Animation" style="width: 100px; margin-bottom: 15px; display: none;">
-        
-        <p id="modalMessage" style="margin: 10px 0; font-size: 18px;">Pesan akan ditampilkan di sini.</p>
-        
-        <button id="closeModal" class="btn btn-primary" style="margin-top: 10px;">Tutup</button>
-    </div>
-</div>
 
-<div id="confirmModal" class="modal">
-  <div class="modal-content">
-    <p id="confirmModalMessage"></p>
-    <div class="modal-buttons">
-      <button id="confirmModalConfirm" class="btn-confirm">Confirm</button>
-      <button id="confirmModalCancel" class="btn-cancel">Tidak</button>
+    <div id="customModal" class="alertmodal">
+        <div class="modal-content">
+            <img id="modalGif" src="" alt="Animation" style="width: 100px; margin-bottom: 15px; display: none;">
+            <p id="modalMessage" style="margin: 10px 0; font-size: 18px;">Pesan akan ditampilkan di sini.</p>
+            <button id="closeModal" class="btn btn-primary" style="margin-top: 10px;">Tutup</button>
+        </div>
     </div>
-  </div>
-</div>
+
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <p id="confirmModalMessage"></p>
+            <div class="modal-buttons">
+                <button id="confirmModalConfirm" class="btn-confirm">Confirm</button>
+                <button id="confirmModalCancel" class="btn-cancel">Tidak</button>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2024 by ICLabs</p>
     </footer>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script> const APP_URL = '<?= APP_URL ?>'; </script>
+    <script>
+        const APP_URL = '<?= APP_URL ?>'; 
+    </script>
+    <script src="<?= APP_URL ?>/Assets/Script/common.js"></script>
     <script src="<?= APP_URL ?>/Assets/Script/exam/examScript.js"></script>
 </body>
 
