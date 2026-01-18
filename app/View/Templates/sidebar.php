@@ -1,113 +1,156 @@
 <?php
 use app\Controllers\Profile\ProfileController;
 use App\Controllers\user\BerkasUserController;
+
 $role = ProfileController::viewUser()["role"];
 $userName = ProfileController::viewUser()["username"];
+$stambuk = ProfileController::viewUser()["stambuk"];
 $photo = "/tubes_web/res/imageUser/" . (BerkasUserController::viewPhoto()["foto"] ?? "default.png");
 ?>
 
-
-
-
-
-
 <div class="sidebar" id="sidebar">
-    <div class="top">
-        <div class="logo">
-            <img src="/tubes_web/public/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
-            <span>IC-ASSIST</span>
-        </div>
-        <i class="bx bx-menu" id="btn"></i>
-    </div>
-
-
-
-    <div class="user">
-        <a href="#" data-page="profile"><img src=<?= $photo ?> alt="foto" name="userphoto" id="userphoto"
-                class="user-img"></a>
-        <div>
-            <p class="bold" id="username"><?= $userName ?></p>
+    <!-- Header Section with Logo -->
+    <div class="sidebar-header">
+        <div class="logo-container">
+            <img src="/tubes_web/public/Assets/Img/iclabs.png" alt="IC-ASSIST Logo" class="logo-icon">
+            <span class="logo-text">ICLABS</span>
         </div>
     </div>
 
+    <!-- Toggle Button -->
+    <button class="sidebar-toggle" id="btn" aria-label="Toggle Sidebar">
+        <i class="bx bx-menu"></i>
+    </button>
 
+    <!-- User Profile Section -->
+    <div class="user-profile">
+        <a href="#" data-page="profile" class="user-photo-link">
+            <img src="<?= $photo ?>" alt="<?= $userName ?>" class="user-img">
+        </a>
+        <div class="user-info">
+            <p class="user-name"><?= $userName ?></p>
+            <small class="user-stambuk"><?= $stambuk ?></small>
+        </div>
+    </div>
 
+    <!-- Divider -->
+    <div class="sidebar-divider"></div>
 
-    <ul>
-        <li>
-            <a href="#" data-page="dashboard">
-                <i class="bx bx-home"></i>
-                <span class="nav-item">Dashboard</span>
-            </a>
-            <span class="tooltip">Dashboard</span>
-        </li>
+    <!-- Menu Label -->
+    <div class="menu-label">
+        <span>MENU UTAMA</span>
+    </div>
 
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav">
+        <ul>
+            <!-- Dashboard -->
+            <li>
+                <a href="#" data-page="dashboard" class="nav-link active">
+                    <i class="bx bx-home-alt"></i>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
 
+            <!-- Dokumen (dengan submenu) -->
+            <li class="menu-item-has-children">
+                <a href="#" class="nav-link nav-parent">
+                    <i class="bx bx-file"></i>
+                    <span class="nav-text">Dokumen</span>
+                    <i class="bx bx-chevron-down nav-arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="#" data-page="biodata" class="nav-link submenu-link">
+                            <i class="bx bx-user"></i>
+                            <span class="nav-text">Lengkapi Biodata</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="uploadBerkas" class="nav-link submenu-link">
+                            <i class="bx bx-upload"></i>
+                            <span class="nav-text">Upload Berkas</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
+            <!-- Ujian (dengan submenu) -->
+            <li class="menu-item-has-children">
+                <a href="#" class="nav-link nav-parent">
+                    <i class="bx bx-edit-alt"></i>
+                    <span class="nav-text">Ujian</span>
+                    <i class="bx bx-chevron-down nav-arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="#" data-page="tesTulis" class="nav-link submenu-link">
+                            <i class="bx bx-pencil"></i>
+                            <span class="nav-text">Tes Tulis</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="presentasi" class="nav-link submenu-link">
+                            <i class="bx bx-chalkboard"></i>
+                            <span class="nav-text">Presentasi</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-        <li>
-            <a href="#" data-page="biodata">
-                <i class="bx bxs-id-card"></i>
-                <span class="nav-item">Lengkapi Biodata</span>
-            </a>
-            <span class="tooltip">Lengkapi Biodata</span>
-        </li>
+            <!-- Jadwal (dengan submenu) -->
+            <li class="menu-item-has-children">
+                <a href="#" class="nav-link nav-parent">
+                    <i class="bx bx-calendar"></i>
+                    <span class="nav-text">Jadwal</span>
+                    <i class="bx bx-chevron-down nav-arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="#" data-page="wawancara" class="nav-link submenu-link">
+                            <i class="bx bx-user-voice"></i>
+                            <span class="nav-text">Jadwal Wawancara</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="jadwalPresentasi" class="nav-link submenu-link">
+                            <i class="bx bx-slideshow"></i>
+                            <span class="nav-text">Jadwal Presentasi</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
+            <!-- Informasi (dengan submenu) -->
+            <li class="menu-item-has-children">
+                <a href="#" class="nav-link nav-parent">
+                    <i class="bx bx-info-circle"></i>
+                    <span class="nav-text">Informasi</span>
+                    <i class="bx bx-chevron-down nav-arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a href="#" data-page="notification" class="nav-link submenu-link">
+                            <i class="bx bx-bell"></i>
+                            <span class="nav-text">Notifikasi</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="pengumuman" class="nav-link submenu-link">
+                            <i class="bx bx-notepad"></i>
+                            <span class="nav-text">Pengumuman</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
 
-
-
-        <li>
-            <a href="#" data-page="uploadBerkas">
-                <i class="bx bx-file"></i>
-                <span class="nav-item">Upload Berkas</span>
-            </a>
-            <span class="tooltip">Upload Berkas</span>
-        </li>
-
-
-
-
-        <li>
-            <a href="#" data-page="tesTulis">
-                <i class="bx bx-task"></i>
-                <span class="nav-item">Tes Tulis</span>
-            </a>
-            <span class="tooltip">Tes Tulis</span>
-        </li>
-
-
-
-        <li>
-            <a href="#" data-page="presentasi">
-                <i class="bx bx-chalkboard"></i>
-                <span class="nav-item">Presentasi</span>
-            </a>
-            <span class="tooltip">Presentasi</span>
-        </li>
-
-
-
-
-        <li>
-            <a href="#" data-page="wawancara">
-                <i class="bx bx-user-voice"></i>
-                <span class="nav-item">Jadwal</span>
-            </a>
-            <span class="tooltip">Jadwal</span>
-        </li>
-
-
-
-        <li>
-            <a href="#" data-page="pengumuman">
-                <i class="bx bx-notepad"></i>
-                <span class="nav-item">Pengumuman</span>
-            </a>
-            <span class="tooltip">Pengumuman</span>
-        </li>
-
-
-
-
-    </ul>
+    <!-- Logout Button (Bottom) -->
+    <div class="sidebar-footer">
+        <a href="#" data-page="logout" class="logout-link">
+            <i class="bx bx-log-out"></i>
+            <span class="nav-text">Logout</span>
+        </a>
+    </div>
 </div>

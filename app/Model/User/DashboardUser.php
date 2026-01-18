@@ -238,5 +238,35 @@ class DashboardUser extends Model {
         }
         return $result['id'];
     }
+
+
+    // ... fungsi-fungsi lain ...
+
+    // [MVC BENAR] Query dipindah ke sini
+    public function getJadwalTerdekat($id_user) {
+        // Query Union (Wawancara & Presentasi) atau Wawancara saja
+        $query = "
+            SELECT 
+                jenis_wawancara as judul, 
+                tanggal, 
+                waktu, 
+                'interview' as jenis 
+            FROM wawancara 
+            WHERE id_mahasiswa = (SELECT id FROM mahasiswa WHERE id_user = :id_user)
+              AND tanggal >= CURDATE()
+            ORDER BY tanggal ASC, waktu ASC 
+            LIMIT 3
+        ";
+
+        try {
+            $stmt = self::getDB()->prepare($query);
+            $stmt->bindParam(':id_user', $id_user);
+            $stmt->execute();
+            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            return $result ? $result : [];
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
     
 }

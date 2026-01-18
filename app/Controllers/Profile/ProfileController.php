@@ -12,6 +12,7 @@ class ProfileController extends Controller {
         $profile = $user->getBiodata($_SESSION['user']['id']);
         return $profile == null ? [] : $profile;
     }
+    
     public static function viewUser() : array {
         $user = new UserModel();
         $profile = $user->getUser($_SESSION['user']['id']);

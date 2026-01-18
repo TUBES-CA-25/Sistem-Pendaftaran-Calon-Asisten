@@ -97,8 +97,8 @@
                     <tr>
                         <td colspan="5">Belum ada Jadwal</td>
                     </tr>
-                <?php endif; $i = 1;?>
-                <?php foreach ($wawancara as $value) : ?>
+                <?php endif; $i = 0;?>
+                <?php foreach ($wawancara as $value) : $i++?>
                     <tr>
                         <td><?= $i?></td>
                         <td><?= $value['jenis_wawancara'] ?? "" ?></td>

@@ -126,6 +126,33 @@ class DashboardUserController extends Controller {
             return date('d M Y', $time_ago); // Tampilkan tanggal biasa jika sudah lama
         }
     }
+
+    // ... (kode fungsi getBiodataStatus, getBerkasStatus, dll biarkan saja) ...
+
+    // [TAMBAHAN BARU] Ambil Detail Biodata (Nama, NIM, Jurusan)
+    public static function getBiodataDetail() {
+        // Panggil Model Mahasiswa
+        $db = \App\Core\Database::getInstance();
+        $query = "SELECT * FROM mahasiswa WHERE id_user = :id_user";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':id_user', $_SESSION['user']['id']);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        // Jika belum isi biodata, return array kosong agar tidak error
+        return $result ? $result : [];
+    }
+
+    // Tambah Jadwal dan kalender
+    public static function getUpcomingSchedule() {
+        // Panggil Model
+        $model = new \App\Model\User\DashboardUser();
+        
+        // Minta data (Kirim ID User dari Session)
+        return $model->getJadwalTerdekat($_SESSION['user']['id']);
+    }
+
+
     
     public static function generateCircle($percentage) {
         $radius = 38; // Radius lingkaran
