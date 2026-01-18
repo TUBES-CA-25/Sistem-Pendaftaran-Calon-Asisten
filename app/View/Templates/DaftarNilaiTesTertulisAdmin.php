@@ -21,47 +21,7 @@ $nilai = $nilai ?? [];
         width: calc(100% + 40px);
     }
 
-    /* Page Header */
-    .page-header {
-        background: #2f66f6;
-        color: #fff;
-        border-radius: 0;
-        padding: 35px 30px;
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 0;
-    }
-
-    .page-header::after {
-        content: "";
-        position: absolute;
-        right: -180px;
-        top: 50%;
-        width: 400px;
-        height: 400px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        transform: translateY(-50%);
-    }
-
-    .page-header h1 {
-        margin: 0;
-        font-size: 1.8rem;
-        font-weight: 600;
-        position: relative;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .page-header .subtitle {
-        margin: 8px 0 0 0;
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1rem;
-        position: relative;
-        z-index: 1;
-    }
+/* Page Header Styles moved to components/PageHeader.php */
 
     /* Card Container */
     .card-table {
@@ -577,13 +537,13 @@ $nilai = $nilai ?? [];
 
 <main>
     <!-- Page Header -->
-    <div class="page-header">
-        <h1>
-            <i class="bi bi-clipboard-data"></i>
-            Daftar Nilai Tes Tertulis
-        </h1>
-        <p class="subtitle">Kelola dan lihat nilai tes tertulis mahasiswa</p>
-    </div>
+    <!-- Page Header -->
+    <?php
+        $title = 'Daftar Nilai Tes Tertulis';
+        $subtitle = 'Kelola dan lihat nilai tes tertulis mahasiswa';
+        $icon = 'bi bi-clipboard-data';
+        require_once __DIR__ . '/components/PageHeader.php';
+    ?>
 
     <!-- Card Container -->
     <div class="card-table">

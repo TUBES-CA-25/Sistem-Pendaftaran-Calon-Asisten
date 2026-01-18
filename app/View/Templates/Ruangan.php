@@ -28,30 +28,7 @@ $ruanganList = $ruanganList ?? [];
         width: calc(100% + 40px);
     }
 
-    /* Common Page Header */
-    .page-header {
-        background: #2f66f6;
-        color: #fff;
-        border-radius: 0;
-        padding: 40px 40px; 
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 0;
-        box-shadow: 0 4px 20px rgba(47, 102, 246, 0.2);
-        display: flex;
-        align-items: center;
-    }
-
-    .page-header::after {
-        content: "";
-        position: absolute;
-        right: -100px;
-        top: -50%;
-        width: 500px;
-        height: 500px;
-        border: 40px solid rgba(255, 255, 255, 0.05);
-        border-radius: 50%;
-    }
+/* Page Header Styles moved to components/PageHeader.php */
 
     /* Main Container */
     .content-container {
@@ -426,12 +403,12 @@ $ruanganList = $ruanganList ?? [];
 <main>
     <!-- SECTION: LIST VIEW -->
     <div id="ruanganListSection">
-        <div class="page-header">
-            <div class="container-fluid p-0">
-                <h1 class="fw-bold m-0 fs-2 text-white">Ruangan Praktikum</h1>
-                <p class="m-0 text-white opacity-75 mt-2 fs-6">Kelola data ruangan, peserta, dan aktivitas praktikum</p>
-            </div>
-        </div>
+        <?php
+            $title = 'Ruangan Praktikum';
+            $subtitle = 'Kelola data ruangan, peserta, dan aktivitas praktikum';
+            $icon = 'bi bi-buildings-fill';
+            require_once __DIR__ . '/components/PageHeader.php';
+        ?>
 
         <div class="content-container">
             <div class="controls-bar">

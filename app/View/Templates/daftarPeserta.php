@@ -38,53 +38,7 @@ $result = $result ?? [];
         width: calc(100% + 40px);
     }
 
-    /* Page Header - Match Dashboard Admin Style (Larger) */
-    .page-header {
-        background: #2f66f6;
-        color: #fff;
-        border-radius: 0;
-        padding: 35px 30px;
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 0;
-    }
-
-    .page-header::after {
-        content: "";
-        position: absolute;
-        right: -180px;
-        top: 50%;
-        width: 400px;
-        height: 400px;
-        transform: translateY(-50%);
-        border: 5px solid rgba(255, 255, 255, 0.5);
-        border-radius: 50%;
-        opacity: 0.7;
-    }
-
-    .page-header h1 {
-        margin: 0 0 8px 0;
-        font-size: 2rem;
-        font-weight: 700;
-        color: white;
-        position: relative;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-    }
-
-    .page-header h1 i {
-        font-size: 1.7rem;
-    }
-
-    .page-header .subtitle {
-        margin: 0;
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1rem;
-        position: relative;
-        z-index: 1;
-    }
+/* Page Header Styles moved to components/PageHeader.php */
 
     /* Card Container */
     .card-content {
@@ -533,10 +487,13 @@ $result = $result ?? [];
 
 <main>
     <!-- Page Header -->
-    <div class="page-header">
-        <h1><i class="bi bi-people-fill"></i> Daftar Peserta</h1>
-        <p class="subtitle">Kelola data peserta pendaftaran calon asisten</p>
-    </div>
+    <!-- Page Header -->
+    <?php
+        $title = 'Daftar Peserta';
+        $subtitle = 'Kelola data peserta pendaftaran calon asisten';
+        $icon = 'bi bi-people-fill';
+        require_once __DIR__ . '/components/PageHeader.php';
+    ?>
 
     <!-- Table Card -->
     <div class="card-content">
