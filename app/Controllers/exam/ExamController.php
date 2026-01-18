@@ -24,6 +24,8 @@ class ExamController extends Controller {
             $bankModel = new \App\Model\Exam\BankSoal();
             $activeBank = $bankModel->getActiveBank();
             
+            error_log("ExamController: Active Bank result: " . print_r($activeBank, true));
+
             if (!$activeBank) {
                  throw new \Exception('Belum ada ujian yang aktif saat ini.');
             }
@@ -31,6 +33,7 @@ class ExamController extends Controller {
             // Check if user has verified token for this session
             // Note: In a real app we might want to tie this to the specific bank ID
             if (!isset($_SESSION['exam_token_verified']) || $_SESSION['exam_token_verified'] !== $activeBank['token']) {
+                error_log("ExamController: Token not verified. Session token: " . ($_SESSION['exam_token_verified'] ?? 'None') . ", Bank token: " . $activeBank['token']);
                 // Redirect back to start page if not verified
                 header('Location: ' . APP_URL . '/tes-tulis');
                 exit;
@@ -48,7 +51,7 @@ class ExamController extends Controller {
 
             View::render('index', 'exam', ['results' => $soal, 'bank' => $activeBank]);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             View::render('error', 'exam', ['message' => $e->getMessage()]);
         }
     }
@@ -78,7 +81,7 @@ class ExamController extends Controller {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Token salah']);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }

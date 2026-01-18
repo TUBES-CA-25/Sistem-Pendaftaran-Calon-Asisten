@@ -14,7 +14,13 @@ abstract class Model {
     protected static $db;
     public static function getDB() {
         if (!self::$db) {
-            self::$db = new PDO('mysql:host=localhost; dbname=DB_TUBES', 'root', '');
+            $host = getenv('DB_HOST') ?: 'localhost';
+            $dbName = getenv('DB_DATABASE') ?: 'DB_TUBES';
+            $username = getenv('DB_USERNAME') ?: 'root';
+            $password = getenv('DB_PASSWORD') ?: '';
+            $port = getenv('DB_PORT') ?: 3306;
+
+            self::$db = new PDO("mysql:host=$host;port=$port;dbname=$dbName", $username, $password);
             self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         return self::$db;

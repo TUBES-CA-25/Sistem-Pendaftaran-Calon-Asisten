@@ -18,7 +18,9 @@ $(document).ready(function () {
     // Check if it's a logout link
     if ($(this).data('page') === 'logout') {
         localStorage.removeItem('activePage');
-        return; // Sidebar script handles logout usually, or let it bubble
+        window.location.href = `${APP_URL}/logout`;
+        window.location.href = `${APP_URL}/login`;
+        return;
     }
 
     e.preventDefault();

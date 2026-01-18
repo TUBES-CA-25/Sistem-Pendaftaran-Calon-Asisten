@@ -170,7 +170,7 @@ class BerkasUserController extends Controller
                 throw new \Exception('Berkas tidak tersedia');
             }
 
-            $basePath = $_SERVER['DOCUMENT_ROOT'] . '/Kelompok1_IC-ASSIST/res/';
+            $basePath = dirname(__DIR__, 3) . '/res/';
             $filePath = ($type === 'foto')
                 ? $basePath . 'imageUser/' . $berkas[$type]
                 : $basePath . 'berkasUser/' . $berkas[$type];

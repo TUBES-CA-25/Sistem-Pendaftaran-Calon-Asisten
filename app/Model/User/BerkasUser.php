@@ -102,7 +102,7 @@ class BerkasUser extends Model {
             throw new Exception("Ukuran file gambar terlalu besar.");
         }
     
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Kelompok1_IC-ASSIST/res/imageUser/';
+        $uploadDir = dirname(__DIR__, 3) . '/res/imageUser/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true); // Membuat direktori jika tidak ada
         }
@@ -131,7 +131,7 @@ class BerkasUser extends Model {
             throw new Exception("Ukuran file terlalu besar.");
         }
     
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Kelompok1_IC-ASSIST/res/berkasUser/';
+        $uploadDir = dirname(__DIR__, 3) . '/res/berkasUser/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true); // Membuat direktori jika tidak ada
         }
@@ -159,7 +159,7 @@ class BerkasUser extends Model {
             throw new Exception("Ukuran file terlalu besar.");
         }
     
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Kelompok1_IC-ASSIST/res/berkasUser/';
+        $uploadDir = dirname(__DIR__, 3) . '/res/berkasUser/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true); // Membuat direktori jika tidak ada
         }
@@ -187,7 +187,7 @@ class BerkasUser extends Model {
             throw new Exception("Ukuran file terlalu besar.");
         }
     
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Kelompok1_IC-ASSIST/res/berkasUser/';
+        $uploadDir = dirname(__DIR__, 3) . '/res/berkasUser/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true); 
         }

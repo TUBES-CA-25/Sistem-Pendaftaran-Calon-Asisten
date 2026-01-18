@@ -36,21 +36,21 @@ const namaInput = document.getElementById("nama");
   $("#logoutButton").click(function (e) {
     e.preventDefault();
     $.ajax({
-      url: "/Sistem-Pendaftaran-Calon-Asisten/public/logout",
+      url: `${APP_URL}/logout`,
       type: "POST",
       success: function (response) {
         if (response.status === "success") {
           showModal(
             response.message || "Logout berhasil",
-            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif",
+            `${APP_URL}/Assets/gif/success.gif`,
             () => {
-              window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
+              window.location.href = `${APP_URL}`;
             }
           );
         } else {
           showModal(
             response.message || "Logout gagal",
-            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
+            `${APP_URL}/Assets/gif/failed.gif`
           );
         }
       },
@@ -58,7 +58,7 @@ const namaInput = document.getElementById("nama");
         console.log("Error:", xhr.responseText);
         showModal(
           "Terjadi kesalahan: " + error,
-          "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
+          `${APP_URL}/Assets/gif/failed.gif`
         );
       },
     });
@@ -110,7 +110,7 @@ const namaInput = document.getElementById("nama");
 
     if(!isValid) return;
     $.ajax({
-      url: "Sistem-Pendaftaran-Calon-Asisten/public/store",
+      url: `${APP_URL}/store`,
       type: "post",
       data: $("#biodataForm").serialize(),
       dataType: "json",
@@ -118,13 +118,13 @@ const namaInput = document.getElementById("nama");
         if (response.status === "success") {
           showModal(
             "Biodata berhasil disimpan",
-            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif"
+            `${APP_URL}/Assets/gif/success.gif`
           );
           document.querySelector('a[data-page="biodata"]').click();
         } else {
           showModal(
             response.message || "Biodata gagal disimpan",
-            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
+            `${APP_URL}/Assets/gif/failed.gif`
           );
           console.log(response.message);
         }
@@ -133,7 +133,7 @@ const namaInput = document.getElementById("nama");
         console.log("Error:", xhr.responseText);
         showModal(
           "Terjadi kesalahan: " + error,
-          "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
+          `${APP_URL}/Assets/gif/failed.gif`
         );
       },
     });

@@ -7,7 +7,7 @@ $(document).ready(function () {
     e.preventDefault();
     var formData = new FormData(this);
     $.ajax({
-      url: "/Sistem-Pendaftaran-Calon-Asisten/public/berkas",
+      url: `${APP_URL}/berkas`,
       type: "POST",
       data: formData,
       dataType: "json",
@@ -17,13 +17,13 @@ $(document).ready(function () {
         if (response.status === "success") {
           showModal(
             "Berkas berhasil disimpan",
-            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif"
+            `${APP_URL}/Assets/gif/success.gif`
           );
           document.querySelector('a[data-page="uploadBerkas"]').click();
         } else {
           showModal(
             "Berkas gagal disimpan",
-            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
+            `${APP_URL}/Assets/gif/failed.gif`
           );
           console.log(response.message);
         }

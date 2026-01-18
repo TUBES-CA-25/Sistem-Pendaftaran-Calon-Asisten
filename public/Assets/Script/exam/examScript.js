@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const navButtons = document.querySelectorAll(".nav button");
   const timerElement = document.getElementById("timer");
-  const endpoint = "/Sistem-Pendaftaran-Calon-Asisten/public/hasil";
+  const endpoint = `${APP_URL}/hasil`;
   let currentQuestion = 0;
   const initialDuration = 30 * 60;
   let remainingTime;
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function submitAndFinish() {
-    const calculateEndpoint = "/Sistem-Pendaftaran-Calon-Asisten/public/calculate";
+    const calculateEndpoint = `${APP_URL}/calculate`;
 
     try {
       const response = await fetch(calculateEndpoint, {
@@ -42,21 +42,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (data.status === "success") {
           setTimeout(() => {
-            window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
+            window.location.href = `${APP_URL}`;
           }, 3000);
         } else {
           setTimeout(() => {
-            window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
+            window.location.href = `${APP_URL}`;
           }, 3000);
         }
       } catch (parseError) {
         setTimeout(() => {
-          window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
+          window.location.href = `${APP_URL}`;
         }, 3000);
       }
     } catch (error) {
       setTimeout(() => {
-        window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
+        window.location.href = `${APP_URL}`;
       }, 3000);
     }
   }
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(countdown);
         showModal(
           "Waktu Habis jawaban akan di kumpul",
-          "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/glasshour.gif"
+          `${APP_URL}/Assets/gif/glasshour.gif`
         );
         submitAllAnswers()
           .then(() => submitAndFinish())
@@ -119,8 +119,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.status === "success") {
               showModal(
                 "Jawaban berhasil disimpan. Silahkan menunggu pengumuman selanjutnya",
-                "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/glasshour.gif"
+                `${APP_URL}/Assets/gif/glasshour.gif`
               );
+              localStorage.removeItem("remainingTime");
+              localStorage.removeItem("examAnswers");
               resolve(response);
             } else {
               console.error(
@@ -219,6 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function saveAnswer(idSoal, answer) {
     answers[idSoal] = answer;
+    localStorage.setItem("examAnswers", JSON.stringify(answers));
   }
 
   navButtons.forEach((button, index) => {
@@ -228,10 +231,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Load answers from localStorage
+  const savedAnswers = JSON.parse(localStorage.getItem("examAnswers")) || {};
+  Object.assign(answers, savedAnswers);
+
   questions.forEach((question, index) => {
     const options = question.querySelectorAll("input[type='radio']");
     const textarea = question.querySelector("textarea.text-answer");
     const idSoal = question.getAttribute("data-id-soal");
+
+    // Restore state from saved answers
+    if (answers[idSoal]) {
+      if (textarea) {
+        textarea.value = answers[idSoal];
+      } else {
+        options.forEach((option) => {
+          if (option.value === answers[idSoal]) {
+            option.checked = true;
+          }
+        });
+      }
+      markAnsweredQuestion(index);
+    }
 
     options.forEach((option) => {
       option.addEventListener("change", () => {
@@ -260,6 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("beforeunload", () => {
     if (remainingTime <= 0) {
       localStorage.removeItem("remainingTime");
+      localStorage.removeItem("examAnswers");
     }
   });
 });

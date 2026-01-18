@@ -1915,6 +1915,29 @@ window.deleteSoal = function(id) {
     }, 'Apakah Anda yakin ingin menghapus soal ini?');
 }
 
+// Helper to robustly close modals
+window.closeModal = function(modalId) {
+    const modalEl = document.getElementById(modalId);
+    if (modalEl) {
+        // Try Bootstrap instance
+        const instance = bootstrap.Modal.getInstance(modalEl);
+        if (instance) {
+            instance.hide();
+        } else {
+            // Fallback: create new instance and hide, or manually remove class
+            new bootstrap.Modal(modalEl).hide();
+        }
+        
+        // Force cleanup if backdrop persists
+        setTimeout(() => {
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }, 500); // Wait for animation
+    }
+}
+
 // Form Submit - Add Soal
 document.getElementById('addSoalForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -1953,9 +1976,24 @@ document.getElementById('addSoalForm').addEventListener('submit', function(e) {
     .then(data => {
         if (data.success || data.status === 'success') {
             showAlert('Soal berhasil ditambahkan!');
-            bootstrap.Modal.getInstance(document.getElementById('addSoalModal')).hide();
+            window.closeModal('addSoalModal');
             this.reset();
             window.loadBankQuestions(window.currentBankId);
+            
+            // Try updating stats if elements exist
+            try {
+                const totalEl = document.getElementById('stat-count-total');
+                if (totalEl) totalEl.textContent = parseInt(totalEl.textContent || 0) + 1;
+                
+                if (type === 'pilihan_ganda') {
+                     const pgEl = document.getElementById('stat-count-pg');
+                     if (pgEl) pgEl.textContent = parseInt(pgEl.textContent || 0) + 1;
+                } else {
+                     const essayEl = document.getElementById('stat-count-essay');
+                     if (essayEl) essayEl.textContent = parseInt(essayEl.textContent || 0) + 1;
+                }
+            } catch(e) { console.warn('Stats update failed:', e); }
+
         } else {
             showAlert(data.message || 'Gagal menambahkan soal', false);
         }
@@ -1994,7 +2032,7 @@ document.getElementById('editSoalForm').addEventListener('submit', function(e) {
     .then(data => {
         if (data.success || data.status === 'success') {
             showAlert('Soal berhasil diupdate!');
-            bootstrap.Modal.getInstance(document.getElementById('editSoalModal')).hide();
+            window.closeModal('editSoalModal');
             window.loadBankQuestions(window.currentBankId);
         } else {
             showAlert(data.message || 'Gagal mengupdate soal', false);
