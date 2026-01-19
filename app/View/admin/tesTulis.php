@@ -25,7 +25,7 @@ foreach ($allSoal as $soal) {
 <style>
 /* ==================== GLOBAL STYLES ==================== */
 body {
-    background: #f5f7fa;
+    background: var(--bs-body-bg);
     min-height: 100vh;
 }
 
@@ -38,7 +38,7 @@ main {
 /* ==================== HEADER STYLES ==================== */
 /* Header styles moved to components/PageHeader.php */
 
-/* ==================== NAVIGATION TABS ==================== */
+/* ==================== NAVIGATION TABS - Bootstrap Enhanced ==================== */
 .nav-tabs-custom {
     background: white;
     padding: 0.5rem 1rem;
@@ -53,27 +53,27 @@ main {
     color: #64748b;
     font-weight: 500;
     padding: 0.875rem 1.5rem;
-    border-radius: 10px;
+    border-radius: 0.625rem;
     margin-right: 0.5rem;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     border: none;
 }
 
 .nav-tabs-custom .nav-link:hover {
     background: #f1f5f9;
-    color: #2563eb;
+    color: var(--bs-primary-dark);
 }
 
 .nav-tabs-custom .nav-link.active {
-    background: #2563eb;
-    color: white;
+    background: var(--gradient-header);
+    color: white !important;
 }
 
 .nav-tabs-custom .nav-link i {
     margin-right: 0.5rem;
 }
 
-/* ==================== BANK SOAL CARDS ==================== */
+/* ==================== BANK SOAL CARDS - Bootstrap Grid ==================== */
 .bank-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -83,9 +83,9 @@ main {
 
 .bank-card {
     background: white;
-    border-radius: 20px;
+    border-radius: var(--border-radius-card);
     overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-card);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     border: 2px solid transparent;
@@ -94,7 +94,7 @@ main {
 .bank-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.2);
-    border-color: #2563eb;
+    border-color: var(--bs-primary-dark);
 }
 
 .bank-card-header {
@@ -109,19 +109,19 @@ main {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #2563eb, #7c3aed);
+    background: var(--gradient-header);
 }
 
 .bank-icon {
     width: 60px;
     height: 60px;
     background: linear-gradient(135deg, #eff6ff, #dbeafe);
-    border-radius: 16px;
+    border-radius: var(--bs-border-radius-xl);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.75rem;
-    color: #2563eb;
+    color: var(--bs-primary-dark);
     margin-bottom: 1rem;
 }
 
@@ -152,7 +152,7 @@ main {
 .bank-stat-item {
     background: #f8fafc;
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    border-radius: var(--bs-border-radius);
     font-size: 0.8rem;
 }
 
@@ -161,7 +161,7 @@ main {
 }
 
 .bank-stat-item.pg {
-    color: #2563eb;
+    color: var(--bs-primary-dark);
     background: #eff6ff;
 }
 
@@ -190,38 +190,38 @@ main {
 }
 
 .bank-action-btn {
-    background: #2563eb;
+    background: var(--gradient-header);
     color: white;
     border: none;
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    border-radius: var(--bs-border-radius);
     font-size: 0.85rem;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
 
 .bank-action-btn:hover {
-    background: #1d4ed8;
+    background: var(--bs-primary-dark);
     transform: scale(1.05);
 }
 
-/* ==================== CREATE BANK CARD ==================== */
+/* ==================== CREATE BANK CARD - Bootstrap Enhanced ==================== */
 .create-bank-card {
     background: white;
     border: 2px dashed #cbd5e1;
-    border-radius: 20px;
+    border-radius: var(--border-radius-card);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 3rem;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     min-height: 280px;
 }
 
 .create-bank-card:hover {
-    border-color: #2563eb;
+    border-color: var(--bs-primary-dark);
     background: #f8fafc;
 }
 
@@ -232,7 +232,7 @@ main {
 }
 
 .create-bank-card:hover i {
-    color: #2563eb;
+    color: var(--bs-primary-dark);
 }
 
 .create-bank-card span {
@@ -240,7 +240,7 @@ main {
     color: #64748b;
 }
 
-/* ==================== DETAIL VIEW ==================== */
+/* ==================== DETAIL VIEW - Bootstrap Enhanced ==================== */
 .detail-view {
     display: none;
     animation: fadeIn 0.3s ease;
@@ -284,13 +284,13 @@ main {
     gap: 0.5rem;
     cursor: pointer;
     padding: 0.5rem 1rem;
-    border-radius: 8px;
-    transition: all 0.2s;
+    border-radius: var(--bs-border-radius);
+    transition: all 0.2s ease;
 }
 
 .back-btn:hover {
     background: #f1f5f9;
-    color: #2563eb;
+    color: var(--bs-primary-dark);
 }
 
 .detail-title {
@@ -304,7 +304,7 @@ main {
     gap: 0.75rem;
 }
 
-/* ==================== SOAL LIST ==================== */
+/* ==================== SOAL LIST - Bootstrap Enhanced ==================== */
 .soal-container {
     padding: 1.5rem;
 }
@@ -312,14 +312,14 @@ main {
 .soal-filter-bar {
     background: white;
     padding: 1rem 1.5rem;
-    border-radius: 12px;
+    border-radius: var(--bs-border-radius-lg);
     margin-bottom: 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: var(--shadow-sm);
 }
 
 .search-input-group {
@@ -340,14 +340,14 @@ main {
     width: 100%;
     padding: 0.75rem 1rem 0.75rem 2.75rem;
     border: 2px solid #e2e8f0;
-    border-radius: 10px;
+    border-radius: 0.625rem;
     font-size: 0.9rem;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
 
 .search-input-group input:focus {
     outline: none;
-    border-color: #2563eb;
+    border-color: var(--bs-primary-dark);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
@@ -360,21 +360,21 @@ main {
     padding: 0.5rem 1rem;
     border: 2px solid #e2e8f0;
     background: white;
-    border-radius: 8px;
+    border-radius: var(--bs-border-radius);
     font-size: 0.85rem;
     font-weight: 500;
     color: #64748b;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
 
 .filter-btn:hover, .filter-btn.active {
-    border-color: #2563eb;
-    color: #2563eb;
+    border-color: var(--bs-primary-dark);
+    color: var(--bs-primary-dark);
     background: #eff6ff;
 }
 
-/* ==================== SOAL CARD ==================== */
+/* ==================== SOAL CARD - Bootstrap Enhanced ==================== */
 .soal-list {
     display: flex;
     flex-direction: column;
@@ -383,15 +383,15 @@ main {
 
 .soal-card {
     background: white;
-    border-radius: 16px;
+    border-radius: var(--bs-border-radius-xl);
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    border-left: 4px solid #2563eb;
-    transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid var(--bs-primary-dark);
+    transition: all 0.2s ease;
 }
 
 .soal-card:hover {
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-md);
 }
 
 .soal-card.essay {
@@ -408,9 +408,9 @@ main {
 .soal-number {
     width: 44px;
     height: 44px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: var(--gradient-header);
     color: white;
-    border-radius: 12px;
+    border-radius: var(--bs-border-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -433,7 +433,7 @@ main {
 
 .soal-type-badge.pg {
     background: #dbeafe;
-    color: #2563eb;
+    color: var(--bs-primary-dark);
 }
 
 .soal-type-badge.essay {
@@ -454,7 +454,7 @@ main {
 
 .soal-options {
     background: #f8fafc;
-    border-radius: 10px;
+    border-radius: 0.625rem;
     padding: 1rem;
     margin-bottom: 1rem;
 }
@@ -476,7 +476,7 @@ main {
 
 .soal-answer {
     background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-    border-radius: 10px;
+    border-radius: 0.625rem;
     padding: 1rem;
     display: flex;
     align-items: center;
@@ -509,22 +509,22 @@ main {
 .soal-action-btn {
     width: 36px;
     height: 36px;
-    border-radius: 8px;
+    border-radius: var(--bs-border-radius);
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
 
 .soal-action-btn.edit {
     background: #eff6ff;
-    color: #2563eb;
+    color: var(--bs-primary-dark);
 }
 
 .soal-action-btn.edit:hover {
-    background: #2563eb;
+    background: var(--bs-primary-dark);
     color: white;
 }
 
@@ -538,12 +538,12 @@ main {
     color: white;
 }
 
-/* ==================== EMPTY STATE ==================== */
+/* ==================== EMPTY STATE - Bootstrap Enhanced ==================== */
 .empty-state {
     text-align: center;
     padding: 4rem 2rem;
     background: white;
-    border-radius: 16px;
+    border-radius: var(--bs-border-radius-xl);
 }
 
 .empty-state i {
@@ -561,15 +561,15 @@ main {
     color: #94a3b8;
 }
 
-/* ==================== MODAL STYLES ==================== */
+/* ==================== MODAL STYLES - Bootstrap 5.3.3 Structure ==================== */
 .modal-custom .modal-content {
     border: none;
-    border-radius: 20px;
+    border-radius: var(--border-radius-card);
     overflow: hidden;
 }
 
 .modal-custom .modal-header {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: var(--gradient-header);
     color: white;
     border: none;
     padding: 1.5rem;
@@ -591,13 +591,13 @@ main {
 
 .modal-custom .form-control {
     border: 2px solid #e5e7eb;
-    border-radius: 10px;
+    border-radius: 0.625rem;
     padding: 0.75rem 1rem;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
 
 .modal-custom .form-control:focus {
-    border-color: #2563eb;
+    border-color: var(--bs-primary-dark);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
@@ -611,18 +611,18 @@ main {
     flex: 1;
     padding: 1rem;
     border: 2px solid #e5e7eb;
-    border-radius: 12px;
+    border-radius: var(--bs-border-radius-lg);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     text-align: center;
 }
 
 .type-option:hover {
-    border-color: #2563eb;
+    border-color: var(--bs-primary-dark);
 }
 
 .type-option.selected {
-    border-color: #2563eb;
+    border-color: var(--bs-primary-dark);
     background: #eff6ff;
 }
 
@@ -632,7 +632,7 @@ main {
     display: block;
 }
 
-.type-option.pg i { color: #2563eb; }
+.type-option.pg i { color: var(--bs-primary-dark); }
 .type-option.essay i { color: #d97706; }
 
 .type-option span {
@@ -640,15 +640,15 @@ main {
     color: #374151;
 }
 
-/* ==================== BUTTONS ==================== */
+/* ==================== BUTTONS - Bootstrap Enhanced ==================== */
 .btn-primary-custom {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: var(--gradient-header);
     border: none;
     padding: 0.75rem 1.5rem;
-    border-radius: 10px;
+    border-radius: 0.625rem;
     font-weight: 600;
     color: white;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
 
 .btn-primary-custom:hover {
@@ -661,7 +661,7 @@ main {
     background: linear-gradient(135deg, #059669, #047857);
     border: none;
     padding: 0.75rem 1.5rem;
-    border-radius: 10px;
+    border-radius: 0.625rem;
     font-weight: 600;
     color: white;
 }
@@ -670,19 +670,20 @@ main {
     border: 2px solid #e2e8f0;
     background: white;
     padding: 0.75rem 1.5rem;
-    border-radius: 10px;
+    border-radius: 0.625rem;
     font-weight: 600;
     color: #64748b;
+    transition: all 0.2s ease;
 }
 
 .btn-outline-custom:hover {
-    border-color: #2563eb;
-    color: #2563eb;
+    border-color: var(--bs-primary-dark);
+    color: var(--bs-primary-dark);
 }
 
-/* ==================== PILIHAN A-E STYLES ==================== */
+/* ==================== PILIHAN A-E STYLES - Bootstrap Forms ==================== */
 .pilihan-fields .input-group {
-    border-radius: 10px;
+    border-radius: 0.625rem;
     overflow: hidden;
 }
 
@@ -690,7 +691,7 @@ main {
     width: 45px;
     justify-content: center;
     font-weight: 700;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: var(--gradient-header);
     color: white;
     border: none;
 }
@@ -705,14 +706,14 @@ main {
 }
 
 .pilihan-fields .form-control:focus {
-    border-color: #2563eb;
+    border-color: var(--bs-primary-dark);
     box-shadow: none;
 }
 
 .jawaban-selector {
     background: #f8fafc;
     padding: 1rem;
-    border-radius: 12px;
+    border-radius: var(--bs-border-radius-lg);
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -730,8 +731,8 @@ main {
 }
 
 .jawaban-selector .form-check-input:checked {
-    background-color: #2563eb;
-    border-color: #2563eb;
+    background-color: var(--bs-primary-dark);
+    border-color: var(--bs-primary-dark);
 }
 
 .jawaban-selector .form-check-label {
@@ -739,16 +740,16 @@ main {
     font-size: 1rem;
     padding: 0.5rem 1rem;
     background: white;
-    border-radius: 8px;
+    border-radius: var(--bs-border-radius);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     border: 2px solid #e5e7eb;
 }
 
 .jawaban-selector .form-check-input:checked + .form-check-label {
-    background: #2563eb;
+    background: var(--bs-primary-dark);
     color: white;
-    border-color: #2563eb;
+    border-color: var(--bs-primary-dark);
 }
 </style>
 
@@ -782,7 +783,7 @@ main {
     </div>
     <?php
         $headerRightContent = ob_get_clean();
-        require_once __DIR__ . '/components/PageHeader.php';
+        require_once __DIR__ . '/../templates/components/PageHeader.php';
     ?>
 
     <!-- Navigation Tabs -->

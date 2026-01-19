@@ -1,6 +1,7 @@
 /**
  * Common Utilities
  * Fungsi-fungsi yang digunakan di banyak halaman
+ * Updated: Bootstrap 5 Integration
  */
 
 // Constants untuk path - Check if already declared to prevent errors when loaded via AJAX
@@ -13,69 +14,66 @@ if (typeof APP_PATHS === 'undefined') {
 }
 
 /**
- * Menampilkan modal custom
+ * Menampilkan modal custom (Bootstrap Modal)
  * @param {string} message - Pesan yang akan ditampilkan
  * @param {string|null} gifUrl - URL GIF (optional)
  */
 function showModal(message, gifUrl = null) {
-    const modal = document.getElementById('customModal');
-    if (!modal) return;
+    const modalEl = document.getElementById('customModal');
+    if (!modalEl) return;
 
     const modalMessage = document.getElementById('modalMessage');
     const modalGif = document.getElementById('modalGif');
-    const closeModal = document.getElementById('closeModal');
-    
+
     if (modalMessage) modalMessage.textContent = message;
     if (modalGif) {
         modalGif.style.display = gifUrl ? 'block' : 'none';
         if (gifUrl) modalGif.src = gifUrl;
     }
 
-    modal.style.display = 'flex';
-
-    if (closeModal) {
-        $(closeModal).off('click').on('click', () => modal.style.display = 'none');
-    }
-
-    $(window).off('click.customModal').on('click.customModal', (event) => {
-        if (event.target === modal) modal.style.display = 'none';
-    });
+    // Use Bootstrap Modal API
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
 }
 
 /**
- * Menampilkan modal konfirmasi
+ * Menampilkan modal konfirmasi (Bootstrap Modal)
  * @param {string} message - Pesan konfirmasi
  * @param {function} onConfirm - Callback saat confirm
  * @param {function} onCancel - Callback saat cancel
  */
 function showConfirm(message, onConfirm = null, onCancel = null) {
-    const modal = document.getElementById('confirmModal');
-    if (!modal) return;
+    const modalEl = document.getElementById('confirmModal');
+    if (!modalEl) return;
 
     const modalMessage = document.getElementById('confirmModalMessage');
     const confirmButton = document.getElementById('confirmModalConfirm');
     const cancelButton = document.getElementById('confirmModalCancel');
 
     if (modalMessage) modalMessage.textContent = message;
-    modal.style.display = 'flex';
+
+    // Use Bootstrap Modal API
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
     if (confirmButton) {
-        $(confirmButton).off('click').on('click', () => {
+        const newConfirmBtn = confirmButton.cloneNode(true);
+        confirmButton.parentNode.replaceChild(newConfirmBtn, confirmButton);
+        newConfirmBtn.addEventListener('click', () => {
             if (onConfirm) onConfirm();
-            modal.style.display = 'none';
+            modal.hide();
         });
     }
 
     if (cancelButton) {
-        $(cancelButton).off('click').on('click', () => {
+        const newCancelBtn = cancelButton.cloneNode(true);
+        cancelButton.parentNode.replaceChild(newCancelBtn, cancelButton);
+        newCancelBtn.addEventListener('click', () => {
             if (onCancel) onCancel();
-            modal.style.display = 'none';
+            modal.hide();
         });
     }
 
-    $(window).off('click.confirmModal').on('click.confirmModal', (event) => {
-        if (event.target === modal) modal.style.display = 'none';
-    });
+    modal.show();
 }
 
 /**
@@ -117,107 +115,138 @@ function sendAjax(url, data, onSuccess, onError) {
 }
 
 /**
- * Global Toast Notification Function
+ * Global Toast Notification Function (Bootstrap Toast)
  * @param {string} message - Message to display
  * @param {boolean} isSuccess - True for success (green), False for error (red)
  * @param {string|null} redirectUrl - Optional URL to redirect after toast closes
  */
 function showAlert(message, isSuccess = true, redirectUrl = null) {
     // Ensure toast container exists
-    if ($('#toast-container').length === 0) {
-        $('body').append('<div id="toast-container"></div>');
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'toast-container position-fixed top-0 end-0 p-3';
+        container.style.zIndex = '9999';
+        document.body.appendChild(container);
     }
 
-    const type = isSuccess ? 'success' : 'error';
+    const type = isSuccess ? 'success' : 'danger';
     const title = isSuccess ? 'Berhasil' : 'Gagal';
-    const icon = isSuccess ? 'bi-check-lg' : 'bi-exclamation-triangle';
-    const duration = 3000; // 3 seconds
+    const icon = isSuccess ? 'bx bx-check-circle' : 'bx bx-error-circle';
+    const duration = 3000;
 
+    const toastId = 'toast-' + Date.now();
     const toastHtml = `
-        <div class="toast-notification ${type}">
-            <div class="toast-icon">
-                <i class="bi ${icon}"></i>
-            </div>
-            <div class="toast-content">
-                <div class="toast-title">${title}</div>
-                <div class="toast-message">${message}</div>
-            </div>
-            <div class="toast-close" onclick="$(this).parent().remove()">
-                <i class="bi bi-x"></i>
-            </div>
-            <div class="toast-progress">
-                <div class="toast-progress-bar"></div>
+        <div id="${toastId}" class="toast align-items-center text-bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2">
+                    <i class="${icon} fs-5"></i>
+                    <div>
+                        <strong>${title}</strong>
+                        <div class="small">${message}</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
         </div>
     `;
 
-    const $toast = $(toastHtml);
-    $('#toast-container').append($toast);
+    container.insertAdjacentHTML('beforeend', toastHtml);
 
-    // Trigger reflow for animation
-    setTimeout(() => $toast.addClass('show'), 10);
+    const toastEl = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastEl, { autohide: true, delay: duration });
 
-    // Progress bar animation
-    const $progressBar = $toast.find('.toast-progress-bar');
-    $progressBar.css('transition', `transform ${duration}ms linear`);
-    setTimeout(() => $progressBar.css('transform', 'scaleX(0)'), 10);
+    // Handle redirect after toast hides
+    if (redirectUrl) {
+        toastEl.addEventListener('hidden.bs.toast', () => {
+            window.location.href = redirectUrl;
+        });
+    }
 
-    // Auto remove
-    setTimeout(() => {
-        $toast.removeClass('show');
-        setTimeout(() => {
-            $toast.remove();
-            // Handle redirect if provided
-            if (redirectUrl) {
-                window.location.href = redirectUrl;
-            }
-        }, 400); // Wait for slide out animation
-    }, duration);
+    // Remove element after hidden
+    toastEl.addEventListener('hidden.bs.toast', () => {
+        toastEl.remove();
+    });
+
+    toast.show();
 }
 
 /**
- * Show Global Delete Confirmation Modal
+ * Show Global Delete Confirmation Modal (Bootstrap Modal)
  * @param {function} onConfirm - Callback function to execute when 'Hapus' is clicked
  * @param {string} message - Optional custom message
  */
 function showConfirmDelete(onConfirm, message = 'Apakah Anda yakin ingin menghapus data ini?<br>Tindakan ini tidak dapat dibatalkan.') {
-    // 1. Set message if provided
-    if (message) {
-        document.getElementById('deleteModalMessage').innerHTML = message;
+    const modalEl = document.getElementById('deleteConfirmModal');
+    if (!modalEl) {
+        // Fallback: use native confirm
+        if (confirm(message.replace(/<br>/g, '\n'))) {
+            if (typeof onConfirm === 'function') onConfirm();
+        }
+        return;
     }
-    
-    // 2. Setup confirm button
+
+    // Set message if provided
+    const messageEl = document.getElementById('deleteModalMessage');
+    if (messageEl && message) {
+        messageEl.innerHTML = message;
+    }
+
+    // Setup confirm button
     const btnConfirm = document.getElementById('btnConfirmDelete');
-    
-    // Clone button to remove previous event listeners
-    const newBtn = btnConfirm.cloneNode(true);
-    btnConfirm.parentNode.replaceChild(newBtn, btnConfirm);
-    
-    // Add new event listener
-    newBtn.addEventListener('click', function() {
-        if (typeof onConfirm === 'function') {
-            onConfirm();
-        }
-        closeDeleteModal();
-    });
-    
-    // 3. Show modal
-    const modal = document.getElementById('deleteConfirmModal');
-    modal.style.display = 'flex';
-    
-    // Close on click outside
-    window.onclick = function(event) {
-        if (event.target == modal) {
+    if (btnConfirm) {
+        // Clone button to remove previous event listeners
+        const newBtn = btnConfirm.cloneNode(true);
+        btnConfirm.parentNode.replaceChild(newBtn, btnConfirm);
+
+        // Add new event listener
+        newBtn.addEventListener('click', function() {
+            if (typeof onConfirm === 'function') {
+                onConfirm();
+            }
             closeDeleteModal();
-        }
+        });
+    }
+
+    // Show modal using Bootstrap Modal API
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+}
+
+/**
+ * Close Delete Modal (Bootstrap Modal)
+ */
+function closeDeleteModal() {
+    const modalEl = document.getElementById('deleteConfirmModal');
+    if (modalEl) {
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
     }
 }
 
 /**
- * Close Delete Modal
+ * Hide any Bootstrap modal by ID
+ * @param {string} modalId - ID of the modal element
  */
-function closeDeleteModal() {
-    document.getElementById('deleteConfirmModal').style.display = 'none';
+function hideModal(modalId) {
+    const modalEl = document.getElementById(modalId);
+    if (modalEl) {
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+    }
+}
+
+/**
+ * Show any Bootstrap modal by ID
+ * @param {string} modalId - ID of the modal element
+ */
+function showModalById(modalId) {
+    const modalEl = document.getElementById(modalId);
+    if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
 }
 
 // Check for pending toasts on load

@@ -28,7 +28,7 @@ $result = $result ?? [];
     }
 
     body {
-        background: #f5f7fa;
+        background: var(--bs-body-bg);
         min-height: 100vh;
     }
 
@@ -69,7 +69,7 @@ $result = $result ?? [];
 
     .entries-select select {
         border: 2px solid #e2e8f0;
-        border-radius: 8px;
+        border-radius: var(--bs-border-radius);
         padding: 6px 12px;
         font-size: 0.875rem;
         background: white;
@@ -78,7 +78,7 @@ $result = $result ?? [];
     }
 
     .entries-select select:focus {
-        border-color: #2f66f6;
+        border-color: var(--bs-primary-dark);
         outline: none;
     }
 
@@ -91,15 +91,15 @@ $result = $result ?? [];
         width: 100%;
         padding: 10px 16px 10px 40px;
         border: 2px solid #e2e8f0;
-        border-radius: 8px;
+        border-radius: var(--bs-border-radius);
         font-size: 0.9rem;
         transition: all 0.2s ease;
     }
 
     .search-box input:focus {
         outline: none;
-        border-color: #2f66f6;
-        box-shadow: 0 0 0 3px rgba(47, 102, 246, 0.1);
+        border-color: var(--bs-primary-dark);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
     .search-box i {
@@ -113,7 +113,7 @@ $result = $result ?? [];
     /* Table Responsive Container */
     .table-responsive {
         overflow-x: auto;
-        border-radius: 12px;
+        border-radius: var(--bs-border-radius-lg);
         padding-bottom: 20px; /* Space for bottom shadow */
     }
 
@@ -122,14 +122,14 @@ $result = $result ?? [];
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
-        border-radius: 12px;
+        border-radius: var(--bs-border-radius-lg);
         overflow: hidden;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05); /* Increased bottom presence */
         margin-bottom: 4px;
     }
 
     .data-table thead th {
-        background: #2f66f6;
+        background: var(--bs-primary-dark);
         color: #fff;
         font-weight: 600;
         padding: 16px 20px;
@@ -151,7 +151,7 @@ $result = $result ?? [];
     }
 
     .data-table tbody tr:hover {
-        background-color: rgba(47, 102, 246, 0.08) !important;
+        background-color: rgba(37, 99, 235, 0.08) !important;
     }
 
     .data-table td {
@@ -169,7 +169,7 @@ $result = $result ?? [];
     .data-table td:first-child {
         text-align: center;
         font-weight: 600;
-        color: #2f66f6;
+        color: var(--bs-primary-dark);
     }
 
     /* User Info */
@@ -197,7 +197,7 @@ $result = $result ?? [];
     /* Badge Styles - Deep Solid Compact */
     .badge-status {
         padding: 4px 10px;
-        border-radius: 6px;
+        border-radius: var(--bs-border-radius-sm);
         font-size: 0.8rem;
         font-weight: 600;
         display: inline-flex;
@@ -256,7 +256,7 @@ $result = $result ?? [];
         height: 36px;
         min-width: 36px;
         border: none;
-        border-radius: 8px;
+        border-radius: var(--bs-border-radius);
         cursor: pointer;
         display: inline-flex;
         align-items: center;
@@ -326,26 +326,26 @@ $result = $result ?? [];
     .dataTables_wrapper .dataTables_paginate .paginate_button {
         padding: 6px 12px;
         margin: 0 2px;
-        border-radius: 6px;
+        border-radius: var(--bs-border-radius-sm);
         border: 1px solid #dee2e6 !important;
         background: white !important;
-        color: #2f66f6 !important;
+        color: var(--bs-primary-dark) !important;
         font-size: 0.875rem;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background: #2f66f6 !important;
+        background: var(--bs-primary-dark) !important;
         color: white !important;
-        border-color: #2f66f6 !important;
+        border-color: var(--bs-primary-dark) !important;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
         background: #f0f5ff !important;
-        color: #2f66f6 !important;
+        color: var(--bs-primary-dark) !important;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-        background: #1e4fd8 !important;
+        background: #1e40af !important;
         color: white !important;
     }
 
@@ -401,7 +401,7 @@ $result = $result ?? [];
             padding: 6px 12px;
             font-size: 0.7rem;
             min-width: 85px;
-            border-radius: 6px;
+            border-radius: var(--bs-border-radius-sm);
         }
 
         .badge-status i {
@@ -461,11 +461,11 @@ $result = $result ?? [];
     }
 
     .btn-action.btn-view {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        background: var(--gradient-header);
     }
 
     .btn-action.btn-view:hover {
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
     }
 
     .btn-action.btn-delete {
@@ -492,7 +492,7 @@ $result = $result ?? [];
         $title = 'Daftar Peserta';
         $subtitle = 'Kelola data peserta pendaftaran calon asisten';
         $icon = 'bi bi-people-fill';
-        require_once __DIR__ . '/components/PageHeader.php';
+        require_once __DIR__ . '/../templates/components/PageHeader.php';
     ?>
 
     <!-- Table Card -->
@@ -706,9 +706,9 @@ $result = $result ?? [];
 <!-- Modal Detail Peserta -->
 <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+        <div class="modal-content border-0" style="border-radius: var(--bs-border-radius-2xl); overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
             <!-- Header dengan Background Gradient -->
-            <div class="position-relative" style="background: #2563EB; padding: 25px 30px 90px 30px;">
+            <div class="position-relative" style="background: var(--bs-primary-dark); padding: 25px 30px 90px 30px;">
                 <button type="button" class="btn-close btn-close-white position-absolute" style="top: 15px; right: 15px; opacity: 0.8; z-index: 20;" data-bs-dismiss="modal" aria-label="Close"></button>
                 
                 <!-- Decorative Elements -->

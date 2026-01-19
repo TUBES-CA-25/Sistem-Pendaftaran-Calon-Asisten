@@ -311,37 +311,7 @@ $ruanganList = $ruanganList ?? [];
         background: #ef4444;
     }
 
-    /* CONFIRMATION MODAL */
-    .custom-modal-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.4);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        backdrop-filter: blur(4px);
-    }
-    
-    .custom-modal-content {
-        background: white;
-        border-radius: 20px;
-        padding: 30px;
-        width: 400px;
-        max-width: 90%;
-        text-align: center;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        animation: modalPop 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-    }
-
-    @keyframes modalPop {
-        0% { transform: scale(0.8); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
-    }
-
+    /* Modal icon warning */
     .modal-icon-warning {
         width: 80px;
         height: 80px;
@@ -355,49 +325,6 @@ $ruanganList = $ruanganList ?? [];
         font-size: 2.5rem;
     }
 
-    .custom-modal-title {
-        font-weight: 700;
-        font-size: 1.25rem;
-        color: #1e293b;
-        margin-bottom: 10px;
-    }
-    
-    .custom-modal-text {
-        color: #64748b;
-        margin-bottom: 30px;
-        line-height: 1.5;
-    }
-
-    .custom-modal-actions {
-        display: flex;
-        gap: 12px;
-    }
-
-    .btn-modal-cancel {
-        flex: 1;
-        padding: 12px;
-        border-radius: 10px;
-        border: 1px solid #e2e8f0;
-        background: white;
-        color: #64748b;
-        font-weight: 600;
-        transition: all 0.2s;
-    }
-    .btn-modal-cancel:hover { background: #f8fafc; color: #334155; }
-
-    .btn-modal-confirm {
-        flex: 1;
-        padding: 12px;
-        border-radius: 10px;
-        border: none;
-        background: #ef4444;
-        color: white;
-        font-weight: 600;
-        transition: all 0.2s;
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-    }
-    .btn-modal-confirm:hover { background: #dc2626; transform: translateY(-2px); }
-
 </style>
 
 <main>
@@ -407,7 +334,7 @@ $ruanganList = $ruanganList ?? [];
             $title = 'Ruangan Praktikum';
             $subtitle = 'Kelola data ruangan, peserta, dan aktivitas praktikum';
             $icon = 'bi bi-buildings-fill';
-            require_once __DIR__ . '/components/PageHeader.php';
+            require_once __DIR__ . '/../templates/components/PageHeader.php';
         ?>
 
         <div class="content-container">
@@ -587,17 +514,21 @@ $ruanganList = $ruanganList ?? [];
     </div>
 </div>
 
-<!-- Custom Confirmation Modal -->
-<div id="deleteConfirmModal" class="custom-modal-backdrop">
-    <div class="custom-modal-content">
-        <div class="modal-icon-warning">
-            <i class="bi bi-exclamation-lg"></i>
-        </div>
-        <h3 class="custom-modal-title">Konfirmasi Hapus</h3>
-        <p class="custom-modal-text" id="deleteModalMessage">Apakah Anda yakin ingin menghapus peserta ini? <br>Tindakan ini tidak dapat dibatalkan.</p>
-        <div class="custom-modal-actions">
-            <button class="btn-modal-cancel" onclick="closeDeleteModal()">Batal</button>
-            <button id="btnConfirmDelete" class="btn-modal-confirm">Ya, Hapus</button>
+<!-- Bootstrap Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-body text-center p-4">
+                <div class="modal-icon-warning">
+                    <i class="bi bi-exclamation-lg"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Konfirmasi Hapus</h5>
+                <p class="text-muted mb-4" id="deleteModalMessage">Apakah Anda yakin ingin menghapus peserta ini? <br>Tindakan ini tidak dapat dibatalkan.</p>
+                <div class="d-flex gap-3">
+                    <button type="button" class="btn btn-secondary flex-fill rounded-3 py-2" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" id="btnConfirmDelete" class="btn btn-danger flex-fill rounded-3 py-2">Ya, Hapus</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -605,29 +536,30 @@ $ruanganList = $ruanganList ?? [];
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // --- CONFIRMATION MODAL LOGIC (INLINED) ---
+    // --- CONFIRMATION MODAL LOGIC (Bootstrap) ---
+    let deleteModalInstance = null;
+
     function showConfirmDelete(onConfirm, message) {
         if (message) document.getElementById('deleteModalMessage').innerHTML = message;
-        
+
         const btnConfirm = document.getElementById('btnConfirmDelete');
         const newBtn = btnConfirm.cloneNode(true);
         btnConfirm.parentNode.replaceChild(newBtn, btnConfirm);
-        
+
         newBtn.addEventListener('click', function() {
             if (typeof onConfirm === 'function') onConfirm();
             closeDeleteModal();
         });
-        
-        const modal = document.getElementById('deleteConfirmModal');
-        modal.style.display = 'flex';
-        
-        window.onclick = function(event) {
-            if (event.target == modal) closeDeleteModal();
-        }
+
+        const modalEl = document.getElementById('deleteConfirmModal');
+        deleteModalInstance = new bootstrap.Modal(modalEl);
+        deleteModalInstance.show();
     }
 
     function closeDeleteModal() {
-        document.getElementById('deleteConfirmModal').style.display = 'none';
+        if (deleteModalInstance) {
+            deleteModalInstance.hide();
+        }
     }
 
     $(document).ready(function () {

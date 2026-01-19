@@ -26,16 +26,16 @@ class HomeController extends Controller
     {
         if ($this->isLoggedIn() && $this->getRole() == "User") {
             $data = $this->getSidebarData();
-            View::render('main', 'Templates', $data);
+            View::render('main', 'layouts', $data);
 
         } else if ($this->isLoggedIn() && $this->getRole() == "Admin") {
             $data = $this->getSidebarData();
             $dashboardData = $this->getDashboardAdminData();
             $data = array_merge($data, $dashboardData);
-            View::render('mainAdmin', 'Templates', $data);
+            View::render('mainAdmin', 'layouts', $data);
 
         } else {
-            View::render('index', 'login');
+            View::render('index', 'auth');
             exit();
         }
     }
@@ -50,47 +50,46 @@ class HomeController extends Controller
             switch ($page) {
                 case 'dashboard':
                     $data = $this->getDashboardAdminData();
-                    View::render('dashboardAdmin', 'Templates', $data);
+                    View::render('dashboard', 'admin', $data);
                     break;
                 case 'ruangan':
                     $data = $this->getRuanganData();
-                    View::render('ruangan', 'Templates', $data);
+                    View::render('ruangan', 'admin', $data);
                     break;
                 case 'lihatPeserta':
                     $data = $this->getDaftarPesertaData();
-                    View::render('daftarPeserta', 'Templates', $data);
+                    View::render('daftarPeserta', 'admin', $data);
                     break;
                 case 'daftarKehadiran':
                     $data = $this->getDaftarHadirData();
-                    View::render('DaftarHadirPesertaAdmin', 'Templates', $data);
+                    View::render('daftarHadirPeserta', 'admin', $data);
                     break;
                 case 'presentasi':
                     $data = $this->getPresentasiAdminData();
-                    View::render('presentasiAdmin', 'Templates', $data);
+                    View::render('presentasi', 'admin', $data);
                     break;
                 case 'tesTulis':
                     $data = $this->getTesTulisAdminData();
-                    View::render('tesTulisAdmin', 'Templates', $data);
+                    View::render('tesTulis', 'admin', $data);
                     break;
                 case 'uploadBerkas':
-                    View::render('uploadBerkasAdmin', 'Templates');
+                    View::render('uploadBerkas', 'admin');
                     break;
                 case 'wawancara':
                     $data = $this->getWawancaraAdminData();
-                    View::render('wawancaraAdmin', 'Templates', $data);
+                    View::render('wawancara', 'admin', $data);
                     break;
                 case 'profile':
                     $data = $this->getProfileData();
-                    View::render('profileAdmin', 'Templates', $data);
+                    View::render('profile', 'admin', $data);
                     break;
                 case 'lihatnilai':
                     $data = $this->getNilaiAdminData();
-                    View::render('DaftarNilaiTesTertulisAdmin', 'Templates', $data);
+                    View::render('daftarNilaiTesTertulis', 'admin', $data);
                     break;
-                case 'tesTulis':
                 case 'bankSoal':
                     $data = $this->getTesTulisAdminData();
-                    View::render('tesTulisAdmin', 'Templates', $data);
+                    View::render('tesTulis', 'admin', $data);
                     break;
                 case 'logout':
                     session_destroy();
@@ -103,41 +102,41 @@ class HomeController extends Controller
             switch ($page) {
                 case 'dashboard':
                     $data = $this->getDashboardData();
-                    View::render('dashboard', 'Templates', $data);
+                    View::render('dashboard', 'user', $data);
                     break;
                 case 'biodata':
                     $data = $this->getBiodataData();
-                    View::render('biodata', 'Templates', $data);
+                    View::render('biodata', 'user', $data);
                     break;
                 case 'pengumuman':
-                    View::render('pengumuman', 'Templates');
+                    View::render('pengumuman', 'user');
                     break;
                 case 'presentasi':
                     $data = $this->getPresentasiData();
-                    View::render('presentasi', 'Templates', $data);
+                    View::render('presentasi', 'user', $data);
                     break;
                 case 'tesTulis':
                     $data = $this->getTesTulisData();
-                    View::render('tesTulis', 'Templates', $data);
+                    View::render('tesTulis', 'user', $data);
                     break;
                 case 'uploadBerkas':
                     $data = $this->getUploadBerkasData();
-                    View::render('uploadBerkas', 'Templates', $data);
+                    View::render('uploadBerkas', 'user', $data);
                     break;
                 case 'wawancara':
                     $data = $this->getWawancaraData();
-                    View::render('wawancara', 'Templates', $data);
+                    View::render('wawancara', 'user', $data);
                     break;
                 case 'profile':
                     $data = $this->getProfileData();
-                    View::render('profile', 'Templates', $data);
+                    View::render('profile', 'user', $data);
                     break;
                 case 'editprofile':
                     $data = $this->getProfileData();
-                    View::render('editprofile', 'Templates', $data);
+                    View::render('editprofile', 'user', $data);
                     break;
                 case 'notifcation':
-                    View::render('notification', 'Templates');
+                    View::render('notification', 'user');
                     break;
             }
         }

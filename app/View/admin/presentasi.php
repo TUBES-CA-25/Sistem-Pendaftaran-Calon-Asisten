@@ -17,57 +17,11 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    /* Custom styles that can't be replaced by Bootstrap utilities */
 
-    body {
-        background: #f5f7fa;
-        min-height: 100vh;
-    }
-
-    main {
-        padding: 0;
-        margin: -20px -20px -20px -20px;
-        width: calc(100% + 40px);
-    }
-
-/* Page Header Styles moved to components/PageHeader.php */
-
-    /* Card Container */
-    .card-content {
-        background: #fff;
-        border-radius: 0;
-        padding: 24px;
-        margin: 0;
-        min-height: calc(100vh - 140px);
-    }
-
-    /* Tab Navigation */
-    .tab-nav {
-        display: flex;
-        gap: 0;
-        border-bottom: 2px solid #e2e8f0;
-        margin-bottom: 24px;
-    }
-
+    /* Tab Navigation Custom Styling */
     .tab-btn {
-        padding: 12px 24px;
-        background: none;
-        border: none;
-        font-size: 1rem;
-        font-weight: 500;
-        color: #64748b;
-        cursor: pointer;
         position: relative;
-        transition: all 0.2s ease;
-    }
-
-    .tab-btn:hover {
-        color: #2f66f6;
-    }
-
-    .tab-btn.active {
-        color: #2f66f6;
-        font-weight: 600;
     }
 
     .tab-btn.active::after {
@@ -77,162 +31,15 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
         left: 0;
         width: 100%;
         height: 3px;
-        background: #2f66f6;
+        background: var(--bs-primary);
         border-radius: 3px 3px 0 0;
     }
 
-    .tab-content {
-        display: none;
-    }
-
-    .tab-content.active {
-        display: block;
-    }
-
-    /* Table Controls */
-    .table-controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        gap: 16px;
-        flex-wrap: wrap;
-    }
-
-    .search-box {
-        position: relative;
-        width: 280px;
-    }
-
-    .search-box input {
-        width: 100%;
-        padding: 10px 16px 10px 40px;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        transition: all 0.2s ease;
-    }
-
-    .search-box input:focus {
-        outline: none;
-        border-color: #2f66f6;
-        box-shadow: 0 0 0 3px rgba(47, 102, 246, 0.1);
-    }
-
-    .search-box i {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #999;
-    }
-
-    /* Buttons */
-    .btn-add {
-        background: linear-gradient(135deg, #2f66f6 0%, #1e4fd8 100%);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .btn-add:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(47, 102, 246, 0.3);
-    }
-
-    .btn-bulk {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .btn-bulk:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-
-    /* Table Styling */
-    .data-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    }
-
-    .data-table thead th {
-        background: #2f66f6;
-        color: #fff;
-        font-weight: 600;
-        padding: 16px 20px;
-        text-align: left;
-        vertical-align: middle;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .data-table tbody tr {
-        transition: all 0.2s ease;
-    }
-
-    .data-table tbody tr:nth-child(odd) {
-        background-color: #f8fafc;
-    }
-
-    .data-table tbody tr:nth-child(even) {
-        background-color: #fff;
-    }
-
-    .data-table tbody tr:hover {
-        background-color: rgba(47, 102, 246, 0.08);
-    }
-
-    .data-table td {
-        padding: 14px 20px;
-        color: #475569;
-        font-size: 0.95rem;
-        border-bottom: 1px solid #e2e8f0;
-        text-align: left;
-        vertical-align: middle;
-    }
-
-    /* Action Buttons */
-    .action-btns {
-        display: flex;
-        gap: 8px;
-        flex-wrap: nowrap;
-        align-items: center;
-    }
-
+    /* Action Button Hover Effects */
     .btn-action {
         width: 36px;
         height: 36px;
         min-width: 36px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-        font-size: 1rem;
         padding: 0;
     }
 
@@ -242,121 +49,6 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
         line-height: 1;
         display: inline-block !important;
         font-style: normal;
-    }
-
-    .btn-view {
-        background: #e0f2fe;
-        color: #0284c7;
-    }
-
-    .btn-view:hover {
-        background: #0284c7;
-        color: white;
-    }
-
-    .btn-edit {
-        background: #fef3c7;
-        color: #d97706;
-    }
-
-    .btn-edit:hover {
-        background: #d97706;
-        color: white;
-    }
-
-    .btn-delete {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-    .btn-delete:hover {
-        background: #dc2626;
-        color: white;
-    }
-
-    .btn-accept {
-        background: #d1fae5;
-        color: #059669;
-    }
-
-    .btn-accept:hover {
-        background: #059669;
-        color: white;
-    }
-
-    /* Badge Styles */
-    /* Badge Styles - Deep Solid Compact */
-    .badge-status {
-        padding: 2px 8px; /* Compact padding */
-        border-radius: 6px; /* Rounded rectangle */
-        font-size: 0.8rem;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        min-width: 80px; /* Reduced min-width */
-        white-space: nowrap;
-        text-transform: capitalize;
-        letter-spacing: 0.3px;
-        transition: opacity 0.2s ease;
-        line-height: 1.5;
-    }
-
-    .badge-status:hover {
-        opacity: 0.9;
-    }
-
-    .badge-status i {
-        font-size: 0.85rem;
-        display: flex;
-        align-items: center;
-    }
-
-    .badge-pending {
-        background: #ffc107;
-        color: #000;
-    }
-
-    .badge-accepted {
-        background: #198754;
-        color: #fff;
-    }
-
-    .badge-scheduled {
-        background: #0d6efd;
-        color: #fff;
-    }
-
-    .badge-rejected {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-    .btn-schedule {
-        background: #dbeafe;
-        color: #1d4ed8;
-    }
-
-    .btn-schedule:hover {
-        background: #1d4ed8;
-        color: white;
-    }
-
-    .btn-reject {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-    .btn-reject:hover {
-        background: #dc2626;
-        color: white;
-    }
-
-    /* Ensure Bootstrap Icons Display */
-    .btn-action .bi {
-        display: inline-block;
-        vertical-align: middle;
     }
 
     /* Tooltip on hover */
@@ -380,118 +72,17 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
         margin-bottom: 4px;
     }
 
-    /* Modal Styles */
-    .modal-presentasi .modal-content {
-        border-radius: 16px;
-        border: none;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    /* Badge Status Custom */
+    .badge-status {
+        min-width: 80px;
     }
 
-    .modal-presentasi .modal-header {
-        background: linear-gradient(135deg, #2f66f6 0%, #1e4fd8 100%);
-        color: #fff;
-        border-radius: 16px 16px 0 0;
-        padding: 20px 24px;
-        border: none;
-    }
-
-    .modal-presentasi .modal-title {
-        font-weight: 600;
-        font-size: 1.2rem;
-    }
-
-    .modal-presentasi .btn-close {
-        filter: brightness(0) invert(1);
-    }
-
-    .modal-presentasi .modal-body {
-        padding: 24px;
-    }
-
-    .modal-presentasi .modal-footer {
-        padding: 16px 24px;
-        border-top: 1px solid #e2e8f0;
-    }
-
-    /* Form Styles */
-    .form-group {
-        margin-bottom: 16px;
-    }
-
-    .form-group label {
-        display: block;
-        font-weight: 500;
-        color: #334155;
-        margin-bottom: 8px;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 10px 14px;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: #2f66f6;
-        box-shadow: 0 0 0 3px rgba(47, 102, 246, 0.1);
-    }
-
-    .form-select {
-        width: 100%;
-        padding: 10px 14px;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        background: white;
-        cursor: pointer;
-    }
-
-    .form-select:focus {
-        outline: none;
-        border-color: #2f66f6;
-    }
-
-    /* Multi Select */
-    .multi-select-container {
-        max-height: 250px;
-        overflow-y: auto;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 8px;
-        background: #fff;
-    }
-
-    .multi-select-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 12px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s;
-        border: 1px solid transparent;
-        margin-bottom: 4px;
-    }
-
-    .multi-select-item:hover {
-        background: #f1f5f9;
-        border-color: #e2e8f0;
-    }
-
-    .multi-select-item.selected {
-        background: #dbeafe;
-        border-color: #2f66f6;
-    }
-
+    /* Multi Select Specific */
     .multi-select-item input[type="checkbox"] {
         width: 18px;
         height: 18px;
         cursor: pointer;
-        accent-color: #2f66f6;
+        accent-color: var(--bs-primary);
         flex-shrink: 0;
     }
 
@@ -499,138 +90,76 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
         cursor: pointer;
         margin: 0;
         flex: 1;
-        font-size: 0.9rem;
-        color: #334155;
     }
 
-    /* Alert Modal */
-    .alert-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1100;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .alert-modal.show {
-        display: flex;
-    }
-
-    .alert-content {
-        background: #fff;
-        border-radius: 16px;
-        padding: 32px;
-        text-align: center;
-        max-width: 400px;
-        animation: scaleIn 0.3s ease;
-    }
-
-    .alert-content img {
-        width: 80px;
-        height: 80px;
-        margin-bottom: 16px;
-    }
-
-    .alert-content p {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #1e293b;
-        margin: 0;
+    /* Table hover effect */
+    .table-hover tbody tr:hover {
+        background-color: rgba(61, 194, 236, 0.08);
     }
 
     /* Empty State */
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: #64748b;
-    }
-
     .empty-state i {
         font-size: 4rem;
         margin-bottom: 16px;
         opacity: 0.5;
     }
-
-    .empty-state h3 {
-        font-size: 1.3rem;
-        color: #475569;
-        margin-bottom: 8px;
-    }
-
-    @keyframes scaleIn {
-        from { opacity: 0; transform: scale(0.9); }
-        to { opacity: 1; transform: scale(1); }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .table-controls {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        .search-box {
-            width: 100%;
-        }
-        .tab-nav {
-            overflow-x: auto;
-        }
-    }
 </style>
 
-<main>
-    <!-- Page Header -->
+<main class="p-0 m-n3 w-100">
     <!-- Page Header -->
     <?php
         $title = 'Manajemen Presentasi';
         $subtitle = 'Kelola pengajuan judul dan jadwal presentasi mahasiswa';
         $icon = 'bi bi-easel';
-        require_once __DIR__ . '/components/PageHeader.php';
+        require_once __DIR__ . '/../templates/components/PageHeader.php';
     ?>
 
     <!-- Card Content -->
-    <div class="card-content">
+    <div class="bg-white p-4 min-vh-100">
         <!-- Tab Navigation -->
-        <div class="tab-nav">
-            <button class="tab-btn active" data-tab="pengajuan">
-                <i class="bi bi-file-text"></i> Pengajuan Judul
-            </button>
-            <button class="tab-btn" data-tab="jadwal">
-                <i class="bi bi-calendar-event"></i> Jadwal Presentasi
-            </button>
-        </div>
+        <ul class="nav nav-tabs border-bottom-2 mb-4" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active tab-btn fw-semibold px-4 py-3 border-0 rounded-3 me-2" id="pengajuan-tab" data-bs-toggle="tab" data-bs-target="#tab-pengajuan" data-tab="pengajuan" type="button" role="tab">
+                    <i class="bi bi-file-text me-2"></i>Pengajuan Judul
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link tab-btn fw-semibold px-4 py-3 border-0 rounded-3" id="jadwal-tab" data-bs-toggle="tab" data-bs-target="#tab-jadwal" data-tab="jadwal" type="button" role="tab">
+                    <i class="bi bi-calendar-event me-2"></i>Jadwal Presentasi
+                </button>
+            </li>
+        </ul>
 
-        <!-- Tab 1: Pengajuan Judul -->
-        <div class="tab-content active" id="tab-pengajuan">
-            <div class="table-controls">
-                <div class="search-box">
-                    <i class="bi bi-search"></i>
-                    <input type="text" id="searchPengajuan" placeholder="Cari nama atau stambuk...">
+        <!-- Tab Content Container -->
+        <div class="tab-content">
+            <!-- Tab 1: Pengajuan Judul -->
+            <div class="tab-pane fade show active" id="tab-pengajuan" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <div class="position-relative" style="width: 280px;">
+                        <i class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"></i>
+                        <input type="text" id="searchPengajuan" class="form-control rounded-3 ps-5" placeholder="Cari nama atau stambuk...">
+                    </div>
                 </div>
-            </div>
 
-            <?php if (empty($mahasiswaList)): ?>
-                <div class="empty-state">
-                    <i class="bi bi-inbox"></i>
-                    <h3>Belum Ada Pengajuan</h3>
-                    <p>Data pengajuan judul akan muncul setelah mahasiswa mengajukan judul presentasi</p>
-                </div>
-            <?php else: ?>
-                <table class="data-table" id="tablePengajuan">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Lengkap</th>
-                            <th>Stambuk</th>
-                            <th>Judul Presentasi</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
+                <?php if (empty($mahasiswaList)): ?>
+                    <div class="empty-state text-center py-5 text-muted">
+                        <i class="bi bi-inbox"></i>
+                        <h3 class="fs-4 text-secondary mb-2">Belum Ada Pengajuan</h3>
+                        <p>Data pengajuan judul akan muncul setelah mahasiswa mengajukan judul presentasi</p>
+                    </div>
+                <?php else: ?>
+                    <div class="table-responsive rounded-4 shadow-sm">
+                        <table class="table table-hover align-middle mb-0" id="tablePengajuan">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th class="fw-semibold text-uppercase small">No</th>
+                                    <th class="fw-semibold text-uppercase small">Nama Lengkap</th>
+                                    <th class="fw-semibold text-uppercase small">Stambuk</th>
+                                    <th class="fw-semibold text-uppercase small">Judul Presentasi</th>
+                                    <th class="fw-semibold text-uppercase small">Status</th>
+                                    <th class="fw-semibold text-uppercase small">Aksi</th>
+                                </tr>
+                            </thead>
                     <tbody>
                         <?php $i = 1; foreach ($mahasiswaList as $row): ?>
                             <?php
@@ -654,18 +183,18 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                                 }
                             ?>
                             <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
-                                <td><?= $i ?></td>
-                                <td><strong><?= htmlspecialchars($row['nama'] ?? '-') ?></strong></td>
-                                <td><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
-                                <td><?= htmlspecialchars($row['judul'] ?? '-') ?></td>
+                                <td class="text-muted"><?= $i ?></td>
+                                <td><strong class="text-dark"><?= htmlspecialchars($row['nama'] ?? '-') ?></strong></td>
+                                <td class="text-secondary"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
+                                <td class="text-secondary"><?= htmlspecialchars($row['judul'] ?? '-') ?></td>
                                 <td>
-                                    <span class="badge-status <?= $badgeClass ?>">
+                                    <span class="badge <?= $badgeClass ?> badge-status px-3 py-2 rounded-3">
                                         <?= $badgeText ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <div class="action-btns">
-                                        <button class="btn-action btn-view btn-detail-pengajuan"
+                                    <div class="d-flex gap-2 flex-nowrap align-items-center">
+                                        <button class="btn btn-sm btn-action bg-info-subtle text-info border-0 rounded-3 d-inline-flex align-items-center justify-content-center btn-detail-pengajuan"
                                                 data-nama="<?= htmlspecialchars($row['nama'] ?? '') ?>"
                                                 data-stambuk="<?= htmlspecialchars($row['stambuk'] ?? '') ?>"
                                                 data-judul="<?= htmlspecialchars($row['judul'] ?? '') ?>"
@@ -675,18 +204,18 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                                             <i class="bi bi-eye"></i>
                                         </button>
                                         <?php if (!$isAccepted && !$isRejected): ?>
-                                            <button class="btn-action btn-accept btn-accept-judul"
+                                            <button class="btn btn-sm btn-action bg-success-subtle text-success border-0 rounded-3 d-inline-flex align-items-center justify-content-center btn-accept-judul"
                                                     data-userid="<?= $row['id_mahasiswa'] ?>"
                                                     title="Terima Judul">
                                                 <i class="bi bi-check-lg"></i>
                                             </button>
-                                            <button class="btn-action btn-reject btn-reject-judul"
+                                            <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3 d-inline-flex align-items-center justify-content-center btn-reject-judul"
                                                     data-userid="<?= $row['id_mahasiswa'] ?>"
                                                     title="Tolak Judul">
                                                 <i class="bi bi-x-lg"></i>
                                             </button>
                                         <?php endif; ?>
-                                        <button class="btn-action btn-edit btn-send-message"
+                                        <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 d-inline-flex align-items-center justify-content-center btn-send-message"
                                                 data-id="<?= $row['id'] ?>"
                                                 data-userid="<?= $row['id_mahasiswa'] ?>"
                                                 title="Kirim Pesan/Revisi">
@@ -696,95 +225,112 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                                 </td>
                             </tr>
                         <?php $i++; endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
-        </div>
-
-        <!-- Tab 2: Jadwal Presentasi -->
-        <div class="tab-content" id="tab-jadwal">
-            <div class="table-controls">
-                <div class="search-box">
-                    <i class="bi bi-search"></i>
-                    <input type="text" id="searchJadwal" placeholder="Cari nama atau stambuk...">
-                </div>
-                <div style="display: flex; gap: 12px;">
-                    <button class="btn-add" id="btnAddJadwal">
-                        <i class="bi bi-plus-circle"></i> Tambah Jadwal
-                    </button>
-                    <button class="btn-bulk" id="btnBulkJadwal">
-                        <i class="bi bi-calendar-plus"></i> Bulk Schedule
-                    </button>
-                </div>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
             </div>
 
-            <table class="data-table" id="tableJadwal">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama Lengkap</th>
-                        <th>Stambuk</th>
-                        <th>Judul</th>
-                        <th>Ruangan</th>
-                        <th>Tanggal</th>
-                        <th>Waktu</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="jadwalTableBody">
-                    <!-- Data loaded via AJAX -->
-                </tbody>
-            </table>
+            <!-- Tab 2: Jadwal Presentasi -->
+            <div class="tab-pane fade" id="tab-jadwal" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <div class="position-relative" style="width: 280px;">
+                        <i class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"></i>
+                        <input type="text" id="searchJadwal" class="form-control rounded-3 ps-5" placeholder="Cari nama atau stambuk...">
+                    </div>
+                    <div class="d-flex gap-3">
+                        <button class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" id="btnAddJadwal">
+                            <i class="bi bi-plus-circle"></i> Tambah Jadwal
+                        </button>
+                        <button class="btn btn-success bg-gradient border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" id="btnBulkJadwal">
+                            <i class="bi bi-calendar-plus"></i> Bulk Schedule
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive rounded-4 shadow-sm">
+                    <table class="table table-hover align-middle mb-0" id="tableJadwal">
+                        <thead class="table-primary">
+                            <tr>
+                                <th class="fw-semibold text-uppercase small">No</th>
+                                <th class="fw-semibold text-uppercase small">Nama Lengkap</th>
+                                <th class="fw-semibold text-uppercase small">Stambuk</th>
+                                <th class="fw-semibold text-uppercase small">Judul</th>
+                                <th class="fw-semibold text-uppercase small">Ruangan</th>
+                                <th class="fw-semibold text-uppercase small">Tanggal</th>
+                                <th class="fw-semibold text-uppercase small">Waktu</th>
+                                <th class="fw-semibold text-uppercase small">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jadwalTableBody">
+                            <!-- Data loaded via AJAX -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </main>
 
 <!-- Modal Detail Pengajuan -->
-<div class="modal fade modal-presentasi" id="detailPengajuanModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-person-badge"></i> Detail Presentasi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="detailPengajuanModal" tabindex="-1" aria-labelledby="detailPengajuanModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header bg-gradient-header text-white border-0 rounded-top-4">
+                <h5 class="modal-title fw-semibold" id="detailPengajuanModalLabel">
+                    <i class="bi bi-person-badge me-2"></i>Detail Presentasi
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <p><strong>Nama:</strong> <span id="detailNama">-</span></p>
-                <p><strong>Stambuk:</strong> <span id="detailStambuk">-</span></p>
-                <p><strong>Judul:</strong> <span id="detailJudul">-</span></p>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <strong class="text-secondary">Nama:</strong>
+                    <p class="mb-0 text-dark" id="detailNama">-</p>
+                </div>
+                <div class="mb-3">
+                    <strong class="text-secondary">Stambuk:</strong>
+                    <p class="mb-0 text-dark" id="detailStambuk">-</p>
+                </div>
+                <div class="mb-3">
+                    <strong class="text-secondary">Judul:</strong>
+                    <p class="mb-0 text-dark" id="detailJudul">-</p>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="btnDownloadPpt">
+            <div class="modal-footer border-top border-light">
+                <button type="button" class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" id="btnDownloadPpt">
                     <i class="bi bi-file-earmark-ppt"></i> Unduh PPT
                 </button>
-                <button type="button" class="btn btn-primary" id="btnDownloadMakalah">
+                <button type="button" class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" id="btnDownloadMakalah">
                     <i class="bi bi-file-earmark-pdf"></i> Unduh Makalah
                 </button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal Send Message -->
-<div class="modal fade modal-presentasi" id="sendMessageModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-chat-dots"></i> Kirim Pesan Revisi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="sendMessageModal" tabindex="-1" aria-labelledby="sendMessageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header bg-gradient-header text-white border-0 rounded-top-4">
+                <h5 class="modal-title fw-semibold" id="sendMessageModalLabel">
+                    <i class="bi bi-chat-dots me-2"></i>Kirim Pesan Revisi
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <form id="formSendMessage">
-                    <div class="form-group">
-                        <label>Pesan untuk Mahasiswa:</label>
-                        <textarea class="form-control" id="messageContent" rows="4" required
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Pesan untuk Mahasiswa:</label>
+                        <textarea class="form-control rounded-3 border-2" id="messageContent" rows="4" required
                                   placeholder="Tuliskan pesan atau catatan revisi..."></textarea>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="formSendMessage" class="btn btn-primary">
+            <div class="modal-footer border-top border-light">
+                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" form="formSendMessage" class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2">
                     <i class="bi bi-send"></i> Kirim
                 </button>
             </div>
@@ -793,40 +339,42 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 </div>
 
 <!-- Modal Tambah Jadwal -->
-<div class="modal fade modal-presentasi" id="addJadwalModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-calendar-plus"></i> Tambah Jadwal Presentasi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="addJadwalModal" tabindex="-1" aria-labelledby="addJadwalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header bg-gradient-header text-white border-0 rounded-top-4">
+                <h5 class="modal-title fw-semibold" id="addJadwalModalLabel">
+                    <i class="bi bi-calendar-plus me-2"></i>Tambah Jadwal Presentasi
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <form id="formAddJadwal">
-                    <div class="form-group">
-                        <label>Pilih Mahasiswa:</label>
-                        <select class="form-select" id="selectMahasiswa" required>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Pilih Mahasiswa:</label>
+                        <select class="form-select rounded-3 border-2" id="selectMahasiswa" required>
                             <option value="">-- Pilih Mahasiswa --</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Pilih Ruangan:</label>
-                        <select class="form-select" id="selectRuangan" required>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Pilih Ruangan:</label>
+                        <select class="form-select rounded-3 border-2" id="selectRuangan" required>
                             <option value="">-- Pilih Ruangan --</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Tanggal:</label>
-                        <input type="date" class="form-control" id="inputTanggal" required>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Tanggal:</label>
+                        <input type="date" class="form-control rounded-3 border-2" id="inputTanggal" required>
                     </div>
-                    <div class="form-group">
-                        <label>Waktu:</label>
-                        <input type="time" class="form-control" id="inputWaktu" required>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Waktu:</label>
+                        <input type="time" class="form-control rounded-3 border-2" id="inputWaktu" required>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="formAddJadwal" class="btn btn-primary">
+            <div class="modal-footer border-top border-light">
+                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" form="formAddJadwal" class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2">
                     <i class="bi bi-check-lg"></i> Simpan
                 </button>
             </div>
@@ -835,50 +383,52 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 </div>
 
 <!-- Modal Bulk Schedule -->
-<div class="modal fade modal-presentasi" id="bulkJadwalModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-calendar-plus"></i> Bulk Schedule</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="bulkJadwalModal" tabindex="-1" aria-labelledby="bulkJadwalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header bg-gradient-header text-white border-0 rounded-top-4">
+                <h5 class="modal-title fw-semibold" id="bulkJadwalModalLabel">
+                    <i class="bi bi-calendar-plus me-2"></i>Bulk Schedule
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <form id="formBulkJadwal">
-                    <div class="row">
+                    <div class="row g-3">
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Pilih Mahasiswa (multiple):</label>
-                                <div class="multi-select-container" id="bulkMahasiswaList">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Pilih Mahasiswa (multiple):</label>
+                                <div class="border border-2 rounded-3 p-2 bg-light" style="max-height: 250px; overflow-y: auto;" id="bulkMahasiswaList">
                                     <!-- Loaded via AJAX -->
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Pilih Ruangan:</label>
-                                <select class="form-select" id="bulkRuangan" required>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Pilih Ruangan:</label>
+                                <select class="form-select rounded-3 border-2" id="bulkRuangan" required>
                                     <option value="">-- Pilih Ruangan --</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label>Tanggal:</label>
-                                <input type="date" class="form-control" id="bulkTanggal" required>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Tanggal:</label>
+                                <input type="date" class="form-control rounded-3 border-2" id="bulkTanggal" required>
                             </div>
-                            <div class="form-group">
-                                <label>Waktu Mulai:</label>
-                                <input type="time" class="form-control" id="bulkWaktuMulai" required>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Waktu Mulai:</label>
+                                <input type="time" class="form-control rounded-3 border-2" id="bulkWaktuMulai" required>
                             </div>
-                            <div class="form-group">
-                                <label>Durasi per Orang (menit):</label>
-                                <input type="number" class="form-control" id="bulkDurasi" value="15" min="5" max="60" required>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Durasi per Orang (menit):</label>
+                                <input type="number" class="form-control rounded-3 border-2" id="bulkDurasi" value="15" min="5" max="60" required>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="formBulkJadwal" class="btn btn-primary">
+            <div class="modal-footer border-top border-light">
+                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" form="formBulkJadwal" class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2">
                     <i class="bi bi-check-lg"></i> Simpan Semua
                 </button>
             </div>
@@ -887,39 +437,41 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 </div>
 
 <!-- Modal Edit Jadwal -->
-<div class="modal fade modal-presentasi" id="editJadwalModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-pencil"></i> Edit Jadwal Presentasi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="editJadwalModal" tabindex="-1" aria-labelledby="editJadwalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header bg-gradient-header text-white border-0 rounded-top-4">
+                <h5 class="modal-title fw-semibold" id="editJadwalModalLabel">
+                    <i class="bi bi-pencil me-2"></i>Edit Jadwal Presentasi
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <form id="formEditJadwal">
                     <input type="hidden" id="editJadwalId">
-                    <div class="form-group">
-                        <label>Mahasiswa:</label>
-                        <input type="text" class="form-control" id="editMahasiswaNama" readonly>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Mahasiswa:</label>
+                        <input type="text" class="form-control rounded-3 border-2 bg-light" id="editMahasiswaNama" readonly>
                     </div>
-                    <div class="form-group">
-                        <label>Pilih Ruangan:</label>
-                        <select class="form-select" id="editRuangan" required>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Pilih Ruangan:</label>
+                        <select class="form-select rounded-3 border-2" id="editRuangan" required>
                             <option value="">-- Pilih Ruangan --</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Tanggal:</label>
-                        <input type="date" class="form-control" id="editTanggal" required>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Tanggal:</label>
+                        <input type="date" class="form-control rounded-3 border-2" id="editTanggal" required>
                     </div>
-                    <div class="form-group">
-                        <label>Waktu:</label>
-                        <input type="time" class="form-control" id="editWaktu" required>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Waktu:</label>
+                        <input type="time" class="form-control rounded-3 border-2" id="editWaktu" required>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="formEditJadwal" class="btn btn-primary">
+            <div class="modal-footer border-top border-light">
+                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" form="formEditJadwal" class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2">
                     <i class="bi bi-check-lg"></i> Update
                 </button>
             </div>
@@ -967,14 +519,15 @@ $(document).ready(function() {
         });
     });
 
-    // Detail Pengajuan
+    // Detail Pengajuan - Bootstrap Modal API
     $('.btn-detail-pengajuan').on('click', function() {
         $('#detailNama').text($(this).data('nama'));
         $('#detailStambuk').text($(this).data('stambuk'));
         $('#detailJudul').text($(this).data('judul'));
         $('#btnDownloadPpt').data('url', $(this).data('ppt'));
         $('#btnDownloadMakalah').data('url', $(this).data('makalah'));
-        $('#detailPengajuanModal').modal('show');
+        const modal = new bootstrap.Modal(document.getElementById('detailPengajuanModal'));
+        modal.show();
     });
 
     $('#btnDownloadPpt').on('click', function() {
@@ -1011,11 +564,12 @@ $(document).ready(function() {
         }
     });
 
-    // Send Message
+    // Send Message - Bootstrap Modal API
     $('.btn-send-message').on('click', function() {
         currentMessageId = $(this).data('id');
         $('#messageContent').val('');
-        $('#sendMessageModal').modal('show');
+        const modal = new bootstrap.Modal(document.getElementById('sendMessageModal'));
+        modal.show();
     });
 
     $('#formSendMessage').on('submit', function(e) {
@@ -1024,7 +578,8 @@ $(document).ready(function() {
             id: currentMessageId,
             message: $('#messageContent').val()
         }, function(res) {
-            $('#sendMessageModal').modal('hide');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('sendMessageModal'));
+            if (modal) modal.hide();
             if (res.status === 'success') showAlert('Pesan berhasil dikirim!');
             else showAlert(res.message || 'Gagal mengirim pesan', false);
         }, 'json');
@@ -1102,8 +657,8 @@ $(document).ready(function() {
                                 <td>${formatDate(j.tanggal)}</td>
                                 <td>${j.waktu}</td>
                                 <td>
-                                    <div class="action-btns">
-                                        <button class="btn-action btn-edit btn-edit-jadwal"
+                                    <div class="d-flex gap-2 flex-nowrap align-items-center">
+                                        <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 d-inline-flex align-items-center justify-content-center btn-edit-jadwal"
                                                 data-id="${j.id}"
                                                 data-nama="${j.nama_lengkap}"
                                                 data-ruangan="${j.id_ruangan}"
@@ -1112,7 +667,7 @@ $(document).ready(function() {
                                                 title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <button class="btn-action btn-delete btn-delete-jadwal"
+                                        <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3 d-inline-flex align-items-center justify-content-center btn-delete-jadwal"
                                                 data-id="${j.id}"
                                                 title="Hapus">
                                             <i class="bi bi-trash"></i>
@@ -1132,13 +687,14 @@ $(document).ready(function() {
         return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
     }
 
-    // Add Jadwal Modal
+    // Add Jadwal Modal - Bootstrap Modal API
     $('#btnAddJadwal').on('click', function() {
         loadAvailableMahasiswa();
         loadRuangan();
         $('#formAddJadwal')[0].reset();
         $('#selectMahasiswa').prop('disabled', false);
-        $('#addJadwalModal').modal('show');
+        const modal = new bootstrap.Modal(document.getElementById('addJadwalModal'));
+        modal.show();
     });
 
     // Reset dropdown on modal close
@@ -1154,21 +710,24 @@ $(document).ready(function() {
             tanggal: $('#inputTanggal').val(),
             waktu: $('#inputWaktu').val()
         }, function(res) {
-            $('#addJadwalModal').modal('hide');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addJadwalModal'));
+            if (modal) modal.hide();
             if (res.status === 'success') {
                 showAlert('Jadwal berhasil disimpan!');
+                loadJadwalData();
             } else {
                 showAlert(res.message || 'Gagal menyimpan jadwal', false);
             }
         }, 'json');
     });
 
-    // Bulk Schedule Modal
+    // Bulk Schedule Modal - Bootstrap Modal API
     $('#btnBulkJadwal').on('click', function() {
         loadAvailableMahasiswa();
         loadRuangan();
         $('#formBulkJadwal')[0].reset();
-        $('#bulkJadwalModal').modal('show');
+        const modal = new bootstrap.Modal(document.getElementById('bulkJadwalModal'));
+        modal.show();
     });
 
     $('#formBulkJadwal').on('submit', function(e) {
@@ -1227,19 +786,22 @@ $(document).ready(function() {
                     else errorCount++;
                 });
 
-                $('#bulkJadwalModal').modal('hide');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('bulkJadwalModal'));
+                if (modal) modal.hide();
 
                 if (errorCount === 0) {
                     showAlert(`${successCount} jadwal berhasil disimpan!`);
+                    loadJadwalData();
                 } else if (successCount > 0) {
                     showAlert(`${successCount} jadwal berhasil, ${errorCount} gagal`, false);
+                    loadJadwalData();
                 } else {
                     showAlert('Gagal menyimpan jadwal', false);
                 }
             });
     });
 
-    // Edit Jadwal
+    // Edit Jadwal - Bootstrap Modal API
     $(document).on('click', '.btn-edit-jadwal', function() {
         loadRuangan();
         $('#editJadwalId').val($(this).data('id'));
@@ -1249,7 +811,8 @@ $(document).ready(function() {
         setTimeout(() => {
             $('#editRuangan').val($(this).data('ruangan'));
         }, 300);
-        $('#editJadwalModal').modal('show');
+        const modal = new bootstrap.Modal(document.getElementById('editJadwalModal'));
+        modal.show();
     });
 
     $('#formEditJadwal').on('submit', function(e) {
@@ -1260,16 +823,17 @@ $(document).ready(function() {
             tanggal: $('#editTanggal').val(),
             waktu: $('#editWaktu').val()
         }, function(res) {
-            $('#editJadwalModal').modal('hide');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editJadwalModal'));
+            if (modal) modal.hide();
             if (res.status === 'success') {
                 showAlert('Jadwal berhasil diupdate!');
+                loadJadwalData();
             } else {
                 showAlert(res.message || 'Gagal update jadwal', false);
             }
         }, 'json');
     });
 
-    // Delete Jadwal
     // Delete Jadwal
     $(document).on('click', '.btn-delete-jadwal', function() {
         const btn = $(this);
@@ -1278,17 +842,12 @@ $(document).ready(function() {
             $.post(APP_URL + '/deletejadwalpresentasi', { id: id }, function(res) {
                 if (res.status === 'success') {
                     showAlert('Jadwal berhasil dihapus!');
-                    btn.closest('tr').fadeOut(300, function() { $(this).remove(); });
+                    loadJadwalData();
                 } else {
                     showAlert(res.message || 'Gagal hapus jadwal', false);
                 }
             }, 'json');
         }, 'Yakin ingin menghapus jadwal ini?');
-    });
-
-    // Close alert on click
-    $('#alertModal').on('click', function() {
-        $(this).removeClass('show');
     });
 
     // Initial load

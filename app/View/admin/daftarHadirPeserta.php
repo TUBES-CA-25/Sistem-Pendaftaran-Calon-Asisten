@@ -12,7 +12,7 @@ $mahasiswaList = $mahasiswaList ?? [];
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
     body {
-        background: #f5f7fa;
+        background: var(--bs-body-bg);
         min-height: 100vh;
     }
 
@@ -52,15 +52,15 @@ $mahasiswaList = $mahasiswaList ?? [];
         width: 100%;
         padding: 10px 16px 10px 40px;
         border: 1px solid #e0e0e0;
-        border-radius: 8px;
+        border-radius: var(--bs-border-radius);
         font-size: 0.9rem;
         transition: all 0.2s ease;
     }
 
     .search-box input:focus {
         outline: none;
-        border-color: #2f66f6;
-        box-shadow: 0 0 0 3px rgba(47, 102, 246, 0.1);
+        border-color: var(--bs-primary-dark);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
     .search-box i {
@@ -73,11 +73,11 @@ $mahasiswaList = $mahasiswaList ?? [];
 
     /* Buttons */
     .btn-add {
-        background: linear-gradient(135deg, #2f66f6 0%, #1e4fd8 100%);
+        background: var(--gradient-header);
         color: white;
         border: none;
         padding: 10px 20px;
-        border-radius: 8px;
+        border-radius: var(--bs-border-radius);
         font-weight: 600;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -88,7 +88,7 @@ $mahasiswaList = $mahasiswaList ?? [];
 
     .btn-add:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(47, 102, 246, 0.3);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         color: white;
     }
 
@@ -97,13 +97,13 @@ $mahasiswaList = $mahasiswaList ?? [];
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
-        border-radius: 12px;
+        border-radius: var(--bs-border-radius-lg);
         overflow: hidden;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
 
     .data-table thead th {
-        background: #2f66f6;
+        background: var(--bs-primary-dark);
         color: #fff;
         font-weight: 600;
         padding: 16px 20px;
@@ -127,7 +127,7 @@ $mahasiswaList = $mahasiswaList ?? [];
     }
 
     .data-table tbody tr:hover {
-        background-color: rgba(47, 102, 246, 0.08);
+        background-color: rgba(37, 99, 235, 0.08);
     }
 
     .data-table td {
@@ -150,7 +150,7 @@ $mahasiswaList = $mahasiswaList ?? [];
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #2f66f6 0%, #1e4fd8 100%);
+        background: var(--gradient-header);
         color: white;
         display: flex;
         align-items: center;
@@ -192,7 +192,7 @@ $mahasiswaList = $mahasiswaList ?? [];
         height: 36px;
         min-width: 36px;
         border: none;
-        border-radius: 8px;
+        border-radius: var(--bs-border-radius);
         cursor: pointer;
         display: inline-flex;
         align-items: center;
@@ -234,7 +234,7 @@ $mahasiswaList = $mahasiswaList ?? [];
     .badge-status {
         display: inline-block;
         padding: 2px 8px; /* Extremely reduced top/bottom padding */
-        border-radius: 6px; /* Slightly tighter radius */
+        border-radius: var(--bs-border-radius-sm); /* Slightly tighter radius */
         font-size: 0.8rem;
         font-weight: 600;
         width: auto;
@@ -290,15 +290,15 @@ $mahasiswaList = $mahasiswaList ?? [];
 
     /* Modal Styles */
     .modal-kehadiran .modal-content {
-        border-radius: 16px;
+        border-radius: var(--bs-border-radius-2xl);
         border: none;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
     }
 
     .modal-kehadiran .modal-header {
-        background: linear-gradient(135deg, #2f66f6 0%, #1e4fd8 100%);
+        background: var(--gradient-header);
         color: #fff;
-        border-radius: 16px 16px 0 0;
+        border-radius: var(--bs-border-radius-2xl) var(--bs-border-radius-2xl) 0 0;
         padding: 20px 24px;
         border: none;
     }
@@ -341,22 +341,22 @@ $mahasiswaList = $mahasiswaList ?? [];
         width: 100%;
         padding: 10px 14px;
         border: 2px solid #e2e8f0;
-        border-radius: 8px;
+        border-radius: var(--bs-border-radius);
         font-size: 0.95rem;
         transition: all 0.2s ease;
     }
 
     .form-control-custom:focus {
         outline: none;
-        border-color: #2f66f6;
-        box-shadow: 0 0 0 3px rgba(47, 102, 246, 0.1);
+        border-color: var(--bs-primary-dark);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
     .form-select-custom {
         width: 100%;
         padding: 10px 14px;
         border: 2px solid #e2e8f0;
-        border-radius: 8px;
+        border-radius: var(--bs-border-radius);
         font-size: 0.95rem;
         background: white;
         cursor: pointer;
@@ -364,7 +364,7 @@ $mahasiswaList = $mahasiswaList ?? [];
 
     .form-select-custom:focus {
         outline: none;
-        border-color: #2f66f6;
+        border-color: var(--bs-primary-dark);
     }
 
     /* Multi Select */
@@ -372,7 +372,7 @@ $mahasiswaList = $mahasiswaList ?? [];
         max-height: 200px;
         overflow-y: auto;
         border: 2px solid #e2e8f0;
-        border-radius: 8px;
+        border-radius: var(--bs-border-radius);
         padding: 8px;
         background: #fff;
     }
@@ -382,7 +382,7 @@ $mahasiswaList = $mahasiswaList ?? [];
         align-items: center;
         gap: 10px;
         padding: 10px 12px;
-        border-radius: 6px;
+        border-radius: var(--bs-border-radius-sm);
         cursor: pointer;
         transition: all 0.2s;
         border: 1px solid transparent;
@@ -396,7 +396,7 @@ $mahasiswaList = $mahasiswaList ?? [];
 
     .multi-select-item.selected {
         background: #dbeafe;
-        border-color: #2f66f6;
+        border-color: var(--bs-primary-dark);
     }
 
     /* Avatar Large for Modal */
@@ -404,7 +404,7 @@ $mahasiswaList = $mahasiswaList ?? [];
         width: 60px;
         height: 60px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #2f66f6 0%, #1e4fd8 100%);
+        background: var(--gradient-header);
         color: white;
         display: flex;
         align-items: center;
@@ -456,7 +456,7 @@ $mahasiswaList = $mahasiswaList ?? [];
     .dataTables_wrapper .dataTables_paginate .paginate_button {
         padding: 8px 14px;
         margin: 0 2px;
-        border-radius: 6px;
+        border-radius: var(--bs-border-radius-sm);
         border: 1px solid #e2e8f0 !important;
         background: white !important;
         color: #64748b !important;
@@ -465,13 +465,13 @@ $mahasiswaList = $mahasiswaList ?? [];
 
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
         background: #f8fafc !important;
-        border-color: #2f66f6 !important;
-        color: #2f66f6 !important;
+        border-color: var(--bs-primary-dark) !important;
+        color: var(--bs-primary-dark) !important;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background: #2f66f6 !important;
-        border-color: #2f66f6 !important;
+        background: var(--bs-primary-dark) !important;
+        border-color: var(--bs-primary-dark) !important;
         color: white !important;
     }
 
@@ -534,7 +534,7 @@ $mahasiswaList = $mahasiswaList ?? [];
         $title = 'Monitoring Kehadiran';
         $subtitle = 'Pantau status kehadiran peserta seleksi secara real-time';
         $icon = 'bi bi-clipboard-check';
-        require_once __DIR__ . '/components/PageHeader.php';
+        require_once __DIR__ . '/../templates/components/PageHeader.php';
     ?>
 
     <!-- Card Content -->
@@ -1054,10 +1054,10 @@ $(document).ready(function() {
                     data: JSON.stringify({ id: id }),
                     success: function(res) {
                         if(res.status === 'success') {
-                            alert('Data kehadiran berhasil dihapus!');
+                            showAlert('Data kehadiran berhasil dihapus!', true);
                             location.reload();
                         } else {
-                            alert(res.message || 'Gagal menghapus data');
+                            showAlert(res.message || 'Gagal menghapus data', false);
                         }
                     }
                 });

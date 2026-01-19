@@ -160,8 +160,15 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'
     }
 </style>
 
-<main>
-    <h1 class="dashboard">Profile</h1>
+<!-- Page Header -->
+<?php
+    $title = 'Profile';
+    $subtitle = 'Informasi akun dan pengaturan';
+    $icon = 'bx bx-user-circle';
+    require_once __DIR__ . '/../templates/components/PageHeader.php';
+?>
+
+<main class="pb-4" style="margin-top: -30px; position: relative; z-index: 10;">
     <div class="profile-container"
         style="display: grid; grid-template-columns: 1fr; gap: 2rem; padding: 2.5rem; max-width: 900px; margin: 0 auto;">
         <div class="profile-card"
@@ -281,31 +288,21 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'
 <script>
 
     function showModal(message, gifUrl = null) {
-        const modal = document.getElementById("customModal");
+        const modalEl = document.getElementById("customModal");
+        if (!modalEl) return;
+
         const modalMessage = document.getElementById("modalMessage");
         const modalGif = document.getElementById("modalGif");
-        const closeModal = document.getElementById("closeModal");
 
-        modalMessage.textContent = message;
-
-        if (gifUrl) {
-            modalGif.src = gifUrl;
-            modalGif.style.display = "block";
-        } else {
-            modalGif.style.display = "none";
+        if (modalMessage) modalMessage.textContent = message;
+        if (modalGif) {
+            modalGif.style.display = gifUrl ? "block" : "none";
+            if (gifUrl) modalGif.src = gifUrl;
         }
 
-        modal.style.display = "flex";
-
-        closeModal.addEventListener("click", () => {
-            modal.style.display = "none";
-        });
-
-        window.addEventListener("click", (event) => {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        });
+        // Use Bootstrap Modal API
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
     }
     function validatePhoneNumber(phoneNumber) {
         const phoneRegex = /^(?:\+62|62|0)(8[1-9][0-9]{6,9})$/;
@@ -390,7 +387,7 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'
                 },
                 error: function (xhr, status, error) {
                     console.log('Error:', xhr.responseText);
-                    alert('Terjadi kesalahan: ' + error);
+                    showAlert('Terjadi kesalahan: ' + error, false);
                 }
             });
         });

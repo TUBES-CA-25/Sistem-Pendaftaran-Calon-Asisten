@@ -1,8 +1,30 @@
+<?php
+/**
+ * Admin Sidebar View
+ *
+ * Data yang diterima dari controller:
+ * @var string $role - Role user (Admin)
+ * @var string $userName - Username admin
+ * @var string $photo - Path foto admin
+ */
+$role = $role ?? 'Admin';
+$userName = $userName ?? 'Admin';
+$photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
+?>
 <div class="sidebar" id="sidebar">
     <div class="top">
         <div class="logo">
             <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="ICLABS Logo" class="icon">
             <span>ICLABS</span>
+        </div>
+    </div>
+    <div class="user">
+        <a href="#" data-page="profile">
+            <img src="<?= $photo ?>" alt="foto" class="user-img">
+        </a>
+        <div>
+            <p class="bold"><?= $userName ?></p>
+            <small class="text-muted"><?= $role ?></small>
         </div>
     </div>
     <ul>

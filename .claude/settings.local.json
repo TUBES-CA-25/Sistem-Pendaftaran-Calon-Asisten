@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(for file in user/*.php)",
+      "Bash(do sed -i \"s|require_once __DIR__ . ''/components/PageHeader.php''|require_once __DIR__ . ''/../templates/components/PageHeader.php''|g\" \"$file\")",
+      "Bash(done)",
+      "Bash(for file in admin/*.php)",
+      "Bash(grep:*)"
+    ]
+  }
+}

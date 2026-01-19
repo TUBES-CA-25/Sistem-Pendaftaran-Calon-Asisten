@@ -586,60 +586,55 @@ $colors = ['#2f66f6'];
     $(document).ready(() => {
 
         function showModal(message, gifUrl = null) {
-            const modal = document.getElementById('customModal');
-            if (!modal) {
-                return;
-            }
+            const modalEl = document.getElementById('customModal');
+            if (!modalEl) return;
 
             const modalMessage = document.getElementById('modalMessage');
             const modalGif = document.getElementById('modalGif');
-            const closeModal = document.getElementById('closeModal');
 
-            modalMessage.textContent = message;
-            modalGif.style.display = gifUrl ? 'block' : 'none';
-            if (gifUrl) modalGif.src = gifUrl;
+            if (modalMessage) modalMessage.textContent = message;
+            if (modalGif) {
+                modalGif.style.display = gifUrl ? 'block' : 'none';
+                if (gifUrl) modalGif.src = gifUrl;
+            }
 
-            modal.style.display = 'flex';
-
-            $(closeModal).off('click').on('click', function () {
-                modal.style.display = 'none';
-            });
-
-            $(window).off('click').on('click', function (event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
+            // Use Bootstrap Modal API
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
         }
 
         function showConfirm(message, onConfirm = null, onCancel = null) {
-            const modal = document.getElementById('confirmModal');
-            if (!modal) {
-                return;
-            }
+            const modalEl = document.getElementById('confirmModal');
+            if (!modalEl) return;
 
             const modalMessage = document.getElementById('confirmModalMessage');
             const confirmButton = document.getElementById('confirmModalConfirm');
             const cancelButton = document.getElementById('confirmModalCancel');
 
-            modalMessage.textContent = message;
-            modal.style.display = 'flex';
+            if (modalMessage) modalMessage.textContent = message;
 
-            $(confirmButton).off('click').on('click', function () {
-                if (onConfirm) onConfirm();
-                modal.style.display = 'none';
-            });
+            // Use Bootstrap Modal API
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
-            $(cancelButton).off('click').on('click', function () {
-                if (onCancel) onCancel();
-                modal.style.display = 'none';
-            });
+            if (confirmButton) {
+                const newConfirmBtn = confirmButton.cloneNode(true);
+                confirmButton.parentNode.replaceChild(newConfirmBtn, confirmButton);
+                newConfirmBtn.addEventListener('click', () => {
+                    if (onConfirm) onConfirm();
+                    modal.hide();
+                });
+            }
 
-            $(window).off('click').on('click', function (event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
+            if (cancelButton) {
+                const newCancelBtn = cancelButton.cloneNode(true);
+                cancelButton.parentNode.replaceChild(newCancelBtn, cancelButton);
+                newCancelBtn.addEventListener('click', () => {
+                    if (onCancel) onCancel();
+                    modal.hide();
+                });
+            }
+
+            modal.show();
         }
         const mahasiswaDropdown = document.getElementById("mahasiswa");
         const addMahasiswaButton = document.getElementById("addMahasiswaButton");
@@ -674,12 +669,12 @@ $colors = ['#2f66f6'];
             const mahasiswaText = selectedOption ? selectedOption.text : null;
 
             if (!mahasiswaId) {
-                alert("Pilih mahasiswa terlebih dahulu!");
+                showAlert("Pilih mahasiswa terlebih dahulu!", false);
                 return;
             }
 
             if (selectedMahasiswa.some((item) => item.id === mahasiswaId)) {
-                alert("Mahasiswa sudah dipilih!");
+                showAlert("Mahasiswa sudah dipilih!", false);
                 return;
             }
 
@@ -711,7 +706,7 @@ $colors = ['#2f66f6'];
             const wawancara = document.getElementById("wawancara").value;
             let id = selectedMahasiswa.map((item) => item.id);
             if (selectedMahasiswa.length === 0) {
-                alert("Pilih setidaknya satu mahasiswa!");
+                showAlert("Pilih setidaknya satu mahasiswa!", false);
                 return;
             }
             console.log("id " + id);
@@ -741,7 +736,7 @@ $colors = ['#2f66f6'];
                 },
                 error: function (xhr) {
                     console.error("Error:", xhr.responseText);
-                    alert("Gagal menyimpan jadwal. Silakan coba lagi.");
+                    showAlert("Gagal menyimpan jadwal. Silakan coba lagi.", false);
                 }
             });
             $('#addJadwalModal').modal('hide');
@@ -845,7 +840,7 @@ $colors = ['#2f66f6'];
                     },
                     error: function (xhr) {
                         console.error("Error:", xhr.responseText);
-                        alert("Gagal menghapus jadwal wawancara. Silakan coba lagi.");
+                        showAlert("Gagal menghapus jadwal wawancara. Silakan coba lagi.", false);
                     },
                 });
             }, "Apakah Anda yakin ingin menghapus jadwal wawancara ini?");
@@ -896,7 +891,7 @@ $colors = ['#2f66f6'];
                 },
                 error: function (xhr) {
                     console.error("Error:", xhr.responseText);
-                    alert("Terjadi kesalahan dalam mengambil data. Silakan coba lagi.");
+                    showAlert("Terjadi kesalahan dalam mengambil data. Silakan coba lagi.", false);
                 }
             });
         });
