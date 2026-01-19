@@ -257,4 +257,13 @@ document.addEventListener('DOMContentLoaded', function() {
         showAlert(data.message, data.isSuccess);
         sessionStorage.removeItem('pendingToast');
     }
+
+    // Handle image load errors - use default avatar icon
+    document.querySelectorAll('.user-img, .user img').forEach(img => {
+        img.addEventListener('error', function() {
+            // Create a default avatar using a data URI with user icon
+            this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMjUiIGZpbGw9InVybCgjZ3JhZGllbnQwKSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkaWVudDAiIHgxPSIwIiB5MT0iMCIgeDI9IjUwIiB5Mj0iNTAiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzNkYzJlYyIvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyNTYzZWIiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8cGF0aCBkPSJNMjUgMjNDMjcuNzYxNCAyMyAzMCAyMC43NjE0IDMwIDE4QzMwIDE1LjIzODYgMjcuNzYxNCAxMyAyNSAxM0MyMi4yMzg2IDEzIDIwIDE1LjIzODYgMjAgMThDMjAgMjAuNzYxNCAyMi4yMzg2IDIzIDI1IDIzWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTM3IDM3QzM3IDMxLjQ3NzIgMzEuNjI3NCAyNyAyNSAyN0MxOC4zNzI2IDI3IDEzIDMxLjQ3NzIgMTMgMzdIMTVDMTUgMzIuNTgyIDE5LjQ3NzIgMjkgMjUgMjlDMzAuNTIyOCAyOSAzNSAzMi41ODIgMzUgMzdIMzdaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=';
+            this.style.objectFit = 'cover';
+        });
+    });
 });

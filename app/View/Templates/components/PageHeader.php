@@ -12,7 +12,7 @@
 <style>
 /* ==================== UNIFIED HEADER STYLES ==================== */
 .page-header {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+    background: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);
     padding: 0 2rem 3.5rem 2rem;
     margin: 0;
     position: relative;

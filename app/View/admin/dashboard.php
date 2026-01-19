@@ -105,7 +105,7 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
 
     <!-- Jadwal Presentasi Mendatang -->
     <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden">
-        <div class="card-header border-0 d-flex align-items-center justify-content-between py-3 px-4" style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);">
+        <div class="card-header border-0 d-flex align-items-center justify-content-between py-3 px-4" style="background: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);">
             <div class="d-flex align-items-center gap-2">
                 <i class='bx bx-calendar-event text-white fs-4'></i>
                 <span class="fw-semibold text-white">Jadwal Presentasi Mendatang</span>
@@ -125,42 +125,21 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
                     <?php foreach ($jadwalPresentasiMendatang as $jadwal):
                         $tanggal = new DateTime($jadwal['tanggal']);
                         $day = $tanggal->format('d');
-                        $month = $tanggal->format('F');
-                        $year = $tanggal->format('Y');
+                        $monthShort = strtoupper($tanggal->format('M'));
                         $waktu = date('H:i', strtotime($jadwal['waktu']));
                     ?>
-                    <div class="jadwal-card p-3 rounded-3" style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: white;">
-                        <div class="d-flex align-items-start gap-3 mb-3">
-                            <div class="d-flex align-items-center gap-2">
-                                <i class='bx bx-calendar fs-4'></i>
-                                <div>
-                                    <div class="fw-semibold">Jadwal Presentasi Anda</div>
-                                </div>
+                    <div class="jadwal-modern-card d-flex align-items-center gap-3 p-3 rounded-3 border">
+                        <div class="jadwal-date-badge d-flex flex-column align-items-center justify-content-center rounded-3 text-white px-3 py-2" style="background: #2563eb; min-width: 70px;">
+                            <span class="fs-3 fw-bold lh-1"><?= $day ?></span>
+                            <span class="small"><?= $monthShort ?></span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="fw-bold mb-2"><?= htmlspecialchars($jadwal['nama_lengkap']) ?></h6>
+                            <div class="small text-muted mb-1"><?= htmlspecialchars($jadwal['judul']) ?></div>
+                            <div class="d-flex gap-3 small text-muted">
+                                <span><i class='bx bx-time'></i> <?= $waktu ?> WIB</span>
+                                <span><i class='bx bx-building'></i> <?= htmlspecialchars($jadwal['ruangan']) ?></span>
                             </div>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-2 mb-2 pb-2 border-bottom border-white" style="border-opacity: 0.3 !important;">
-                            <i class='bx bx-calendar-event'></i>
-                            <span>Tanggal</span>
-                            <span class="ms-auto fw-semibold"><?= $day ?> <?= $month ?> <?= $year ?></span>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-2 mb-2 pb-2 border-bottom border-white" style="border-opacity: 0.3 !important;">
-                            <i class='bx bx-time'></i>
-                            <span>Waktu</span>
-                            <span class="ms-auto fw-semibold"><?= $waktu ?> WIB</span>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-2 mb-2 pb-2 border-bottom border-white" style="border-opacity: 0.3 !important;">
-                            <i class='bx bx-building'></i>
-                            <span>Ruangan</span>
-                            <span class="ms-auto fw-semibold"><?= htmlspecialchars($jadwal['ruangan']) ?></span>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-2">
-                            <i class='bx bx-book-open'></i>
-                            <span>Judul</span>
-                            <span class="ms-auto fw-semibold text-end"><?= htmlspecialchars($jadwal['judul']) ?></span>
                         </div>
                     </div>
                     <?php endforeach; ?>
@@ -174,7 +153,7 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
         <!-- Calendar Card -->
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
-                <div class="card-header border-0 d-flex align-items-center justify-content-between py-3 px-4" style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);">
+                <div class="card-header border-0 d-flex align-items-center justify-content-between py-3 px-4" style="background: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);">
                     <div class="d-flex align-items-center gap-2">
                         <i class='bx bx-calendar text-white fs-4'></i>
                         <span class="fw-semibold text-white">Kalender Kegiatan Pendaftaran</span>
@@ -216,7 +195,7 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
         <!-- Status Kegiatan Card -->
         <div class="col-lg-4">
             <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
-                <div class="card-header border-0 py-3 px-4" style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);">
+                <div class="card-header border-0 py-3 px-4" style="background: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);">
                     <div class="d-flex align-items-center gap-2">
                         <i class='bx bx-list-check text-white fs-4'></i>
                         <span class="fw-semibold text-white">Status Kegiatan</span>
@@ -434,8 +413,8 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
 
 /* Navigation Buttons */
 .btn-outline-primary.rounded-circle:hover {
-    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-    border-color: #2563eb;
+    background: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);
+    border-color: #0099cc;
     color: white;
     transform: scale(1.1);
 }
@@ -446,46 +425,48 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
 
 /* Updated Primary Color for Gradient */
 #currentMonth {
-    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-/* Jadwal Presentasi Card */
-.jadwal-card {
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+/* Jadwal Presentasi Modern Card */
+.jadwal-modern-card {
+    background: #fff;
+    border: 1px solid #e5e7eb !important;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.jadwal-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200px;
-    height: 200px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
+.jadwal-modern-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    border-color: #2563eb !important;
 }
 
-.jadwal-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+.jadwal-date-badge {
+    transition: all 0.3s ease;
 }
 
-.jadwal-card i {
-    font-size: 1.25rem;
+.jadwal-modern-card:hover .jadwal-date-badge {
+    transform: scale(1.05);
 }
 </style>
 
 <script>
 (function() {
-    // Bootstrap Modal instances
-    const addActivityModal = new bootstrap.Modal(document.getElementById('addActivityModal'));
-    const editDeadlineModal = new bootstrap.Modal(document.getElementById('editDeadlineModal'));
+    // Bootstrap Modal instances - with null checks
+    const addActivityModalEl = document.getElementById('addActivityModal');
+    const editDeadlineModalEl = document.getElementById('editDeadlineModal');
+
+    if (!addActivityModalEl || !editDeadlineModalEl) {
+        console.warn('Modal elements not found');
+        return;
+    }
+
+    const addActivityModal = new bootstrap.Modal(addActivityModalEl);
+    const editDeadlineModal = new bootstrap.Modal(editDeadlineModalEl);
 
     // --- Add Activity Button ---
     const btnAddActivity = document.getElementById('btnAddActivity');
@@ -588,6 +569,17 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
             var baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
         }
 
+        // Check if stat elements exist before attempting to update
+        const statTotal = document.getElementById('stat-total');
+        const statLulus = document.getElementById('stat-lulus');
+        const statPending = document.getElementById('stat-pending');
+        const statGagal = document.getElementById('stat-gagal');
+
+        if (!statTotal || !statLulus || !statPending || !statGagal) {
+            console.warn('Stats elements not found');
+            return;
+        }
+
         fetch(`${baseUrl}/dashboard/stats`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
@@ -596,16 +588,19 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
         .then(res => {
             if (res.status === 'success') {
                 const data = res.data;
-                document.getElementById('stat-total').innerText = data.total;
-                document.getElementById('stat-lulus').innerText = data.lulus;
-                document.getElementById('stat-pending').innerText = data.pending;
-                document.getElementById('stat-gagal').innerText = data.gagal;
+                statTotal.innerText = data.total;
+                statLulus.innerText = data.lulus;
+                statPending.innerText = data.pending;
+                statGagal.innerText = data.gagal;
             }
         })
         .catch(console.error);
     }
 
-    setInterval(updateDashboardStats, 5000);
+    // Only start interval if stats elements exist
+    if (document.getElementById('stat-total')) {
+        setInterval(updateDashboardStats, 5000);
+    }
 
     // --- Calendar Logic ---
     const eventsData = <?= json_encode($kegiatanBulanIni) ?>;
