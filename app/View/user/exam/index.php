@@ -18,7 +18,7 @@ $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
     $title = 'Tes Tertulis';
     $subtitle = 'Ujian pilihan ganda online';
     $icon = 'bx bx-task';
-    require_once __DIR__ . '/../templates/components/PageHeader.php';
+    require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
 <main class="pb-4" style="margin-top: -30px; position: relative; z-index: 10;">

@@ -74,7 +74,7 @@ $nilai = $nilai ?? [];
         $title = 'Daftar Nilai Tes Tertulis';
         $subtitle = 'Kelola dan lihat nilai tes tertulis mahasiswa';
         $icon = 'bi bi-clipboard-data';
-        require_once __DIR__ . '/../templates/components/PageHeader.php';
+        require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
     <!-- Card Container -->

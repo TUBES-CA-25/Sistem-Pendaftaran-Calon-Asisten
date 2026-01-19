@@ -19,7 +19,7 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
     $title = 'Upload Berkas';
     $subtitle = 'Upload dokumen pendaftaran Anda';
     $icon = 'bx bx-file';
-    require_once __DIR__ . '/../templates/components/PageHeader.php';
+    require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
 <main class="pb-4" style="margin-top: -30px; position: relative; z-index: 10;">

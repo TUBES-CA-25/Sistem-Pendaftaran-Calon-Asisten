@@ -46,97 +46,157 @@ class HomeController extends Controller
             $page = $page['page'];
         }
 
+        // Detect if AJAX request
+        $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+                  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
+        if ($isAjax) {
+            // AJAX: Return only content
+            $this->renderPageContent($page);
+        } else {
+            // Direct URL: Return full layout with content
+            $this->renderFullPage($page);
+        }
+    }
+
+    /**
+     * Render full page with layout (for direct URL access)
+     */
+    private function renderFullPage($page)
+    {
+        $data = $this->getSidebarData();
+        $data['initialPage'] = $page;
+
+        // Get page-specific data
+        $pageData = $this->getPageData($page);
+        $data = array_merge($data, $pageData);
+
+        if ($this->getRole() == "Admin") {
+            View::render('mainAdmin', 'layouts', $data);
+        } else {
+            View::render('main', 'layouts', $data);
+        }
+    }
+
+    /**
+     * Get data for specific page
+     */
+    private function getPageData($page): array
+    {
+        if ($this->getRole() == "Admin") {
+            switch ($page) {
+                case 'dashboard': return $this->getDashboardAdminData();
+                case 'ruangan': return $this->getRuanganData();
+                case 'lihatPeserta': return $this->getDaftarPesertaData();
+                case 'daftarKehadiran': return $this->getDaftarHadirData();
+                case 'presentasi': return $this->getPresentasiAdminData();
+                case 'tesTulis':
+                case 'bankSoal': return $this->getTesTulisAdminData();
+                case 'wawancara': return $this->getWawancaraAdminData();
+                case 'profile': return $this->getProfileData();
+                case 'lihatnilai': return $this->getNilaiAdminData();
+                default: return [];
+            }
+        } else {
+            switch ($page) {
+                case 'dashboard': return $this->getDashboardData();
+                case 'biodata': return $this->getBiodataData();
+                case 'presentasi': return $this->getPresentasiData();
+                case 'tesTulis': return $this->getTesTulisData();
+                case 'uploadBerkas': return $this->getUploadBerkasData();
+                case 'wawancara': return $this->getWawancaraData();
+                case 'profile':
+                case 'editprofile': return $this->getProfileData();
+                default: return [];
+            }
+        }
+    }
+
+    /**
+     * Render only page content (for AJAX requests)
+     */
+    private function renderPageContent($page)
+    {
         if ($this->getRole() == "Admin") {
             switch ($page) {
                 case 'dashboard':
                     $data = $this->getDashboardAdminData();
-                    View::render('dashboard', 'admin', $data);
+                    View::render('index', 'admin/dashboard', $data);
                     break;
                 case 'ruangan':
                     $data = $this->getRuanganData();
-                    View::render('ruangan', 'admin', $data);
+                    View::render('index', 'admin/rooms', $data);
                     break;
                 case 'lihatPeserta':
                     $data = $this->getDaftarPesertaData();
-                    View::render('daftarPeserta', 'admin', $data);
+                    View::render('index', 'admin/participants', $data);
                     break;
                 case 'daftarKehadiran':
                     $data = $this->getDaftarHadirData();
-                    View::render('daftarHadirPeserta', 'admin', $data);
+                    View::render('index', 'admin/attendance', $data);
                     break;
                 case 'presentasi':
                     $data = $this->getPresentasiAdminData();
-                    View::render('presentasi', 'admin', $data);
+                    View::render('index', 'admin/presentation', $data);
                     break;
                 case 'tesTulis':
+                case 'bankSoal':
                     $data = $this->getTesTulisAdminData();
-                    View::render('tesTulis', 'admin', $data);
-                    break;
-                case 'uploadBerkas':
-                    View::render('uploadBerkas', 'admin');
+                    View::render('index', 'admin/exam', $data);
                     break;
                 case 'wawancara':
                     $data = $this->getWawancaraAdminData();
-                    View::render('wawancara', 'admin', $data);
+                    View::render('index', 'admin/interview', $data);
                     break;
                 case 'profile':
                     $data = $this->getProfileData();
-                    View::render('profile', 'admin', $data);
+                    View::render('index', 'admin/profile', $data);
                     break;
                 case 'lihatnilai':
                     $data = $this->getNilaiAdminData();
-                    View::render('daftarNilaiTesTertulis', 'admin', $data);
+                    View::render('index', 'admin/grades', $data);
                     break;
-                case 'bankSoal':
-                    $data = $this->getTesTulisAdminData();
-                    View::render('tesTulis', 'admin', $data);
-                    break;
-                case 'logout':
-                    session_destroy();
-                    $_SESSION = [];
-                    echo "<script>window.location.href = '';</script>";
-                    exit;
             }
 
         } else {
             switch ($page) {
                 case 'dashboard':
                     $data = $this->getDashboardData();
-                    View::render('dashboard', 'user', $data);
+                    View::render('index', 'user/dashboard', $data);
                     break;
                 case 'biodata':
                     $data = $this->getBiodataData();
-                    View::render('biodata', 'user', $data);
+                    View::render('index', 'user/biodata', $data);
                     break;
                 case 'pengumuman':
-                    View::render('pengumuman', 'user');
+                    View::render('index', 'user/announcement');
                     break;
                 case 'presentasi':
                     $data = $this->getPresentasiData();
-                    View::render('presentasi', 'user', $data);
+                    View::render('index', 'user/presentation', $data);
                     break;
                 case 'tesTulis':
                     $data = $this->getTesTulisData();
-                    View::render('tesTulis', 'user', $data);
+                    View::render('index', 'user/exam', $data);
                     break;
                 case 'uploadBerkas':
                     $data = $this->getUploadBerkasData();
-                    View::render('uploadBerkas', 'user', $data);
+                    View::render('index', 'user/documents', $data);
                     break;
                 case 'wawancara':
                     $data = $this->getWawancaraData();
-                    View::render('wawancara', 'user', $data);
+                    View::render('index', 'user/interview', $data);
                     break;
                 case 'profile':
                     $data = $this->getProfileData();
-                    View::render('profile', 'user', $data);
+                    View::render('index', 'user/profile', $data);
                     break;
                 case 'editprofile':
                     $data = $this->getProfileData();
-                    View::render('editprofile', 'user', $data);
+                    View::render('edit', 'user/profile', $data);
                     break;
-                case 'notifcation':
-                    View::render('notification', 'user');
+                case 'notification':
+                    View::render('index', 'user/notifications');
                     break;
             }
         }

@@ -492,7 +492,7 @@ $result = $result ?? [];
         $title = 'Daftar Peserta';
         $subtitle = 'Kelola data peserta pendaftaran calon asisten';
         $icon = 'bi bi-people-fill';
-        require_once __DIR__ . '/../templates/components/PageHeader.php';
+        require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
     <!-- Table Card -->

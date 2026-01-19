@@ -111,7 +111,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
         $title = 'Manajemen Presentasi';
         $subtitle = 'Kelola pengajuan judul dan jadwal presentasi mahasiswa';
         $icon = 'bi bi-easel';
-        require_once __DIR__ . '/../templates/components/PageHeader.php';
+        require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
     <!-- Card Content -->

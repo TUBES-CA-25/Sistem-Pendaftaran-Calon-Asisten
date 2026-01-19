@@ -1,107 +1,144 @@
+/**
+ * App.js - Main Application Script
+ * Handles navigation, URL routing with History API, and page loading
+ */
 
-
-$(document).ready(function () {
-  // Restore active page on load
-  const activePage = localStorage.getItem('activePage');
-  if (activePage && activePage !== 'dashboard') {
-      const link = $(`.sidebar a[data-page="${activePage}"]`);
-      if (link.length) {
-          // Temporarily disable animation or focus if needed
-          link.click();
-      }
-  }
-
-  // Menggunakan event delegation untuk menghindari multiple event handlers
-  $(document).on('click', '.sidebar a, .profile a, .dashboard a', function (e) {
-    if (this.id === "startTestButton" || this.id === "logout-btn") return; 
-    
-    // Check if it's a logout link
-    if ($(this).data('page') === 'logout') {
-        localStorage.removeItem('activePage');
-        return; // Sidebar script handles logout usually, or let it bubble
+// Global function untuk load halaman
+function loadPage(page, updateUrl = true) {
+    // Cleanup DataTables before replacing content
+    if ($.fn.DataTable) {
+        $('#content').find('table.dataTable').each(function() {
+            if ($.fn.DataTable.isDataTable(this)) {
+                $(this).DataTable().destroy();
+            }
+        });
     }
 
-    e.preventDefault();
-
-    var page = $(this).data('page');
-    if (!page) {
-      console.error("Data page tidak ditemukan pada elemen ini:", this);
-      return;
-    }
-
-    console.log("Memuat halaman:", page);
+    // Save to localStorage
     localStorage.setItem('activePage', page);
 
-    // Update active state
+    // Update sidebar active state
     $('.sidebar a').removeClass('active');
-    $(this).addClass('active');
+    $(`.sidebar a[data-page="${page}"]`).addClass('active');
 
-    // Destroy all DataTables instances before replacing content
-    if ($.fn.DataTable) {
-      $('#content').find('table.dataTable').each(function() {
-        if ($.fn.DataTable.isDataTable(this)) {
-          $(this).DataTable().destroy();
-        }
-      });
+    // Update URL browser dengan History API
+    if (updateUrl) {
+        history.pushState({ page: page }, '', `${APP_URL}/${page}`);
     }
 
+    // Load content via AJAX
     $.ajax({
-      url: `${APP_URL}/${page}`, 
-      method: 'GET',
-      success: function (response) {
-        $('#content').html(response);
-      },
-      error: function (xhr, status, error) {
-        console.error("Error loading page:", error);
-        // Fallback or Alert?
-      },
+        url: `${APP_URL}/${page}`,
+        method: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        success: function(response) {
+            $('#content').html(response);
+            // Scroll to top after page load
+            window.scrollTo(0, 0);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error loading page:", error);
+            $('#content').html('<div class="container-fluid p-4"><div class="alert alert-danger"><i class="bx bx-error-circle me-2"></i>Halaman tidak ditemukan atau terjadi kesalahan.</div></div>');
+        }
     });
-  });
+}
 
-  var lastScrollTop = 0;
-  var scrollTimeout;
+$(document).ready(function () {
+    // Get initial page from server or localStorage
+    var initialPage = window.INITIAL_PAGE || localStorage.getItem('activePage') || 'dashboard';
 
-  window.addEventListener("scroll", function () {
-    if (scrollTimeout) {
-      clearTimeout(scrollTimeout);
-    }
+    // Set initial history state (replaceState, not pushState)
+    history.replaceState({ page: initialPage }, '', `${APP_URL}/${initialPage}`);
 
-    scrollTimeout = setTimeout(function () {
-      var currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-      var scrollHeight = document.documentElement.scrollHeight;
-      var clientHeight = document.documentElement.clientHeight;
+    // Mark active sidebar item
+    $(`.sidebar a[data-page="${initialPage}"]`).addClass('active');
 
-      var footer = document.getElementById('footer');
-      if (!footer) {
-        return;
-      }
+    // Handle click pada sidebar dan link dengan data-page
+    $(document).on('click', '.sidebar a[data-page], .profile a[data-page], .dashboard a[data-page], [data-page]', function (e) {
+        if (this.id === "startTestButton" || this.id === "logout-btn") return;
 
-      if (currentScroll > lastScrollTop) {
-        footer.classList.remove('show-footer');
-      } else {
-        footer.classList.add('show-footer');
-      }
+        var page = $(this).data('page');
+        if (!page) {
+            console.error("Data page tidak ditemukan pada elemen ini:", this);
+            return;
+        }
 
-      if (currentScroll + clientHeight >= scrollHeight - 10) {
-        footer.classList.add('show-footer');
-      }
+        // Handle logout separately
+        if (page === 'logout') {
+            e.preventDefault();
+            localStorage.removeItem('activePage');
 
-      lastScrollTop = currentScroll;
-    }, 100); 
-  });
+            // Perform logout via AJAX
+            $.ajax({
+                url: `${APP_URL}/logout`,
+                method: 'POST',
+                success: function() {
+                    window.location.href = APP_URL;
+                },
+                error: function() {
+                    window.location.href = APP_URL;
+                }
+            });
+            return;
+        }
 
-  $('#startTestButton').on('click', function () {
-    const nomorMejaInput = $('#nomorMeja').val().trim();
+        e.preventDefault();
+        loadPage(page);
+    });
 
-    if (!nomorMejaInput || isNaN(nomorMejaInput) || parseInt(nomorMejaInput) <= 0) {
-      $('#errorMessage').text('Nomor meja tidak valid!');
-      return;
-    }
+    // Handle browser back/forward button
+    window.addEventListener('popstate', function(e) {
+        if (e.state && e.state.page) {
+            loadPage(e.state.page, false);
+        } else {
+            // Fallback to dashboard if no state
+            loadPage('dashboard', false);
+        }
+    });
 
-    $('#errorMessage').text(''); 
+    // Footer scroll behavior
+    var lastScrollTop = 0;
+    var scrollTimeout;
 
-    const targetURL = `${APP_URL}/soal?nomorMeja=${encodeURIComponent(nomorMejaInput)}`;
-    window.location.href = targetURL;
-  });
+    window.addEventListener("scroll", function () {
+        if (scrollTimeout) {
+            clearTimeout(scrollTimeout);
+        }
+
+        scrollTimeout = setTimeout(function () {
+            var currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            var scrollHeight = document.documentElement.scrollHeight;
+            var clientHeight = document.documentElement.clientHeight;
+
+            var footer = document.getElementById('footer');
+            if (!footer) return;
+
+            if (currentScroll > lastScrollTop) {
+                footer.classList.remove('show-footer');
+            } else {
+                footer.classList.add('show-footer');
+            }
+
+            if (currentScroll + clientHeight >= scrollHeight - 10) {
+                footer.classList.add('show-footer');
+            }
+
+            lastScrollTop = currentScroll;
+        }, 100);
+    });
+
+    // Start test button handler
+    $('#startTestButton').on('click', function () {
+        const nomorMejaInput = $('#nomorMeja').val().trim();
+
+        if (!nomorMejaInput || isNaN(nomorMejaInput) || parseInt(nomorMejaInput) <= 0) {
+            $('#errorMessage').text('Nomor meja tidak valid!');
+            return;
+        }
+
+        $('#errorMessage').text('');
+
+        const targetURL = `${APP_URL}/soal?nomorMeja=${encodeURIComponent(nomorMejaInput)}`;
+        window.location.href = targetURL;
+    });
 });
-

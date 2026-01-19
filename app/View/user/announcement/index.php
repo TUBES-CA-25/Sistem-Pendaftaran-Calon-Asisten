@@ -9,7 +9,7 @@
     $title = 'Pengumuman';
     $subtitle = 'Informasi penting terkait seleksi calon asisten';
     $icon = 'bx bx-notification';
-    require_once __DIR__ . '/../templates/components/PageHeader.php';
+    require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
 <div class="container-fluid px-4 py-4" style="margin-top: -30px; position: relative; z-index: 10;">

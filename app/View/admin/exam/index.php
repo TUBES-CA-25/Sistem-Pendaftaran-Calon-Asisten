@@ -783,7 +783,7 @@ main {
     </div>
     <?php
         $headerRightContent = ob_get_clean();
-        require_once __DIR__ . '/../templates/components/PageHeader.php';
+        require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
     <!-- Navigation Tabs -->

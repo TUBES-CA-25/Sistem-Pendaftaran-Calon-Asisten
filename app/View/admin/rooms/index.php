@@ -334,7 +334,7 @@ $ruanganList = $ruanganList ?? [];
             $title = 'Ruangan Praktikum';
             $subtitle = 'Kelola data ruangan, peserta, dan aktivitas praktikum';
             $icon = 'bi bi-buildings-fill';
-            require_once __DIR__ . '/../templates/components/PageHeader.php';
+            require_once __DIR__ . '/../../templates/components/PageHeader.php';
         ?>
 
         <div class="content-container">

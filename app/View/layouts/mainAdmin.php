@@ -69,7 +69,23 @@
     </div>
 
     <div class="main-content" id="content">
-        <?php require_once __DIR__ . "/../admin/dashboard.php" ?>
+        <?php
+        // Load initial page content based on URL or default to dashboard
+        $initialPage = $initialPage ?? 'dashboard';
+        $pageViewMap = [
+            'dashboard' => 'admin/dashboard/index.php',
+            'lihatPeserta' => 'admin/participants/index.php',
+            'daftarKehadiran' => 'admin/attendance/index.php',
+            'lihatnilai' => 'admin/grades/index.php',
+            'tesTulis' => 'admin/exam/index.php',
+            'bankSoal' => 'admin/exam/index.php',
+            'presentasi' => 'admin/presentation/index.php',
+            'wawancara' => 'admin/interview/index.php',
+            'ruangan' => 'admin/rooms/index.php',
+        ];
+        $viewFile = $pageViewMap[$initialPage] ?? 'admin/dashboard/index.php';
+        require_once __DIR__ . "/../" . $viewFile;
+        ?>
     </div>
 
 
@@ -104,7 +120,10 @@
             </div>
         </div>
     </div>
-    <script> const APP_URL = '<?php echo APP_URL; ?>' </script>
+    <script>
+        const APP_URL = '<?php echo APP_URL; ?>';
+        window.INITIAL_PAGE = '<?= $initialPage ?? 'dashboard' ?>';
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/common.js"></script>
     <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/app.js"></script>

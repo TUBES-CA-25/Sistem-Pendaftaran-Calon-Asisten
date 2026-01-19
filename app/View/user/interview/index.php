@@ -13,7 +13,7 @@ $wawancara = $wawancara ?? [];
     $title = 'Jadwal Kegiatan';
     $subtitle = 'Informasi jadwal wawancara dan kegiatan';
     $icon = 'bx bx-user-voice';
-    require_once __DIR__ . '/../templates/components/PageHeader.php';
+    require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
 <main class="pb-4" style="margin-top: -30px; position: relative; z-index: 10;">

@@ -534,7 +534,7 @@ $mahasiswaList = $mahasiswaList ?? [];
         $title = 'Monitoring Kehadiran';
         $subtitle = 'Pantau status kehadiran peserta seleksi secara real-time';
         $icon = 'bi bi-clipboard-check';
-        require_once __DIR__ . '/../templates/components/PageHeader.php';
+        require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
     <!-- Card Content -->

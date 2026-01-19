@@ -165,7 +165,7 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'
     $title = 'Profile';
     $subtitle = 'Informasi akun dan pengaturan';
     $icon = 'bx bx-user-circle';
-    require_once __DIR__ . '/../templates/components/PageHeader.php';
+    require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
 <main class="pb-4" style="margin-top: -30px; position: relative; z-index: 10;">

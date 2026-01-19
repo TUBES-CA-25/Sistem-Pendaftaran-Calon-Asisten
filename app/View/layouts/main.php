@@ -27,7 +27,24 @@
     <?php require_once __DIR__ . "/../templates/sidebar.php"?>
 
     <div class="main-content" id="content">
-        <?php require_once __DIR__ . "/../user/dashboard.php"?>
+        <?php
+        // Load initial page content based on URL or default to dashboard
+        $initialPage = $initialPage ?? 'dashboard';
+        $pageViewMap = [
+            'dashboard' => 'user/dashboard/index.php',
+            'biodata' => 'user/biodata/index.php',
+            'uploadBerkas' => 'user/documents/index.php',
+            'tesTulis' => 'user/exam/index.php',
+            'presentasi' => 'user/presentation/index.php',
+            'wawancara' => 'user/interview/index.php',
+            'profile' => 'user/profile/index.php',
+            'editprofile' => 'user/profile/edit.php',
+            'pengumuman' => 'user/announcement/index.php',
+            'notification' => 'user/notifications/index.php',
+        ];
+        $viewFile = $pageViewMap[$initialPage] ?? 'user/dashboard/index.php';
+        require_once __DIR__ . "/../" . $viewFile;
+        ?>
     </div>
 
     <!-- Bootstrap Modal -->
@@ -61,7 +78,10 @@
         </div>
     </div>
    
-    <script> const APP_URL = '<?php echo APP_URL; ?>' </script>
+    <script>
+        const APP_URL = '<?php echo APP_URL; ?>';
+        window.INITIAL_PAGE = '<?= $initialPage ?? 'dashboard' ?>';
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <!-- DataTables JS -->

@@ -88,5 +88,12 @@ if (isset($photo) && is_array($photo) && !empty($photo)) {
             </a>
             <span class="tooltip">Pengumuman</span>
         </li> -->
+        <li>
+            <a href="#" data-page="logout">
+                <i class="bx bx-log-out"></i>
+                <span class="nav-item">Logout</span>
+            </a>
+            <span class="tooltip">Logout</span>
+        </li>
     </ul>
 </div>

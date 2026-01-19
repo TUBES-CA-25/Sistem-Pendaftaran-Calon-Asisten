@@ -9,7 +9,7 @@
     $title = 'Edit Profil';
     $subtitle = 'Perbarui informasi akun Anda';
     $icon = 'bx bx-user-circle';
-    require_once __DIR__ . '/../templates/components/PageHeader.php';
+    require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
 <div class="container-fluid px-4 py-4" style="margin-top: -30px; position: relative; z-index: 10;">

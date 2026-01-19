@@ -34,7 +34,7 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
     $title = 'Hello Admin 👋';
     $subtitle = "Let's learn something new today!";
     $icon = 'bx bx-home-circle';
-    require_once __DIR__ . '/../templates/components/PageHeader.php';
+    require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
 <!-- Main Content Container -->

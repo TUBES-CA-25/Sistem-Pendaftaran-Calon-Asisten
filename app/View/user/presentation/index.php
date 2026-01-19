@@ -23,7 +23,7 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
     $title = 'Presentasi';
     $subtitle = 'Submit judul dan file presentasi';
     $icon = 'bx bx-chalkboard';
-    require_once __DIR__ . '/../templates/components/PageHeader.php';
+    require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
 <main class="pb-4" style="margin-top: -30px; position: relative; z-index: 10;">

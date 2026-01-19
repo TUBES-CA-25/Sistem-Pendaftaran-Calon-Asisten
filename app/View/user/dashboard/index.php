@@ -22,7 +22,7 @@ $jadwalPresentasiUser = $jadwalPresentasiUser ?? null;
     $title = 'Dashboard';
     $subtitle = 'Selamat datang di IC-ASSIST';
     $icon = 'bx bx-home-circle';
-    require_once __DIR__ . '/../templates/components/PageHeader.php';
+    require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
 <main class="pb-4" style="margin-top: -30px; position: relative; z-index: 10;">
