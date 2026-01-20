@@ -129,28 +129,90 @@ class DashboardAdmin extends Model
         // Special dynamic override for Wawancara if desired, 
         // BUT user asked for "bisa diatur sendiri". So we should probably respect the DB value if set.
         // However, if the user explicitly saves a date, it will be in the DB.
-        // If not, we can stick to defaults.
-        // Let's REMOVE the dynamic max(date) logic to fully respect the manual setting as requested.
-
+        // 2. Build Status Sequence
         $today = date('Y-m-d');
-        
-        // Helper to build item
-        $buildItem = function($label, $deadline) use ($today) {
-            $isDone = $deadline && $today > $deadline;
+
+        // Helper to determining status
+        $determineStatus = function($deadline, $prevStatusIsDone) use ($today) {
+            // If previous stage isn't done, this one is "Akan Datang" (unless it's the first one)
+            if (!$prevStatusIsDone) {
+                return [
+                    'status' => 'Akan Datang',
+                    'css_class' => 'bg-secondary bg-opacity-10 text-secondary' // Gray
+                ];
+            }
+
+            // If we are past the deadline, it's "Selesai"
+            if ($deadline && $today > $deadline) {
+                return [
+                    'status' => 'Selesai',
+                    'css_class' => 'bg-success bg-opacity-10 text-success' // Green
+                ];
+            }
+
+            // Otherwise, it's "Sedang Berlangsung"
             return [
-                'label' => $label,
-                'jumlah' => 0,
-                'deadline' => $deadline,
-                'status' => $isDone ? 'Selesai' : 'Sedang Berlangsung',
-                'css_class' => $isDone ? 'success' : 'warning'
+                'status' => 'Sedang Berlangsung',
+                'css_class' => 'bg-warning bg-opacity-10 text-warning' // Yellow
             ];
         };
 
-        $status = [
-            'kelengkapan_berkas' => $buildItem('Kelengkapan Berkas', $deadlines['kelengkapan_berkas']),
-            'tes_tertulis' => $buildItem('Tes Tertulis', $deadlines['tes_tertulis']),
-            'tahap_wawancara' => $buildItem('Tahap Wawancara', $deadlines['tahap_wawancara']),
-            'pengumuman' => $buildItem('Pengumuman', $deadlines['pengumuman']),
+        // Initialize status array
+        $status = [];
+
+        // 1. Kelengkapan Berkas (First stage, always starts if not done)
+        // Check if deadline passed
+        $berkasDeadline = $deadlines['kelengkapan_berkas'];
+        $berkasIsDone = ($berkasDeadline && $today > $berkasDeadline);
+        
+        $berkasState = $berkasIsDone 
+            ? ['status' => 'Selesai', 'css_class' => 'bg-success bg-opacity-10 text-success']
+            : ['status' => 'Sedang Berlangsung', 'css_class' => 'bg-warning bg-opacity-10 text-warning'];
+
+        $status['kelengkapan_berkas'] = [
+            'label' => 'Kelengkapan Berkas',
+            'jumlah' => 0,
+            'deadline' => $berkasDeadline,
+            'status' => $berkasState['status'],
+            'css_class' => $berkasState['css_class']
+        ];
+
+        // 2. Tes Tertulis (Depends on Kelengkapan Berkas)
+        $tesDeadline = $deadlines['tes_tertulis'];
+        $tesState = $determineStatus($tesDeadline, $berkasIsDone);
+        $tesIsDone = ($tesState['status'] === 'Selesai');
+
+        $status['tes_tertulis'] = [
+            'label' => 'Tes Tertulis',
+            'jumlah' => 0,
+            'deadline' => $tesDeadline,
+            'status' => $tesState['status'],
+            'css_class' => $tesState['css_class']
+        ];
+
+        // 3. Tahap Wawancara (Depends on Tes Tertulis)
+        $wawancaraDeadline = $deadlines['tahap_wawancara'];
+        $wawancaraState = $determineStatus($wawancaraDeadline, $tesIsDone);
+        $wawancaraIsDone = ($wawancaraState['status'] === 'Selesai');
+
+        $status['tahap_wawancara'] = [
+            'label' => 'Tahap Wawancara',
+            'jumlah' => 0,
+            'deadline' => $wawancaraDeadline,
+            'status' => $wawancaraState['status'],
+            'css_class' => $wawancaraState['css_class']
+        ];
+
+        // 4. Pengumuman (Depends on Tahap Wawancara)
+        $pengumumanDeadline = $deadlines['pengumuman'];
+        $pengumumanState = $determineStatus($pengumumanDeadline, $wawancaraIsDone);
+        
+        $status['pengumuman'] = [
+            'label' => 'Pengumuman',
+            'jumlah' => 0,
+            'deadline' => $pengumumanDeadline,
+            'status' => $pengumumanState['status'],
+            'css_class' => $pengumumanState['css_class']
         ];
 
         // 2. Fetch Counts

@@ -1,20 +1,12 @@
 <?php
 /**
  * Dashboard Admin View
- *
- * Data yang diterima dari controller:
- * @var int $totalPendaftar - Total pendaftar
- * @var int $pendaftarLulus - Jumlah lulus
- * @var int $pendaftarPending - Jumlah pending
- * @var int $pendaftarGagal - Jumlah gagal
- * @var array $statusKegiatan - Status kegiatan
- * @var array $kegiatanBulanIni - Kegiatan bulan ini
- * @var array $jadwalPresentasiMendatang - Jadwal presentasi mendatang
  */
 $currentYear = date('Y');
 $currentMonth = date('m');
 $currentMonthName = date('F Y');
 
+// Null Coalescing for optional variables
 $totalPendaftar = $totalPendaftar ?? 0;
 $pendaftarLulus = $pendaftarLulus ?? 0;
 $pendaftarPending = $pendaftarPending ?? 0;
@@ -23,166 +15,152 @@ $statusKegiatan = $statusKegiatan ?? [];
 $kegiatanBulanIni = $kegiatanBulanIni ?? [];
 $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
 
-$jumlahKelengkapanBerkas = $statusKegiatan['kelengkapan_berkas']['jumlah'] ?? 0;
-$jumlahTesTertulis = $statusKegiatan['tes_tertulis']['jumlah'] ?? 0;
-$jumlahTahapWawancara = $statusKegiatan['tahap_wawancara']['jumlah'] ?? 0;
-$jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
 ?>
 
 <!-- Page Header -->
 <?php
-    $title = 'Hello Admin 👋';
-    $subtitle = "Let's learn something new today!";
-    $icon = 'bx bx-home-circle';
+    $title = 'Dashboard';
+    $subtitle = 'Monitoring dan kelola kegiatan pendaftaran asisten';
+    $icon = 'bx bxs-dashboard';
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<!-- Main Content Container -->
-<div class="container-fluid px-4 py-4" style="margin-top: -30px; position: relative; z-index: 10;">
+<!-- Main Content -->
+<div class="container-fluid px-4" style="margin-top: -2.5rem; position: relative; z-index: 10;">
 
     <!-- Stats Cards Grid -->
     <div class="row g-4 mb-4">
-        <!-- Total Pendaftar -->
+        <?php 
+        $stats = [
+            [
+                'label' => 'Total Pendaftar', 
+                'value' => $totalPendaftar, 
+                'icon' => 'bx bxs-group', 
+                'icon_bg' => '#2563EB' // Bright Blue
+            ],
+            [
+                'label' => 'Pendaftar Lulus', 
+                'value' => $pendaftarLulus, 
+                'icon' => 'bx bxs-check-shield', 
+                'icon_bg' => '#16A34A' // Green
+            ],
+            [
+                'label' => 'Pendaftar Pending', 
+                'value' => $pendaftarPending, 
+                'icon' => 'bx bxs-time-five', 
+                'icon_bg' => '#FACC15' // Yellow
+            ],
+            [
+                'label' => 'Pendaftar Gagal', 
+                'value' => $pendaftarGagal, 
+                'icon' => 'bx bxs-x-circle', 
+                'icon_bg' => '#DC2626' // Red
+            ],
+        ];
+        
+        foreach($stats as $stat): 
+        ?>
         <div class="col-xl-3 col-md-6">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body d-flex align-items-center gap-3 p-4">
-                    <div class="d-flex align-items-center justify-content-center rounded-3 text-white" style="width: 60px; height: 60px; background: #2563eb; font-size: 2rem;">
-                        <i class='bx bxs-group'></i>
+            <div class="card border-0 shadow-sm h-100 rounded-4 bg-white">
+                <div class="card-body p-3 d-flex align-items-center gap-3">
+                    <div class="rounded-4 d-flex align-items-center justify-content-center text-white flex-shrink-0" 
+                         style="width: 60px; height: 60px; font-size: 2rem; background-color: <?= $stat['icon_bg'] ?>;">
+                        <i class='<?= $stat['icon'] ?>'></i>
                     </div>
-                    <div>
-                        <span class="text-muted small fw-medium">Total Pendaftar</span>
-                        <div class="fs-3 fw-bold text-dark" id="stat-total"><?= $totalPendaftar ?></div>
+                    <div class="flex-grow-1 text-center">
+                        <p class="text-muted mb-0 small"><?= $stat['label'] ?></p>
+                        <h2 class="mb-0 fw-bold fs-3 text-dark"><?= $stat['value'] ?></h2>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Lulus -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body d-flex align-items-center gap-3 p-4">
-                    <div class="d-flex align-items-center justify-content-center rounded-3 text-white" style="width: 60px; height: 60px; background: #16a34a; font-size: 2rem;">
-                        <i class='bx bxs-check-shield'></i>
-                    </div>
-                    <div>
-                        <span class="text-muted small fw-medium">Pendaftar Lulus</span>
-                        <div class="fs-3 fw-bold text-dark" id="stat-lulus"><?= $pendaftarLulus ?></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pending -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body d-flex align-items-center gap-3 p-4">
-                    <div class="d-flex align-items-center justify-content-center rounded-3 text-white" style="width: 60px; height: 60px; background: #ca8a04; font-size: 2rem;">
-                        <i class='bx bxs-time-five'></i>
-                    </div>
-                    <div>
-                        <span class="text-muted small fw-medium">Pendaftar Pending</span>
-                        <div class="fs-3 fw-bold text-dark" id="stat-pending"><?= $pendaftarPending ?></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Gagal -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body d-flex align-items-center gap-3 p-4">
-                    <div class="d-flex align-items-center justify-content-center rounded-3 text-white" style="width: 60px; height: 60px; background: #dc2626; font-size: 2rem;">
-                        <i class='bx bxs-x-circle'></i>
-                    </div>
-                    <div>
-                        <span class="text-muted small fw-medium">Pendaftar Gagal</span>
-                        <div class="fs-3 fw-bold text-dark" id="stat-gagal"><?= $pendaftarGagal ?></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php endforeach; ?>
     </div>
 
-    <!-- Jadwal Presentasi Mendatang -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden">
-        <div class="card-header border-0 d-flex align-items-center justify-content-between py-3 px-4" style="background: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);">
-            <div class="d-flex align-items-center gap-2">
-                <i class='bx bx-calendar-event text-white fs-4'></i>
-                <span class="fw-semibold text-white">Jadwal Presentasi Mendatang</span>
-            </div>
-            <a href="#" data-page="presentasi" class="text-white text-decoration-none small fw-medium" style="opacity: 0.9;">
-                Lihat Semua <i class='bx bx-chevron-right'></i>
-            </a>
+    <!-- Jadwal Presentasi -->
+    <div class="card border shadow-sm rounded-4 mb-4 bg-white">
+        <div class="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 fw-bold text-dark"><i class='bx bx-calendar-event me-2'></i>Jadwal Presentasi Mendatang</h6>
+            <a href="#" data-page="presentasi" class="text-decoration-none small fw-semibold" style="color: #2563EB;">Lihat Semua <i class='bx bx-chevron-right'></i></a>
         </div>
-        <div class="card-body p-4">
+        <div class="card-body p-4 pt-0">
             <?php if (empty($jadwalPresentasiMendatang)): ?>
-                <div class="text-center text-muted py-4">
-                    <i class='bx bx-calendar-x fs-1 d-block mb-2'></i>
-                    <p class="mb-0">Belum ada jadwal presentasi mendatang</p>
+                <div class="text-center py-5 text-muted">
+                    <i class='bx bx-calendar-x fs-1 opacity-25'></i>
+                    <p class="mb-0 mt-2 small">Belum ada jadwal</p>
                 </div>
             <?php else: ?>
-                <div class="d-flex flex-column gap-3">
-                    <?php foreach ($jadwalPresentasiMendatang as $jadwal):
-                        $tanggal = new DateTime($jadwal['tanggal']);
-                        $day = $tanggal->format('d');
-                        $monthShort = strtoupper($tanggal->format('M'));
-                        $waktu = date('H:i', strtotime($jadwal['waktu']));
-                    ?>
-                    <div class="jadwal-modern-card d-flex align-items-center gap-3 p-3 rounded-3 border">
-                        <div class="jadwal-date-badge d-flex flex-column align-items-center justify-content-center rounded-3 text-white px-3 py-2" style="background: #2563eb; min-width: 70px;">
-                            <span class="fs-3 fw-bold lh-1"><?= $day ?></span>
-                            <span class="small"><?= $monthShort ?></span>
+                <div class="list-group list-group-flush gap-2">
+                <?php foreach ($jadwalPresentasiMendatang as $jadwal): 
+                    $tgl = new DateTime($jadwal['tanggal']);
+                ?>
+                    <div class="list-group-item p-2 border-0 rounded-3 d-flex align-items-center gap-3 bg-light bg-opacity-50 position-relative overflow-hidden" style="background: #F8FAFC;">
+                        <!-- Blue Accent Line -->
+                        <div class="position-absolute bg-primary rounded-pill mb-auto mt-auto" style="width: 3px; height: 60%; left: 0; top: 0; bottom: 0;"></div>
+                        
+                        <!-- Date Box -->
+                        <div class="text-center rounded-3 shadow-sm p-2 flex-shrink-0 text-white" style="min-width: 60px; background-color: #2563EB;">
+                            <div class="fw-bold fs-5 lh-1"><?= $tgl->format('d') ?></div>
+                            <small class="text-uppercase fw-bold text-white-50" style="font-size: 0.6rem; letter-spacing: 1px;"><?= $tgl->format('M') ?></small>
                         </div>
+
+                        <!-- Content -->
                         <div class="flex-grow-1">
-                            <h6 class="fw-bold mb-2"><?= htmlspecialchars($jadwal['nama_lengkap']) ?></h6>
-                            <div class="small text-muted mb-1"><?= htmlspecialchars($jadwal['judul']) ?></div>
-                            <div class="d-flex gap-3 small text-muted">
-                                <span><i class='bx bx-time'></i> <?= $waktu ?> WIB</span>
-                                <span><i class='bx bx-building'></i> <?= htmlspecialchars($jadwal['ruangan']) ?></span>
+                            <h6 class="mb-0 fw-bold text-dark small"><?= htmlspecialchars($jadwal['nama_lengkap']) ?></h6>
+                            <p class="mb-1 text-muted" style="font-size: 0.8rem;">123 <span class="mx-1">•</span> <?= htmlspecialchars($jadwal['judul']) ?></p>
+                            <div class="d-flex align-items-center gap-3 text-muted" style="font-size: 0.75rem;">
+                                <span class="d-flex align-items-center gap-1">
+                                    <i class='bx bx-time'></i> <?= date('H:i', strtotime($jadwal['waktu'])) ?> WIB
+                                </span>
+                                <span class="d-flex align-items-center gap-1">
+                                    <i class='bx bx-building'></i> <?= htmlspecialchars($jadwal['ruangan']) ?>
+                                </span>
                             </div>
                         </div>
                     </div>
-                    <?php endforeach; ?>
+                <?php endforeach; ?>
                 </div>
             <?php endif; ?>
         </div>
     </div>
 
-    <!-- Calendar & Status Row -->
     <div class="row g-4">
-        <!-- Calendar Card -->
+        <!-- Calendar -->
         <div class="col-lg-8">
-            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
-                <div class="card-header border-0 d-flex align-items-center justify-content-between py-3 px-4" style="background: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class='bx bx-calendar text-white fs-4'></i>
-                        <span class="fw-semibold text-white">Kalender Kegiatan Pendaftaran</span>
-                    </div>
-                    <button class="btn btn-light rounded-3" type="button" id="btnAddActivity">
-                        <i class='bx bx-plus'></i> Tambah Kegiatan
-                    </button>
-                </div>
+            <!-- Header with Button -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold text-dark mb-0"><i class='bx bx-calendar me-2'></i>Kalender Kegiatan Pendaftaran</h6>
+                <button class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm" type="button" id="btnAddActivity" style="background-color: #2563EB; border-color: #2563EB;">
+                    <i class='bx bx-plus'></i> Tambah Kegiatan
+                </button>
+            </div>
+
+            <!-- Calendar Card -->
+            <div class="card border shadow-sm rounded-4 bg-white">
                 <div class="card-body p-4">
-                    <div class="d-flex align-items-center justify-content-center gap-3 mb-4">
-                        <button id="prevMonth" type="button" class="btn btn-outline-primary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                    <!-- Navigation -->
+                    <div class="d-flex align-items-center justify-content-center mb-4 gap-4">
+                        <button id="prevMonth" class="btn btn-sm btn-light rounded-circle p-2 border-0">
                             <i class='bx bx-chevron-left fs-5'></i>
                         </button>
-                        <span class="fw-bold fs-5 text-primary" id="currentMonth" style="min-width: 200px; text-align: center;"><?= $currentMonthName ?></span>
-                        <button id="nextMonth" type="button" class="btn btn-outline-primary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <h6 class="mb-0 fw-bold text-dark" id="currentMonth"><?= $currentMonthName ?></h6>
+                        <button id="nextMonth" class="btn btn-sm btn-light rounded-circle p-2 border-0">
                             <i class='bx bx-chevron-right fs-5'></i>
                         </button>
                     </div>
+
+                    <!-- Table -->
                     <div class="table-responsive">
-                        <table class="table table-bordered text-center mb-0 calendar-table" id="calendarTable">
+                        <table class="table text-center align-middle mb-0" id="calendarTable" style="table-layout: fixed; border-collapse: separate; border-spacing: 0;">
                             <thead>
                                 <tr>
-                                    <th class="py-3 bg-light fw-semibold" style="color: #64748b;">Sen</th>
-                                    <th class="py-3 bg-light fw-semibold" style="color: #64748b;">Sel</th>
-                                    <th class="py-3 bg-light fw-semibold" style="color: #64748b;">Rab</th>
-                                    <th class="py-3 bg-light fw-semibold" style="color: #64748b;">Kam</th>
-                                    <th class="py-3 bg-light fw-semibold" style="color: #64748b;">Jum</th>
-                                    <th class="py-3 bg-light fw-semibold" style="color: #64748b;">Sab</th>
-                                    <th class="py-3 bg-light fw-semibold" style="color: #64748b;">Min</th>
+                                    <th class="border-0 text-muted small fw-normal text-uppercase py-3">MO</th>
+                                    <th class="border-0 text-muted small fw-normal text-uppercase py-3">TU</th>
+                                    <th class="border-0 text-muted small fw-normal text-uppercase py-3">WE</th>
+                                    <th class="border-0 text-muted small fw-normal text-uppercase py-3">TH</th>
+                                    <th class="border-0 text-muted small fw-normal text-uppercase py-3">FR</th>
+                                    <th class="border-0 text-muted small fw-normal text-uppercase py-3">SA</th>
+                                    <th class="border-0 text-muted small fw-normal text-uppercase py-3">SU</th>
                                 </tr>
                             </thead>
                             <tbody id="calendarBody"></tbody>
@@ -192,79 +170,91 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
             </div>
         </div>
 
-        <!-- Status Kegiatan Card -->
+
+        <!-- Status Activities -->
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
-                <div class="card-header border-0 py-3 px-4" style="background: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class='bx bx-list-check text-white fs-4'></i>
-                        <span class="fw-semibold text-white">Status Kegiatan</span>
-                    </div>
+            <div class="card border shadow-sm rounded-4 bg-white h-100">
+                <div class="card-header bg-white border-bottom-0 py-3 px-4">
+                    <h6 class="fw-bold text-dark mb-0"><i class='bx bx-list-check me-2'></i>Status Kegiatan</h6>
                 </div>
-                <div class="card-body p-4">
-                    <div class="d-flex flex-column gap-3">
-                        <?php foreach ($statusKegiatan as $key => $status): ?>
-                        <div class="status-kegiatan-card p-3 rounded-3 border" style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border-left: 4px solid #2563eb !important;">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h6 class="fw-bold mb-0 text-dark"><?= htmlspecialchars($status['label']) ?></h6>
-                                <span class="badge rounded-pill px-3 py-2 <?= $status['css_class'] ?>" style="font-size: 0.75rem;">
-                                    <?= htmlspecialchars($status['status']) ?>
-                                </span>
-                            </div>
-                            <div class="d-flex align-items-center gap-2 mb-2">
-                                <i class='bx bx-user-check text-primary fs-5'></i>
-                                <span class="text-muted small">Jumlah Diterima: <strong class="text-dark"><?= $status['jumlah'] ?></strong></span>
-                            </div>
-                            <?php if(!empty($status['deadline'])): ?>
-                                <div class="d-flex align-items-center justify-content-between gap-2 mt-2 pt-2 border-top">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class='bx bx-calendar-event text-danger'></i>
-                                        <small class="text-muted">
-                                            Deadline: <strong class="text-dark" id="deadline-display-<?= $key ?>"><?= date('d M Y', strtotime($status['deadline'])) ?></strong>
-                                        </small>
-                                    </div>
-                                    <button class="btn btn-sm btn-outline-primary rounded-3 edit-deadline-btn"
-                                            data-jenis="<?= $key ?>"
-                                            data-label="<?= htmlspecialchars($status['label']) ?>"
-                                            data-date="<?= $status['deadline'] ?>">
-                                        <i class='bx bx-edit-alt'></i>
-                                    </button>
+                <div class="card-body p-4 pt-0 d-flex flex-column gap-3">
+                <?php
+                // $statusMeta is still needed for the calendar legend, but not directly for the status cards anymore.
+                // The instruction provided a partial $statusMeta, I will keep the original one.
+                $statusMeta = [
+                    'kelengkapan_berkas' => ['no' => 1, 'color' => 'danger'],
+                    'tes_tertulis' => ['no' => 2, 'color' => 'warning'],
+                    'tahap_wawancara' => ['no' => 3, 'color' => 'success'],
+                    'pengumuman' => ['no' => 4, 'color' => 'info']
+                ];
+                
+                foreach ($statusKegiatan as $key => $status):
+                    // Default / Akan Datang
+                    $badgeClass = 'bg-light text-secondary border'; 
+                    
+                    if ($status['status'] == 'Selesai') {
+                        $badgeClass = 'bg-success text-white border-0';
+                    }
+                    if ($status['status'] == 'Sedang Berlangsung') {
+                         $badgeClass = 'bg-warning-subtle text-warning border border-warning';
+                    }
+                ?>
+                    <div class="p-3 border rounded-4 mb-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1"><?= htmlspecialchars($status['label']) ?></h6>
+                                <div class="small text-muted">
+                                    <div class="mb-1">Jumlah Diterima : <?= $status['jumlah'] ?></div>
+                                    <?php if(!empty($status['deadline'])): ?>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span>Deadline: <?= date('d M Y', strtotime($status['deadline'])) ?></span>
+                                            <button class="btn btn-link p-0 text-primary edit-deadline-btn"
+                                                    data-jenis="<?= $key ?>"
+                                                    data-label="<?= htmlspecialchars($status['label']) ?>"
+                                                    data-date="<?= $status['deadline'] ?>">
+                                                <i class="bx bx-edit-alt"></i>
+                                            </button>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
-                            <?php endif; ?>
+                            </div>
+                            <span class="badge rounded-pill px-3 py-2 fw-semibold text-nowrap <?= $badgeClass ?>" style="font-size: 0.75rem;">
+                                <?= htmlspecialchars($status['status']) ?>
+                            </span>
                         </div>
-                        <?php endforeach; ?>
                     </div>
+                <?php endforeach; ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal Tambah Kegiatan (Bootstrap) -->
-<div class="modal fade" id="addActivityModal" tabindex="-1" aria-labelledby="addActivityModalLabel" aria-hidden="true">
+<!-- Add Activity Modal -->
+<div class="modal fade" id="addActivityModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4">
-            <div class="modal-header border-bottom px-4 py-3">
-                <h5 class="modal-title fw-semibold" id="addActivityModalLabel">Tambah Kegiatan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold">Tambah Kegiatan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
                 <form id="addActivityForm">
                     <div class="mb-3">
-                        <label for="judulKegiatan" class="form-label fw-medium">Judul Kegiatan</label>
-                        <input type="text" class="form-control form-control-lg rounded-3" id="judulKegiatan" name="judul" required>
+                        <label class="form-label small fw-semibold">Judul Kegiatan</label>
+                        <input type="text" class="form-control rounded-3" name="judul" required>
                     </div>
                     <div class="mb-3">
-                        <label for="tanggalKegiatan" class="form-label fw-medium">Tanggal</label>
-                        <input type="date" class="form-control form-control-lg rounded-3" id="tanggalKegiatan" name="tanggal" required>
+                        <label class="form-label small fw-semibold">Tanggal</label>
+                        <input type="date" class="form-control rounded-3" name="tanggal" required>
                     </div>
                     <div class="mb-3">
-                        <label for="deskripsiKegiatan" class="form-label fw-medium">Deskripsi</label>
-                        <textarea class="form-control rounded-3" id="deskripsiKegiatan" name="deskripsi" rows="3"></textarea>
+                        <label class="form-label small fw-semibold">Deskripsi</label>
+                        <textarea class="form-control rounded-3" name="deskripsi" rows="3"></textarea>
                     </div>
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary rounded-3">Simpan</button>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-light rounded-3 px-4" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary rounded-3 px-4">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -272,27 +262,21 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
     </div>
 </div>
 
-<!-- Modal Edit Deadline (Bootstrap) -->
-<div class="modal fade" id="editDeadlineModal" tabindex="-1" aria-labelledby="editDeadlineModalLabel" aria-hidden="true">
+<!-- Edit Deadline Modal -->
+<div class="modal fade" id="editDeadlineModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 rounded-4">
-            <div class="modal-header border-bottom px-4 py-3">
-                <h5 class="modal-title fw-semibold" id="editDeadlineModalLabel">Edit Deadline</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold">Edit Deadline</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
                 <form id="editDeadlineForm">
                     <input type="hidden" id="editDeadlineJenis" name="jenis">
-                    <div class="mb-3">
-                        <label id="editDeadlineLabelName" class="form-label fw-semibold">Nama Kegiatan</label>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editDeadlineDate" class="form-label fw-medium">Tanggal Deadline Baru</label>
-                        <input type="date" class="form-control form-control-lg rounded-3" id="editDeadlineDate" name="tanggal" required>
-                    </div>
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary rounded-3">Simpan</button>
+                    <small class="text-muted d-block mb-2" id="editDeadlineLabelName"></small>
+                    <input type="date" class="form-control form-control-lg rounded-3 mb-4" id="editDeadlineDate" name="tanggal" required>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary rounded-3">Update</button>
                     </div>
                 </form>
             </div>
@@ -300,193 +284,36 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
     </div>
 </div>
 
-<style>
-/* Calendar Table Styling */
-.calendar-table {
-    border: none !important;
-}
-
-.calendar-table thead th {
-    border: none !important;
-    font-size: 0.85rem;
-    padding: 0.75rem !important;
-}
-
-.calendar-table tbody td {
-    border: 1px solid #e5e7eb !important;
-    height: 90px;
-    vertical-align: top;
-    padding: 0.75rem;
-    position: relative;
-    font-weight: 500;
-    color: #334155;
-    transition: all 0.2s ease;
-    cursor: default;
-}
-
-.calendar-table tbody td:hover {
-    background-color: #f8fafc;
-}
-
-.calendar-table tbody td.event {
-    cursor: pointer;
-    background-color: #fef3f2;
-    border-color: #fecaca !important;
-}
-
-.calendar-table tbody td.event:hover {
-    background-color: #fee2e2;
-}
-
-.calendar-table tbody td.event::after {
-    content: '';
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 8px;
-    height: 8px;
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
-}
-
-.calendar-table tbody td.today {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
-    border: 2px solid #3b82f6 !important;
-    font-weight: 700;
-    color: #2563eb;
-}
-
-.calendar-table tbody td.today.event {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%);
-    border: 2px solid #ef4444 !important;
-}
-
-/* Calendar Tooltip */
-.calendar-tooltip {
-    position: absolute;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    color: white;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    z-index: 1100;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    max-width: 300px;
-}
-
-.calendar-tooltip.show {
-    opacity: 1;
-}
-
-.calendar-tooltip strong {
-    color: #3dc2ec;
-    display: block;
-    margin-bottom: 0.25rem;
-}
-
-/* Status Kegiatan Card */
-.status-kegiatan-card {
-    transition: all 0.3s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.status-kegiatan-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
-}
-
-.status-kegiatan-card .badge {
-    font-weight: 600;
-    letter-spacing: 0.3px;
-}
-
-/* Button Hover Effects */
-.btn-outline-primary:hover {
-    transform: scale(1.05);
-    transition: all 0.2s ease;
-}
-
-/* Navigation Buttons */
-.btn-outline-primary.rounded-circle:hover {
-    background: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);
-    border-color: #0099cc;
-    color: white;
-    transform: scale(1.1);
-}
-
-.btn-light:hover {
-    background: #f1f5f9;
-}
-
-/* Updated Primary Color for Gradient */
-#currentMonth {
-    background: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* Jadwal Presentasi Modern Card */
-.jadwal-modern-card {
-    background: #fff;
-    border: 1px solid #e5e7eb !important;
-    transition: all 0.3s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.jadwal-modern-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
-    border-color: #2563eb !important;
-}
-
-.jadwal-date-badge {
-    transition: all 0.3s ease;
-}
-
-.jadwal-modern-card:hover .jadwal-date-badge {
-    transform: scale(1.05);
-}
-</style>
-
 <script>
 (function() {
-    // Bootstrap Modal instances - with null checks
-    const addActivityModalEl = document.getElementById('addActivityModal');
-    const editDeadlineModalEl = document.getElementById('editDeadlineModal');
+    // Bootstrap Modal instance for deadline editing
+    // Edit Deadline Logic - Use event delegation for dynamically loaded content
+    document.body.addEventListener('click', function(e) {
+        if (e.target.closest('.edit-deadline-btn')) {
+            const btn = e.target.closest('.edit-deadline-btn');
+            const jenis = btn.getAttribute('data-jenis');
+            const label = btn.getAttribute('data-label');
+            const date = btn.getAttribute('data-date');
 
-    if (!addActivityModalEl || !editDeadlineModalEl) {
-        console.warn('Modal elements not found');
-        return;
-    }
+            const jenisInput = document.getElementById('editDeadlineJenis');
+            const labelEl = document.getElementById('editDeadlineLabelName');
+            const dateInput = document.getElementById('editDeadlineDate');
 
-    const addActivityModal = new bootstrap.Modal(addActivityModalEl);
-    const editDeadlineModal = new bootstrap.Modal(editDeadlineModalEl);
+            if (jenisInput && labelEl && dateInput) {
+                jenisInput.value = jenis;
+                labelEl.textContent = label;
+                dateInput.value = date;
 
-    // --- Add Activity Button ---
-    const btnAddActivity = document.getElementById('btnAddActivity');
-    if (btnAddActivity) {
-        btnAddActivity.addEventListener('click', () => addActivityModal.show());
-    }
-
-    // --- Edit Deadline Logic ---
-    document.querySelectorAll('.edit-deadline-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const jenis = this.getAttribute('data-jenis');
-            const label = this.getAttribute('data-label');
-            const date = this.getAttribute('data-date');
-
-            document.getElementById('editDeadlineJenis').value = jenis;
-            document.getElementById('editDeadlineLabelName').textContent = label;
-            document.getElementById('editDeadlineDate').value = date;
-
-            editDeadlineModal.show();
-        });
+                // Trigger modal using data attribute
+                const modalTrigger = document.createElement('button');
+                modalTrigger.setAttribute('data-bs-toggle', 'modal');
+                modalTrigger.setAttribute('data-bs-target', '#editDeadlineModal');
+                modalTrigger.style.display = 'none';
+                document.body.appendChild(modalTrigger);
+                modalTrigger.click();
+                document.body.removeChild(modalTrigger);
+            }
+        }
     });
 
     // Handle Edit Deadline Submit
@@ -525,58 +352,19 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
         };
     }
 
-    // Handle Add Activity Submit
-    const addActivityForm = document.getElementById('addActivityForm');
-    if (addActivityForm) {
-        addActivityForm.onsubmit = function(e) {
-            e.preventDefault();
-
-            const formData = {
-                judul: document.getElementById('judulKegiatan').value,
-                tanggal: document.getElementById('tanggalKegiatan').value,
-                deskripsi: document.getElementById('deskripsiKegiatan').value
-            };
-
-            if (typeof baseUrl === 'undefined') {
-                var baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
-            }
-
-            fetch(`${baseUrl}/addkegiatan`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showAlert('Kegiatan berhasil ditambahkan!', true);
-                    location.reload();
-                } else {
-                    showAlert('Gagal: ' + data.message, false);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('Simulasi: Kegiatan ditambahkan (Backend route needs setup)', true);
-                location.reload();
-            });
-        };
-    }
-
-    // --- Real-time Stats Polling ---
+    // Real-time Stats Polling
     function updateDashboardStats() {
         if (typeof baseUrl === 'undefined') {
             var baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
         }
 
-        // Check if stat elements exist before attempting to update
         const statTotal = document.getElementById('stat-total');
         const statLulus = document.getElementById('stat-lulus');
         const statPending = document.getElementById('stat-pending');
         const statGagal = document.getElementById('stat-gagal');
 
         if (!statTotal || !statLulus || !statPending || !statGagal) {
-            console.warn('Stats elements not found');
+            // Console warn suppressed to avoid noise
             return;
         }
 
@@ -602,19 +390,61 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
         setInterval(updateDashboardStats, 5000);
     }
 
-    // --- Calendar Logic ---
-    const eventsData = <?= json_encode($kegiatanBulanIni) ?>;
+    // --- CALENDAR LOGIC ---
 
+    // Add Activity Modal - Use data-bs-toggle instead of Bootstrap object
+    const btnAddActivity = document.getElementById('btnAddActivity');
+    if (btnAddActivity) {
+        btnAddActivity.setAttribute('data-bs-toggle', 'modal');
+        btnAddActivity.setAttribute('data-bs-target', '#addActivityModal');
+    }
+
+    // Handle Add Activity Submit
+    const addActivityForm = document.getElementById('addActivityForm');
+    if (addActivityForm) {
+        addActivityForm.onsubmit = function(e) {
+            e.preventDefault();
+            const formData = {
+                judul: document.getElementById('judulKegiatan').value,
+                tanggal: document.getElementById('tanggalKegiatan').value,
+                deskripsi: document.getElementById('deskripsiKegiatan').value
+            };
+            if (typeof baseUrl === 'undefined') {
+                var baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
+            }
+            fetch(`${baseUrl}/addkegiatan`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showAlert('Kegiatan berhasil ditambahkan!', true);
+                    location.reload();
+                } else {
+                    showAlert('Gagal: ' + data.message, false);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Terjadi kesalahan sistem', false);
+            });
+        };
+    }
+
+    // Calendar Data & Functions
+    const eventsData = <?= json_encode($kegiatanBulanIni ?? []) ?>;
     let currentYear = new Date().getFullYear();
     let currentMonth = new Date().getMonth();
 
-    // Tooltip Element
-    const tooltip = document.createElement('div');
-    tooltip.className = 'calendar-tooltip';
-    document.body.appendChild(tooltip);
-
-    function hideTooltip() {
-        tooltip.classList.remove('show');
+    function getEventColor(judul) {
+        const title = (judul || '').toLowerCase();
+        if (title.includes('berkas') || title.includes('kelengkapan')) return 'event-red';
+        if (title.includes('tertulis') || title.includes('tes')) return 'event-yellow';
+        if (title.includes('wawancara') || title.includes('interview')) return 'event-green';
+        if (title.includes('pengumuman') || title.includes('announcement')) return 'event-blue';
+        return 'has-event';
     }
 
     function generateCalendar(year, month) {
@@ -622,7 +452,7 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
         const lastDay = new Date(year, month + 1, 0);
         const daysInMonth = lastDay.getDate();
         const startDay = firstDay.getDay();
-        const adjustedStart = startDay === 0 ? 6 : startDay - 1;
+        const adjustedStart = startDay === 0 ? 6 : startDay - 1; // Mon=0, Sun=6
 
         const calendarBody = document.getElementById('calendarBody');
         if (!calendarBody) return;
@@ -636,58 +466,81 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
         }
 
         let date = 1;
+        // 6 rows max to cover all weeks
         for (let i = 0; i < 6; i++) {
             const row = document.createElement('tr');
+            let hasDateInRow = false;
+
             for (let j = 0; j < 7; j++) {
                 const cell = document.createElement('td');
+                // Apply inline styling for clean look with borders
+                cell.style.height = '70px'; 
+                cell.style.verticalAlign = 'middle';
+                cell.style.border = '1px solid #E5E7EB';
+                cell.style.position = 'relative';
+                cell.style.padding = '12px';
+                cell.className = 'text-dark';
+                
                 if (i === 0 && j < adjustedStart) {
                     cell.textContent = '';
                 } else if (date > daysInMonth) {
                     cell.textContent = '';
                 } else {
-                    cell.textContent = date;
-                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+                    // Create date number
+                    const dateSpan = document.createElement('div');
+                    dateSpan.textContent = date;
+                    dateSpan.style.fontSize = '14px';
+                    dateSpan.style.fontWeight = '500';
+                    dateSpan.style.color = '#1F2937'; // Dark gray/black color
+                    
+                    hasDateInRow = true;
+                    
+                    const monthPlus1 = String(month + 1).padStart(2, '0');
+                    const datePad = String(date).padStart(2, '0');
+                    const dateStr = `${year}-${monthPlus1}-${datePad}`;
 
                     const daysEvents = eventsData.filter(e => e.tanggal === dateStr);
 
-                    if (daysEvents.length > 0) {
-                        cell.classList.add('event');
-
-                        cell.addEventListener('mouseenter', (e) => {
-                            const tooltipContent = daysEvents.map(ev => {
-                                let content = `<strong>${ev.judul}</strong>`;
-                                if (ev.deskripsi) {
-                                    content += `<br><span style="font-weight:normal; opacity:0.9">${ev.deskripsi}</span>`;
-                                }
-                                return content;
-                            }).join('<br><br>');
-
-                            tooltip.innerHTML = tooltipContent;
-                            tooltip.classList.add('show');
-                            tooltip.style.left = `${e.pageX}px`;
-                            tooltip.style.top = `${e.pageY - 40}px`;
-                        });
-
-                        cell.addEventListener('mousemove', (e) => {
-                            tooltip.style.left = `${e.pageX + 10}px`;
-                            tooltip.style.top = `${e.pageY - 30}px`;
-                        });
-
-                        cell.addEventListener('mouseleave', () => hideTooltip());
-                    }
-
+                    // Check if this is today
                     const today = new Date();
-                    if (date === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-                        if (!cell.classList.contains('event')) {
-                            cell.classList.add('today');
-                        }
+                    const isToday = date === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+
+                    if (daysEvents.length > 0) {
+                        // Event date styling - light blue background
+                        cell.style.backgroundColor = '#E0E7FF';
+                        cell.style.borderRadius = '8px';
+                        dateSpan.style.fontWeight = '600';
+                        
+                        // Add red dot below the date
+                        const dot = document.createElement('div');
+                        dot.style.width = '6px';
+                        dot.style.height = '6px';
+                        dot.style.backgroundColor = '#DC2626';
+                        dot.style.borderRadius = '50%';
+                        dot.style.margin = '4px auto 0';
+                        
+                        cell.appendChild(dateSpan);
+                        cell.appendChild(dot);
+                        cell.title = daysEvents.map(e => e.judul).join(', ');
+                    } else if (isToday) {
+                        // Today's date - blue border
+                        cell.style.border = '2px solid #2563EB';
+                        cell.style.borderRadius = '8px';
+                        dateSpan.style.fontWeight = '700';
+                        cell.appendChild(dateSpan);
+                    } else {
+                        // Regular date
+                        cell.appendChild(dateSpan);
                     }
 
                     date++;
                 }
                 row.appendChild(cell);
             }
-            calendarBody.appendChild(row);
+            if (hasDateInRow || i === 0) { 
+                calendarBody.appendChild(row);
+            }
+            if (date > daysInMonth) break;
         }
     }
 
@@ -695,27 +548,29 @@ $jumlahPengumuman = $statusKegiatan['pengumuman']['jumlah'] ?? 0;
     const nextMonthBtn = document.getElementById('nextMonth');
 
     if (prevMonthBtn) {
-        prevMonthBtn.addEventListener('click', function () {
+        prevMonthBtn.onclick = function () {
             currentMonth--;
             if (currentMonth < 0) {
                 currentMonth = 11;
                 currentYear--;
             }
             generateCalendar(currentYear, currentMonth);
-        });
+        };
     }
 
     if (nextMonthBtn) {
-        nextMonthBtn.addEventListener('click', function () {
+        nextMonthBtn.onclick = function () {
             currentMonth++;
             if (currentMonth > 11) {
                 currentMonth = 0;
                 currentYear++;
             }
             generateCalendar(currentYear, currentMonth);
-        });
+        };
     }
 
+    // Init
     generateCalendar(currentYear, currentMonth);
+
 })();
 </script>

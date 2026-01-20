@@ -12,9 +12,14 @@
 <style>
 /* ==================== UNIFIED HEADER STYLES ==================== */
 .page-header {
-    background: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);
-    padding: 0 2rem 3.5rem 2rem;
-    margin: 0;
+    background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
+    margin: calc(var(--section-padding) * -1) calc(var(--section-padding) * -1) 1.5rem calc(var(--section-padding) * -1);
+    width: calc(100% + (var(--section-padding) * 2));
+    border-radius: 0;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    padding: 2rem;
     position: relative;
     overflow: hidden;
 }
@@ -44,8 +49,8 @@
 .header-content {
     position: relative;
     z-index: 1;
-    padding-top: 3.5rem;
-    max-width: 100%;
+    padding-top: 0;
+    width: 100%;
 }
 
 .header-icon {

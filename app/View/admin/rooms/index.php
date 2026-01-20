@@ -533,9 +533,9 @@ $ruanganList = $ruanganList ?? [];
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
+(function() {
     // --- CONFIRMATION MODAL LOGIC (Bootstrap) ---
     let deleteModalInstance = null;
 
@@ -562,10 +562,12 @@ $ruanganList = $ruanganList ?? [];
         }
     }
 
-    $(document).ready(function () {
-        let currentRoomId = null;
-        let currentRoomName = '';
-        let currentType = 'tes_tulis'; // DEFAULT TYPE IS NOW tes_tulis
+    // Universal wrapper for AJAX and Direct Load
+    const initRoomsScript = function() {
+        $(document).ready(function () {
+            let currentRoomId = null;
+            let currentRoomName = '';
+            let currentType = 'tes_tulis'; // DEFAULT TYPE IS NOW tes_tulis
 
         // --- NAVIGATION ---
         function showDetailView(id, name) {
@@ -834,5 +836,13 @@ $ruanganList = $ruanganList ?? [];
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });
-    });
+        });
+    };
+
+    if (typeof jQuery !== 'undefined') {
+        initRoomsScript();
+    } else {
+        document.addEventListener('DOMContentLoaded', initRoomsScript);
+    }
+})();
 </script>

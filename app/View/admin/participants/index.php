@@ -1192,24 +1192,20 @@ $result = $result ?? [];
 </div>
 
 <!-- Bootstrap Bundle JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
 
 <!-- Load Custom JavaScript -->
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/common.js"></script>
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/daftarPeserta.js"></script>
 
 <script>
-// Use IIFE instead of DOMContentLoaded for AJAX-loaded content
+// Universal wrapper for AJAX and Direct Load
 (function() {
-    console.log('Daftar Peserta script loaded');
-    
-    // Initialize DataTable
-    var table = $('#daftar').DataTable({
+    const initDaftarPesertaScript = function() {
+        console.log('Daftar Peserta script loaded');
+        
+        // Initialize DataTable
+        var table = $('#daftar').DataTable({
         dom: 'rtip', // Remove default search and length selector
         pageLength: 10,
         language: {
@@ -1805,7 +1801,14 @@ $result = $result ?? [];
     }
     
     console.log('Daftar Peserta script initialization complete');
-})(); // IIFE - Executes immediately when script loads
+    };
+
+    if (typeof jQuery !== 'undefined') {
+        initDaftarPesertaScript();
+    } else {
+        document.addEventListener('DOMContentLoaded', initDaftarPesertaScript);
+    }
+})(); // Universal Wrapper Ends
 
 // ============================================
 // UTILITY FUNCTIONS
