@@ -40,10 +40,24 @@ class BankSoal extends Model {
     }
 
     /**
-     * Get single bank by ID
+     * Get single bank by ID with question counts
      */
     public function getBankById($id) {
-        $query = "SELECT * FROM " . self::$table . " WHERE id = :id";
+        $query = "SELECT 
+                    b.id,
+                    b.nama,
+                    b.deskripsi,
+                    b.created_at,
+                    b.updated_at,
+                    b.token,
+                    b.is_active,
+                    COUNT(s.id) as jumlah_soal,
+                    SUM(CASE WHEN s.status_soal = 'pilihan_ganda' THEN 1 ELSE 0 END) as jumlah_pg,
+                    SUM(CASE WHEN s.status_soal != 'pilihan_ganda' AND s.id IS NOT NULL THEN 1 ELSE 0 END) as jumlah_essay
+                  FROM " . self::$table . " b
+                  LEFT JOIN soal s ON b.id = s.bank_soal_id
+                  WHERE b.id = :id
+                  GROUP BY b.id, b.nama, b.deskripsi, b.created_at, b.updated_at, b.token, b.is_active";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -113,9 +127,54 @@ class BankSoal extends Model {
      * Delete question bank
      */
     public function deleteBank($id) {
-        $sql = "DELETE FROM " . self::$table . " WHERE id = ?";
+        try {
+            self::getDB()->beginTransaction();
+            
+            // Delete associated questions first (Manual Cascade)
+            $sqlSoal = "DELETE FROM soal WHERE bank_soal_id = ?";
+            $stmtSoal = self::getDB()->prepare($sqlSoal);
+            $stmtSoal->bindParam(1, $id, PDO::PARAM_INT);
+            $stmtSoal->execute();
+            
+            // Delete the bank
+            $sql = "DELETE FROM " . self::$table . " WHERE id = ?";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->bindParam(1, $id, PDO::PARAM_INT);
+            $success = $stmt->execute();
+            
+            if ($success) {
+                self::getDB()->commit();
+                return true;
+            } else {
+                self::getDB()->rollBack();
+                return false;
+            }
+        } catch (\Exception $e) {
+            self::getDB()->rollBack();
+            return false;
+        }
+    }
+
+    /**
+     * Get exam statistics (bank count, total questions, PG count, essay count)
+     * Business logic for counting should be in Model, not View
+     */
+    public function getExamStatistics(): array {
+        $sql = "SELECT 
+            (SELECT COUNT(*) FROM " . self::$table . ") as bank_count,
+            (SELECT COUNT(*) FROM soal) as total_soal,
+            (SELECT COUNT(*) FROM soal WHERE status_soal = 'pilihan_ganda') as pg_count,
+            (SELECT COUNT(*) FROM soal WHERE status_soal != 'pilihan_ganda' OR status_soal IS NULL) as essay_count";
+        
         $stmt = self::getDB()->prepare($sql);
-        $stmt->bindParam(1, $id, PDO::PARAM_INT);
-        return $stmt->execute();
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $result ?: [
+            'bank_count' => 0, 
+            'total_soal' => 0, 
+            'pg_count' => 0, 
+            'essay_count' => 0
+        ];
     }
 }

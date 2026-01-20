@@ -8,6 +8,9 @@ class SoalController extends Controller
 {
     public function saveSoal()
     {
+        // Clean any previous output
+        if (ob_get_level()) ob_end_clean();
+        
         header('Content-Type: application/json');
         try {
 
@@ -24,6 +27,29 @@ class SoalController extends Controller
             $pilihan = $_POST['pilihan'] ?? 'bukan soal pilihan';
             $jawaban = $_POST['jawaban'] ?? null;
             $bankId = $_POST['bank_id'] ?? null;
+
+            // Handle Image Upload
+            if (isset($_FILES['soal_image']) && $_FILES['soal_image']['error'] === 0) {
+                $uploadDir = __DIR__ . '/../../../../public/uploads/soal/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                
+                $fileInfo = pathinfo($_FILES['soal_image']['name']);
+                $ext = strtolower($fileInfo['extension']);
+                $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+                
+                if (in_array($ext, $allowed)) {
+                    $newFilename = uniqid('soal_') . '.' . $ext;
+                    $destPath = $uploadDir . $newFilename;
+                    
+                    if (move_uploaded_file($_FILES['soal_image']['tmp_name'], $destPath)) {
+                        $webPath = '/public/uploads/soal/' . $newFilename;
+                        // Append image to description
+                        $deskripsi .= '<br><br><img src="' . $webPath . '" class="img-fluid rounded shadow-sm border" style="max-height: 300px;">';
+                    }
+                }
+            }
 
             if (empty($deskripsi)) {
                 throw new \Exception('Deskripsi soal harus diisi');
@@ -64,6 +90,65 @@ class SoalController extends Controller
                 'message' => $e->getMessage()
             ]);
             http_response_code(500);
+        }
+    }
+
+    public function getBankDetails()
+    {
+        // Clean any previous output
+        if (ob_get_level()) ob_end_clean();
+        
+        header('Content-Type: application/json');
+        try {
+            $bankId = $_GET['id'] ?? null;
+            
+            if (!$bankId) {
+                throw new \Exception('Bank ID tidak ditemukan');
+            }
+            
+            $bankSoal = new BankSoal();
+            $bank = $bankSoal->getBankById($bankId);
+            
+            if (!$bank) {
+                throw new \Exception('Bank soal tidak ditemukan');
+            }
+            
+            echo json_encode([
+                'status' => 'success',
+                'bank' => [
+                    'id' => $bank['id'],
+                    'nama' => $bank['nama'],
+                    'jumlah_soal' => $bank['jumlah_soal'] ?? 0,
+                    'jumlah_pg' => $bank['jumlah_pg'] ?? 0,
+                    'jumlah_essay' => $bank['jumlah_essay'] ?? 0
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+
+    public function downloadTemplate()
+    {
+        $file = __DIR__ . '/../../../../public/Assets/templates/template_soal.csv';
+        if (file_exists($file)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/csv');
+            header('Content-Disposition: attachment; filename="template_soal.csv"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file));
+            readfile($file);
+            exit;
+        } else {
+            http_response_code(404);
+            echo "Template file not found.";
         }
     }
 
@@ -203,6 +288,9 @@ class SoalController extends Controller
     }
 
     public function deleteBank() {
+        // Clean any previous output (warnings, notices, whitespace)
+        if (ob_get_level()) ob_end_clean();
+        
         header('Content-Type: application/json');
         try {
             $id = $_POST['id'] ?? 0;
@@ -213,9 +301,12 @@ class SoalController extends Controller
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus bank soal']);
             }
-        } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        } catch (\Throwable $e) {
+            // Log the actual error for admin debugging
+            error_log("Delete Bank Error: " . $e->getMessage());
+            echo json_encode(['status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()]);
         }
+        exit;
     }
 
     public function getBankQuestions() {
@@ -246,93 +337,8 @@ class SoalController extends Controller
         }
     }
 
-    public function downloadTemplate()
-    {
-        // Clean output buffer to remove any prior whitespace or echo
-        if (ob_get_level()) {
-            ob_end_clean();
-        }
-        
-        $filename = "template_import_soal.xls";
-        
-        // Force download headers
-        header("Content-Type: application/vnd.ms-excel");
-        header("Content-Disposition: attachment; filename=\"$filename\"");
-        header("Content-Transfer-Encoding: binary");
-        header("Pragma: public");
-        header("Expires: 0");
-        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 
-        echo '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
-        echo '<head>';
-        echo '<!--[if gte mso 9]>';
-        echo '<xml>';
-        echo '<x:ExcelWorkbook>';
-        echo '<x:ExcelWorksheets>';
-        echo '<x:ExcelWorksheet>';
-        echo '<x:Name>Sheet1</x:Name>';
-        echo '<x:WorksheetOptions>';
-        echo '<x:DisplayGridlines/>';
-        echo '</x:WorksheetOptions>';
-        echo '</x:ExcelWorksheet>';
-        echo '</x:ExcelWorksheets>';
-        echo '</x:ExcelWorkbook>';
-        echo '</xml>';
-        echo '<![endif]-->';
-        echo '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/>';
-        echo '</head>';
-        echo '<body>';
-        echo '<table border="1">';
-        
-        // Headers
-        $headers = [
-            'Deskripsi Soal',
-            'Tipe Soal (pilihan_ganda/essay)',
-            'Pilihan A',
-            'Pilihan B',
-            'Pilihan C',
-            'Pilihan D',
-            'Pilihan E (Opsional)',
-            'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
-        ];
-        
-        echo '<tr>';
-        foreach ($headers as $header) {
-            echo '<th style="background-color: #f0f0f0; font-weight: bold;">' . $header . '</th>';
-        }
-        echo '</tr>';
 
-        // Example Data 1 (PG)
-        echo '<tr>';
-        echo '<td>Siapakah penemu bola lampu?</td>';
-        echo '<td>pilihan_ganda</td>';
-        echo '<td>Thomas Edison</td>';
-        echo '<td>Nikola Tesla</td>';
-        echo '<td>Albert Einstein</td>';
-        echo '<td>Isaac Newton</td>';
-        echo '<td></td>';
-        echo '<td>A</td>';
-        echo '</tr>';
-
-        // Example Data 2 (Essay)
-        echo '<tr>';
-        echo '<td>Jelaskan pengertian fotosintesis!</td>';
-        echo '<td>essay</td>';
-        echo '<td></td>';
-        echo '<td></td>';
-        echo '<td></td>';
-        echo '<td></td>';
-        echo '<td></td>';
-        echo '<td>Proses tumbuhan membuat makanan dengan bantuan sinar matahari.</td>';
-        echo '</tr>';
-
-        echo '</table>';
-        echo '</body>';
-        echo '</html>';
-        
-        // Ensure no further output
-        exit();
-    }
     
     /**
      * Validate file type - only accept CSV and Excel formats

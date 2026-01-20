@@ -8,324 +8,13 @@ $ruanganList = $ruanganList ?? [];
 ?>
 
 <!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-    body {
-        font-family: 'Poppins', sans-serif;
-        background: #f5f7fa;
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-    }
+<!-- Custom Styles Removed for Bootstrap 5 Refactoring -->
 
-    main {
-        margin: -20px -20px -20px -20px;
-        width: calc(100% + 40px);
-    }
-
-/* Page Header Styles moved to components/PageHeader.php */
-
-    /* Main Container */
-    .content-container {
-        padding: 30px 40px; 
-        margin-top: 0; 
-        position: relative;
-        z-index: 2;
-    }
-
-    /* --- List View Specifics --- */
-    .controls-bar {
-        background: white;
-        border-radius: 12px; /* Slightly smaller radius */
-        padding: 16px 20px; /* Reduced padding from 24px */
-        margin-bottom: 30px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Softer shadow */
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 16px;
-    }
-
-    .room-card {
-        background: white;
-        border-radius: 20px;
-        border: none;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        cursor: pointer;
-    }
-
-    .room-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(47, 102, 246, 0.15);
-    }
-
-    .card-header-img {
-        height: 120px;
-        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .room-icon-large { font-size: 3.5rem; color: #3b82f6; }
-
-    .card-body { padding: 24px; text-align: center; }
-    .room-title { font-size: 1.1rem; font-weight: 700; color: #1e293b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .room-desc { color: #94a3b8; font-size: 0.85rem; margin-bottom: 0; font-weight: 500; }
-    
-    .card-actions {
-        padding: 20px 24px;
-        border-top: 1px solid #f1f5f9;
-        display: flex;
-        justify-content: center;
-    }
-
-    /* --- Detail View Specifics --- */
-    .detail-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.06);
-        overflow: hidden;
-        border: none;
-    }
-
-    /* REFINED TABS STYLE */
-    .nav-tabs-custom {
-        padding: 0 20px;
-        background: white;
-        border-bottom: 1px solid #e2e8f0;
-        display: flex;
-        /* justify-content: center; REMOVED per user request */
-        gap: 40px; 
-    }
-
-    .nav-tabs-custom .nav-link {
-        border: none;
-        color: #64748b;
-        font-weight: 600;
-        padding: 24px 12px;
-        font-size: 1.1rem;
-        position: relative;
-        background: transparent;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: color 0.2s;
-    }
-    
-    .nav-tabs-custom .nav-link:hover {
-        color: #2f66f6;
-    }
-
-    .nav-tabs-custom .nav-link.active {
-        color: #2f66f6;
-    }
-
-    /* Custom underline for active state */
-    .nav-tabs-custom .nav-link.active::after {
-        content: '';
-        position: absolute;
-        bottom: -1px; /* Align with border-bottom */
-        left: 0;
-        width: 100%;
-        height: 4px;
-        background: #2f66f6;
-        border-radius: 4px 4px 0 0;
-    }
-
-    .toolbar-section {
-        padding: 24px 30px;
-        background: #f8fafc;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    /* Table Styles */
-    .custom-table thead th {
-        background-color: #2f66f6;
-        color: white;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 0.05em;
-        padding: 18px 24px;
-        border: none;
-    }
-
-    .custom-table tbody td {
-        padding: 18px 24px;
-        vertical-align: middle;
-        border-bottom: 1px solid #f1f5f9;
-        color: #334155;
-        font-weight: 500;
-    }
-    
-    .custom-table tbody tr:hover td {
-        background-color: #f8fafc;
-    }
-
-    /* Buttons */
-    .btn-header-back {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        background: rgba(255,255,255,0.2);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        transition: all 0.2s;
-    }
-    .btn-header-back:hover { background: rgba(255,255,255,0.3); transform: translateX(-4px); }
-
-    .btn-header-action {
-        background: rgba(255,255,255,0.2);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 10px;
-        font-weight: 500;
-        transition: all 0.2s;
-    }
-    .btn-header-action:hover { background: rgba(255,255,255,0.3); }
-    .btn-header-danger { background: rgba(220, 38, 38, 0.8); }
-    .btn-header-danger:hover { background: rgba(220, 38, 38, 1); }
-
-    /* TOAST CUSTOM STYLES */
-    #toast-container {
-        position: fixed;
-        top: 30px;
-        right: 30px;
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .toast-notification {
-        background: white;
-        border-radius: 12px;
-        padding: 16px 20px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        border: none;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: flex-start;
-        gap: 16px;
-        min-width: 350px;
-        transform: translateX(120%);
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    
-    .toast-notification.success {
-        border-left: 6px solid #22c55e;
-    }
-    
-    .toast-notification.error {
-        border-left: 6px solid #ef4444;
-    }
-
-    .toast-notification.show {
-        transform: translateX(0);
-    }
-
-    .toast-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-
-    .toast-notification.success .toast-icon {
-        background: #dcfce7;
-        color: #22c55e;
-    }
-    
-    .toast-notification.error .toast-icon {
-        background: #fee2e2;
-        color: #ef4444;
-    }
-
-    .toast-content {
-        flex-grow: 1;
-    }
-
-    .toast-title {
-        font-weight: 700;
-        font-size: 1rem;
-        color: #1e293b;
-        margin-bottom: 2px;
-    }
-
-    .toast-message {
-        color: #64748b;
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-
-    .toast-close {
-        color: #94a3b8;
-        cursor: pointer;
-        font-size: 1.25rem;
-        transition: color 0.2s;
-        padding: 0;
-        line-height: 1;
-    }
-
-    .toast-close:hover {
-        color: #475569;
-    }
-
-    .toast-progress {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 3px;
-        background: transparent;
-    }
-    
-    .toast-progress-bar {
-        height: 100%;
-        background: #22c55e;
-        width: 100%;
-        transform-origin: left;
-    }
-    
-    .toast-notification.error .toast-progress-bar {
-        background: #ef4444;
-    }
-
-    /* Modal icon warning */
-    .modal-icon-warning {
-        width: 80px;
-        height: 80px;
-        background: #fef2f2;
-        color: #ef4444;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px;
-        font-size: 2.5rem;
-    }
-
-</style>
 
 <main>
     <!-- SECTION: LIST VIEW -->
@@ -337,17 +26,21 @@ $ruanganList = $ruanganList ?? [];
             require_once __DIR__ . '/../../templates/components/PageHeader.php';
         ?>
 
-        <div class="content-container">
-            <div class="controls-bar">
-                <div class="position-relative" style="width: 300px;">
-                    <i class="bi bi-search position-absolute text-muted" style="left: 15px; top: 50%; transform: translateY(-50%); font-size: 0.9rem;"></i>
-                    <input type="text" id="searchInput" class="form-control border-0 bg-light ps-5" style="border-radius: 8px; font-size: 0.95rem; padding-top: 10px; padding-bottom: 10px;" placeholder="Cari ruangan...">
+        <div class="container-fluid px-4 pb-4">
+            <!-- Controls Bar -->
+            <div class="card border-0 shadow-sm mb-4 rounded-4">
+                <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="position-relative" style="width: 300px;">
+                        <i class="bi bi-search position-absolute text-secondary" style="left: 15px; top: 50%; transform: translateY(-50%);"></i>
+                        <input type="text" id="searchInput" class="form-control bg-light border-0 ps-5" placeholder="Cari ruangan..." style="border-radius: 8px;">
+                    </div>
+                    <button class="btn btn-primary px-4 py-2 fw-medium shadow-sm" style="border-radius: 8px;" data-bs-toggle="modal" data-bs-target="#tambahRuanganModal">
+                        <i class="bi bi-plus-lg me-2"></i>Tambah Ruangan
+                    </button>
                 </div>
-                <button class="btn btn-primary shadow-sm px-4 py-2" style="border-radius: 8px; font-weight: 500;" data-bs-toggle="modal" data-bs-target="#tambahRuanganModal">
-                    <i class="bi bi-plus-lg me-2"></i>Tambah Ruangan
-                </button>
             </div>
 
+            <!-- Grid -->
             <div class="row g-4" id="ruanganGrid">
                 <?php if (empty($ruanganList)) { ?>
                     <div class="col-12 text-center py-5">
@@ -359,26 +52,27 @@ $ruanganList = $ruanganList ?? [];
                 <?php } else { ?>
                     <?php foreach ($ruanganList as $ruangan) { ?>
                         <div class="col-md-6 col-lg-4 col-xl-3 room-item">
-                            <div class="room-card" 
+                            <div class="card h-100 border-0 shadow-sm rounded-4 room-card cursor-pointer" 
                                 data-id="<?= $ruangan['id'] ?>" 
                                 data-name="<?= htmlspecialchars($ruangan['nama']) ?>">
-                                <div class="card-header-img">
-                                    <i class="bi bi-buildings-fill room-icon-large"></i>
+                                <div class="card-header border-0 d-flex align-items-center justify-content-center py-5 rounded-top-4" 
+                                    style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);">
+                                    <i class="bi bi-buildings-fill text-primary" style="font-size: 3.5rem;"></i>
                                 </div>
-                                <div class="card-body">
-                                    <h3 class="room-title"><?= htmlspecialchars($ruangan['nama']) ?></h3>
-                                    <p class="room-desc">Ruangan Aktivitas Seleksi</p>
+                                <div class="card-body text-center p-4">
+                                    <h5 class="fw-bold text-dark mb-2 text-uppercase"><?= htmlspecialchars($ruangan['nama']) ?></h5>
+                                    <p class="text-secondary small mb-0 fw-medium">Ruangan Aktivitas Seleksi</p>
                                 </div>
-                                <div class="card-actions d-flex justify-content-between align-items-center">
+                                <div class="card-footer bg-white border-top border-light p-3 d-flex justify-content-between align-items-center rounded-bottom-4">
                                     <span class="text-primary fw-medium small">Kelola <i class="bi bi-arrow-right"></i></span>
                                     <div>
-                                        <button class="btn btn-sm btn-light text-primary btn-edit-room me-1" 
+                                        <button class="btn btn-light btn-sm text-primary me-1 btn-edit-room" 
                                             data-id="<?= $ruangan['id'] ?>" 
                                             data-name="<?= htmlspecialchars($ruangan['nama']) ?>" 
                                             title="Ubah Nama">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-light text-danger btn-delete-room" 
+                                        <button class="btn btn-light btn-sm text-danger btn-delete-room" 
                                             data-id="<?= $ruangan['id'] ?>" 
                                             title="Hapus Ruangan">
                                             <i class="bi bi-trash"></i>
@@ -393,19 +87,20 @@ $ruanganList = $ruanganList ?? [];
         </div>
     </div>
 
+
     <!-- SECTION: DETAIL VIEW (FULL PAGE STYLE) -->
     <div id="ruanganDetailSection" class="d-none">
         
         <!-- Header Detail -->
-        <div class="page-header align-items-center">
-            <div class="d-flex justify-content-between w-100 align-items-center">
-                <div class="d-flex align-items-center gap-4">
-                    <button class="btn-header-back" id="backToListBtn" title="Kembali">
+        <div class="bg-primary text-white p-4 mb-4 rounded-4 shadow-sm mx-4 position-relative z-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-light bg-opacity-25 text-white border-0 p-2 rounded-3" id="backToListBtn" title="Kembali">
                         <i class="bi bi-arrow-left fs-4"></i>
                     </button>
                     <div>
-                        <h2 id="detailRoomTitle" class="fw-bold m-0 fs-2 text-white">Nama Ruangan</h2>
-                        <div class="d-flex align-items-center gap-2 mt-1 opacity-75 text-white">
+                        <h2 id="detailRoomTitle" class="fw-bold m-0 fs-2">Nama Ruangan</h2>
+                        <div class="d-flex align-items-center gap-2 mt-1 opacity-75">
                             <i class="bi bi-grid"></i>
                             <span class="fs-6">Detail & Manajemen Peserta</span>
                         </div>
@@ -414,25 +109,31 @@ $ruanganList = $ruanganList ?? [];
             </div>
         </div>
 
-        <!-- Detail Content -->
-        <div class="content-container">
-            <div class="detail-card">
+        <div class="container-fluid px-4 pb-4">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
                 <!-- Navigation Tabs -->
-                <div class="nav-tabs-custom" id="pills-tab" role="tablist">
-                    <!-- REORDERED: Tes Tulis First -->
-                    <button class="nav-link active" id="pills-testulis-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab">
-                        <i class="bi bi-file-text me-2"></i>Tes Tulis
-                    </button>
-                    <button class="nav-link" id="pills-presentasi-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab">
-                        <i class="bi bi-easel me-2"></i>Presentasi
-                    </button>
-                    <button class="nav-link" id="pills-wawancara-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab">
-                        <i class="bi bi-chat-text me-2"></i>Wawancara
-                    </button>
+                <div class="border-bottom px-4">
+                    <ul class="nav nav-tabs border-bottom-0 gap-4" id="pills-tab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active py-4 text-secondary fw-semibold border-0 bg-transparent" id="pills-testulis-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab">
+                                <i class="bi bi-file-text me-2"></i>Tes Tulis
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link py-4 text-secondary fw-semibold border-0 bg-transparent" id="pills-presentasi-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab">
+                                <i class="bi bi-easel me-2"></i>Presentasi
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link py-4 text-secondary fw-semibold border-0 bg-transparent" id="pills-wawancara-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab">
+                                <i class="bi bi-chat-text me-2"></i>Wawancara
+                            </button>
+                        </li>
+                    </ul>
                 </div>
 
                 <!-- Toolbar / Form Area -->
-                <div class="toolbar-section">
+                <div class="bg-light p-4 border-bottom">
                     <div class="row align-items-center gy-3">
                         <div class="col-md-6">
                             <h5 class="fw-bold text-dark m-0">Daftar Peserta Terdaftar</h5>
@@ -453,13 +154,13 @@ $ruanganList = $ruanganList ?? [];
 
                 <!-- Table -->
                 <div class="table-responsive">
-                    <table class="table custom-table w-100 mb-0">
-                        <thead>
+                    <table class="table table-hover align-middle mb-0 custom-table">
+                        <thead class="bg-light">
                             <tr>
-                                <th class="ps-5" style="width: 10%;">No</th>
-                                <th style="width: 45%;">Nama Mahasiswa</th>
-                                <th style="width: 25%;">Stambuk</th>
-                                <th class="text-center" style="width: 20%;">Aksi</th>
+                                <th class="ps-5 py-3 text-secondary text-uppercase text-xs fw-bold" style="width: 10%;">No</th>
+                                <th class="py-3 text-secondary text-uppercase text-xs fw-bold" style="width: 45%;">Nama Mahasiswa</th>
+                                <th class="py-3 text-secondary text-uppercase text-xs fw-bold" style="width: 25%;">Stambuk</th>
+                                <th class="text-center py-3 text-secondary text-uppercase text-xs fw-bold" style="width: 20%;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="participantsTableBody">
@@ -470,6 +171,8 @@ $ruanganList = $ruanganList ?? [];
             </div>
         </div>
     </div>
+        
+
 </main>
 
 <!-- Modals -->
@@ -519,7 +222,7 @@ $ruanganList = $ruanganList ?? [];
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-4">
             <div class="modal-body text-center p-4">
-                <div class="modal-icon-warning">
+                <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-circle mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2.5rem;">
                     <i class="bi bi-exclamation-lg"></i>
                 </div>
                 <h5 class="fw-bold mb-2">Konfirmasi Hapus</h5>

@@ -14,476 +14,15 @@ $result = $result ?? [];
 <!-- If you see this comment in browser source, the new version is loaded -->
 
 <!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-    * {
-        font-family: 'Poppins', sans-serif;
-    }
+<!-- Custom Styles Removed - Using Bootstrap 5 Utilities -->
 
-    body {
-        background: var(--bs-body-bg);
-        min-height: 100vh;
-    }
-
-    main {
-        padding: 0;
-        margin: -20px -20px -20px -20px;
-        width: calc(100% + 40px);
-    }
-
-/* Page Header Styles moved to components/PageHeader.php */
-
-    /* Card Container */
-    .card-content {
-        background: #fff;
-        border-radius: 0;
-        padding: 24px;
-        margin: 0;
-        min-height: calc(100vh - 120px);
-    }
-
-    /* Table Controls */
-    .table-controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        gap: 16px;
-        flex-wrap: wrap;
-    }
-
-    .entries-select {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.875rem;
-        color: #64748b;
-    }
-
-    .entries-select select {
-        border: 2px solid #e2e8f0;
-        border-radius: var(--bs-border-radius);
-        padding: 6px 12px;
-        font-size: 0.875rem;
-        background: white;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .entries-select select:focus {
-        border-color: var(--bs-primary-dark);
-        outline: none;
-    }
-
-    .search-box {
-        position: relative;
-        width: 280px;
-    }
-
-    .search-box input {
-        width: 100%;
-        padding: 10px 16px 10px 40px;
-        border: 2px solid #e2e8f0;
-        border-radius: var(--bs-border-radius);
-        font-size: 0.9rem;
-        transition: all 0.2s ease;
-    }
-
-    .search-box input:focus {
-        outline: none;
-        border-color: var(--bs-primary-dark);
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .search-box i {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #94a3b8;
-    }
-
-    /* Table Responsive Container */
-    .table-responsive {
-        overflow-x: auto;
-        border-radius: var(--bs-border-radius-lg);
-        padding-bottom: 20px; /* Space for bottom shadow */
-    }
-
-    /* Data Table Styling (Reference: PresentasiAdmin.php) */
-    .data-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        border-radius: var(--bs-border-radius-lg);
-        overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05); /* Increased bottom presence */
-        margin-bottom: 4px;
-    }
-
-    .data-table thead th {
-        background: var(--bs-primary-dark);
-        color: #fff;
-        font-weight: 600;
-        padding: 16px 20px;
-        text-align: left;
-        vertical-align: middle;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border: none;
-    }
-
-    .data-table tbody tr {
-        transition: all 0.2s ease;
-        background-color: #fff;
-    }
-
-    .data-table tbody tr:nth-child(odd) {
-        background-color: #f8fafc;
-    }
-
-    .data-table tbody tr:hover {
-        background-color: rgba(37, 99, 235, 0.08) !important;
-    }
-
-    .data-table td {
-        padding: 14px 20px;
-        color: #475569;
-        font-size: 0.95rem;
-        border-bottom: 1px solid #e2e8f0;
-        vertical-align: middle;
-    }
-    
-    .data-table tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    .data-table td:first-child {
-        text-align: center;
-        font-weight: 600;
-        color: var(--bs-primary-dark);
-    }
-
-    /* User Info */
-    .user-info {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #e9ecef;
-    }
-
-    .user-name {
-        font-weight: bold;
-        color: #212529;
-        margin: 0;
-        font-size: 0.9rem;
-    }
-
-    /* Badge Styles - Deep Solid Compact */
-    .badge-status {
-        padding: 4px 10px;
-        border-radius: var(--bs-border-radius-sm);
-        font-size: 0.8rem;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        min-width: 90px;
-        white-space: nowrap;
-        text-transform: capitalize;
-        letter-spacing: 0.3px;
-        transition: opacity 0.2s ease;
-        line-height: 1.5;
-    }
-
-    .badge-status:hover {
-        opacity: 0.9;
-    }
-
-    .badge-status i {
-        font-size: 0.85rem;
-        display: flex;
-        align-items: center;
-    }
-
-    .badge-diterima {
-        background: #198754;
-        color: #fff;
-    }
-
-    .badge-process {
-        background: #0d6efd;
-        color: #fff;
-    }
-
-    .badge-ditolak {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-    .badge-pending {
-        background: #ffc107;
-        color: #000;
-    }
-
-    /* Action Buttons */
-    .action-btns {
-        display: flex;
-        gap: 8px;
-        flex-wrap: nowrap;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-action {
-        width: 36px;
-        height: 36px;
-        min-width: 36px;
-        border: none;
-        border-radius: var(--bs-border-radius);
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-        font-size: 1rem;
-        padding: 0;
-    }
-
-    .btn-action:hover {
-        transform: translateY(-2px);
-    }
-
-    .btn-view {
-        background: #e0f2fe;
-        color: #0284c7;
-    }
-
-    .btn-view:hover {
-        background: #0284c7;
-        color: white;
-    }
-
-    .btn-delete {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-    .btn-delete:hover {
-        background: #dc2626;
-        color: white;
-    }
-
-    .btn-verify {
-        background: #d1fae5;
-        color: #059669;
-    }
-
-    .btn-verify:hover {
-        background: #059669;
-        color: white;
-    }
-
-    .btn-verified {
-        background: #d1fae5;
-        color: #059669;
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
-
-    .btn-verified:hover {
-        transform: none;
-        background: #d1fae5;
-    }
-
-    /* DataTables Override */
-    .dataTables_wrapper .dataTables_info {
-        color: #6c757d;
-        font-size: 0.875rem;
-        padding-top: 16px;
-    }
-
-    .dataTables_wrapper .dataTables_paginate {
-        padding-top: 16px;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        padding: 6px 12px;
-        margin: 0 2px;
-        border-radius: var(--bs-border-radius-sm);
-        border: 1px solid #dee2e6 !important;
-        background: white !important;
-        color: var(--bs-primary-dark) !important;
-        font-size: 0.875rem;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background: var(--bs-primary-dark) !important;
-        color: white !important;
-        border-color: var(--bs-primary-dark) !important;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-        background: #f0f5ff !important;
-        color: var(--bs-primary-dark) !important;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-        background: #1e40af !important;
-        color: white !important;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        main {
-            margin: -20px -20px 0 -20px;
-            width: calc(100% + 40px);
-        }
-
-        .page-header {
-            padding: 25px 20px;
-        }
-
-        .page-header h1 {
-            font-size: 1.4rem;
-        }
-
-        .card-table {
-            padding: 16px;
-        }
-
-        .table-controls {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .search-box {
-            min-width: 100%;
-        }
-
-        .table > thead > tr > th {
-            font-size: 0.7rem;
-            padding: 10px 8px;
-        }
-
-        .table > tbody > tr > td {
-            padding: 10px 8px;
-            font-size: 0.8rem;
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-        }
-
-        .btn-action {
-            width: 30px;
-            height: 30px;
-        }
-
-        .badge-status {
-            padding: 6px 12px;
-            font-size: 0.7rem;
-            min-width: 85px;
-            border-radius: var(--bs-border-radius-sm);
-        }
-
-        .badge-status i {
-            font-size: 0.75rem;
-        }
-    }
-
-    /* Status Badge Colors */
-    .badge-diterima {
-        background-color: #d1fae5;
-        color: #065f46;
-        font-weight: 600;
-    }
-
-    .badge-ditolak {
-        background-color: #fee2e2;
-        color: #991b1b;
-        font-weight: 600;
-    }
-
-    .badge-process {
-        background-color: #fef3c7;
-        color: #92400e;
-        font-weight: 600;
-    }
-
-    .badge-pending {
-        background-color: #e5e7eb;
-        color: #374151;
-        font-weight: 600;
-    }
-
-    /* Action Buttons Styling */
-    .action-btns {
-        display: flex;
-        gap: 8px;
-        justify-content: center;
-    }
-
-    .btn-action {
-        width: 36px;
-        height: 36px;
-        border: none;
-        border-radius: 8px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        color: white;
-        font-size: 0.9rem;
-    }
-
-    .btn-action:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .btn-action.btn-view {
-        background: var(--gradient-header);
-    }
-
-    .btn-action.btn-view:hover {
-        background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-    }
-
-    .btn-action.btn-delete {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    }
-
-    .btn-action.btn-delete:hover {
-        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-    }
-
-    .btn-action.btn-reminder {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    }
-
-    .btn-action.btn-reminder:hover {
-        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-    }
-</style>
 
 <main>
     <!-- Page Header -->
@@ -496,136 +35,143 @@ $result = $result ?? [];
     ?>
 
     <!-- Table Card -->
-    <div class="card-content">
-        <!-- Table Controls -->
-        <div class="table-controls">
-            <div class="entries-select">
-                <span>Show</span>
-                <select id="entriesPerPage" class="form-select form-select-sm">
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
-                <span>entries</span>
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <!-- Table Controls -->
+            <div class="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
+                <div class="d-flex align-items-center gap-2 text-secondary small">
+                    <span>Show</span>
+                    <select id="entriesPerPage" class="form-select form-select-sm" style="width: auto; cursor: pointer;">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span>entries</span>
+                </div>
+
+                <div class="position-relative" style="width: 250px;">
+                    <i class="bi bi-search position-absolute text-secondary" style="left: 12px; top: 50%; transform: translateY(-50%);"></i>
+                    <input type="text" id="searchInput" class="form-control ps-5" placeholder="Search..." style="border-radius: 8px;">
+                </div>
             </div>
 
-            <div class="search-box">
-                <i class="bi bi-search"></i>
-                <input type="text" id="searchInput" placeholder="Search...">
-            </div>
-        </div>
+            <!-- Data Table -->
+            <div class="table-responsive rounded-3">
+                <table id="daftarPesertaTable" class="table table-hover align-middle mb-0">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th class="text-center py-3" style="width: 50px;">No</th>
+                            <th class="py-3">Nama</th>
+                            <th class="py-3">Judul Presentasi</th>
+                            <th class="py-3">Stambuk</th>
+                            <th class="py-3">Jurusan</th>
+                            <th class="py-3">Kelas</th>
+                            <th class="text-center py-3">Status</th>
+                            <th class="text-center py-3" style="width: 120px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $i = 1; ?>
+                        <?php foreach ($result as $row): ?>
+                            <?php
+                                // Determine status
+                                $status = $row['status'] ?? 'pending';
+                                // Bootstrap Badge Styles
+                                $statusClass = 'badge rounded-pill bg-secondary-subtle text-secondary border border-secondary-subtle'; // Default Pending
+                                $statusText = 'Belum Upload';
+                                $statusIcon = '<i class="bi bi-hourglass-split me-1"></i>';
 
-        <!-- Data Table -->
-        <div class="table-responsive">
-            <table id="daftarPesertaTable" class="data-table">
-                <thead>
-                    <tr>
-                        <th class="text-center" style="width: 50px;">No</th>
-                        <th>Nama</th>
-                        <th>Judul Presentasi</th>
-                        <th>Stambuk</th>
-                        <th>Jurusan</th>
-                        <th>Kelas</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center" style="width: 100px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php $i = 1; ?>
-                    <?php foreach ($result as $row): ?>
-                        <?php
-                            // Determine status
-                            $status = $row['status'] ?? 'pending';
-                            $statusClass = 'badge-pending';
-                            $statusText = 'Belum Upload';
-
-                            if (isset($row['berkas']['accepted'])) {
-                                if ($row['berkas']['accepted'] == 1) {
-                                    $statusClass = 'badge-diterima';
-                                    $statusText = 'Disetujui';
-                                } elseif ($row['berkas']['accepted'] == 2) {
-                                    $statusClass = 'badge-ditolak';
-                                    $statusText = 'Ditolak';
-                                } elseif ($row['berkas']['accepted'] == 0) {
-                                    $statusClass = 'badge-process';
-                                    $statusText = 'Proses';
+                                if (isset($row['berkas']['accepted'])) {
+                                    if ($row['berkas']['accepted'] == 1) {
+                                        $statusClass = 'badge rounded-pill bg-success-subtle text-success border border-success-subtle';
+                                        $statusText = 'Disetujui';
+                                        $statusIcon = '<i class="bi bi-check-circle-fill me-1"></i>';
+                                    } elseif ($row['berkas']['accepted'] == 2) {
+                                        $statusClass = 'badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle';
+                                        $statusText = 'Ditolak';
+                                        $statusIcon = '<i class="bi bi-x-circle-fill me-1"></i>';
+                                    } elseif ($row['berkas']['accepted'] == 0) {
+                                        $statusClass = 'badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle';
+                                        $statusText = 'Proses';
+                                        $statusIcon = '<i class="bi bi-arrow-repeat me-1"></i>';
+                                    }
                                 }
-                            }
-                            
-                            // Get photo path
-                            $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . ($row['berkas']['foto'] ?? 'default.png');
-                        ?>
-                        <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
-                            <td><?= $i ?></td>
-                            <td>
-                                <div class="user-info">
-                                    <img src="<?= $photoPath ?>" alt="Avatar" class="user-avatar" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
-                                    <p class="user-name"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></p>
-                                </div>
-                            </td>
-                            <td>
-                                <?php if (!empty($row['judul_presentasi'])): ?>
-                                    <span class="text-dark"><?= htmlspecialchars($row['judul_presentasi']) ?></span>
-                                <?php else: ?>
-                                    <span class="text-muted fst-italic">-</span>
-                                <?php endif; ?>
-                            </td>
-                            <td><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
-                            <td><?= htmlspecialchars($row['jurusan'] ?? '-') ?></td>
-                            <td><?= htmlspecialchars($row['kelas'] ?? '-') ?></td>
-                            <td class="text-center">
-                                <span class="badge-status <?= $statusClass ?>">
-                                    <?= $statusText ?>
-                                </span>
-                            </td>
-                            <td>
-                                    <div class="action-btns">
-                                        <button class="btn-action btn-view" title="Lihat Detail"
-                                                data-id="<?= $row['id'] ?>"
-                                                data-userid="<?= $row['idUser'] ?>"
-                                                data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>"
-                                                data-stambuk="<?= htmlspecialchars($row['stambuk'] ?? '') ?>"
-                                                data-jurusan="<?= htmlspecialchars($row['jurusan'] ?? '') ?>"
-                                                data-kelas="<?= htmlspecialchars($row['kelas'] ?? '') ?>"
-                                                data-alamat="<?= htmlspecialchars($row['alamat'] ?? '') ?>"
-                                                data-tempat_lahir="<?= htmlspecialchars($row['tempat_lahir'] ?? '') ?>"
-                                                data-notelp="<?= htmlspecialchars($row['notelp'] ?? '') ?>"
-                                                data-tanggal_lahir="<?= htmlspecialchars($row['tanggal_lahir'] ?? '') ?>"
-                                                data-jenis_kelamin="<?= htmlspecialchars($row['jenis_kelamin'] ?? '') ?>"
-                                                data-judul_presentasi="<?= htmlspecialchars($row['judul_presentasi'] ?? '') ?>"
-                                                data-foto="<?= $row['berkas']['foto'] ?? '' ?>"
-                                                data-cv="<?= $row['berkas']['cv'] ?? '' ?>"
-                                                data-transkrip="<?= $row['berkas']['transkrip_nilai'] ?? '' ?>"
-                                                data-surat="<?= $row['berkas']['surat_pernyataan'] ?? '' ?>"
-                                                data-berkas_accepted="<?= $row['berkas']['accepted'] ?? '' ?>"
-                                                data-makalah="<?= $row['presentasi']['makalah'] ?? '' ?>"
-                                                data-ppt="<?= $row['presentasi']['ppt'] ?? ''?>">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </button>
-                                        
-                                        <?php if (!isset($row['berkas']['accepted']) || $row['berkas']['accepted'] === null): ?>
-                                            <!-- Button Kirim Reminder untuk yang belum upload -->
-                                            <button class="btn-action btn-reminder" 
-                                                    title="Kirim Reminder" 
+                                
+                                // Get photo path
+                                $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . ($row['berkas']['foto'] ?? 'default.png');
+                            ?>
+                            <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
+                                <td class="text-center fw-medium text-secondary"><?= $i ?></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <img src="<?= $photoPath ?>" alt="Avatar" class="rounded-circle border shadow-sm" style="width: 40px; height: 40px; object-fit: cover;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
+                                        <p class="mb-0 fw-bold text-dark small"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <?php if (!empty($row['judul_presentasi'])): ?>
+                                        <span class="text-dark small"><?= htmlspecialchars($row['judul_presentasi']) ?></span>
+                                    <?php else: ?>
+                                        <span class="text-muted fst-italic small">-</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-secondary small"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
+                                <td class="text-secondary small"><?= htmlspecialchars($row['jurusan'] ?? '-') ?></td>
+                                <td class="text-secondary small"><?= htmlspecialchars($row['kelas'] ?? '-') ?></td>
+                                <td class="text-center">
+                                    <span class="<?= $statusClass ?> px-3 py-2 fw-medium">
+                                        <?= $statusIcon ?><?= $statusText ?>
+                                    </span>
+                                </td>
+                                <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-sm btn-outline-primary btn-view" title="Lihat Detail"
                                                     data-id="<?= $row['id'] ?>"
                                                     data-userid="<?= $row['idUser'] ?>"
-                                                    data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>">
-                                                <i class="bi bi-bell"></i>
+                                                    data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>"
+                                                    data-stambuk="<?= htmlspecialchars($row['stambuk'] ?? '') ?>"
+                                                    data-jurusan="<?= htmlspecialchars($row['jurusan'] ?? '') ?>"
+                                                    data-kelas="<?= htmlspecialchars($row['kelas'] ?? '') ?>"
+                                                    data-alamat="<?= htmlspecialchars($row['alamat'] ?? '') ?>"
+                                                    data-tempat_lahir="<?= htmlspecialchars($row['tempat_lahir'] ?? '') ?>"
+                                                    data-notelp="<?= htmlspecialchars($row['notelp'] ?? '') ?>"
+                                                    data-tanggal_lahir="<?= htmlspecialchars($row['tanggal_lahir'] ?? '') ?>"
+                                                    data-jenis_kelamin="<?= htmlspecialchars($row['jenis_kelamin'] ?? '') ?>"
+                                                    data-judul_presentasi="<?= htmlspecialchars($row['judul_presentasi'] ?? '') ?>"
+                                                    data-foto="<?= $row['berkas']['foto'] ?? '' ?>"
+                                                    data-cv="<?= $row['berkas']['cv'] ?? '' ?>"
+                                                    data-transkrip="<?= $row['berkas']['transkrip_nilai'] ?? '' ?>"
+                                                    data-surat="<?= $row['berkas']['surat_pernyataan'] ?? '' ?>"
+                                                    data-berkas_accepted="<?= $row['berkas']['accepted'] ?? '' ?>"
+                                                    data-makalah="<?= $row['presentasi']['makalah'] ?? '' ?>"
+                                                    data-ppt="<?= $row['presentasi']['ppt'] ?? ''?>">
+                                                <i class="bi bi-pencil-square"></i>
                                             </button>
-                                        <?php endif; ?>
-                                        
-                                        <button class="btn-action btn-delete" title="Hapus" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
-                                    </div>
+                                            
+                                            <?php if (!isset($row['berkas']['accepted']) || $row['berkas']['accepted'] === null): ?>
+                                                <!-- Button Kirim Reminder untuk yang belum upload -->
+                                                <button class="btn btn-sm btn-outline-warning btn-reminder" 
+                                                        title="Kirim Reminder" 
+                                                        data-id="<?= $row['id'] ?>"
+                                                        data-userid="<?= $row['idUser'] ?>"
+                                                        data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>">
+                                                    <i class="bi bi-bell"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                            
+                                            <button class="btn btn-sm btn-outline-danger btn-delete" title="Hapus" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </div>
 
-                            </td>
-                        </tr>
-                        <?php $i++; ?>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                                </td>
+                            </tr>
+                            <?php $i++; ?>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </main>
@@ -1205,7 +751,7 @@ $result = $result ?? [];
         console.log('Daftar Peserta script loaded');
         
         // Initialize DataTable
-        var table = $('#daftar').DataTable({
+        var table = $('#daftarPesertaTable').DataTable({
         dom: 'rtip', // Remove default search and length selector
         pageLength: 10,
         language: {

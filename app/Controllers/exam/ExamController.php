@@ -113,4 +113,24 @@ class ExamController extends Controller {
         $soal = $soalExam->getSoalByBankId($bankId);
         return $soal == null ? [] : $soal;
     }
+
+    /**
+     * Prepare all data for admin exam management page
+     * Controller acts as coordinator between Model and View
+     */
+    public static function getAdminExamPageData(): array {
+        $bankModel = new \App\Model\Exam\BankSoal();
+        $soalModel = new SoalExam();
+        
+        // Get data from Models
+        $bankSoalList = $bankModel->getAllBanks() ?? [];
+        $allSoal = $soalModel->getAll() ?? [];
+        $stats = $bankModel->getExamStatistics();
+        
+        return [
+            'bankSoalList' => $bankSoalList,
+            'allSoal' => $allSoal,
+            'stats' => $stats
+        ];
+    }
 }

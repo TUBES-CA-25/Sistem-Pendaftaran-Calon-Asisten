@@ -48,6 +48,11 @@ Router::post("/addingsoal",[new SoalController,'saveSoal']);
 Router::post("/deletesoal",[new SoalController,'deleteSoal']);
 Router::get("/soal/export",[new SoalController,'exportSoal']);
 Router::post("/updatesoal",[new SoalController,'updateSoal']);
+
+Router::post("/importSoal", [new SoalController, 'importSoal']);
+Router::get("/exportSoal", [new SoalController, 'exportSoal']);
+Router::get("/getBankDetails", [new SoalController, 'getBankDetails']);
+Router::get("/downloadTemplatesoal", [new SoalController, 'downloadTemplate']);
 Router::post("/absensi",[new AbsensiUserController, 'saveData']);
 Router::post("/wawancara",[new WawancaraController, 'save']);
 Router::post("/updatewawancara",[new WawancaraController, 'update']);
