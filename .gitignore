@@ -1,0 +1,37 @@
+# Composer Dependencies
+/vendor/
+composer.phar
+
+# Environment Variables (Secrets)
+.env
+config/config.php
+app/config/config.php
+
+# Node Modules (if any)
+node_modules/
+npm-debug.log
+
+# VS Code / IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs
+*.njsproj
+*.sln
+*.swp
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Uploads (Keep the folder, ignore the files)
+/public/uploads/*
+!/public/uploads/.gitkeep
+/res/imageUser/*
+!/res/imageUser/.gitkeep
+/res/documents/*
+!/res/documents/.gitkeep
+
+# Temporary Files
+/tmp/
+/cache/
