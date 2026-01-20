@@ -166,7 +166,7 @@ window.removeBankFromDropdowns = function(bankId) {
 }
 
 // Initialize Event Listeners
-(function() {
+;(function() {
     // Make these functions global so they can be called directly from HTML
     window.updateImportButtonState = function() {
         const importSelect = document.getElementById('selectedBankSoalImport');
@@ -207,10 +207,11 @@ window.removeBankFromDropdowns = function(bankId) {
             // Try to get breakdown from window.bankSoalList if available
             if (window.bankSoalList) {
                 const bank = window.bankSoalList.find(b => b.id == bankId);
+                
                 if (bank) {
-                    totalEl.textContent = bank.jumlah_soal || bank.pg_count + bank.essay_count || totalCount;
-                    pgEl.textContent = bank.pg_count || bank.jumlah_pg || '0';
-                    essayEl.textContent = bank.essay_count || bank.jumlah_essay || '0';
+                    totalEl.textContent = bank.jumlah_soal || '0';
+                    pgEl.textContent = bank.pg_count || '0';
+                    essayEl.textContent = bank.essay_count || '0';
                 } else {
                     // Fallback to just showing total
                     totalEl.textContent = totalCount;

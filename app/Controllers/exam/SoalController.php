@@ -135,21 +135,52 @@ class SoalController extends Controller
 
     public function downloadTemplate()
     {
-        $file = __DIR__ . '/../../../../public/Assets/templates/template_soal.csv';
-        if (file_exists($file)) {
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/csv');
-            header('Content-Disposition: attachment; filename="template_soal.csv"');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($file));
-            readfile($file);
-            exit;
-        } else {
-            http_response_code(404);
-            echo "Template file not found.";
+        // Headers for the template
+        $headers = [
+            'Deskripsi Soal',
+            'Tipe Soal (pilihan_ganda/essay)',
+            'Pilihan A',
+            'Pilihan B',
+            'Pilihan C',
+            'Pilihan D',
+            'Pilihan E (Opsional)',
+            'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
+        ];
+
+        // Clean output buffer
+        if (ob_get_level()) {
+            ob_end_clean();
         }
+
+        header('Content-Description: File Transfer');
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="template_soal.csv"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+
+        $output = fopen('php://output', 'w');
+        
+        // Add BOM for Excel compatibility
+        fputs($output, "\xEF\xBB\xBF");
+        
+        fputcsv($output, $headers);
+        
+        // Add an example row (optional, but helpful)
+        $exampleRow = [
+            'Contoh Soal: 1 + 1 = ?',
+            'pilihan_ganda',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            'B'
+        ];
+        fputcsv($output, $exampleRow);
+        
+        fclose($output);
+        exit;
     }
 
     public function deleteSoal()
@@ -310,6 +341,9 @@ class SoalController extends Controller
     }
 
     public function getBankQuestions() {
+        // Clean any previous output (warnings, notices, whitespace)
+        if (ob_get_level()) ob_end_clean();
+        
         header('Content-Type: application/json');
         try {
             $bankId = $_POST['bank_id'] ?? 0;
@@ -681,20 +715,24 @@ class SoalController extends Controller
                 ob_end_clean();
             }
             
-            // Use CSV extension to avoid Excel format warning
-            $filename = "Export_Bank_" . preg_replace('/[^a-zA-Z0-9]/', '_', $bank['nama']) . "_" . date('Ymd') . ".csv";
+            // Use XLS extension
+            $filename = "Export_Bank_" . preg_replace('/[^a-zA-Z0-9]/', '_', $bank['nama']) . "_" . date('Ymd') . ".xls";
             
-            // Force download headers
-            header('Content-Type: text/csv; charset=utf-8');
+            // Force download headers for Excel
+            header('Content-Type: application/vnd.ms-excel');
             header("Content-Disposition: attachment; filename=\"$filename\"");
             header("Pragma: no-cache");
             header("Expires: 0");
 
-            // Open output stream
-            $output = fopen('php://output', 'w');
-            
-            // Add BOM (Byte Order Mark) for Excel to recognize UTF-8 automatically
-            fputs($output, "\xEF\xBB\xBF");
+            // Open HTML wrapper for Excel
+            echo '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+            echo '<head>';
+            echo '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Bank Soal</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->';
+            echo '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/>';
+            echo '<style>td { mso-number-format:"\@"; } .header { font-weight: bold; background-color: #f0f0f0; }</style>'; // Force text format for all cells and basic styling
+            echo '</head>';
+            echo '<body>';
+            echo '<table border="1">';
             
             // Headers
             $headers = [
@@ -707,7 +745,13 @@ class SoalController extends Controller
                 'Pilihan E (Opsional)',
                 'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
             ];
-            fputcsv($output, $headers);
+            
+            echo '<thead><tr>';
+            foreach ($headers as $header) {
+                echo '<th class="header" style="background-color: #DDEBF7; height: 30px; vertical-align: middle;">' . htmlspecialchars($header) . '</th>';
+            }
+            echo '</tr></thead>';
+            echo '<tbody>';
 
             foreach ($soalList as $soal) {
                 
@@ -744,23 +788,22 @@ class SoalController extends Controller
                     }
                 }
                 
-                // Construct Row Array
-                $row = [
-                    $deskripsi,
-                    $tipe,
-                    $opts['A'],
-                    $opts['B'],
-                    $opts['C'],
-                    $opts['D'],
-                    $opts['E'],
-                    $soal['jawaban']
-                ];
-                
-                // Write row to CSV
-                fputcsv($output, $row);
+                echo '<tr>';
+                echo '<td>' . htmlspecialchars($deskripsi) . '</td>';
+                echo '<td>' . htmlspecialchars($tipe) . '</td>';
+                echo '<td>' . htmlspecialchars($opts['A']) . '</td>';
+                echo '<td>' . htmlspecialchars($opts['B']) . '</td>';
+                echo '<td>' . htmlspecialchars($opts['C']) . '</td>';
+                echo '<td>' . htmlspecialchars($opts['D']) . '</td>';
+                echo '<td>' . htmlspecialchars($opts['E']) . '</td>';
+                echo '<td>' . htmlspecialchars($soal['jawaban']) . '</td>';
+                echo '</tr>';
             }
 
-            fclose($output);
+            echo '</tbody>';
+            echo '</table>';
+            echo '</body>';
+            echo '</html>';
             exit();
 
         } catch (\Exception $e) {
