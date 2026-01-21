@@ -257,6 +257,15 @@ class HomeController extends Controller
             }
         }
 
+        // Tambahkan data biodata, user, dan photo
+        $biodata = ProfileController::viewBiodata();
+        $user = ProfileController::viewUser();
+        $photo = BerkasUserController::viewPhoto();
+
+        // Tambahkan data dokumen/berkas
+        $berkas = BerkasUserController::viewBerkas();
+        $dokumen = $this->getDokumenStatus($berkas);
+
         return [
             'notifikasi' => NotificationControllers::getMessageById() ?? [],
             'tahapanSelesai' => DashboardUserController::getNumberTahapanSelesai(),
@@ -272,6 +281,44 @@ class HomeController extends Controller
                 ["7", "Wawancara Asisten", DashboardUserController::getAbsensiWawancaraI(), "tahap ini"],
                 ["8", "Wawancara Kepala Lab 1", DashboardUserController::getAbsensiWawancaraII(), "tahap ini"],
                 ["9", "Wawancara Kepala Lab 2", DashboardUserController::getAbsensiWawancaraIII(), "tahap ini"],
+            ],
+            'biodata' => $biodata,
+            'user' => $user,
+            'photo' => $photo['foto'] ?? 'default.png',
+            'dokumen' => $dokumen,
+        ];
+    }
+
+    /**
+     * Get status dokumen/berkas user
+     */
+    private function getDokumenStatus($berkas): array
+    {
+        return [
+            [
+                'nama' => 'Ijazah Terakhir',
+                'status' => $berkas['statusIjazah'] ?? 'Menunggu',
+                'jumlah' => 1
+            ],
+            [
+                'nama' => 'Curriculum Vitae (CV)',
+                'status' => $berkas['statusCV'] ?? 'Menunggu',
+                'jumlah' => 1
+            ],
+            [
+                'nama' => 'Kartu Tanda Mahasiswa (KTM)',
+                'status' => $berkas['statusKTM'] ?? 'Menunggu',
+                'jumlah' => 1
+            ],
+            [
+                'nama' => 'Transkrip Nilai',
+                'status' => $berkas['statusTranskrip'] ?? 'Menunggu',
+                'jumlah' => 1
+            ],
+            [
+                'nama' => 'Surat Keterangan Sehat',
+                'status' => $berkas['statusSuratSehat'] ?? 'Menunggu',
+                'jumlah' => 1
             ]
         ];
     }

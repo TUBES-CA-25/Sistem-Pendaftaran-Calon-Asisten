@@ -29,12 +29,12 @@
   /* ==============================
      NEUTRAL COLORS
      ============================== */
-  --bs-body-bg: #f1f5f9;
+  --bs-body-bg: #ffffff;
   --bs-body-color: #333;
   --color-dark: #333;
   --color-dark-variant: #677483;
   --color-light: rgba(132, 139, 200, 0.18);
-  --color-background: #f1f5f9;
+  --color-background: #ffffff;
 
   /* ==============================
      TYPOGRAPHY
@@ -656,7 +656,7 @@ body {
 
 .navbar-action-btn:hover,
 .navbar-action-btn:focus {
-  background: #f1f5f9;
+  background: #f8f9fa;
   color: #3dc2ec;
   border-color: #d1d5db;
 }
@@ -697,7 +697,7 @@ body {
 
 .page-navbar-user .navbar-profile-btn:hover,
 .page-navbar-user .navbar-profile-btn:focus {
-  background: #f1f5f9;
+  background: #f8f9fa;
   color: #1f2937;
   border-color: #d1d5db;
 }
@@ -749,7 +749,7 @@ body {
 }
 
 .navbar-dropdown .dropdown-item:hover {
-  background: #f1f5f9;
+  background: #f8f9fa;
 }
 
 .navbar-dropdown .dropdown-item.text-danger:hover {
@@ -1155,7 +1155,7 @@ body {
 
 .dataTables_wrapper table.dataTable.stripe tbody tr.odd:hover,
 .dataTables_wrapper table.dataTable.display tbody tr.odd:hover {
-  background-color: #f1f5f9;
+  background-color: #f8f9fa;
 }
 
 /* Search Box */
@@ -1299,4 +1299,145 @@ body {
 /* Hide default DataTables search to use custom Navbar search */
 #daftarPesertaTable_filter {
     display: none !important;
+}
+
+/* ==============================
+   DASHBOARD SPECIFIC STYLES
+   ============================== */
+
+/* Circular Progress Animation */
+.progress-ring-circle {
+    transition: stroke-dashoffset 0.8s ease-in-out;
+    stroke-linecap: round;
+}
+
+.progress-ring-circle-bg {
+    opacity: 0.3;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.25rem;
+}
+
+.calendar-date {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+    padding: 0.5rem;
+}
+
+.calendar-date:hover {
+    background: #f8f9fa;
+}
+
+.calendar-date.active {
+    background: var(--bs-primary);
+    color: white;
+    font-weight: 600;
+}
+
+.calendar-date.today {
+    border: 2px solid var(--bs-primary);
+    font-weight: 600;
+}
+
+.calendar-date.other-month {
+    color: #9ca3af;
+    opacity: 0.5;
+}
+
+/* Status Stepper Line Animation */
+.stepper-line {
+    transition: width 0.6s ease-in-out;
+}
+
+/* Profile Image Hover Effect */
+.card-body img.rounded-circle {
+    transition: transform 0.3s ease;
+}
+
+.card-body img.rounded-circle:hover {
+    transform: scale(1.05);
+}
+
+/* Biodata Icon Box Hover */
+.rounded-3.bg-primary.bg-opacity-10,
+.rounded-3.bg-success.bg-opacity-10,
+.rounded-3.bg-info.bg-opacity-10,
+.rounded-3.bg-warning.bg-opacity-10,
+.rounded-3.bg-danger.bg-opacity-10,
+.rounded-3.bg-secondary.bg-opacity-10 {
+    transition: all 0.2s ease;
+}
+
+.col-md-6:hover .rounded-3.bg-primary.bg-opacity-10 {
+    background-color: rgba(61, 194, 236, 0.2) !important;
+    transform: scale(1.05);
+}
+
+.col-md-6:hover .rounded-3.bg-success.bg-opacity-10 {
+    background-color: rgba(76, 175, 80, 0.2) !important;
+    transform: scale(1.05);
+}
+
+.col-md-6:hover .rounded-3.bg-info.bg-opacity-10 {
+    background-color: rgba(61, 194, 236, 0.2) !important;
+    transform: scale(1.05);
+}
+
+.col-md-6:hover .rounded-3.bg-warning.bg-opacity-10 {
+    background-color: rgba(255, 193, 7, 0.2) !important;
+    transform: scale(1.05);
+}
+
+.col-md-6:hover .rounded-3.bg-danger.bg-opacity-10 {
+    background-color: rgba(220, 38, 38, 0.2) !important;
+    transform: scale(1.05);
+}
+
+.col-md-6:hover .rounded-3.bg-secondary.bg-opacity-10 {
+    background-color: rgba(108, 117, 125, 0.2) !important;
+    transform: scale(1.05);
+}
+
+/* Responsive Dashboard */
+@media (max-width: 768px) {
+    /* Calendar responsive */
+    .calendar-date {
+        font-size: 0.75rem;
+        padding: 0.25rem;
+    }
+
+    .calendar-grid {
+        gap: 0.125rem;
+    }
+
+    /* Stepper responsive - adjust label size */
+    .stepper-line + div small {
+        font-size: 0.65rem !important;
+    }
+
+    /* Progress ring smaller on mobile */
+    .progress-ring {
+        width: 150px !important;
+        height: 150px !important;
+    }
+
+    /* Biodata cards stack better */
+    .card-body .col-md-6 {
+        margin-bottom: 1rem;
+    }
+
+    /* Greeting text smaller */
+    .display-6 {
+        font-size: 1.75rem !important;
+    }
 }

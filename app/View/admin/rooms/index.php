@@ -7,9 +7,9 @@
 $ruanganList = $ruanganList ?? [];
 ?>
 
-<!-- Duplicate CSS links removed - Bootstrap is already loaded in mainAdmin.php -->
-
 <main>
+
+
     <!-- SECTION: LIST VIEW -->
     <div id="ruanganListSection">
         <?php
@@ -20,15 +20,16 @@ $ruanganList = $ruanganList ?? [];
         ?>
 
         <div class="container-fluid px-4 pb-4">
-            <!-- Controls Bar -->
-            <div class="card border-0 shadow-sm mb-4 rounded-4">
-                <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <div class="position-relative" style="width: 300px;">
-                        <i class="bi bi-search position-absolute text-secondary" style="left: 15px; top: 50%; transform: translateY(-50%);"></i>
-                        <input type="text" id="searchInput" class="form-control bg-light border-0 ps-5" placeholder="Cari ruangan..." style="border-radius: 8px;">
+            <!-- Controls Toolbar -->
+            <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3 bg-white">
+                    <div class="position-relative flex-grow-1" style="max-width: 400px;">
+                        <i class="bi bi-search position-absolute text-muted" style="left: 18px; top: 50%; transform: translateY(-50%); font-size: 1.1rem;"></i>
+                        <input type="text" id="searchInput" class="form-control form-control-lg bg-light border-0 ps-5 fs-6" placeholder="Cari ruangan..." style="border-radius: 12px;">
                     </div>
-                    <button class="btn btn-primary px-4 py-2 fw-medium shadow-sm" style="border-radius: 8px;" data-bs-toggle="modal" data-bs-target="#tambahRuanganModal">
-                        <i class="bi bi-plus-lg me-2"></i>Tambah Ruangan
+                    <button class="btn btn-primary btn-lg px-4 fs-6 fw-semibold shadow-sm d-flex align-items-center gap-2" style="border-radius: 12px;" data-bs-toggle="modal" data-bs-target="#tambahRuanganModal">
+                        <i class="bi bi-plus-lg"></i>
+                        <span>Tambah Ruangan</span>
                     </button>
                 </div>
             </div>
@@ -36,41 +37,66 @@ $ruanganList = $ruanganList ?? [];
             <!-- Grid -->
             <div class="row g-4" id="ruanganGrid">
                 <?php if (empty($ruanganList)) { ?>
-                    <div class="col-12 text-center py-5">
-                        <div class="bg-white p-5 rounded-4 shadow-sm d-inline-block">
-                            <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
-                            <p class="text-muted m-0">Belum ada data ruangan.</p>
+                    <div class="col-12 py-5">
+                        <div class="card border-0 shadow-sm rounded-4 p-5 text-center mx-auto" style="max-width: 500px;">
+                             <div class="mb-3 d-inline-flex align-items-center justify-content-center rounded-circle bg-light text-primary" style="width: 80px; height: 80px;">
+                                <i class="bi bi-buildings fs-1"></i>
+                             </div>
+                             <h4 class="fw-bold text-dark">Belum ada Ruangan</h4>
+                             <p class="text-muted mb-4">Mulai dengan menambahkan ruangan baru untuk praktikum.</p>
+                             <div>
+                                 <button class="btn btn-outline-primary rounded-pill px-4 fw-medium" data-bs-toggle="modal" data-bs-target="#tambahRuanganModal">
+                                    <i class="bi bi-plus-lg me-1"></i> Tambah Sekarang
+                                 </button>
+                             </div>
                         </div>
                     </div>
                 <?php } else { ?>
                     <?php foreach ($ruanganList as $ruangan) { ?>
                         <div class="col-md-6 col-lg-4 col-xl-3 room-item">
-                            <div class="card h-100 border-0 shadow-sm rounded-4 room-card cursor-pointer" 
+                            <div class="card h-100 border-0 shadow-sm hover-elevate rounded-4 overflow-hidden room-card cursor-pointer position-relative group-hover" 
                                 data-id="<?= $ruangan['id'] ?>" 
-                                data-name="<?= htmlspecialchars($ruangan['nama']) ?>">
-                                <div class="card-header border-0 d-flex align-items-center justify-content-center py-5 rounded-top-4" 
-                                    style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);">
-                                    <i class="bi bi-buildings-fill text-primary" style="font-size: 3.5rem;"></i>
-                                </div>
-                                <div class="card-body text-center p-4">
-                                    <h5 class="fw-bold text-dark mb-2 text-uppercase"><?= htmlspecialchars($ruangan['nama']) ?></h5>
-                                    <p class="text-secondary small mb-0 fw-medium">Ruangan Aktivitas Seleksi</p>
-                                </div>
-                                <div class="card-footer bg-white border-top border-light p-3 d-flex justify-content-between align-items-center rounded-bottom-4">
-                                    <span class="text-primary fw-medium small">Kelola <i class="bi bi-arrow-right"></i></span>
-                                    <div>
-                                        <button class="btn btn-light btn-sm text-primary me-1 btn-edit-room" 
+                                data-name="<?= htmlspecialchars($ruangan['nama']) ?>"
+                                style="transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);">
+                                
+                                <!-- Decorative Header -->
+                                <div class="position-absolute top-0 start-0 w-100" style="height: 6px; background: linear-gradient(90deg, #3dc2ec 0%, #2563eb 100%);"></div>
+
+                                <div class="card-body p-4 pt-5 d-flex flex-column align-items-center text-center">
+                                    <!-- Icon Container -->
+                                    <div class="mb-4 position-relative">
+                                        <div class="bg-primary bg-opacity-10 rounded-circle text-primary d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; transition: all 0.3s ease;">
+                                            <i class="bi bi-buildings-fill fs-1"></i>
+                                        </div>
+                                        <div class="position-absolute bottom-0 end-0 p-1 bg-white rounded-circle">
+                                             <div class="bg-success rounded-circle" style="width: 12px; height: 12px; border: 2px solid white;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Content -->
+                                    <h5 class="fw-bold text-dark mb-1 text-uppercase ls-1"><?= htmlspecialchars($ruangan['nama']) ?></h5>
+                                    <p class="text-muted small mb-4">Ruangan Praktikum</p>
+
+                                    <!-- Action Divider -->
+                                    <div class="w-100 border-top border-light mb-auto"></div>
+
+                                    <!-- Buttons (Always Visible but styled) -->
+                                    <div class="d-flex gap-2 mt-3 w-100 justify-content-center">
+                                         <button class="btn btn-light text-primary btn-sm px-3 py-2 rounded-3 flex-grow-1 fw-medium btn-edit-room d-flex align-items-center justify-content-center gap-2"
                                             data-id="<?= $ruangan['id'] ?>" 
                                             data-name="<?= htmlspecialchars($ruangan['nama']) ?>" 
                                             title="Ubah Nama">
-                                            <i class="bi bi-pencil-square"></i>
+                                            <i class="bi bi-pencil-square"></i> <span class="small">Ubah</span>
                                         </button>
-                                        <button class="btn btn-light btn-sm text-danger btn-delete-room" 
+                                        <button class="btn btn-light text-danger btn-sm px-3 py-2 rounded-3 flex-grow-1 fw-medium btn-delete-room d-flex align-items-center justify-content-center gap-2"
                                             data-id="<?= $ruangan['id'] ?>" 
-                                            title="Hapus Ruangan">
-                                            <i class="bi bi-trash"></i>
+                                            title="Hapus">
+                                            <i class="bi bi-trash"></i> <span class="small">Hapus</span>
                                         </button>
                                     </div>
+                                </div>
+                                <div class="card-footer bg-light border-0 py-2 text-center">
+                                     <small class="text-primary fw-semibold" style="font-size: 0.75rem;">Klik untuk detail peserta <i class="bi bi-arrow-right ms-1"></i></small>
                                 </div>
                             </div>
                         </div>
@@ -80,93 +106,102 @@ $ruanganList = $ruanganList ?? [];
         </div>
     </div>
 
+</main>
 
-    <!-- SECTION: DETAIL VIEW (FULL PAGE STYLE) -->
-    <div id="ruanganDetailSection" class="d-none">
-        
-        <!-- Header Detail -->
-        <div class="bg-primary text-white p-4 mb-4 rounded-4 shadow-sm mx-4 position-relative z-2">
-            <div class="d-flex justify-content-between align-items-center">
+<!-- SECTION: DETAIL VIEW (Outside main to avoid padding) -->
+<div id="ruanganDetailSection" class="d-none" style="position: fixed; top: 0; left: 250px; right: 0; bottom: 0; background: white; z-index: 1000; overflow-y: auto;">
+    
+    <!-- Simple Clean Header -->
+    <div class="bg-white border-bottom shadow-sm">
+        <div class="container-fluid p-0">
+            <!-- Back Button & Title -->
+            <div class="d-flex justify-content-between align-items-center px-4 py-4">
                 <div class="d-flex align-items-center gap-3">
-                    <button class="btn btn-light bg-opacity-25 text-white border-0 p-2 rounded-3" id="backToListBtn" title="Kembali">
-                        <i class="bi bi-arrow-left fs-4"></i>
+                    <button class="btn btn-light rounded-circle" id="backToListBtn" style="width: 40px; height: 40px;">
+                        <i class="bi bi-arrow-left"></i>
                     </button>
                     <div>
-                        <h2 id="detailRoomTitle" class="fw-bold m-0 fs-2">Nama Ruangan</h2>
-                        <div class="d-flex align-items-center gap-2 mt-1 opacity-75">
-                            <i class="bi bi-grid"></i>
-                            <span class="fs-6">Detail & Manajemen Peserta</span>
-                        </div>
+                        <h3 class="fw-bold text-dark mb-1" id="detailRoomTitle">Nama Ruangan</h3>
+                        <p class="text-muted small mb-0">Kelola peserta ruangan</p>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="container-fluid px-4 pb-4">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                <!-- Navigation Tabs -->
-                <div class="border-bottom px-4">
-                    <ul class="nav nav-tabs border-bottom-0 gap-4" id="pills-tab" role="tablist">
-                        <li class="nav-item">
-                            <button class="nav-link active py-4 text-secondary fw-semibold border-0 bg-transparent" id="pills-testulis-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab">
-                                <i class="bi bi-file-text me-2"></i>Tes Tulis
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link py-4 text-secondary fw-semibold border-0 bg-transparent" id="pills-presentasi-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab">
-                                <i class="bi bi-easel me-2"></i>Presentasi
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link py-4 text-secondary fw-semibold border-0 bg-transparent" id="pills-wawancara-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab">
-                                <i class="bi bi-chat-text me-2"></i>Wawancara
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Toolbar / Form Area -->
-                <div class="bg-light p-4 border-bottom">
-                    <div class="row align-items-center gy-3">
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark m-0">Daftar Peserta Terdaftar</h5>
-                            <p class="text-muted small m-0">Kelola peserta untuk aktivitas ini</p>
-                        </div>
-                        <div class="col-md-6">
-                            <form id="addParticipantForm" class="d-flex gap-2 justify-content-md-end">
-                                <select class="form-select" id="availableParticipants" required style="max-width: 300px;">
-                                    <option value="" selected disabled>Pilih Mahasiswa...</option>
-                                </select>
-                                <button type="submit" class="btn btn-primary px-4 text-nowrap">
-                                    <i class="bi bi-plus-lg me-2"></i>Tambah
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Table -->
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0 custom-table">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="ps-5 py-3 text-secondary text-uppercase text-xs fw-bold" style="width: 10%;">No</th>
-                                <th class="py-3 text-secondary text-uppercase text-xs fw-bold" style="width: 45%;">Nama Mahasiswa</th>
-                                <th class="py-3 text-secondary text-uppercase text-xs fw-bold" style="width: 25%;">Stambuk</th>
-                                <th class="text-center py-3 text-secondary text-uppercase text-xs fw-bold" style="width: 20%;">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="participantsTableBody">
-                            <tr><td colspan="4" class="text-center py-5 text-muted">Memuat data...</td></tr>
-                        </tbody>
-                    </table>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary" id="editRoomBtn" data-id="">
+                        <i class="bi bi-pencil me-2"></i>Edit
+                    </button>
+                    <button class="btn btn-outline-danger" id="deleteRoomBtn" data-id="">
+                        <i class="bi bi-trash me-2"></i>Hapus
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-        
 
-</main>
+    <div class="container-fluid px-4 py-4">
+        
+        <!-- Simple Table Card -->
+        <div class="card border-0 shadow-sm">
+            
+            <!-- Tabs -->
+            <div class="card-header bg-white border-bottom">
+                <ul class="nav nav-tabs border-0 card-header-tabs" id="roomTabs" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active" id="pills-testulis-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab" type="button">
+                            <i class="bi bi-file-text me-2"></i>Tes Tulis
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="pills-presentasi-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab" type="button">
+                            <i class="bi bi-easel me-2"></i>Presentasi
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="pills-wawancara-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab" type="button">
+                            <i class="bi bi-chat-text me-2"></i>Wawancara
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="card-body border-bottom bg-light">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" id="searchParticipants" class="form-control" placeholder="🔍 Cari mahasiswa...">
+                    </div>
+                    <div class="col-md-6">
+                        <form id="addParticipantForm" class="d-flex gap-2">
+                            <select class="form-select" id="availableParticipants" required>
+                                <option value="" selected disabled>Pilih Mahasiswa...</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary text-nowrap">
+                                <i class="bi bi-plus-lg me-2"></i>Tambah
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center" style="width: 5%;">No</th>
+                            <th style="width: 40%;">Mahasiswa</th>
+                            <th style="width: 20%;">Stambuk</th>
+                            <th class="text-center" style="width: 20%;">Status</th>
+                            <th class="text-center" style="width: 15%;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="participantsTableBody">
+                        <tr><td colspan="5" class="text-center py-4 text-muted">Memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modals -->
 <div class="modal fade" id="tambahRuanganModal" tabindex="-1" aria-hidden="true">
@@ -213,332 +248,21 @@ $ruanganList = $ruanganList ?? [];
 <!-- Bootstrap Confirmation Modal -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4">
+        <div class="modal-content border-0 rounded-4 shadow-lg">
             <div class="modal-body text-center p-4">
                 <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-circle mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2.5rem;">
                     <i class="bi bi-exclamation-lg"></i>
                 </div>
                 <h5 class="fw-bold mb-2">Konfirmasi Hapus</h5>
-                <p class="text-muted mb-4" id="deleteModalMessage">Apakah Anda yakin ingin menghapus peserta ini? <br>Tindakan ini tidak dapat dibatalkan.</p>
+                <p class="text-muted mb-4" id="deleteModalMessage">Apakah Anda yakin ingin menghapus data ini?<br>Tindakan ini tidak dapat dibatalkan.</p>
                 <div class="d-flex gap-3">
-                    <button type="button" class="btn btn-secondary flex-fill rounded-3 py-2" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" id="btnConfirmDelete" class="btn btn-danger flex-fill rounded-3 py-2">Ya, Hapus</button>
+                    <button type="button" class="btn btn-light flex-fill rounded-3 py-2 fw-medium" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" id="btnConfirmDelete" class="btn btn-danger flex-fill rounded-3 py-2 fw-medium">Ya, Hapus</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-
-<script>
-(function() {
-    // --- CONFIRMATION MODAL LOGIC (Bootstrap) ---
-    let deleteModalInstance = null;
-
-    function showConfirmDelete(onConfirm, message) {
-        if (message) document.getElementById('deleteModalMessage').innerHTML = message;
-
-        const btnConfirm = document.getElementById('btnConfirmDelete');
-        const newBtn = btnConfirm.cloneNode(true);
-        btnConfirm.parentNode.replaceChild(newBtn, btnConfirm);
-
-        newBtn.addEventListener('click', function() {
-            if (typeof onConfirm === 'function') onConfirm();
-            closeDeleteModal();
-        });
-
-        const modalEl = document.getElementById('deleteConfirmModal');
-        deleteModalInstance = new bootstrap.Modal(modalEl);
-        deleteModalInstance.show();
-    }
-
-    function closeDeleteModal() {
-        if (deleteModalInstance) {
-            deleteModalInstance.hide();
-        }
-    }
-
-    // Universal wrapper for AJAX and Direct Load
-    const initRoomsScript = function() {
-        $(document).ready(function () {
-            let currentRoomId = null;
-            let currentRoomName = '';
-            let currentType = 'tes_tulis'; // DEFAULT TYPE IS NOW tes_tulis
-
-        // --- NAVIGATION ---
-        function showDetailView(id, name) {
-            currentRoomId = id;
-            currentRoomName = name;
-            
-            $('#ruanganListSection').addClass('d-none');
-            $('#ruanganDetailSection').removeClass('d-none');
-            
-            $('#detailRoomTitle').text(name);
-            $('#editRoomBtn').data('id', id);
-            $('#deleteRoomBtn').data('id', id);
-            
-            // Activate Default Tab (Tes Tulis)
-            const triggerEl = document.querySelector('#pills-testulis-tab');
-            $(triggerEl).click(); 
-            
-            window.scrollTo(0, 0);
-        }
-
-        function showListView() {
-            currentRoomId = null;
-            $('#ruanganDetailSection').addClass('d-none');
-            $('#ruanganListSection').removeClass('d-none');
-        }
-
-        $('#backToListBtn').click(showListView);
-
-        // --- CLICKS ---
-        $(document).on('click', '.room-card', function(e) {
-            if($(e.target).closest('button').length) return;
-            showDetailView($(this).data('id'), $(this).data('name'));
-        });
-
-        // --- TABS & DATA ---
-        $('.nav-link').click(function() {
-            $('.nav-link').removeClass('active');
-            $(this).addClass('active');
-            
-            if(this.id === 'pills-presentasi-tab') currentType = 'presentasi';
-            else if(this.id === 'pills-testulis-tab') currentType = 'tes_tulis';
-            else if(this.id === 'pills-wawancara-tab') currentType = 'wawancara';
-            
-            loadParticipants();
-        });
-
-        function loadParticipants() {
-            if(!currentRoomId) return;
-            $('#participantsTableBody').html('<tr><td colspan="4" class="text-center py-5"><div class="spinner-border text-primary speed-fast" role="status"></div></td></tr>');
-            
-            $.ajax({
-                url: '<?= APP_URL ?>/getroomparticipants',
-                type: 'POST',
-                data: { id: currentRoomId, type: currentType },
-                dataType: 'json',
-                success: function(res) {
-                    if(res.status === 'success') {
-                        renderParticipants(res.assigned);
-                        renderAvailableOptions(res.available);
-                    } else {
-                        showAlert('Error: ' + res.message, false);
-                    }
-                },
-                error: function() {
-                    $('#participantsTableBody').html('<tr><td colspan="4" class="text-center text-danger py-5">Gagal memuat data. Periksa koneksi.</td></tr>');
-                }
-            });
-        }
-
-        function renderParticipants(users) {
-            const tbody = $('#participantsTableBody');
-            const thead = $('.custom-table thead tr');
-            
-            // Adjust header based on type
-            if(currentType === 'tes_tulis') {
-                if(thead.find('th').length === 4) {
-                    thead.find('th:nth-child(3)').after('<th class="text-center" style="width: 20%;">Status</th>');
-                }
-            } else {
-                if(thead.find('th').length === 5) {
-                    thead.find('th:nth-child(4)').remove(); // Remove Status column
-                }
-            }
-
-            tbody.empty();
-            if(users.length === 0) {
-                const colSpan = currentType === 'tes_tulis' ? 5 : 4;
-                tbody.html(`<tr><td colspan="${colSpan}" class="text-center text-muted py-5 fw-light">Belum ada peserta di aktivitas ini.</td></tr>`);
-                return;
-            }
-
-            users.forEach((u, index) => {
-                let statusBadge = '';
-                if(currentType === 'tes_tulis') {
-                    if(u.is_finished == 1) {
-                        statusBadge = `<td class="text-center"><span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">Selesai</span></td>`;
-                    } else {
-                        statusBadge = `<td class="text-center"><span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2 rounded-pill">Belum Selesai</span></td>`;
-                    }
-                }
-
-                tbody.append(`
-                    <tr>
-                        <td class="fw-bold ps-5 text-secondary">${index + 1}</td>
-                        <td class="fw-medium text-dark">${u.name || '-'}</td>
-                        <td class="text-secondary">${u.stambuk || '-'}</td>
-                        ${statusBadge}
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-outline-danger px-3 remove-participant" data-id="${u.id}" title="Hapus">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `);
-            });
-        }
-
-        function renderAvailableOptions(users) {
-            const select = $('#availableParticipants');
-            select.empty().append('<option value="" selected disabled>Pilih Mahasiswa...</option>');
-            users.forEach(u => {
-                select.append(`<option value="${u.id}">${u.name} (${u.stambuk})</option>`);
-            });
-        }
-
-        // --- FORMS ---
-        $('#addParticipantForm').on('submit', function(e) {
-            e.preventDefault();
-            const userId = $('#availableParticipants').val();
-            if(!userId) return;
-
-            $.ajax({
-                url: '<?= APP_URL ?>/assignparticipant',
-                type: 'POST',
-                data: { userId: userId, roomId: currentRoomId, type: currentType },
-                dataType: 'json',
-                success: function(res) {
-                    if(res.status === 'success') {
-                        loadParticipants();
-                        showAlert('Peserta berhasil ditambahkan', true);
-                    }
-                    else showAlert(res.message, false);
-                }
-            });
-        });
-
-        $(document).on('click', '.remove-participant', function() {
-            const userId = $(this).data('id');
-            const row = $(this).closest('tr');
-            
-            showConfirmDelete(() => {
-                $.ajax({
-                    url: '<?= APP_URL ?>/removeparticipant',
-                    type: 'POST',
-                    data: { userId: userId, type: currentType },
-                    dataType: 'json',
-                    success: function(res) {
-                        if(res.status === 'success') {
-                            row.fadeOut(300, () => loadParticipants());
-                            showAlert('Perubahan berhasil disimpan!', true);
-                        } else showAlert(res.message, false);
-                    }
-                });
-            }, 'Apakah Anda yakin ingin menghapus peserta ini?');
-        });
-
-        // --- EDIT/DELETE ROOM ---
-        $('#editRoomBtn').on('click', function() {
-            $('#updateRuanganId').val(currentRoomId);
-            $('#updateNamaRuangan').val(currentRoomName);
-            new bootstrap.Modal(document.getElementById('updateRuanganModal')).show();
-        });
-
-        $('#updateRuanganForm').on('submit', function(e) {
-            e.preventDefault();
-            $.ajax({
-                url: '<?= APP_URL ?>/updateruangan',
-                type: 'POST',
-                data: { id: $('#updateRuanganId').val(), namaRuangan: $('#updateNamaRuangan').val() },
-                dataType: 'json',
-                success: function(res) {
-                    if(res.status === 'success') {
-                        $('#detailRoomTitle').text($('#updateNamaRuangan').val());
-                        currentRoomName = $('#updateNamaRuangan').val();
-                        bootstrap.Modal.getInstance(document.getElementById('updateRuanganModal')).hide();
-                        showAlert('Nama ruangan diperbarui', true);
-                    } else showAlert(res.message, false);
-                }
-            });
-        });
-
-        $('#deleteRoomBtn').on('click', function() {
-            showConfirmDelete(() => {
-                $.ajax({
-                    url: '<?= APP_URL ?>/deleteruangan',
-                    type: 'POST',
-                    data: { id: currentRoomId },
-                    dataType: 'json',
-                    success: function(res) {
-                        if(res.status === 'success') {
-                            sessionStorage.setItem('pendingToast', JSON.stringify({
-                                 message: 'Ruangan berhasil dihapus!',
-                                 isSuccess: true
-                            }));
-                            location.reload();
-                        } else showAlert(res.message, false);
-                    }
-                });
-            }, 'Apakah Anda yakin ingin menghapus ruangan ini beserta seluruh datanya?');
-        });
-        
-        // --- ADD ROOM ---
-        $('#tambahRuanganForm').on('submit', function(e) {
-            e.preventDefault();
-            $.ajax({
-                url: '<?= APP_URL ?>/tambahruangan',
-                type: 'POST',
-                data: { namaRuangan: $('#namaRuangan').val() },
-                dataType: 'json',
-                success: function(res) {
-                    if(res.status === 'success') location.reload();
-                    else showAlert(res.message, false);
-                }
-            });
-        });
-
-        // --- LIST VIEW ACTIONS ---
-        $(document).on('click', '.btn-edit-room', function(e) {
-            e.stopPropagation(); // Prevent card click
-            const id = $(this).data('id');
-            const name = $(this).data('name');
-            
-            $('#updateRuanganId').val(id);
-            $('#updateNamaRuangan').val(name);
-            new bootstrap.Modal(document.getElementById('updateRuanganModal')).show();
-        });
-
-        $(document).on('click', '.btn-delete-room', function(e) {
-            e.stopPropagation(); // Prevent card click
-            const id = $(this).data('id');
-            currentRoomId = id; // Set for delete logic
-            
-            showConfirmDelete(() => {
-                $.ajax({
-                    url: '<?= APP_URL ?>/deleteruangan',
-                    type: 'POST',
-                    data: { id: currentRoomId },
-                    dataType: 'json',
-                    success: function(res) {
-                        if(res.status === 'success') {
-                            sessionStorage.setItem('pendingToast', JSON.stringify({
-                                 message: 'Ruangan berhasil dihapus!',
-                                 isSuccess: true
-                            }));
-                            location.reload();
-                        } else showAlert(res.message, false);
-                    }
-                });
-            }, 'Apakah Anda yakin ingin menghapus ruangan ini beserta seluruh datanya?');
-        });
-
-        // Search
-        $('#searchInput').on('keyup', function() {
-            var value = $(this).val().toLowerCase();
-            $('.room-item').filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-        });
-    };
-
-    if (typeof jQuery !== 'undefined') {
-        initRoomsScript();
-    } else {
-        document.addEventListener('DOMContentLoaded', initRoomsScript);
-    }
-})();
-</script>
+<!-- Load Custom Script -->
+<script src="<?= APP_URL ?>/Assets/Script/admin/rooms.js"></script>
