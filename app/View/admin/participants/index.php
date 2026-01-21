@@ -18,23 +18,6 @@ $result = $result ?? [];
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<style>
-/* Force table rows and cells to be white */
-#daftarPesertaTable tbody tr,
-#daftarPesertaTable tbody td {
-    background-color: #ffffff !important;
-}
-/* Ensure hover effect also stays white (or very light gray if desired, but user asked for white) */
-#daftarPesertaTable tbody tr:hover td {
-    background-color: #ffffff !important;
-}
-
-/* Override Bootstrap table-hover to keep white background */
-#daftarPesertaTable tbody tr:hover td {
-    background-color: #ffffff !important;
-}
-</style>
-
 <!-- Main Content -->
 <div class="container-fluid px-4">
     <!-- Table Card -->
@@ -45,19 +28,19 @@ $result = $result ?? [];
             <!-- Data Table -->
             <!-- Data Table -->
             <!-- Data Table -->
-            <div class="table-responsive">
-                <table id="daftarPesertaTable" class="table table-bordered table-hover align-middle mb-0" style="width:100%; border-color: #dee2e6; border-bottom: 1px solid #dee2e6;">
-                    <thead class="bg-white text-dark" style="background-color: #ffffff !important; background-image: none !important; color: #212529 !important;">
-                        <tr>
-                            <th class="text-center py-3" style="width: 50px;">No</th>
-                            <th class="text-center py-3" style="width: 100px;">Avatar</th>
-                            <th class="py-3">Nama Lengkap</th>
-                            <th class="py-3" style="white-space: nowrap;">Judul Presentasi</th>
-                            <th class="py-3">Stambuk</th>
-                            <th class="py-3">Jurusan</th>
-                            <th class="py-3">Kelas</th>
-                            <th class="text-center py-3">Status</th>
-                            <th class="text-center py-3" style="width: 150px;">Aksi</th>
+            <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+                <table id="daftarPesertaTable" class="table table-hover align-middle mb-0" style="width:100%;">
+                    <thead class="bg-white">
+                        <tr style="border-top: 1px solid #dee2e6; border-bottom: 2px solid #dee2e6;">
+                            <th class="text-center text-uppercase text-dark fw-bold py-3" style="width: 50px; font-size: 0.8rem;">No</th>
+                            <th class="text-center text-uppercase text-dark fw-bold py-3" style="width: 100px; font-size: 0.8rem;">Avatar</th>
+                            <th class="text-uppercase text-dark fw-bold py-3" style="font-size: 0.8rem;">Nama Lengkap</th>
+                            <th class="text-uppercase text-dark fw-bold py-3" style="font-size: 0.8rem; white-space: nowrap;">Judul Presentasi</th>
+                            <th class="text-uppercase text-dark fw-bold py-3" style="font-size: 0.8rem;">Stambuk</th>
+                            <th class="text-uppercase text-dark fw-bold py-3" style="font-size: 0.8rem;">Jurusan</th>
+                            <th class="text-uppercase text-dark fw-bold py-3" style="font-size: 0.8rem;">Kelas</th>
+                            <th class="text-center text-uppercase text-dark fw-bold py-3" style="font-size: 0.8rem;">Status</th>
+                            <th class="text-center text-uppercase text-dark fw-bold py-3" style="width: 150px; font-size: 0.8rem;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,24 +49,20 @@ $result = $result ?? [];
                             <?php
                                 // Determine status
                                 $status = $row['status'] ?? 'pending';
-                                // Bootstrap Badge Styles
-                                $statusClass = 'badge rounded-pill bg-secondary-subtle text-secondary border border-secondary-subtle'; // Default Pending
+                                // Bootstrap Badge Styles (Solid Colors)
+                                $statusClass = 'badge rounded-pill bg-secondary text-white fw-medium px-3 py-2'; // Default Pending/Belum Upload
                                 $statusText = 'Belum Upload';
-                                $statusIcon = '<i class="bi bi-hourglass-split me-1"></i>';
-
+                                
                                 if (isset($row['berkas']['accepted'])) {
                                     if ($row['berkas']['accepted'] == 1) {
-                                        $statusClass = 'badge rounded-pill bg-success-subtle text-success border border-success-subtle';
+                                        $statusClass = 'badge rounded-pill bg-success text-white fw-medium px-3 py-2';
                                         $statusText = 'Disetujui';
-                                        $statusIcon = '<i class="bi bi-check-circle-fill me-1"></i>';
                                     } elseif ($row['berkas']['accepted'] == 2) {
-                                        $statusClass = 'badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle';
+                                        $statusClass = 'badge rounded-pill bg-danger text-white fw-medium px-3 py-2';
                                         $statusText = 'Ditolak';
-                                        $statusIcon = '<i class="bi bi-x-circle-fill me-1"></i>';
                                     } elseif ($row['berkas']['accepted'] == 0) {
-                                        $statusClass = 'badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle';
+                                        $statusClass = 'badge rounded-pill bg-info text-white fw-medium px-3 py-2';
                                         $statusText = 'Proses';
-                                        $statusIcon = '<i class="bi bi-arrow-repeat me-1"></i>';
                                     }
                                 }
                                 
@@ -97,13 +76,13 @@ $result = $result ?? [];
                                 }
                                 $photoPath = $photoUrl;
                             ?>
-                            <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
+                            <tr style="border-bottom: 1px solid #f0f0f0;" data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
                                 <td class="text-center text-secondary py-3"><?= $i ?></td>
                                 <td class="text-center py-3">
                                     <img src="<?= $photoPath ?>" alt="Avatar" class="rounded-circle border" style="width: 45px; height: 45px; object-fit: cover;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
                                 </td>
                                 <td class="py-3">
-                                    <p class="mb-0 fw-bold text-dark" style="font-size: 0.95rem;"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></p>
+                                    <p class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></p>
                                     <small class="text-muted d-block" style="font-size: 0.75rem;">Mahasiswa</small>
                                 </td>
                                 <td class="py-3">
@@ -117,37 +96,14 @@ $result = $result ?? [];
                                 <td class="text-secondary small py-3"><?= htmlspecialchars($row['jurusan'] ?? '-') ?></td>
                                 <td class="text-secondary small py-3"><?= htmlspecialchars($row['kelas'] ?? '-') ?></td>
                                 <td class="text-center py-3">
-                                    <?php
-                                        // Custom Solid Badge Style matching reference
-                                        $badgeStyle = 'bg-secondary text-white'; // Default
-                                        $badgeLabel = 'Pending';
-                                        
-                                        if (isset($row['berkas']['accepted'])) {
-                                            if ($row['berkas']['accepted'] == 1) {
-                                                $badgeStyle = 'bg-success text-white'; // Lolos/Disetujui
-                                                $badgeLabel = 'Lolos';
-                                            } elseif ($row['berkas']['accepted'] == 2) {
-                                                $badgeStyle = 'bg-danger text-white'; // Ditolak
-                                                $badgeLabel = 'Ditolak';
-                                            } elseif ($row['berkas']['accepted'] == 0) {
-                                                $badgeStyle = 'bg-primary text-white'; // Proses
-                                                $badgeLabel = 'Proses';
-                                            }
-                                        } else {
-                                            // No status yet
-                                            $badgeStyle = 'bg-light text-secondary border';
-                                            $badgeLabel = 'Belum Ada';
-                                        }
-                                    ?>
-                                    <span class="badge <?= $badgeStyle ?> rounded-1 px-3 py-2 fw-medium" style="font-size: 0.75rem;">
-                                        <?= $badgeLabel ?>
+                                    <span class="<?= $statusClass ?>" style="font-size: 0.75rem;">
+                                        <?= $statusText ?>
                                     </span>
                                 </td>
                                 <td class="py-3">
                                         <div class="d-flex justify-content-center gap-2">
                                             <!-- View Button -->
-                                            <button class="btn btn-view p-2 rounded-3 border-0" 
-                                                    style="background-color: #E0F2FE; color: #0284C7; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
+                                            <button class="btn btn-sm btn-info bg-info-subtle text-info border-0 rounded-3 btn-view" 
                                                     title="Lihat Detail"
                                                     data-id="<?= $row['id'] ?>"
                                                     data-userid="<?= $row['idUser'] ?>"
@@ -173,8 +129,7 @@ $result = $result ?? [];
                                             
                                             <?php if (!isset($row['berkas']['accepted']) || $row['berkas']['accepted'] === null): ?>
                                                 <!-- Reminder Button -->
-                                                <button class="btn btn-reminder p-2 rounded-3 border-0" 
-                                                        style="background-color: #FEF3C7; color: #D97706; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
+                                                <button class="btn btn-sm btn-warning bg-warning-subtle text-warning border-0 rounded-3 btn-reminder" 
                                                         title="Kirim Reminder" 
                                                         data-id="<?= $row['id'] ?>"
                                                         data-userid="<?= $row['idUser'] ?>"
@@ -184,8 +139,7 @@ $result = $result ?? [];
                                             <?php endif; ?>
                                             
                                             <!-- Delete Button -->
-                                            <button class="btn btn-delete p-2 rounded-3 border-0" 
-                                                    style="background-color: #FEE2E2; color: #DC2626; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
+                                            <button class="btn btn-sm btn-danger bg-danger-subtle text-danger border-0 rounded-3 btn-delete" 
                                                     title="Hapus">
                                                 <i class="bi bi-trash3"></i>
                                             </button>
@@ -589,32 +543,6 @@ $result = $result ?? [];
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
     
-    #detailModal .badge-status {
-        font-weight: 600;
-        letter-spacing: 0.3px;
-    }
-    
-    .badge-diterima {
-        background: #d1fae5 !important;
-        color: #047857 !important;
-    }
-
-    .badge-process {
-        background: #dbeafe !important;
-        color: #1d4ed8 !important;
-    }
-
-    .badge-pending {
-        background: #e2e8f0 !important;
-        color: #64748b !important;
-    }
-
-    .badge-ditolak {
-        background: #fee2e2 !important;
-        color: #b91c1c !important;
-    }
-    
-    
     #detailModal .modal-footer .btn:hover {
         transform: translateY(-2px);
         transition: all 0.2s ease;
@@ -743,7 +671,6 @@ $result = $result ?? [];
 
 
 <!-- Load Custom JavaScript -->
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/common.js"></script>
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/admin/participants.js"></script>
 
 

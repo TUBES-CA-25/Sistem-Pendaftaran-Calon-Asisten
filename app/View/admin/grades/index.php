@@ -77,150 +77,97 @@ $nilai = $nilai ?? [];
         require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
-    <!-- Card Container -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-            <?php
-            // Calculate statistics
-            $totalMahasiswa = count($nilai);
-            $nilaiTinggi = 0;
-            $nilaiRendah = 0;
-            $belumDinilai = 0;
-
-            foreach ($nilai as $v) {
-                $total = $v['total'] ?? null;
-                if ($total === null || $total === '') {
-                    $belumDinilai++;
-                } elseif ((int)$total >= 70) {
-                    $nilaiTinggi++;
-                } else {
-                    $nilaiRendah++;
-                }
-            }
-            ?>
-
-            <!-- View List -->
-            <div id="view-list">
-                <!-- Stats Row using Bootstrap Grid -->
-                <div class="row g-3 mb-4">
-                    <div class="col-md-6 col-lg-3">
-                        <div class="stat-card">
-                            <div class="stat-value"><?= $totalMahasiswa ?></div>
-                            <div class="stat-label">Total Peserta</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="stat-card success">
-                            <div class="stat-value"><?= $nilaiTinggi ?></div>
-                            <div class="stat-label">Lulus (≥70)</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="stat-card warning">
-                            <div class="stat-value"><?= $nilaiRendah ?></div>
-                            <div class="stat-label">Tidak Lulus (<70)</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="stat-card">
-                            <div class="stat-value"><?= $belumDinilai ?></div>
-                            <div class="stat-label">Belum Dinilai</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Table Controls using Bootstrap -->
-                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
-                    <div class="position-relative" style="width: 280px; max-width: 100%;">
-                        <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-                        <input type="text" id="searchInput" class="form-control ps-5 rounded-3" placeholder="Cari nama atau stambuk...">
-                    </div>
-                </div>
-
-                <?php if (empty($nilai)): ?>
-                    <div class="text-center py-5 text-secondary">
-                        <i class="bi bi-inbox display-1 opacity-50"></i>
-                        <h3 class="h4 mt-3 mb-2">Belum Ada Data Nilai</h3>
-                        <p class="mb-0">Data nilai akan muncul setelah mahasiswa mengerjakan tes tertulis</p>
-                    </div>
-                <?php else: ?>
-                    <!-- Data Table using Bootstrap Table -->
-                    <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
-                        <table class="table table-hover align-middle mb-0" id="tableNilai">
-                            <thead class="table-primary text-white" style="background: var(--gradient-header);">
-                                <tr>
-                                    <th class="text-center" style="width: 60px;">No</th>
-                                    <th>Nama Mahasiswa</th>
-                                    <th>Stambuk</th>
-                                    <th style="width: 140px;">Nilai Tes</th>
-                                    <th style="width: 140px;">Status</th>
-                                    <th class="text-center" style="width: 120px;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php $i = 1; foreach ($nilai as $value): ?>
-                                    <?php
-                                    $nilaiTes = $value['nilai'] ?? '-';
-                                    $nilaiTotal = $value['total'] ?? null;
-
-                                    // Determine badge class using Bootstrap badges
-                                    $badgeClass = 'bg-secondary';
-                                    if ($nilaiTotal !== null && $nilaiTotal !== '') {
-                                        if ((int)$nilaiTotal >= 70) {
-                                            $badgeClass = 'bg-success';
-                                        } elseif ((int)$nilaiTotal >= 50) {
-                                            $badgeClass = 'bg-warning text-dark';
-                                        } else {
-                                            $badgeClass = 'bg-danger';
-                                        }
-                                    }
-                                    ?>
-                                    <tr>
-                                        <td class="text-center"><?= $i ?></td>
-                                        <td>
-                                            <strong><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></strong>
-                                        </td>
-                                        <td><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>
-                                        <td>
-                                            <span class="badge bg-warning text-dark rounded-pill px-3"><?= htmlspecialchars($nilaiTes) ?></span>
-                                        </td>
-                                        <td>
-                                            <?php
-                                            $statusLabel = 'Belum Dinilai';
-                                            $statusBadge = 'bg-secondary';
-
-                                            if ($nilaiTes !== '-' && $nilaiTes !== null && $nilaiTes !== '') {
-                                                $score = (int)$nilaiTes;
-                                                if ($score >= 70) {
-                                                    $statusLabel = 'Memenuhi';
-                                                    $statusBadge = 'bg-success';
-                                                } else {
-                                                    $statusLabel = 'Tidak Memenuhi';
-                                                    $statusBadge = 'bg-danger';
-                                                }
-                                            }
-                                            ?>
-                                            <span class="badge <?= $statusBadge ?> rounded-pill px-3">
-                                                <?= $statusLabel ?>
-                                            </span>
-                                        </td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-primary rounded-3 btn-detail"
-                                                    data-id="<?= htmlspecialchars($value['id'] ?? '') ?>"
-                                                    data-nama="<?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?>"
-                                                    data-stambuk="<?= htmlspecialchars($value['stambuk'] ?? '-') ?>"
-                                                    data-nilai="<?= htmlspecialchars($nilaiTes) ?>"
-                                                    data-total="<?= htmlspecialchars($nilaiTotal ?? '') ?>">
-                                                <i class="bi bi-eye"></i> Detail
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php $i++; endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
+    <div class="container-fluid px-4">
+        <!-- View List -->
+        <div id="view-list">
+        <!-- Search Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-3 mt-3 flex-wrap gap-3">
+            <div class="position-relative" style="width: 280px; max-width: 100%;">
+                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                <input type="text" id="searchInput" class="form-control ps-5 rounded-3" placeholder="Cari mahasiswa...">
             </div>
+        </div>
+
+        <?php if (empty($nilai)): ?>
+            <div class="text-center py-5 text-secondary">
+                <i class="bi bi-inbox display-1 opacity-50"></i>
+                <h3 class="h4 mt-3 mb-2">Belum ada peserta</h3>
+                <p class="mb-0">Data nilai akan muncul setelah mahasiswa mengerjakan tes tertulis</p>
+            </div>
+        <?php else: ?>
+            <!-- Clean Table -->
+            <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+                <table class="table table-bordered table-hover align-middle mb-0" id="tableNilai">
+                    <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <tr>
+                            <th class="text-center" style="width: 60px;">No</th>
+                            <th>Mahasiswa</th>
+                            <th>Stambuk</th>
+                            <th class="text-center" style="width: 120px;">Nilai Akhir</th>
+                            <th class="text-center" style="width: 140px;">Status</th>
+                            <th class="text-center" style="width: 120px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $i = 1; foreach ($nilai as $value): ?>
+                            <?php
+                            // Raw auto-calculated score
+                            $nilaiTes = $value['nilai'] ?? null;
+                            // Manual override/Final score
+                            $nilaiTotal = $value['total'] ?? null;
+
+                            // Determine which value to display
+                            // Priority: Total (Manual) > Nilai (Auto)
+                            $displayNilai = ($nilaiTotal !== null && $nilaiTotal !== '') ? $nilaiTotal : $nilaiTes;
+                            
+                            // Determine status badge
+                            $statusLabel = 'Belum Dinilai';
+                            $statusBadge = 'bg-secondary';
+
+                            if ($displayNilai !== null && $displayNilai !== '-' && $displayNilai !== '') {
+                                $score = (int)$displayNilai;
+                                if ($score >= 70) {
+                                    $statusLabel = 'Memenuhi';
+                                    $statusBadge = 'bg-success';
+                                } else {
+                                    $statusLabel = 'Tidak Memenuhi';
+                                    $statusBadge = 'bg-danger';
+                                }
+                            }
+                            ?>
+                            <tr>
+                                <td class="text-center"><?= $i ?></td>
+                                <td>
+                                    <strong><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></strong>
+                                </td>
+                                <td><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>
+                                <td class="text-center">
+                                    <span class="badge bg-info text-dark rounded-pill px-3">
+                                        <?= ($displayNilai !== null && $displayNilai !== '') ? $displayNilai : 'Belum ada' ?>
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge <?= $statusBadge ?> rounded-pill px-3">
+                                        <?= $statusLabel ?>
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-primary rounded-3 btn-detail"
+                                            data-id="<?= htmlspecialchars($value['id'] ?? '') ?>"
+                                            data-nama="<?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?>"
+                                            data-stambuk="<?= htmlspecialchars($value['stambuk'] ?? '-') ?>"
+                                            data-nilai="<?= htmlspecialchars($nilaiTes) ?>"
+                                            data-total="<?= htmlspecialchars($nilaiTotal ?? '') ?>">
+                                        <i class="bi bi-eye"></i> Detail
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php $i++; endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+    </div>
 
         <!-- View Detail (Inline) -->
         <div id="view-detail" class="d-none pt-4">
@@ -296,8 +243,8 @@ $nilai = $nilai ?? [];
                 </div>
             </div>
         </div>
-        </div>
     </div>
+</div>
 </main>
 
 <!-- Bootstrap Alert Modal (replacing custom alert modal) -->
@@ -305,7 +252,7 @@ $nilai = $nilai ?? [];
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-4 shadow-lg">
             <div class="modal-body text-center p-5">
-                <img id="alertGif" src="" alt="Status" class="mb-3" style="width: 80px; height: 80px; display: none;">
+                <i id="alertIcon" class="bi display-1 mb-3" style="display: none;"></i>
                 <p id="alertMessage" class="fs-5 fw-semibold mb-4">-</p>
                 <button type="button" class="btn btn-primary px-4 rounded-3" data-bs-dismiss="modal">Tutup</button>
             </div>
@@ -322,10 +269,12 @@ $(document).ready(function() {
     // Helper function to show alert using Bootstrap Modal
     function showAlert(message, isSuccess) {
         $('#alertMessage').text(message);
-        const gifUrl = isSuccess
-            ? '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/check.gif'
-            : '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/cross.gif';
-        $('#alertGif').attr('src', gifUrl).show();
+        
+        const iconClass = isSuccess 
+            ? 'bi-check-circle-fill text-success' 
+            : 'bi-x-circle-fill text-danger';
+            
+        $('#alertIcon').removeClass().addClass('bi display-1 mb-3 ' + iconClass).show();
         alertModalBS.show();
 
         // Auto hide after 2 seconds
@@ -499,6 +448,9 @@ $(document).ready(function() {
                                 statusText = 'Tidak Memenuhi';
                             }
                         }
+
+                        // Update Nilai Akhir Column (Index 3)
+                        tr.find('td:eq(3)').html(`<span class="badge bg-info text-dark rounded-pill px-3">${nilaiAkhir}</span>`);
 
                         // Update Status Column (Index 4)
                         tr.find('td:eq(4)').html(`<span class="badge ${badgeClass} rounded-pill px-3">${statusText}</span>`);

@@ -101,8 +101,8 @@ class NilaiAkhir extends Model
     public function getSoalAndJawaban($id)
     {
         $query = "SELECT s.deskripsi, s.pilihan, s.jawaban, j.jawaban as jawaban_user
-                  FROM soal s
-                  JOIN jawaban j ON s.id = j.id_soal
+                  FROM jawaban j
+                  LEFT JOIN soal s ON j.id_soal = s.id
                   WHERE j.id_mahasiswa = :id_mahasiswa";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(':id_mahasiswa', $id);

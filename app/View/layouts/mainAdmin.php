@@ -24,6 +24,9 @@
 
     <!-- DataTables Bootstrap 5 CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    
+    <!-- jQuery (Must be loaded before body for inline scripts) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -128,12 +131,15 @@
         const APP_URL = '<?php echo APP_URL; ?>';
         window.INITIAL_PAGE = '<?= $initialPage ?? 'dashboard' ?>';
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/common.js"></script>
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/app.js"></script>
+
+    <!-- Core Libs -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/sidebar/ScriptSidebar.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- App Scripts -->
+    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/common.js"></script>
+    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/app.js"></script>
+    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/sidebar/ScriptSidebar.js"></script>
 </body>
 </html>

@@ -9,397 +9,7 @@ $mahasiswaList = $mahasiswaList ?? [];
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-    body {
-        background: var(--bs-body-bg);
-        min-height: 100vh;
-    }
-
-    main {
-        padding: 0;
-        margin: -20px -20px -20px -20px;
-        width: calc(100% + 40px);
-    }
-
-/* Page Header Styles moved to components/PageHeader.php */
-
-    /* Card Container */
-    .card-content {
-        background: #fff;
-        border-radius: 0;
-        padding: 24px;
-        margin: 0;
-        min-height: calc(100vh - 140px);
-    }
-
-    /* Table Controls */
-    .table-controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        gap: 16px;
-        flex-wrap: wrap;
-    }
-
-    .search-box {
-        position: relative;
-        width: 280px;
-    }
-
-    .search-box input {
-        width: 100%;
-        padding: 10px 16px 10px 40px;
-        border: 1px solid #e0e0e0;
-        border-radius: var(--bs-border-radius);
-        font-size: 0.9rem;
-        transition: all 0.2s ease;
-    }
-
-    .search-box input:focus {
-        outline: none;
-        border-color: var(--bs-primary-dark);
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .search-box i {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #999;
-    }
-
-    /* Buttons */
-    .btn-add {
-        background: var(--gradient-header);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: var(--bs-border-radius);
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .btn-add:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        color: white;
-    }
-
-    /* Table Styling */
-    .data-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        border-radius: var(--bs-border-radius-lg);
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    }
-
-    .data-table thead th {
-        background: var(--bs-primary-dark);
-        color: #fff;
-        font-weight: 600;
-        padding: 16px 20px;
-        text-align: left;
-        vertical-align: middle;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .data-table tbody tr {
-        transition: all 0.2s ease;
-    }
-
-    .data-table tbody tr:nth-child(odd) {
-        background-color: #f8fafc;
-    }
-
-    .data-table tbody tr:nth-child(even) {
-        background-color: #fff;
-    }
-
-    .data-table tbody tr:hover {
-        background-color: rgba(37, 99, 235, 0.08);
-    }
-
-    .data-table td {
-        padding: 14px 20px;
-        color: #475569;
-        font-size: 0.95rem;
-        border-bottom: 1px solid #e2e8f0;
-        text-align: left;
-        vertical-align: middle;
-    }
-
-    /* User Cell */
-    .user-cell {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .avatar-placeholder {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: var(--gradient-header);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 1rem;
-        flex-shrink: 0;
-    }
-
-    .user-info {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .user-name {
-        font-weight: 600;
-        color: #1e293b;
-        display: block;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .user-subtitle {
-        font-size: 0.8rem;
-        color: #64748b;
-    }
-
-    /* Action Buttons */
-    .action-btns {
-        display: flex;
-        gap: 8px;
-        flex-wrap: nowrap;
-        align-items: center;
-    }
-
-    .btn-action {
-        width: 36px;
-        height: 36px;
-        min-width: 36px;
-        border: none;
-        border-radius: var(--bs-border-radius);
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-        font-size: 1rem;
-        padding: 0;
-    }
-
-    .btn-action i,
-    .btn-action i.bi {
-        font-size: 1.1rem;
-        line-height: 1;
-        display: inline-block !important;
-        font-style: normal;
-    }
-
-    .btn-edit {
-        background: #fef3c7;
-        color: #d97706;
-    }
-
-    .btn-edit:hover {
-        background: #d97706;
-        color: white;
-    }
-
-    .btn-delete {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-    .btn-delete:hover {
-        background: #dc2626;
-        color: white;
-    }
-
-    /* Badge Styles */
-    .badge-status {
-        display: inline-block;
-        padding: 2px 8px; /* Extremely reduced top/bottom padding */
-        border-radius: var(--bs-border-radius-sm); /* Slightly tighter radius */
-        font-size: 0.8rem;
-        font-weight: 600;
-        width: auto;
-        text-align: center;
-        line-height: 1.5;
-    }
-
-    .badge-hadir {
-        background: #198754;
-        color: #fff;
-    }
-
-    .badge-alpha {
-        background: #dc3545;
-        color: #fff;
-    }
-
-    .badge-izin {
-        background: #ffc107;
-        color: #000;
-    }
-
-    .badge-empty {
-        background: #f1f5f9;
-        color: #64748b;
-    }
-
-    .badge-process {
-        background: #dbeafe;
-        color: #1d4ed8;
-    }
-
-    /* Tooltip on hover */
-    .btn-action[title] {
-        position: relative;
-    }
-
-    .btn-action[title]:hover::after {
-        content: attr(title);
-        position: absolute;
-        bottom: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #1e293b;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        white-space: nowrap;
-        z-index: 100;
-        margin-bottom: 4px;
-    }
-
-    /* Modal Styles */
-    .modal-kehadiran .modal-content {
-        border-radius: var(--bs-border-radius-2xl);
-        border: none;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    }
-
-    .modal-kehadiran .modal-header {
-        background: var(--gradient-header);
-        color: #fff;
-        border-radius: var(--bs-border-radius-2xl) var(--bs-border-radius-2xl) 0 0;
-        padding: 20px 24px;
-        border: none;
-    }
-
-    .modal-kehadiran .modal-title {
-        font-weight: 600;
-        font-size: 1.2rem;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .modal-kehadiran .btn-close {
-        filter: brightness(0) invert(1);
-    }
-
-    .modal-kehadiran .modal-body {
-        padding: 24px;
-    }
-
-    .modal-kehadiran .modal-footer {
-        padding: 16px 24px;
-        border-top: 1px solid #e2e8f0;
-    }
-
-    /* Form Styles */
-    .form-group {
-        margin-bottom: 16px;
-    }
-
-    .form-group label {
-        display: block;
-        font-weight: 500;
-        color: #334155;
-        margin-bottom: 8px;
-        font-size: 0.9rem;
-    }
-
-    .form-control-custom {
-        width: 100%;
-        padding: 10px 14px;
-        border: 2px solid #e2e8f0;
-        border-radius: var(--bs-border-radius);
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-    }
-
-    .form-control-custom:focus {
-        outline: none;
-        border-color: var(--bs-primary-dark);
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .form-select-custom {
-        width: 100%;
-        padding: 10px 14px;
-        border: 2px solid #e2e8f0;
-        border-radius: var(--bs-border-radius);
-        font-size: 0.95rem;
-        background: white;
-        cursor: pointer;
-    }
-
-    .form-select-custom:focus {
-        outline: none;
-        border-color: var(--bs-primary-dark);
-    }
-
-    /* Multi Select */
-    .multi-select-container {
-        max-height: 200px;
-        overflow-y: auto;
-        border: 2px solid #e2e8f0;
-        border-radius: var(--bs-border-radius);
-        padding: 8px;
-        background: #fff;
-    }
-
-    .multi-select-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 12px;
-        border-radius: var(--bs-border-radius-sm);
-        cursor: pointer;
-        transition: all 0.2s;
-        border: 1px solid transparent;
-        margin-bottom: 4px;
-    }
-
-    .multi-select-item:hover {
-        background: #f1f5f9;
-        border-color: #e2e8f0;
-    }
-
-    .multi-select-item.selected {
-        background: #dbeafe;
-        border-color: var(--bs-primary-dark);
-    }
-
-    /* Avatar Large for Modal */
+    /* Minimal styles for specific components */
     .avatar-placeholder-large {
         width: 60px;
         height: 60px;
@@ -414,235 +24,173 @@ $mahasiswaList = $mahasiswaList ?? [];
         margin: 0 auto 16px auto;
     }
 
-    /* Empty State */
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: #64748b;
+    .multi-select-container {
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        padding: 8px;
+        background: #fff;
     }
 
-    .empty-state i {
-        font-size: 4rem;
-        margin-bottom: 16px;
-        opacity: 0.5;
+    .multi-select-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+        margin-bottom: 4px;
     }
 
-    .empty-state h3 {
-        font-size: 1.3rem;
-        color: #475569;
-        margin-bottom: 8px;
+    .multi-select-item:hover {
+        background: #f8f9fa;
+        border-color: #dee2e6;
     }
 
-    /* DataTables Override */
-    .dataTables_wrapper {
-        padding: 0;
+    .multi-select-item.selected {
+        background: #e0e7ff; /* indigo-100 */
+        border-color: #6366f1; /* indigo-500 */
+        color: #4338ca; /* indigo-800 */
     }
 
-    .dataTables_wrapper .dataTables_length,
-    .dataTables_wrapper .dataTables_filter {
-        display: none;
+    .modal-kehadiran .modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
     }
-
-    .dataTables_wrapper .dataTables_info {
-        padding-top: 16px;
-        color: #64748b;
-        font-size: 0.875rem;
-    }
-
-    .dataTables_wrapper .dataTables_paginate {
-        padding-top: 16px;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        padding: 8px 14px;
-        margin: 0 2px;
-        border-radius: var(--bs-border-radius-sm);
-        border: 1px solid #e2e8f0 !important;
-        background: white !important;
-        color: #64748b !important;
-        font-weight: 500;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-        background: #f8fafc !important;
-        border-color: var(--bs-primary-dark) !important;
-        color: var(--bs-primary-dark) !important;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background: var(--bs-primary-dark) !important;
-        border-color: var(--bs-primary-dark) !important;
-        color: white !important;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .table-controls {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        .search-box {
-            width: 100%;
-        }
-        .page-header {
-            padding: 25px 20px;
-        }
-        .page-header h1 {
-            font-size: 1.4rem;
-        }
-        .card-content {
-            padding: 16px;
-        }
-        .data-table thead th,
-        .data-table td {
-            padding: 12px 14px;
-            font-size: 0.85rem;
-        }
-        .badge-status {
-            font-size: 0.7rem;
-            padding: 3px 8px;
-        }
-        .avatar-placeholder {
-            width: 32px;
-            height: 32px;
-            font-size: 0.85rem;
-        }
-        .btn-action {
-            width: 32px;
-            height: 32px;
-            min-width: 32px;
-        }
-        .user-subtitle {
-            display: none;
-        }
-        
-
+    
+    .modal-kehadiran .btn-close {
+        filter: brightness(0) invert(1);
     }
 </style>
 
 <main>
     <!-- Page Header -->
-    <!-- Page Header -->
     <?php
-        $title = 'Monitoring Kehadiran';
-        $subtitle = 'Pantau status kehadiran peserta seleksi secara real-time';
+        $title = 'Rekap Peserta';
+        $subtitle = 'Rekapitulasi lengkap tahapan seleksi dan status akhir peserta';
         $icon = 'bi bi-clipboard-check';
         require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
-    <!-- Card Content -->
-    <div class="card-content">
+    <div class="container-fluid px-4">
         <!-- Table Controls -->
-        <div class="table-controls">
-            <div class="search-box">
-                <i class="bi bi-search"></i>
-                <input type="text" id="searchKehadiran" placeholder="Cari nama atau stambuk...">
+        <div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-3">
+            <div class="position-relative" style="width: 280px; max-width: 100%;">
+                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                <input type="text" id="searchKehadiran" class="form-control ps-5 rounded-3" placeholder="Cari nama atau stambuk...">
             </div>
-            <button class="btn-add" data-bs-toggle="modal" data-bs-target="#addMahasiswaModal">
+            <button class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addMahasiswaModal">
                 <i class="bi bi-plus-circle"></i> Tambah Data
             </button>
         </div>
 
         <?php if (empty($absensiList)): ?>
-            <div class="empty-state">
-                <i class="bi bi-inbox"></i>
-                <h3>Belum Ada Data Kehadiran</h3>
-                <p>Data kehadiran akan muncul setelah Anda menambahkan peserta</p>
+            <div class="text-center py-5 text-secondary">
+                <i class="bi bi-inbox display-1 opacity-50"></i>
+                <h3 class="h4 mt-3 mb-2">Belum Ada Data Rekap</h3>
+                <p class="mb-0">Data rekap akan muncul setelah Anda menambahkan peserta</p>
             </div>
         <?php else: ?>
-            <table class="data-table" id="monitoringTable">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama Lengkap</th>
-                        <th>Stambuk</th>
-                        <th>Tes Tertulis</th>
-                        <th>Presentasi</th>
-                        <th>Wawancara I</th>
-                        <th>Wawancara II</th>
-                        <th>Status Akhir</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php $no = 1; foreach ($absensiList as $row): ?>
-                    <tr>
-                        <td><?= $no++ ?></td>
-                        <td>
-                            <div class="user-cell">
-                                <div class="avatar-placeholder">
-                                    <?= strtoupper(substr($row['nama_lengkap'], 0, 1)) ?>
+            <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+                <table class="table table-bordered table-hover align-middle mb-0" id="monitoringTable">
+                    <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <tr>
+                            <th class="fw-semibold text-uppercase small text-center" style="width: 50px;">No</th>
+                            <th class="fw-semibold text-uppercase small">Nama Lengkap</th>
+                            <th class="fw-semibold text-uppercase small">Stambuk</th>
+                            <th class="fw-semibold text-uppercase small text-center">Tes Tertulis</th>
+                            <th class="fw-semibold text-uppercase small text-center">Presentasi</th>
+                            <th class="fw-semibold text-uppercase small text-center">Wawancara I</th>
+                            <th class="fw-semibold text-uppercase small text-center">Wawancara II</th>
+                            <th class="fw-semibold text-uppercase small text-center">Status Akhir</th>
+                            <th class="fw-semibold text-uppercase small text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $no = 1; foreach ($absensiList as $row): ?>
+                        <tr>
+                            <td class="text-center"><?= $no++ ?></td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px;">
+                                        <?= strtoupper(substr($row['nama_lengkap'], 0, 1)) ?>
+                                    </div>
+                                    <div>
+                                        <div class="fw-semibold text-dark"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
+                                        <div class="small text-muted">Mahasiswa</div>
+                                    </div>
                                 </div>
-                                <div class="user-info">
-                                    <span class="user-name"><?= htmlspecialchars($row['nama_lengkap']) ?></span>
-                                    <span class="user-subtitle">Mahasiswa</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td><?= htmlspecialchars($row['stambuk']) ?></td>
-                        <td><?= renderStatusBadge($row['absensi_tes_tertulis']) ?></td>
-                        <td><?= renderStatusBadge($row['absensi_presentasi']) ?></td>
-                        <td><?= renderStatusBadge($row['absensi_wawancara_I']) ?></td>
-                        <td><?= renderStatusBadge($row['absensi_wawancara_II']) ?></td>
-                        <td>
-                            <?php 
-                                $nilai = $row['nilai_akhir'] ?? null;
-                                if ($nilai === null) {
-                                    echo '<span class="badge-status badge-process">Pending</span>';
-                                } elseif ($nilai >= 70) {
-                                    echo '<span class="badge-status badge-hadir">Lolos</span>';
-                                } else {
-                                    echo '<span class="badge-status badge-alpha">Tidak Lolos</span>';
-                                }
-                            ?>
+                            </td>
+                            <td><?= htmlspecialchars($row['stambuk']) ?></td>
+                            <td class="text-center"><?= renderStatusBadge($row['absensi_tes_tertulis']) ?></td>
+                            <td class="text-center"><?= renderStatusBadge($row['absensi_presentasi']) ?></td>
+                            <td class="text-center"><?= renderStatusBadge($row['absensi_wawancara_I']) ?></td>
+                            <td class="text-center"><?= renderStatusBadge($row['absensi_wawancara_II']) ?></td>
+                            <td class="text-center">
+                                <?php 
+                                    $t = $row['absensi_tes_tertulis'];
+                                    $p = $row['absensi_presentasi'];
+                                    $w1 = $row['absensi_wawancara_I'];
+                                    $w2 = $row['absensi_wawancara_II'];
 
-                        </td>
-                        <td>
-                            <div class="action-btns">
-                                <button class="btn-action btn-info open-rekap"
-                                        style="background: #e0f2fe; color: #0284c7;"
-                                        title="Detail Rekap"
-                                        data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
-                                        data-stambuk="<?= $row['stambuk'] ?>"
-                                        data-berkas="<?= $row['berkas_status'] ?? '0' ?>"
-                                        data-tes="<?= $row['absensi_tes_tertulis'] ?>"
-                                        data-nilai="<?= $row['nilai_akhir'] ?? '' ?>"
-                                        data-presentasi="<?= $row['absensi_presentasi'] ?>"
-                                        data-wawancara1="<?= $row['absensi_wawancara_I'] ?>"
-                                        data-wawancara2="<?= $row['absensi_wawancara_II'] ?>">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                <button class="btn-action btn-edit open-detail"
-                                        title="Edit"
-                                        data-id="<?= $row['id'] ?>"
-                                        data-userid="<?= $row['id'] ?>"
-                                        data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
-                                        data-stambuk="<?= $row['stambuk'] ?>"
-                                        data-absensiwawancarai="<?= $row['absensi_wawancara_I'] ?? '' ?>"
-                                        data-absensiwawancaraii="<?= $row['absensi_wawancara_II'] ?? '' ?>"
-                                        data-absensitestertulis="<?= $row['absensi_tes_tertulis'] ?? '' ?>"
-                                        data-absensipresentasi="<?= $row['absensi_presentasi'] ?? '' ?>">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn-action btn-delete btn-delete-attendance"
-                                        title="Hapus"
-                                        data-id="<?= $row['id'] ?>"
-                                        data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                                    $allHadir = ($t === 'Hadir' && $p === 'Hadir' && $w1 === 'Hadir' && $w2 === 'Hadir');
+                                    $hasFailed = ($t === 'Alpha' || $t === 'Tidak Hadir' || 
+                                                  $p === 'Alpha' || $p === 'Tidak Hadir' || 
+                                                  $w1 === 'Alpha' || $w1 === 'Tidak Hadir' || 
+                                                  $w2 === 'Alpha' || $w2 === 'Tidak Hadir');
+
+                                    if ($allHadir) {
+                                        echo '<span class="badge bg-success rounded-pill px-3">Lolos</span>';
+                                    } elseif ($hasFailed) {
+                                        echo '<span class="badge bg-danger rounded-pill px-3">Tidak Lolos</span>';
+                                    } else {
+                                        echo '<span class="badge bg-secondary rounded-pill px-3">Pending</span>';
+                                    }
+                                ?>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button class="btn btn-sm btn-info bg-info-subtle text-info border-0 rounded-3 open-rekap"
+                                            title="Detail Rekap"
+                                            data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
+                                            data-stambuk="<?= $row['stambuk'] ?>"
+                                            data-berkas="<?= $row['berkas_status'] ?? '0' ?>"
+                                            data-tes="<?= $row['absensi_tes_tertulis'] ?>"
+                                            data-nilai="<?= $row['nilai_akhir'] ?? '' ?>"
+                                            data-presentasi="<?= $row['absensi_presentasi'] ?>"
+                                            data-wawancara1="<?= $row['absensi_wawancara_I'] ?>"
+                                            data-wawancara2="<?= $row['absensi_wawancara_II'] ?>">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-warning bg-warning-subtle text-warning border-0 rounded-3 open-detail"
+                                            title="Edit"
+                                            data-id="<?= $row['id'] ?>"
+                                            data-userid="<?= $row['id'] ?>"
+                                            data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
+                                            data-stambuk="<?= $row['stambuk'] ?>"
+                                            data-absensiwawancarai="<?= $row['absensi_wawancara_I'] ?? '' ?>"
+                                            data-absensiwawancaraii="<?= $row['absensi_wawancara_II'] ?? '' ?>"
+                                            data-absensitestertulis="<?= $row['absensi_tes_tertulis'] ?? '' ?>"
+                                            data-absensipresentasi="<?= $row['absensi_presentasi'] ?? '' ?>">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger bg-danger-subtle text-danger border-0 rounded-3 btn-delete-attendance"
+                                            title="Hapus"
+                                            data-id="<?= $row['id'] ?>"
+                                            data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         <?php endif; ?>
     </div>
 </main>
@@ -652,7 +200,7 @@ $mahasiswaList = $mahasiswaList ?? [];
 function renderStatusBadge($val) {
     // Handle empty/null values
     if (!$val || trim($val) === '' || $val === '-') {
-        return '<span class="badge-status badge-empty">Belum Ada</span>';
+        return '<span class="badge bg-light text-secondary border">Belum Ada</span>';
     }
 
     // Sanitize input first
@@ -661,22 +209,22 @@ function renderStatusBadge($val) {
 
     // Case-insensitive status matching
     $statusMap = [
-        'hadir' => ['class' => 'badge-hadir', 'label' => 'Hadir'],
-        'alpha' => ['class' => 'badge-alpha', 'label' => 'Alpha'],
-        'tidak hadir' => ['class' => 'badge-alpha', 'label' => 'Tidak Hadir'],
-        'izin' => ['class' => 'badge-izin', 'label' => 'Izin'],
-        'sakit' => ['class' => 'badge-izin', 'label' => 'Sakit'],
-        'process' => ['class' => 'badge-process', 'label' => 'Process']
+        'hadir' => ['class' => 'bg-success', 'label' => 'Hadir'],
+        'alpha' => ['class' => 'bg-danger', 'label' => 'Alpha'],
+        'tidak hadir' => ['class' => 'bg-danger', 'label' => 'Tidak Hadir'],
+        'izin' => ['class' => 'bg-warning text-dark', 'label' => 'Izin'],
+        'sakit' => ['class' => 'bg-warning text-dark', 'label' => 'Sakit'],
+        'process' => ['class' => 'bg-info text-dark', 'label' => 'Process']
     ];
 
     // Find matching status
     if (isset($statusMap[$v])) {
         $status = $statusMap[$v];
-        return '<span class="badge-status ' . $status['class'] . '">' . $status['label'] . '</span>';
+        return '<span class="badge ' . $status['class'] . '">' . $status['label'] . '</span>';
     }
 
-    // Unknown status - show as process with sanitized value
-    return '<span class="badge-status badge-process">' . ucfirst($sanitized) . '</span>';
+    // Unknown status - show as info
+    return '<span class="badge bg-info text-dark">' . ucfirst($sanitized) . '</span>';
 }
 ?>
 
@@ -1109,17 +657,17 @@ $(document).ready(function() {
                     if (tr.length) {
                         const getBadge = (val) => {
                             if(!val || typeof val !== 'string' || val.trim() === '' || val === '-') {
-                                return '<span class="badge-status badge-empty">Belum Ada</span>';
+                                return '<span class="badge bg-light text-secondary border">Belum Ada</span>';
                             }
                             const v = val.toLowerCase().trim();
                             
-                            if(v === 'hadir') return '<span class="badge-status badge-hadir">Hadir</span>';
-                            if(v === 'alpha') return '<span class="badge-status badge-alpha">Alpha</span>';
-                            if(v === 'tidak hadir') return '<span class="badge-status badge-alpha">Tidak Hadir</span>';
-                            if(v === 'izin') return '<span class="badge-status badge-izin">Izin</span>';
-                            if(v === 'sakit') return '<span class="badge-status badge-izin">Sakit</span>';
+                            if(v === 'hadir') return '<span class="badge bg-success">Hadir</span>';
+                            if(v === 'alpha') return '<span class="badge bg-danger">Alpha</span>';
+                            if(v === 'tidak hadir') return '<span class="badge bg-danger">Tidak Hadir</span>';
+                            if(v === 'izin') return '<span class="badge bg-warning text-dark">Izin</span>';
+                            if(v === 'sakit') return '<span class="badge bg-warning text-dark">Sakit</span>';
                             
-                            return `<span class="badge-status badge-process">${val}</span>`;
+                            return `<span class="badge bg-info text-dark">${val}</span>`;
                         };
 
                         // Update btn data attrs (for next open)
@@ -1214,15 +762,23 @@ $(document).ready(function() {
         box.removeClass('bg-success-subtle bg-danger-subtle bg-light');
         badge.removeClass('bg-success bg-danger bg-secondary');
         
-        if(nilai !== '') {
-            if(nilai >= 70) {
-                box.addClass('bg-success-subtle'); // Light green
-                badge.addClass('bg-success').text('LOLOS');
-                // Could verify all 'Hadir' here too if strictly required
-            } else {
-                box.addClass('bg-danger-subtle'); // Light red
-                badge.addClass('bg-danger').text('TIDAK LOLOS');
-            }
+        const t = btn.data('tes');
+        const p = btn.data('presentasi');
+        const w1 = btn.data('wawancara1');
+        const w2 = btn.data('wawancara2');
+
+        const isAllHadir = (t === 'Hadir' && p === 'Hadir' && w1 === 'Hadir' && w2 === 'Hadir');
+        const isFailed = (t === 'Alpha' || t === 'Tidak Hadir' || 
+                          p === 'Alpha' || p === 'Tidak Hadir' || 
+                          w1 === 'Alpha' || w1 === 'Tidak Hadir' || 
+                          w2 === 'Alpha' || w2 === 'Tidak Hadir');
+
+        if(isAllHadir) {
+            box.addClass('bg-success-subtle'); // Light green
+            badge.addClass('bg-success').text('LOLOS');
+        } else if (isFailed) {
+            box.addClass('bg-danger-subtle'); // Light red
+            badge.addClass('bg-danger').text('TIDAK LOLOS');
         } else {
             box.addClass('bg-light');
             badge.addClass('bg-secondary').text('PROSES');

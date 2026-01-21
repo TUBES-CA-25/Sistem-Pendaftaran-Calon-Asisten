@@ -5,6 +5,11 @@
         console.log('Daftar Peserta script loaded');
         
         // Initialize DataTable
+        // Check if already initialized and destroy if so to prevent errors
+        if ($.fn.DataTable.isDataTable('#daftarPesertaTable')) {
+            $('#daftarPesertaTable').DataTable().destroy();
+        }
+
         // Initialize DataTable with standard Bootstrap 5 styling
         var table = $('#daftarPesertaTable').DataTable({
             dom: "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" + 
@@ -113,21 +118,32 @@
                 stambuk: data.stambuk
             };
 
+            // BASE URL ADJUSTMENT: 'res' is at project root, not inside 'public'
+            // If APP_URL ends with '/public', strip it to get project root
+            const PROJECT_ROOT = APP_URL.replace(/\/public$/, '');
+            
+            // Get Image Element
+            var modalFoto = document.getElementById('modalFoto');
+            
+            // RESET Image immediately to default to avoid showing previous user's image
+            // This prevents the "glitch" where the old image persists while the new one loads
+            if (modalFoto) {
+                modalFoto.src = `${PROJECT_ROOT}/res/imageUser/default.png`; 
+            }
+
             // Populate header
             document.getElementById('modalNamaHeader').textContent = data.nama || '-';
             document.getElementById('modalStambukHeader').textContent = data.stambuk || '-';
             
-            // BASE URL ADJUSTMENT: 'res' is at project root, not inside 'public'
-            // If APP_URL ends with '/public', strip it to get project root
-            const PROJECT_ROOT = APP_URL.replace(/\/public$/, '');
-
             // Set photo
             var fotoPath = data.foto ? `${PROJECT_ROOT}/res/imageUser/${data.foto}` : `${PROJECT_ROOT}/res/imageUser/default.png`;
-            var modalFoto = document.getElementById('modalFoto');
-            modalFoto.src = fotoPath;
-            modalFoto.onerror = function() {
-                this.src = `${PROJECT_ROOT}/res/imageUser/default.png`;
-            };
+            
+            if (modalFoto) {
+                modalFoto.src = fotoPath;
+                modalFoto.onerror = function() {
+                    this.src = `${PROJECT_ROOT}/res/imageUser/default.png`;
+                };
+            }
             
             // Populate modal fields
             document.getElementById('modalNama').textContent = data.nama || '-';
@@ -182,22 +198,28 @@
             if (btnTolak) btnTolak.style.display = 'none';
             
             if (berkasAccepted == '1') {
-                statusBadge.className = 'badge rounded-pill px-4 py-2 badge-diterima';
+                statusBadge.className = 'badge rounded-pill px-4 py-2 bg-success text-white';
                 statusBadge.innerHTML = '<i class="bi bi-check-circle me-1"></i>Berkas Terverifikasi';
-                statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow status-icon-verified';
+                statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow bg-success text-white d-flex align-items-center justify-content-center';
+                statusIcon.style.width = '30px';
+                statusIcon.style.height = '30px';
                 statusIcon.innerHTML = '<i class="bi bi-check-lg"></i>';
                 btnBatalkan.style.display = 'inline-block';
             } else if (berkasAccepted == '0') {
-                statusBadge.className = 'badge rounded-pill px-4 py-2 badge-process';
+                statusBadge.className = 'badge rounded-pill px-4 py-2 bg-info text-white';
                 statusBadge.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Menunggu Verifikasi';
-                statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow status-icon-pending';
+                statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow bg-info text-white d-flex align-items-center justify-content-center';
+                statusIcon.style.width = '30px';
+                statusIcon.style.height = '30px';
                 statusIcon.innerHTML = '<i class="bi bi-clock"></i>';
                 btnVerifikasi.style.display = 'inline-block';
                 btnVerifikasi.disabled = false;
             } else {
-                statusBadge.className = 'badge rounded-pill px-4 py-2 badge-pending';
+                statusBadge.className = 'badge rounded-pill px-4 py-2 bg-secondary text-white';
                 statusBadge.innerHTML = '<i class="bi bi-file-earmark-x me-1"></i>Belum Upload Berkas';
-                statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow status-icon-none';
+                statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow bg-secondary text-white d-flex align-items-center justify-content-center';
+                statusIcon.style.width = '30px';
+                statusIcon.style.height = '30px';
                 statusIcon.innerHTML = '<i class="bi bi-x-lg"></i>';
                 if (btnTerima) btnTerima.style.display = 'inline-block';
                 if (btnTolak) btnTolak.style.display = 'inline-block';
@@ -246,7 +268,7 @@
             }
             
             // Show modal
-            var detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
+            var detailModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('detailModal'));
             detailModal.show();
             
         } catch (error) {
@@ -438,14 +460,14 @@
     const waitForJQuery = function(callback, maxAttempts = 50) {
         let attempts = 0;
         const check = function() {
-            if (typeof jQuery !== 'undefined' && typeof $ !== 'undefined') {
+            if (typeof jQuery !== 'undefined' && typeof $ !== 'undefined' && $.fn.DataTable) {
                 callback();
             } else {
                 attempts++;
                 if (attempts < maxAttempts) {
                     setTimeout(check, 100);
                 } else {
-                    console.error('jQuery failed to load after ' + (maxAttempts * 100) + 'ms');
+                    console.error('jQuery/DataTables failed to load after ' + (maxAttempts * 100) + 'ms');
                 }
             }
         };
@@ -454,29 +476,6 @@
 
     waitForJQuery(initDaftarPesertaScript);
 })(); // Universal Wrapper Ends
-
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
-function showAlert(message, isSuccess) {
-    // Create alert element
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${isSuccess ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
-    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-    alertDiv.innerHTML = `
-        <i class="bi bi-${isSuccess ? 'check-circle' : 'exclamation-circle'} me-2"></i>
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    document.body.appendChild(alertDiv);
-    
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-        alertDiv.classList.remove('show');
-        setTimeout(() => alertDiv.remove(), 150);
-    }, 3000);
-}
 
 // ============================================
 // TRIGGER VERIFICATION FROM DETAIL MODAL

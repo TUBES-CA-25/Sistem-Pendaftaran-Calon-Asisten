@@ -138,12 +138,16 @@ class NilaiAkhirController extends Controller
                 throw new \Exception('ID mahasiswa tidak ditemukan');
             }
 
+            error_log("Fetching soal & jawaban for Mahasiswa ID: " . $id);
             $nilai = new NilaiAkhir();
             $result = $nilai->getSoalAndJawaban($id);
+            
+            error_log("Result info: " . json_encode($result));
 
             if (empty($result)) {
                 echo json_encode([
-                    'status' => 'error',
+                    'status' => 'success',
+                    'data' => [],
                     'message' => 'Tidak ada data soal dan jawaban untuk mahasiswa ini.'
                 ]);
                 return;

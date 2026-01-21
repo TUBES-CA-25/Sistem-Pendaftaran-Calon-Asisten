@@ -105,7 +105,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
     }
 </style>
 
-<main class="p-0 m-n3 w-100">
+<main>
     <!-- Page Header -->
     <?php
         $title = 'Manajemen Presentasi';
@@ -114,8 +114,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
         require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
-    <!-- Card Content -->
-    <div class="bg-white p-4 min-vh-100">
+    <div class="container-fluid px-4 mt-3">
         <!-- Tab Navigation -->
         <ul class="nav nav-tabs border-bottom-2 mb-4" role="tablist">
             <li class="nav-item" role="presentation">
@@ -134,10 +133,10 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
         <div class="tab-content">
             <!-- Tab 1: Pengajuan Judul -->
             <div class="tab-pane fade show active" id="tab-pengajuan" role="tabpanel">
-                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-3">
                     <div class="position-relative" style="width: 280px;">
                         <i class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"></i>
-                        <input type="text" id="searchPengajuan" class="form-control rounded-3 ps-5" placeholder="Cari nama atau stambuk...">
+                        <input type="text" id="searchPengajuan" class="form-control rounded-3 ps-5" placeholder="Cari mahasiswa...">
                     </div>
                 </div>
 
@@ -148,9 +147,9 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                         <p>Data pengajuan judul akan muncul setelah mahasiswa mengajukan judul presentasi</p>
                     </div>
                 <?php else: ?>
-                    <div class="table-responsive rounded-4 shadow-sm">
-                        <table class="table table-hover align-middle mb-0" id="tablePengajuan">
-                            <thead class="table-primary">
+                    <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+                        <table class="table table-bordered table-hover align-middle mb-0" id="tablePengajuan">
+                            <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                                 <tr>
                                     <th class="fw-semibold text-uppercase small">No</th>
                                     <th class="fw-semibold text-uppercase small">Nama Lengkap</th>
@@ -169,16 +168,16 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 
                                 // Status badge class and text
                                 if ($hasSchedule) {
-                                    $badgeClass = 'badge-scheduled';
+                                    $badgeClass = 'bg-primary text-white';
                                     $badgeText = 'Terjadwal';
                                 } elseif ($isRejected) {
-                                    $badgeClass = 'badge-rejected';
+                                    $badgeClass = 'bg-danger text-white';
                                     $badgeText = 'Ditolak';
                                 } elseif ($isAccepted) {
-                                    $badgeClass = 'badge-accepted';
+                                    $badgeClass = 'bg-success text-white';
                                     $badgeText = 'Diterima';
                                 } else {
-                                    $badgeClass = 'badge-pending';
+                                    $badgeClass = 'bg-secondary text-white';
                                     $badgeText = 'Menunggu';
                                 }
                             ?>
@@ -233,10 +232,10 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 
             <!-- Tab 2: Jadwal Presentasi -->
             <div class="tab-pane fade" id="tab-jadwal" role="tabpanel">
-                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-3">
                     <div class="position-relative" style="width: 280px;">
                         <i class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"></i>
-                        <input type="text" id="searchJadwal" class="form-control rounded-3 ps-5" placeholder="Cari nama atau stambuk...">
+                        <input type="text" id="searchJadwal" class="form-control rounded-3 ps-5" placeholder="Cari mahasiswa...">
                     </div>
                     <div class="d-flex gap-3">
                         <button class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" id="btnAddJadwal">
@@ -248,9 +247,9 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                     </div>
                 </div>
 
-                <div class="table-responsive rounded-4 shadow-sm">
-                    <table class="table table-hover align-middle mb-0" id="tableJadwal">
-                        <thead class="table-primary">
+                <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+                    <table class="table table-bordered table-hover align-middle mb-0" id="tableJadwal">
+                        <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                             <tr>
                                 <th class="fw-semibold text-uppercase small">No</th>
                                 <th class="fw-semibold text-uppercase small">Nama Lengkap</th>
@@ -547,8 +546,12 @@ $(document).ready(function() {
         const userid = $(this).data('userid');
         if (confirm('Terima judul presentasi mahasiswa ini?')) {
             $.post(APP_URL + '/updatestatus', { id: userid, status: 1 }, function(res) {
-                if (res.status === 'success') showAlert('Judul berhasil diterima!');
-                else showAlert(res.message || 'Gagal menerima judul', false);
+                if (res.status === 'success') {
+                    showAlert('Judul berhasil diterima!');
+                    setTimeout(() => { location.reload(); }, 1000);
+                } else {
+                    showAlert(res.message || 'Gagal menerima judul', false);
+                }
             }, 'json');
         }
     });
@@ -558,8 +561,12 @@ $(document).ready(function() {
         const userid = $(this).data('userid');
         if (confirm('Tolak judul presentasi mahasiswa ini? Mahasiswa akan diminta merevisi judulnya.')) {
             $.post(APP_URL + '/updatestatus', { id: userid, status: 2 }, function(res) {
-                if (res.status === 'success') showAlert('Judul ditolak. Mahasiswa akan diminta revisi.');
-                else showAlert(res.message || 'Gagal menolak judul', false);
+                if (res.status === 'success') {
+                    showAlert('Judul ditolak. Mahasiswa akan diminta revisi.');
+                    setTimeout(() => { location.reload(); }, 1000);
+                } else {
+                    showAlert(res.message || 'Gagal menolak judul', false);
+                }
             }, 'json');
         }
     });

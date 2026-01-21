@@ -62,7 +62,7 @@ $userName = $userName ?? 'Admin';
         <li>
             <a href="#" data-page="daftarKehadiran">
                 <i class='bx bx-calendar-check'></i>
-                <span class="nav-item">Absensi</span>
+                <span class="nav-item">Rekap</span>
             </a>
         </li>
     </ul>

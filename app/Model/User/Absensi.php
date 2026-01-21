@@ -40,7 +40,8 @@ class Absensi extends Model {
                 FROM " . self::$table . " a 
                 JOIN mahasiswa m ON a.id_mahasiswa = m.id
                 LEFT JOIN nilai_akhir na ON m.id = na.id_mahasiswa
-                LEFT JOIN berkas_mahasiswa bm ON m.id = bm.id_mahasiswa";
+                LEFT JOIN berkas_mahasiswa bm ON m.id = bm.id_mahasiswa
+                GROUP BY a.id";
     
         try {
             $stmt = self::getDB()->prepare($sql);
@@ -107,7 +108,17 @@ class Absensi extends Model {
         
         $stmt = self::getDB()->prepare($sql);
         
+        $checkSql = "SELECT COUNT(*) FROM " . self::$table . " WHERE id_mahasiswa = ?";
+        $checkStmt = self::getDB()->prepare($checkSql);
+
         foreach ($id as $id_mahasiswa) {
+            // Check if exists
+            $checkStmt->bindValue(1, $id_mahasiswa);
+            $checkStmt->execute();
+            if ($checkStmt->fetchColumn() > 0) {
+                continue; // Skip if already exists
+            }
+
             $stmt->bindValue(1, $id_mahasiswa);
             $stmt->bindValue(2, $absensi->wawancaraI);
             $stmt->bindValue(3, $absensi->wawancaraII);
