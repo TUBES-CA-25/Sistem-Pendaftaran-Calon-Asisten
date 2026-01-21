@@ -2,34 +2,23 @@
 use app\Controllers\notifications\NotificationControllers;
 use app\Controllers\user\DashboardUserController;
 use App\Controllers\Profile\ProfileController;
-$role = ProfileController::viewUser()["role"];
+use app\Controllers\user\WawancaraController;
 
-
-// percobaan 
- use app\Controllers\user\WawancaraController;
-  $wawancara = WawancaraController::getAllById() ;
-
-
-
-
-// 1. FIX ERROR COUNT(): Pastikan data selalu array, meskipun return dari controller false/null
-$rawNotif = NotificationControllers::getMessageById();
-$notifikasi = (is_array($rawNotif)) ? $rawNotif : [];
-
-// 2. AMBIL DATA REAL
+// 1. DATA PENGGUNA & PROGRESS
 $bio = DashboardUserController::getBiodataDetail();
 $persen = DashboardUserController::getPercentage();
 $totalSelesai = DashboardUserController::getNumberTahapanSelesai();
 $jurusan = ProfileController::viewBiodata() == null ? "Jurusan" : ProfileController::viewBiodata()["jurusan"];
 $noHp = ProfileController::viewBiodata() == null ? "No Telephone" : ProfileController::viewBiodata()["noHp"];
 
+// 2. JADWAL
+$wawancara = WawancaraController::getAllById();
 
-// 3. Jadwal Mendatang (Real dari Database via Model)
-$jadwal = DashboardUserController::getUpcomingSchedule();
+// 3. NOTIFIKASI
+$rawNotif = NotificationControllers::getMessageById();
+$notifikasi = (is_array($rawNotif)) ? $rawNotif : [];
 
-
-// 3. DEFINISI 9 TAHAPAN (LOGIKA LAMA DIKEMBALIKAN)
-// Format: [Nama Tahap, Status Boolean/Value, Icon Material]
+// 4. DEFINISI TAHAPAN
 $tahapan = [
     ["Lengkapi Biodata", DashboardUserController::getBiodataStatus(), "person"],
     ["Lengkapi Berkas", DashboardUserController::getBerkasStatus(), "folder_shared"],
@@ -41,6 +30,13 @@ $tahapan = [
     ["Wawancara Kepala Lab 1", DashboardUserController::getAbsensiWawancaraII(), "supervisor_account"],
     ["Wawancara Kepala Lab 2", DashboardUserController::getAbsensiWawancaraIII(), "manage_accounts"],
 ];
+
+// 5. LOGIKA KALENDER PHP
+$bulanSekarang = date('n');
+$tahunSekarang = date('Y');
+$jumlahHari = cal_days_in_month(CAL_GREGORIAN, $bulanSekarang, $tahunSekarang);
+$hariPertama = date('w', strtotime("$tahunSekarang-$bulanSekarang-01")); // 0 (Minggu) - 6 (Sabtu)
+$namaBulan = date('F Y'); 
 ?>
 
 <link rel="stylesheet" href="<?= APP_URL ?>/Style/dashboardStyle.css">
@@ -50,9 +46,8 @@ $tahapan = [
     <div class="welcome-banner">
         <div class="banner-text">
             <h1>Hello, <?= htmlspecialchars($bio['nama_lengkap'] ?? $_SESSION['user']['username']) ?> 👋</h1>
-            <p>Pantau progres Kamu agar tidak ketinggal Info terbaru.</p>
+            <p>Pantau progres seleksi dan jadwalmu di sini.</p>
         </div>
-        
         <div class="notification-badge">
             <button type="button" class="btn-notif" id="viewMessageButton">
                 <span class="material-symbols-outlined">notifications</span>
@@ -65,10 +60,8 @@ $tahapan = [
 
     <div class="dashboard-grid">
         
-        <!-- Kolom kiri -->
         <div class="left-column">
             
-
             <div class="card stats-card">
                 <div class="card-body flex-row">
                     <div class="progress-circle" data-percentage="<?= $persen ?>">
@@ -81,143 +74,131 @@ $tahapan = [
                             <small>Selesai</small>
                         </div>
                     </div>
-                    
                     <div class="stats-info">
                         <h3>Capaian Seleksi</h3>
-                        <p>Anda telah menyelesaikan <b><?= $totalSelesai ?></b> dari <b>9</b> tahapan wajib.</p>
+                        <p>Anda telah menyelesaikan <b><?= $totalSelesai ?></b> dari <b>9</b> tahapan.</p>
                         <div class="status-tags">
                             <span class="tag <?= ($persen > 0) ? 'active' : '' ?>">
                                 <?= ($persen == 100) ? 'Lengkap' : 'Berproses' ?>
                             </span>
                         </div>
-                        <br> <br>
-                        <small class="text-muted">
-                          Terakhir diupdate: <?= DashboardUserController::getLastActivityString() ?>
+                        <br>
+                        <small class="text-muted" style="font-size: 10px;">
+                          Update: <?= DashboardUserController::getLastActivityString() ?>
                         </small>
                     </div>
                 </div>
             </div>
 
-
-            
-            <!-- Tahapan Seleksi -->
             <div class="card doc-card">
                 <div class="card-header">
                     <h3>Tahapan Seleksi</h3>
-                    <small>Real-time Update</small>
+                    <small>Real-time</small>
                 </div>
-                
-                <div class="doc-list-scroll"> <?php foreach($tahapan as $t): ?>
+                <div class="doc-list-scroll"> 
+                    <?php foreach($tahapan as $t): ?>
                         <?php 
                             $nama = $t[0];
-                            $status = $t[1]; // Bisa boolean true/false, bisa string 'revisi', bisa angka 1/0
+                            $status = $t[1];
                             $icon = $t[2];
                             
-                            // Logika Penentuan Badge Warna & Text
-                            $badgeClass = 'secondary';
-                            $badgeText = 'Belum';
-
-                            if ($status === true || $status == 1 || $status === 'diterima' || $status === 'Hadir') {
-                                $badgeClass = 'success';
-                                $badgeText = 'Selesai';
-                            } elseif ($status === 'revisi') {
-                                $badgeClass = 'warning';
-                                $badgeText = 'Revisi';
-                            } elseif ($status === '0' || $status === 0) { // String '0' kadang return dari DB
-                                $badgeClass = 'danger';
-                                $badgeText = 'Ditolak';
-                            } else {
-                                $badgeClass = 'secondary'; // Default Belum
-                            }
+                            $badgeClass = ($status === true || $status == 1 || $status === 'diterima' || $status === 'Hadir') ? 'success' : 
+                                          (($status === 'revisi') ? 'warning' : 
+                                          (($status === '0' || $status === 0) ? 'danger' : 'secondary'));
+                            $badgeText = ($badgeClass == 'success') ? 'Selesai' : 
+                                         (($badgeClass == 'danger') ? 'Ditolak' : 'Belum');
                         ?>
-
                         <div class="doc-item">
                             <div class="doc-icon <?= ($badgeClass == 'success') ? 'primary' : 'info' ?>">
                                 <span class="material-symbols-outlined"><?= $icon ?></span>
                             </div>
-                            
                             <div class="doc-info">
                                 <span><?= $nama ?></span>
-                                <small><?= ($badgeClass == 'success') ? 'Telah diselesaikan' : 'Menunggu penyelesaian' ?></small>
                             </div>
-
-                            <span class="status-pill <?= $badgeClass ?>">
-                                <?= $badgeText ?>
-                            </span>
+                            <span class="status-pill <?= $badgeClass ?>"><?= $badgeText ?></span>
                         </div>
                     <?php endforeach; ?>
                 </div>
+            </div>
+        </div> 
 
-            </div> <!-- Tutup Tahapan Seleksi -->
-
-
-
-        </div> <!-- Tutup Kolom Kiri -->
-
-         
-        <!-- Kolom kanan -->
         <div class="right-column">
-                  <!-- kalender Jadwal -->
-             <div class="card calendar-card">
+            
+            <div class="card calendar-card">
+                
                 <div class="calendar-header">
-                    <h3 id="currentMonth">Tanggal saat ini</h3>
+                    <h3><?= $namaBulan ?></h3>
                     <div class="calendar-nav">
-                        <span id="prevMonth" class="material-symbols-outlined">chevron_left</span>
-                        <span id="nextMonth" class="material-symbols-outlined">chevron_right</span>
+                        <span class="material-symbols-outlined">calendar_month</span>
                     </div>
                 </div>
 
-                <div id="calendarBody" class="calendar-grid"></div>
+                <div class="calendar-grid-php">
+                    <div class="day-name">Min</div>
+                    <div class="day-name">Sen</div>
+                    <div class="day-name">Sel</div>
+                    <div class="day-name">Rab</div>
+                    <div class="day-name">Kam</div>
+                    <div class="day-name">Jum</div>
+                    <div class="day-name">Sab</div>
+
+                    <?php for($k=0; $k < $hariPertama; $k++): ?>
+                        <div class="calendar-day empty"></div>
+                    <?php endfor; ?>
+
+                    <?php for($hari=1; $hari <= $jumlahHari; $hari++): ?>
+                        <?php 
+                            $isToday = ($hari == date('j') && $bulanSekarang == date('n') && $tahunSekarang == date('Y'));
+                            $classToday = $isToday ? 'today' : '';
+                        ?>
+                        <div class="calendar-day <?= $classToday ?>"><?= $hari ?></div>
+                    <?php endfor; ?>
+                </div>
 
                 <div class="upcoming-section">
-                    <h4>Jadwal saat ini</h4>
-                    <div class="upcoming-list">
-                      <table>
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Jenis Kegiatan</th>
-                                <th>Lokasi</th>
-                                <th>Tanggal</th>
-                                <th>Waktu</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                          <?php if (empty($wawancara)) : ?>
-                            <tr>
-                                <td colspan="5">Belum ada Jadwal</td>
-                            </tr>                            
-                              <?php endif; $i = 0;?>
-                              <?php foreach ($wawancara as $value) : $i++?>
-                              <tr>
-                                  <td><?= $i?></td>
-                                  <td><?= $value['jenis_wawancara'] ?? "" ?></td>
-                                  <td><?= $value['ruangan'] ?? "" ?></td>
-                                  <td><?= $value['tanggal']?? "" ?></td>
-                                  <td><?= $value['waktu'] ?? "" ?></td>
-                              </tr>
-                                              
-                          <?php endforeach; ?>
-                        </tbody>
-
-                      </table>
-
-
+                    <div class="section-title-row">
+                        <h4>Jadwal Kegiatan</h4>
+                        <a href="<?= APP_URL ?>/wawancara" class="view-all-link">Lihat Semua</a>
+                    </div>
+                    
+                    <div class="upcoming-list scrollable-list">
+                        <?php if (empty($wawancara)) : ?>
+                            <div class="empty-state">
+                                <span class="material-symbols-outlined">event_busy</span>
+                                <p>Belum ada jadwal.</p>
+                            </div>
+                        <?php else: ?>
+                            <?php foreach ($wawancara as $value) : 
+                                $date = date_create($value['tanggal'] ?? 'now');
+                                $jam = substr($value['waktu'] ?? '00:00', 0, 5);
+                            ?>
+                            <div class="schedule-item">
+                                <div class="date-box">
+                                    <span class="day"><?= date_format($date, "d") ?></span>
+                                    <span class="month"><?= date_format($date, "M") ?></span>
+                                </div>
+                                <div class="schedule-details">
+                                    <span class="sched-title"><?= htmlspecialchars($value['jenis_wawancara'] ?? 'Kegiatan') ?></span>
+                                    <div class="sched-meta">
+                                        <span><i class='bx bx-time'></i> <?= $jam ?></span>
+                                        <span><i class='bx bx-map'></i> <?= htmlspecialchars($value['ruangan'] ?? '-') ?></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>     
 
-
-             <!-- Biodata -->
-            <div class="card biodata-card">
+             <div class="card biodata-card">
                 <div class="card-header">
                     <h3>Biodata Diri</h3>
                     <a href="<?= APP_URL ?>/biodata" class="btn-icon"><span class="material-symbols-outlined">edit</span></a>
                 </div>
                 <div class="card-body">
                     <div class="bio-row">
-                        <span class="label">Nama :</span>
+                        <span class="label">Nama</span>
                         <span class="value"><?= htmlspecialchars($bio['nama_lengkap'] ?? '-') ?></span>
                     </div>
                     <div class="bio-row">
@@ -228,34 +209,27 @@ $tahapan = [
                         <span class="label">Prodi</span>
                         <span class="value"><?= htmlspecialchars($jurusan ?? '-') ?></span>
                     </div>
-                    <div class="bio-row">
-                        <span class="label">No. HP</span>
-                        <span class="value"><?= htmlspecialchars($noHp ?? '-') ?></span>
-                    </div>
                 </div>
-            </div> <!-- Tutup Biodata -->
+            </div> 
             
-            
-
-        </div> <!-- Tutup Kolom Kanan -->
-
-    </div>
-    
+        </div> </div>
 </main>
 
 <div id="customMessageModal" class="custom-modal" style="display: none;">
   <div class="custom-modal-content">
-    <div class="custom-modal-header">
-      <h5>Pesan Masuk</h5>
-      <button id="closeModalButton">&times;</button>
+    <div class="custom-modal-header" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">
+      <h5 style="margin: 0; font-size: 16px;">Notifikasi</h5>
+      <button id="closeModalButton" style="background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
     </div>
-    <div class="custom-modal-body">
-      <?php if (empty($notifikasi)) { echo "<p class='text-center text-muted'>Tidak ada pesan baru.</p>"; } else { 
+    <div class="custom-modal-body" style="max-height: 300px; overflow-y: auto; padding-top: 10px;">
+      <?php if (empty($notifikasi)) { echo "<p class='text-center text-muted' style='font-size:12px;'>Tidak ada pesan baru.</p>"; } else { 
         foreach ($notifikasi as $notif) { ?>
-          <div class="notif-item">
-            <b>Tim Iclabs</b>
-            <p><?= htmlspecialchars($notif['pesan']) ?></p>
-            <small><?= $notif['created_at'] ?></small>
+          <div class="notif-item" style="padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #007bff;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <b style="font-size: 13px;">Tim Iclabs</b>
+                <small style="color: #999; font-size: 10px;"><?= $notif['created_at'] ?></small>
+            </div>
+            <p style="margin: 0; font-size: 12px; color: #555;"><?= htmlspecialchars($notif['pesan']) ?></p>
           </div>
       <?php } } ?>
     </div>
@@ -265,7 +239,7 @@ $tahapan = [
 <script src="<?= APP_URL ?>/Script/user/dashboardScript.js"></script>
 
 <script>
-  // Menggunakan Optional Chaining (?.) untuk mencegah error jika elemen tidak ditemukan
+  // Script Modal Simple
   const modal = document.getElementById("customMessageModal");
   const btnOpen = document.getElementById("viewMessageButton");
   const btnClose = document.getElementById("closeModalButton");
@@ -273,6 +247,7 @@ $tahapan = [
   if(btnOpen) btnOpen.addEventListener("click", () => modal.style.display = "flex");
   if(btnClose) btnClose.addEventListener("click", () => modal.style.display = "none");
   
+  // Klik di luar modal untuk menutup
   window.addEventListener("click", (e) => { 
       if(e.target === modal) modal.style.display = "none"; 
   });
