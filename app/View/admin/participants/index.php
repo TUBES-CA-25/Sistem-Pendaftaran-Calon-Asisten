@@ -19,10 +19,9 @@ $result = $result ?? [];
 ?>
 
 <!-- Main Content -->
-<div class="container-fluid px-4" style="margin-top: -2.5rem; position: relative; z-index: 10;">
+<div class="container-fluid px-4">
     <!-- Table Card -->
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4">
+
             <!-- Table Controls -->
 
 
@@ -30,17 +29,18 @@ $result = $result ?? [];
             <!-- Data Table -->
             <!-- Data Table -->
             <div class="table-responsive">
-                <table id="daftarPesertaTable" class="table table-hover align-middle mb-0" style="width:100%">
-                    <thead class="bg-primary text-white text-uppercase">
+                <table id="daftarPesertaTable" class="table table-bordered table-hover align-middle mb-0" style="width:100%; border-color: #dee2e6; border-bottom: 1px solid #dee2e6;">
+                    <thead class="bg-white text-dark" style="background-color: #ffffff !important; background-image: none !important; color: #212529 !important;">
                         <tr>
-                            <th class="text-center py-3" style="width: 50px;">NO</th>
-                            <th class="py-3">NAMA LENGKAP</th>
-                            <th class="py-3">JUDUL PRESENTASI</th>
-                            <th class="py-3">STAMBUK</th>
-                            <th class="py-3">JURUSAN</th>
-                            <th class="py-3">KELAS</th>
-                            <th class="text-center py-3">STATUS</th>
-                            <th class="text-center py-3" style="width: 150px;">AKSI</th>
+                            <th class="text-center py-3" style="width: 50px;">No</th>
+                            <th class="text-center py-3" style="width: 100px;">Avatar</th>
+                            <th class="py-3">Nama Lengkap</th>
+                            <th class="py-3">Judul Presentasi</th>
+                            <th class="py-3">Stambuk</th>
+                            <th class="py-3">Jurusan</th>
+                            <th class="py-3">Kelas</th>
+                            <th class="text-center py-3">Status</th>
+                            <th class="text-center py-3" style="width: 150px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,14 +75,12 @@ $result = $result ?? [];
                             ?>
                             <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
                                 <td class="text-center text-secondary py-3"><?= $i ?></td>
+                                <td class="text-center py-3">
+                                    <img src="<?= $photoPath ?>" alt="Avatar" class="rounded-circle border" style="width: 45px; height: 45px; object-fit: cover;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
+                                </td>
                                 <td class="py-3">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <img src="<?= $photoPath ?>" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
-                                        <div>
-                                            <p class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></p>
-                                            <small class="text-muted d-block" style="font-size: 0.75rem;">Mahasiswa</small>
-                                        </div>
-                                    </div>
+                                    <p class="mb-0 fw-bold text-dark" style="font-size: 0.95rem;"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></p>
+                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Mahasiswa</small>
                                 </td>
                                 <td class="py-3">
                                     <?php if (!empty($row['judul_presentasi'])): ?>
@@ -178,9 +176,10 @@ $result = $result ?? [];
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
+
 </div>
+
+
 
 <!-- Modal Kirim Notifikasi -->
 <div class="modal fade" id="addNotification" tabindex="-1" aria-labelledby="addNotificationLabel" aria-hidden="true">
@@ -760,18 +759,13 @@ $result = $result ?? [];
         // Initialize DataTable with standard Bootstrap 5 styling
         var table = $('#daftarPesertaTable').DataTable({
             dom: "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" + 
-                 "<'row'<'col-sm-12'tr>>" + 
-                 "<'row mt-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-            pageLength: 10,
+                 "<'row'<'col-sm-12'tr>>",
+            paging: false,
+            info: false,
             language: {
                 search: "", 
                 searchPlaceholder: "Cari peserta...",
-                lengthMenu: "Tampilkan _MENU_ data per halaman",
-                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                paginate: {
-                    previous: "Sebelumnya",
-                    next: "Selanjutnya"
-                }
+                lengthMenu: "Tampilkan _MENU_ data per halaman"
             },
             columnDefs: [
                 { orderable: false, targets: -1 } // Disable sorting on action column
