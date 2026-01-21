@@ -19,139 +19,156 @@ $result = $result ?? [];
 ?>
 
 <!-- Main Content -->
-<div class="container-fluid px-4">
+<div class="container-fluid px-4 mt-4">
+    <!-- Table Controls -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div class="position-relative" style="width: 280px; max-width: 100%;">
+            <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+            <input type="text" id="searchPeserta" class="form-control ps-5 rounded-3 border-0 shadow-sm" placeholder="Cari peserta...">
+        </div>
+        <button class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold shadow-sm d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addNotification">
+            <i class="bi bi-send-fill"></i> Kirim Notifikasi
+        </button>
+    </div>
+
     <!-- Table Card -->
-
-            <!-- Table Controls -->
-
-
-            <!-- Data Table -->
-            <!-- Data Table -->
-            <!-- Data Table -->
-            <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
-                <table id="daftarPesertaTable" class="table table-hover align-middle mb-0" style="width:100%;">
-                    <thead class="bg-white">
-                        <tr style="border-top: 1px solid #dee2e6; border-bottom: 2px solid #dee2e6;">
-                            <th class="text-center text-uppercase text-dark fw-bold py-3" style="width: 50px; font-size: 0.8rem;">No</th>
-                            <th class="text-center text-uppercase text-dark fw-bold py-3" style="width: 100px; font-size: 0.8rem;">Avatar</th>
-                            <th class="text-uppercase text-dark fw-bold py-3" style="font-size: 0.8rem;">Nama Lengkap</th>
-                            <th class="text-uppercase text-dark fw-bold py-3" style="font-size: 0.8rem; white-space: nowrap;">Judul Presentasi</th>
-                            <th class="text-uppercase text-dark fw-bold py-3" style="font-size: 0.8rem;">Stambuk</th>
-                            <th class="text-uppercase text-dark fw-bold py-3" style="font-size: 0.8rem;">Jurusan</th>
-                            <th class="text-uppercase text-dark fw-bold py-3" style="font-size: 0.8rem;">Kelas</th>
-                            <th class="text-center text-uppercase text-dark fw-bold py-3" style="font-size: 0.8rem;">Status</th>
-                            <th class="text-center text-uppercase text-dark fw-bold py-3" style="width: 150px; font-size: 0.8rem;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $i = 1; ?>
-                        <?php foreach ($result as $row): ?>
-                            <?php
-                                // Determine status
-                                $status = $row['status'] ?? 'pending';
-                                // Bootstrap Badge Styles (Solid Colors)
-                                $statusClass = 'badge rounded-pill bg-secondary text-white fw-medium px-3 py-2'; // Default Pending/Belum Upload
-                                $statusText = 'Belum Upload';
-                                
-                                if (isset($row['berkas']['accepted'])) {
-                                    if ($row['berkas']['accepted'] == 1) {
-                                        $statusClass = 'badge rounded-pill bg-success text-white fw-medium px-3 py-2';
-                                        $statusText = 'Disetujui';
-                                    } elseif ($row['berkas']['accepted'] == 2) {
-                                        $statusClass = 'badge rounded-pill bg-danger text-white fw-medium px-3 py-2';
-                                        $statusText = 'Ditolak';
-                                    } elseif ($row['berkas']['accepted'] == 0) {
-                                        $statusClass = 'badge rounded-pill bg-info text-white fw-medium px-3 py-2';
-                                        $statusText = 'Proses';
-                                    }
+    <div class="table-responsive rounded-4 overflow-hidden shadow-sm bg-white border">
+        <table id="daftarPesertaTable" class="table table-hover align-middle mb-0" style="width:100%;">
+            <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <tr>
+                    <th class="text-center text-uppercase fw-bold py-3" style="width: 50px; font-size: 0.75rem;">No</th>
+                    <th class="text-center text-uppercase fw-bold py-3" style="width: 80px; font-size: 0.75rem;">Avatar</th>
+                    <th class="text-uppercase fw-bold py-3" style="font-size: 0.75rem;">Nama Lengkap</th>
+                    <th class="text-uppercase fw-bold py-3 text-center" style="font-size: 0.75rem; width: 120px;">NIM</th>
+                    <th class="text-uppercase fw-bold py-3" style="font-size: 0.75rem; width: 150px;">Jurusan</th>
+                    <th class="text-uppercase fw-bold py-3" style="font-size: 0.75rem; width: 220px;">Judul Presentasi</th>
+                    <th class="text-uppercase fw-bold py-3 text-center" style="font-size: 0.75rem;">Status</th>
+                    <th class="text-center text-uppercase fw-bold py-3" style="width: 150px; font-size: 0.75rem;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php $i = 1; ?>
+                <?php foreach ($result as $row): ?>
+                    <?php
+                        // Determine status logic remains same but improved UI
+                        $statusClass = 'badge rounded-pill bg-secondary bg-opacity-10 text-secondary fw-semibold px-3 py-2';
+                        $statusText = 'Belum Upload';
+                        
+                        if (isset($row['berkas']['accepted'])) {
+                            if ($row['berkas']['accepted'] == 1) {
+                                $statusClass = 'badge rounded-pill bg-success bg-opacity-10 text-success fw-semibold px-3 py-2';
+                                $statusText = 'Disetujui';
+                            } elseif ($row['berkas']['accepted'] == 2) {
+                                $statusClass = 'badge rounded-pill bg-danger bg-opacity-10 text-danger fw-semibold px-3 py-2';
+                                $statusText = 'Ditolak';
+                            } elseif ($row['berkas']['accepted'] == 0) {
+                                $statusClass = 'badge rounded-pill bg-info bg-opacity-10 text-info fw-semibold px-3 py-2';
+                                $statusText = 'Proses';
+                            }
+                        }
+                        
+                        $photoName = $row['berkas']['foto'] ?? 'default.png';
+                        $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . $photoName;
+                    ?>
+                    <tr class="border-bottom" data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
+                        <td class="text-center text-muted fw-medium"><?= $i ?></td>
+                        <td class="text-center">
+                            <img src="<?= $photoPath ?>" alt="Avatar" class="rounded-circle border" style="width: 42px; height: 42px; object-fit: cover;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="fw-bold text-dark mb-0"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></span>
+                                <?php if (!empty($row['id'])): ?>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25" style="font-size: 0.6rem;">Mahasiswa</span>
+                                <?php else: ?>
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25" style="font-size: 0.6rem;">User</span>
+                                <?php endif; ?>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span class="text-muted small fw-medium"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></span>
+                        </td>
+                        <td>
+                            <span class="text-muted small"><?= htmlspecialchars($row['jurusan'] ?? '-') ?></span>
+                        </td>
+                        <td>
+                            <?php if (!empty($row['judul_presentasi'])): ?>
+                                <div class="text-dark small text-truncate fw-medium" style="max-width: 240px;" title="<?= htmlspecialchars($row['judul_presentasi']) ?>">
+                                    <?= htmlspecialchars($row['judul_presentasi']) ?>
+                                </div>
+                            <?php else: ?>
+                                <span class="text-muted fst-italic small">Belum diisi</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-center">
+                            <span class="<?= $statusClass ?>" style="font-size: 0.7rem;">
+                                <?= $statusText ?>
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <style>
+                                .btn-action {
+                                    width: 36px;
+                                    height: 36px;
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    transition: all 0.2s ease;
                                 }
-                                
-                                // Get photo path with server-side existence check
-                                $photoName = $row['berkas']['foto'] ?? 'default.png';
-                                $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . $photoName;
-                                $serverPath = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . $photoName;
-                                
-                                if (!file_exists($serverPath)) {
-                                    $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
+                                .btn-action:hover {
+                                    transform: translateY(-2px);
+                                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
                                 }
-                                $photoPath = $photoUrl;
-                            ?>
-                            <tr style="border-bottom: 1px solid #f0f0f0;" data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
-                                <td class="text-center text-secondary py-3"><?= $i ?></td>
-                                <td class="text-center py-3">
-                                    <img src="<?= $photoPath ?>" alt="Avatar" class="rounded-circle border" style="width: 45px; height: 45px; object-fit: cover;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
-                                </td>
-                                <td class="py-3">
-                                    <p class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></p>
-                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Mahasiswa</small>
-                                </td>
-                                <td class="py-3">
-                                    <?php if (!empty($row['judul_presentasi'])): ?>
-                                        <span class="text-dark fw-medium small"><?= htmlspecialchars($row['judul_presentasi']) ?></span>
-                                    <?php else: ?>
-                                        <span class="badge bg-light text-secondary border rounded-1 fw-normal">Belum Ada</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="text-secondary small fw-medium py-3"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
-                                <td class="text-secondary small py-3"><?= htmlspecialchars($row['jurusan'] ?? '-') ?></td>
-                                <td class="text-secondary small py-3"><?= htmlspecialchars($row['kelas'] ?? '-') ?></td>
-                                <td class="text-center py-3">
-                                    <span class="<?= $statusClass ?>" style="font-size: 0.75rem;">
-                                        <?= $statusText ?>
-                                    </span>
-                                </td>
-                                <td class="py-3">
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <!-- View Button -->
-                                            <button class="btn btn-sm btn-info bg-info-subtle text-info border-0 rounded-3 btn-view" 
-                                                    title="Lihat Detail"
-                                                    data-id="<?= $row['id'] ?>"
-                                                    data-userid="<?= $row['idUser'] ?>"
-                                                    data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>"
-                                                    data-stambuk="<?= htmlspecialchars($row['stambuk'] ?? '') ?>"
-                                                    data-jurusan="<?= htmlspecialchars($row['jurusan'] ?? '') ?>"
-                                                    data-kelas="<?= htmlspecialchars($row['kelas'] ?? '') ?>"
-                                                    data-alamat="<?= htmlspecialchars($row['alamat'] ?? '') ?>"
-                                                    data-tempat_lahir="<?= htmlspecialchars($row['tempat_lahir'] ?? '') ?>"
-                                                    data-notelp="<?= htmlspecialchars($row['notelp'] ?? '') ?>"
-                                                    data-tanggal_lahir="<?= htmlspecialchars($row['tanggal_lahir'] ?? '') ?>"
-                                                    data-jenis_kelamin="<?= htmlspecialchars($row['jenis_kelamin'] ?? '') ?>"
-                                                    data-judul_presentasi="<?= htmlspecialchars($row['judul_presentasi'] ?? '') ?>"
-                                                    data-foto="<?= $row['berkas']['foto'] ?? '' ?>"
-                                                    data-cv="<?= $row['berkas']['cv'] ?? '' ?>"
-                                                    data-transkrip="<?= $row['berkas']['transkrip_nilai'] ?? '' ?>"
-                                                    data-surat="<?= $row['berkas']['surat_pernyataan'] ?? '' ?>"
-                                                    data-berkas_accepted="<?= $row['berkas']['accepted'] ?? '' ?>"
-                                                    data-makalah="<?= $row['presentasi']['makalah'] ?? '' ?>"
-                                                    data-ppt="<?= $row['presentasi']['ppt'] ?? ''?>">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            
-                                            <?php if (!isset($row['berkas']['accepted']) || $row['berkas']['accepted'] === null): ?>
-                                                <!-- Reminder Button -->
-                                                <button class="btn btn-sm btn-warning bg-warning-subtle text-warning border-0 rounded-3 btn-reminder" 
-                                                        title="Kirim Reminder" 
-                                                        data-id="<?= $row['id'] ?>"
-                                                        data-userid="<?= $row['idUser'] ?>"
-                                                        data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>">
-                                                    <i class="bi bi-bell"></i>
-                                                </button>
-                                            <?php endif; ?>
-                                            
-                                            <!-- Delete Button -->
-                                            <button class="btn btn-sm btn-danger bg-danger-subtle text-danger border-0 rounded-3 btn-delete" 
-                                                    title="Hapus">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-                                        </div>
+                            </style>
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-sm btn-action btn-info bg-info bg-opacity-10 text-info border-0 rounded-3 btn-view" 
+                                        title="Lihat Detail"
+                                        data-id="<?= $row['id'] ?>"
+                                        data-userid="<?= $row['idUser'] ?>"
+                                        data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>"
+                                        data-stambuk="<?= htmlspecialchars($row['stambuk'] ?? '') ?>"
+                                        data-jurusan="<?= htmlspecialchars($row['jurusan'] ?? '') ?>"
+                                        data-kelas="<?= htmlspecialchars($row['kelas'] ?? '') ?>"
+                                        data-alamat="<?= htmlspecialchars($row['alamat'] ?? '') ?>"
+                                        data-tempat_lahir="<?= htmlspecialchars($row['tempat_lahir'] ?? '') ?>"
+                                        data-notelp="<?= htmlspecialchars($row['notelp'] ?? '') ?>"
+                                        data-tanggal_lahir="<?= htmlspecialchars($row['tanggal_lahir'] ?? '') ?>"
+                                        data-jenis_kelamin="<?= htmlspecialchars($row['jenis_kelamin'] ?? '') ?>"
+                                        data-judul_presentasi="<?= htmlspecialchars($row['judul_presentasi'] ?? '') ?>"
+                                        data-foto="<?= $row['berkas']['foto'] ?? '' ?>"
+                                        data-cv="<?= $row['berkas']['cv'] ?? '' ?>"
+                                        data-transkrip="<?= $row['berkas']['transkrip_nilai'] ?? '' ?>"
+                                        data-surat="<?= $row['berkas']['surat_pernyataan'] ?? '' ?>"
+                                        data-berkas_accepted="<?= $row['berkas']['accepted'] ?? '' ?>"
+                                        data-makalah="<?= $row['presentasi']['makalah'] ?? '' ?>"
+                                        data-ppt="<?= $row['presentasi']['ppt'] ?? ''?>">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                
+                                <?php if (!isset($row['berkas']['accepted']) || $row['berkas']['accepted'] === null): ?>
+                                    <button class="btn btn-sm btn-action btn-warning bg-warning bg-opacity-10 text-warning border-0 rounded-3 btn-reminder" 
+                                            title="Kirim Reminder" 
+                                            data-id="<?= $row['id'] ?>"
+                                            data-userid="<?= $row['idUser'] ?>"
+                                            data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>">
+                                        <i class="bi bi-bell"></i>
+                                    </button>
+                                <?php endif; ?>
+                                
+                                <button class="btn btn-sm btn-action btn-danger bg-danger bg-opacity-10 text-danger border-0 rounded-3 btn-delete" 
+                                        title="Hapus">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php $i++; ?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-                                </td>
-                            </tr>
-                            <?php $i++; ?>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
 
 </div>
 

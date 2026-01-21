@@ -10,20 +10,23 @@
             $('#daftarPesertaTable').DataTable().destroy();
         }
 
-        // Initialize DataTable with standard Bootstrap 5 styling
+        // Initialize DataTable with custom search (Paging disabled as requested)
         var table = $('#daftarPesertaTable').DataTable({
-            dom: "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" + 
-                 "<'row'<'col-sm-12'tr>>",
+            dom: "t",
             paging: false,
             info: false,
             language: {
                 search: "", 
-                searchPlaceholder: "Cari peserta...",
-                lengthMenu: "Tampilkan _MENU_ data per halaman"
+                searchPlaceholder: "Cari peserta..."
             },
             columnDefs: [
-                { orderable: false, targets: -1 } // Disable sorting on action column
+                { orderable: false, targets: [1, -1] } // Disable sorting on avatar and action columns
             ]
+        });
+
+        // Link custom search input
+        $('#searchPeserta').on('keyup', function() {
+            table.search(this.value).draw();
         });
 
     // Store current row data
@@ -1221,112 +1224,8 @@ function confirmReject(mahasiswaId) {
 
 
 
-(function() {
-    const initParticipantsSearch = function() {
-        // Ensure jQuery is available
-        if (typeof jQuery === 'undefined') return;
 
-        $(document).ready(function() {
-            // ---------------------------------------------------------
-            // 1. INJECT SEARCH BAR INTO NAVBAR (Without modifying global component)
-            // ---------------------------------------------------------
-            var searchHtml = `
-                <div id="navbarSearchContainer" class="d-none d-md-flex align-items-center flex-grow-1 mx-4 justify-content-center">
-                    <div class="position-relative w-100" style="max-width: 600px;">
-                        <i class="bx bx-search position-absolute top-50 start-0 translate-middle-y text-secondary ms-3"></i>
-                        <input type="text" id="navbarSearchInput" class="form-control rounded-pill ps-5 py-2 border-0 bg-light-subtle shadow-sm" placeholder="Cari nama, stambuk, atau status...">
-                    </div>
-                </div>
-            `;
-            
-            // Insert after the brand logo section
-            // Use .first() to ensure we target the main navbar if multiple exist (unlikely but safe)
-            if ($('#navbarSearchContainer').length === 0) {
-                $('.navbar .navbar-brand').first().after(searchHtml);
-            }
 
-            // ---------------------------------------------------------
-            // 2. INITIALIZE DATATABLE
-            // ---------------------------------------------------------
-            // Fix: Destroy existing table if it exists to prevent "Cannot reinitialise" error
-            if ($.fn.DataTable.isDataTable('#daftarPesertaTable')) {
-                $('#daftarPesertaTable').DataTable().destroy();
-            }
-
-            var table = $('#daftarPesertaTable').DataTable({
-                "paging": false,       // User requirement: No pagination (vertical list)
-                "lengthChange": false,
-                "searching": true,     // Enable search logic
-                "ordering": true,
-                "info": false,         // User requirement: No info text
-                "autoWidth": false,
-                "responsive": true,
-                "dom": 'rt',           // Hide default search input ('f')
-                "language": {
-                    "emptyTable": "Tidak ada data peserta",
-                    "zeroRecords": "Tidak ada hasil pencarian yang sesuai"
-                }
-            });
-
-            // ---------------------------------------------------------
-            // 3. LINK INJECTED INPUT TO DATATABLE
-            // ---------------------------------------------------------
-            // Use delegation since element is dynamic (though inserted synchronously above)
-            $(document).on('keyup', '#navbarSearchInput', function() {
-                table.search(this.value).draw();
-            });
-            
-            $(document).on('keydown', '#navbarSearchInput', function(e) {
-                if (e.key === 'Enter') e.preventDefault();
-            });
-            // ---------------------------------------------------------
-            // 4. GLOBAL CLEANUP (Fixes stuck backdrops)
-            // ---------------------------------------------------------
-            // Runs periodically - FASTER INTERVAL
-            setInterval(function() {
-                // Check if there are any modals open
-                var openModals = document.querySelectorAll('.modal.show');
-                var backdrops = document.querySelectorAll('.modal-backdrop');
-                
-                // If no modals are open but backdrops exist, remove them
-                if (openModals.length === 0 && backdrops.length > 0) {
-                    backdrops.forEach(function(backdrop) {
-                        backdrop.remove();
-                    });
-                    document.body.classList.remove('modal-open');
-                    document.body.style.overflow = '';
-                    document.body.style.paddingRight = '';
-                }
-                
-                // If there are more backdrops than modals, remove extras
-                if (backdrops.length > openModals.length) {
-                    var extraBackdrops = backdrops.length - openModals.length;
-                    for (var i = 0; i < extraBackdrops; i++) {
-                        backdrops[i].remove();
-                    }
-                }
-            }, 200); // Check every 200ms
-        });
-    };
-
-    // Robust initialization with polling
-    const waitForJQuerySearch = function(callback, maxAttempts = 50) {
-        let attempts = 0;
-        const check = function() {
-            if (typeof jQuery !== 'undefined' && typeof $ !== 'undefined') {
-                callback();
-            } else {
-                attempts++;
-                if (attempts < maxAttempts) {
-                    setTimeout(check, 100);
-                }
-            }
-        };
-        check();
-    };
-
-    waitForJQuerySearch(initParticipantsSearch);
-})();
 
 // ============================================
 // SEND MESSAGE FUNCTIONS (Dynamic Event Listeners)
