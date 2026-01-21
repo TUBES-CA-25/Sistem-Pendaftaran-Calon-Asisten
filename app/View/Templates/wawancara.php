@@ -1,114 +1,78 @@
 <?php
   use app\Controllers\user\WawancaraController;
-  $wawancara = WawancaraController::getAllById() ;
+  $wawancara = WawancaraController::getAllById() ?? [];
 ?>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-    .recent-wawancara {
-        margin: 0 auto;
-        max-width: 90%;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 16px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
+<link rel="stylesheet" href="<?= APP_URL ?>/Style/wawancara.css">
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        overflow: hidden;
-        font-size: 0.95rem;
-    }
-
-    table thead {
-        background-color: white;
-        text-transform: uppercase;
-        font-weight: 600;
-    }
-
-    table thead th {
-        padding: 15px;
-        text-align: left;
-    }
-
-    table tbody tr {
-        transition: background-color 0.3s ease;
-    }
-
-    table tbody tr:nth-child(odd) {
-        background-color: #f8faff;
-    }
-
-    table tbody tr:nth-child(even) {
-        background-color: #e8f4fc;
-    }
-
-    table tbody tr:hover {
-        background-color: rgba(61, 194, 236, 0.2);
-    }
-
-    table tbody td {
-        padding: 15px;
-        text-align: left;
-        color: #555;
-    }
-
-    table tbody td[colspan] {
-        text-align: center;
-        font-style: italic;
-        color: #888;
-    }
-
-    table tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    table th,
-    table td {
-        border-bottom: 1px solid #ddd;
-    }
-
-    table th:first-child,
-    table td:first-child {
-        border-left: none;
-    }
-
-    table th:last-child,
-    table td:last-child {
-        border-right: none;
-    }
-</style>
-
-<main>
-    <h1 class="dashboard">Jadwal Kegiatan</h1>
-    <div class="recent-wawancara">
-        <table>
-            <thead>
-                    <th>No</th>
-                    <th>Jenis Kegiatan</th>
-                    <th>Lokasi</th>
-                    <th>Tanggal</th>
-                    <th>Waktu</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($wawancara)) : ?>
-                    <tr>
-                        <td colspan="5">Belum ada Jadwal</td>
-                    </tr>
-                <?php endif; $i = 0;?>
-                <?php foreach ($wawancara as $value) : $i++?>
-                    <tr>
-                        <td><?= $i?></td>
-                        <td><?= $value['jenis_wawancara'] ?? "" ?></td>
-                        <td><?= $value['ruangan'] ?? "" ?></td>
-                        <td><?= $value['tanggal']?? "" ?></td>
-                        <td><?= $value['waktu'] ?? "" ?></td>
-                    </tr>
-                       
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+<main class="wawancara-container">
+    
+    <div class="page-header">
+        <h1>Jadwal Kegiatan</h1>
+        <p>Informasi jadwal tes, wawancara, dan presentasi Anda.</p>
     </div>
+
+    <div class="schedule-card">
+        <div class="table-responsive">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th width="5%">No</th>
+                        <th width="25%">Jenis Kegiatan</th>
+                        <th width="30%">Lokasi / Ruangan</th>
+                        <th width="25%">Tanggal</th>
+                        <th width="15%">Waktu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($wawancara)) : ?>
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <div class="empty-content">
+                                    <i class='bx bx-calendar-x'></i>
+                                    <p>Belum ada jadwal kegiatan saat ini.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php else: 
+                        $i = 1;
+                        foreach ($wawancara as $value) : 
+                            // Formatting Data
+                            $jenis = htmlspecialchars($value['jenis_wawancara'] ?? '-');
+                            $lokasi = htmlspecialchars($value['ruangan'] ?? '-');
+                            
+                            // Format Tanggal (Contoh: 12 Jan 2026)
+                            $rawDate = $value['tanggal'] ?? null;
+                            $dateDisplay = $rawDate ? date('d M Y', strtotime($rawDate)) : '-';
+                            
+                            // Format Waktu (Hapus detik, jadi 09:00)
+                            $rawTime = $value['waktu'] ?? null;
+                            $timeDisplay = $rawTime ? date('H:i', strtotime($rawTime)) . ' WITA' : '-';
+
+                            // Badge Color Logic
+                            $badgeClass = (stripos($jenis, 'Tes') !== false) ? 'badge-test' : 'badge-interview';
+                    ?>
+                        <tr>
+                            <td><span class="row-number"><?= $i++ ?></span></td>
+                            <td>
+                                <span class="activity-badge <?= $badgeClass ?>">
+                                    <?= $jenis ?>
+                                </span>
+                            </td>
+                            <td class="location-cell">
+                                <i class='bx bx-map'></i> <?= $lokasi ?>
+                            </td>
+                            <td class="date-cell">
+                                <i class='bx bx-calendar'></i> <?= $dateDisplay ?>
+                            </td>
+                            <td class="time-cell">
+                                <i class='bx bx-time'></i> <?= $timeDisplay ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </main>
