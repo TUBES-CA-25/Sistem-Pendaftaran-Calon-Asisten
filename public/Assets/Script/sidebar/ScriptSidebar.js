@@ -301,3 +301,35 @@ if (isMobile) {
         });
     });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    
+    // 1. Toggle Sidebar (Hamburger)
+    let sidebar = document.querySelector(".sidebar");
+    let closeBtn = document.querySelector("#btn"); // Ikon Hamburger
+
+    if (closeBtn) {
+        closeBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            menuBtnChange(); // Ganti ikon menu
+        });
+    }
+
+    // 2. Dropdown Menu (Arrow)
+    let arrows = document.querySelectorAll(".arrow");
+    for (var i = 0; i < arrows.length; i++) {
+        arrows[i].addEventListener("click", (e) => {
+            let arrowParent = e.target.parentElement.parentElement;
+            arrowParent.classList.toggle("showMenu");
+        });
+    }
+
+    // Fungsi Ganti Ikon Hamburger (Opsional)
+    function menuBtnChange() {
+        if (sidebar.classList.contains("open")) {
+            closeBtn.classList.replace("bx-menu", "bx-menu-alt-right"); // Ubah ikon saat terbuka
+        } else {
+            closeBtn.classList.replace("bx-menu-alt-right", "bx-menu"); // Ubah ikon saat tertutup
+        }
+    }
+});
