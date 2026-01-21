@@ -24,39 +24,112 @@
     // Store current row data
     var currentRowData = null;
 
-    // Handle view detail button click
-    document.querySelectorAll('.btn-view').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            try {
-                var data = this.dataset;
-                
-                // Store mahasiswa ID for accept button
-                document.getElementById('modalMahasiswaId').value = data.id;
-                document.getElementById('modalUserId').value = data.userid;
-                currentRowData = {
-                    id: data.id,
-                    userId: data.userid,
-                    nama: data.nama,
-                    stambuk: data.stambuk
-                };
+    // Clean up existing handlers first
+    $(document).off('click', '.btn-view');
+    $(document).off('click', '.btn-delete');
+    $(document).off('click', '.btn-reminder');
+    
+    // ============================================
+    // SEND MESSAGE FUNCTIONS (Inside jQuery Ready)
+    // ============================================
+    $(document).on('click', '#btnSendMessageToUser', function() {
+        console.log('Open message modal clicked');
+        var mahasiswaId = document.getElementById('modalMahasiswaId').value;
+        var nama = document.getElementById('modalNama').textContent;
+        
+        if (!mahasiswaId) {
+            showAlert('ID Peserta tidak valid.', false);
+            return;
+        }
 
+        // Use Bootstrap Modal instance properly
+        var detailModalEl = document.getElementById('detailModal');
+        var detailModal = bootstrap.Modal.getInstance(detailModalEl);
+        if (detailModal) {
+            detailModal.hide();
+        }
 
-            // Modal data is populated below - no button manipulation needed
+        // Wait shortly for modal transition
+        setTimeout(function() {
+            document.getElementById('messageRecipient').textContent = nama;
+            document.getElementById('messageMahasiswaId').value = mahasiswaId;
+            document.getElementById('individualMessage').value = '';
             
+            var msgModal = new bootstrap.Modal(document.getElementById('sendMessageModal'));
+            msgModal.show();
+        }, 300);
+    });
+
+    $(document).on('click', '#sendIndividualMessage', function() {
+        var btn = $(this);
+        var mahasiswaId = document.getElementById('messageMahasiswaId').value;
+        var message = document.getElementById('individualMessage').value;
+
+        if (!message || message.trim() === '') {
+            showAlert('Pesan tidak boleh kosong.', false);
+            return;
+        }
+
+        // UI Feedback
+        var originalText = btn.html();
+        btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Mengirim...');
+
+        fetch(`${APP_URL}/notification`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `id=${mahasiswaId}&message=${encodeURIComponent(message)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                var msgModal = bootstrap.Modal.getInstance(document.getElementById('sendMessageModal'));
+                if (msgModal) msgModal.hide();
+                showSuccessPopup('Pesan berhasil dikirim!');
+            } else {
+                showAlert('Gagal: ' + data.message, false);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showAlert('Gagal mengirim pesan.', false);
+        })
+        .finally(() => {
+            btn.prop('disabled', false).html(originalText);
+        });
+    });
+    
+    // Handle view detail button click (Event Delegation)
+    $(document).on('click', '.btn-view', function() {
+        try {
+            var data = this.dataset;
             
-            
+            // Store mahasiswa ID for accept button
+            document.getElementById('modalMahasiswaId').value = data.id;
+            document.getElementById('modalUserId').value = data.userid;
+            currentRowData = {
+                id: data.id,
+                userId: data.userid,
+                nama: data.nama,
+                stambuk: data.stambuk
+            };
+
             // Populate header
             document.getElementById('modalNamaHeader').textContent = data.nama || '-';
             document.getElementById('modalStambukHeader').textContent = data.stambuk || '-';
             
+            // BASE URL ADJUSTMENT: 'res' is at project root, not inside 'public'
+            // If APP_URL ends with '/public', strip it to get project root
+            const PROJECT_ROOT = APP_URL.replace(/\/public$/, '');
+
             // Set photo
-            var fotoPath = data.foto ? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' + data.foto : '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
-            document.getElementById('modalFoto').src = fotoPath;
-            document.getElementById('modalFoto').onerror = function() {
-                this.src = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
+            var fotoPath = data.foto ? `${PROJECT_ROOT}/res/imageUser/${data.foto}` : `${PROJECT_ROOT}/res/imageUser/default.png`;
+            var modalFoto = document.getElementById('modalFoto');
+            modalFoto.src = fotoPath;
+            modalFoto.onerror = function() {
+                this.src = `${PROJECT_ROOT}/res/imageUser/default.png`;
             };
             
-            // Populate modal fields (also used in info cards)
+            // Populate modal fields
             document.getElementById('modalNama').textContent = data.nama || '-';
             document.getElementById('modalStambuk').textContent = data.stambuk || '-';
             document.getElementById('modalJurusan').textContent = data.jurusan || '-';
@@ -97,96 +170,53 @@
             // Get button elements
             var btnVerifikasi = document.getElementById('btnVerifikasiModal');
             var btnBatalkan = document.getElementById('btnBatalkanModal');
-            
-            // Get Terima/Tolak button elements
             var btnTerima = document.getElementById('btnTerimaModal');
             var btnTolak = document.getElementById('btnTolakModal');
             
-            // Check if elements exist before manipulating
-            if (!btnVerifikasi || !btnBatalkan) {
-                console.error('Verification buttons not found!');
-                console.log('btnVerifikasi:', btnVerifikasi);
-                console.log('btnBatalkan:', btnBatalkan);
-                return; // Exit early if buttons don't exist
-            }
+            if (!btnVerifikasi || !btnBatalkan) return;
             
-            // RESET button states first
-            btnVerifikasi.disabled = false;
-            btnVerifikasi.style.opacity = '1';
-            btnVerifikasi.style.cursor = 'pointer';
+            // RESET button states
             btnVerifikasi.style.display = 'none';
             btnBatalkan.style.display = 'none';
-            
-            // Reset Terima/Tolak buttons
             if (btnTerima) btnTerima.style.display = 'none';
             if (btnTolak) btnTolak.style.display = 'none';
             
-            // Check if status elements exist
-            if (!statusBadge || !statusIcon) {
-                console.error('Status elements not found!');
-                return;
-            }
-            
             if (berkasAccepted == '1') {
-                // TERVERIFIKASI - Show cancel button, hide verification button
                 statusBadge.className = 'badge rounded-pill px-4 py-2 badge-diterima';
                 statusBadge.innerHTML = '<i class="bi bi-check-circle me-1"></i>Berkas Terverifikasi';
                 statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow status-icon-verified';
                 statusIcon.innerHTML = '<i class="bi bi-check-lg"></i>';
-                
-                // Hide verification button, show cancel button
-                btnVerifikasi.style.display = 'none';
                 btnBatalkan.style.display = 'inline-block';
-                
             } else if (berkasAccepted == '0') {
-                // PENDING - Show verification button (disabled), hide cancel button
                 statusBadge.className = 'badge rounded-pill px-4 py-2 badge-process';
                 statusBadge.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Menunggu Verifikasi';
                 statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow status-icon-pending';
                 statusIcon.innerHTML = '<i class="bi bi-clock"></i>';
-                
-                // Show verification button enabled
                 btnVerifikasi.style.display = 'inline-block';
                 btnVerifikasi.disabled = false;
-                btnVerifikasi.style.opacity = '1';
-                btnVerifikasi.style.cursor = 'pointer';
-                btnBatalkan.style.display = 'none';
-                
             } else {
-                // BELUM UPLOAD - Show Terima/Tolak buttons, hide Verifikasi button
                 statusBadge.className = 'badge rounded-pill px-4 py-2 badge-pending';
                 statusBadge.innerHTML = '<i class="bi bi-file-earmark-x me-1"></i>Belum Upload Berkas';
                 statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow status-icon-none';
                 statusIcon.innerHTML = '<i class="bi bi-x-lg"></i>';
-                
-                // Hide verification buttons
-                btnVerifikasi.style.display = 'none';
-                btnBatalkan.style.display = 'none';
-                
-                // Show Terima/Tolak buttons
                 if (btnTerima) btnTerima.style.display = 'inline-block';
                 if (btnTolak) btnTolak.style.display = 'inline-block';
             }
             
-            // Set photo
-            var fotoUrl = data.foto ? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' + data.foto : '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
-            document.getElementById('modalFoto').src = fotoUrl;
-            document.getElementById('modalFoto').onerror = function() {
-                this.src = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
+            // Download Buttons
+            const downloads = {
+                'downloadFotoButton': data.foto ? `${PROJECT_ROOT}/res/imageUser/${data.foto}` : '',
+                'downloadCVButton': data.cv ? `${PROJECT_ROOT}/res/berkasUser/${data.cv}` : '',
+                'downloadTranskripButton': data.transkrip ? `${PROJECT_ROOT}/res/berkasUser/${data.transkrip}` : '',
+                'downloadSuratButton': data.surat ? `${PROJECT_ROOT}/res/berkasUser/${data.surat}` : ''
             };
-
-            // Set download URLs for berkas - with null checks
-            var downloadFotoBtn = document.getElementById('downloadFotoButton');
-            var downloadCVBtn = document.getElementById('downloadCVButton');
-            var downloadTranskripBtn = document.getElementById('downloadTranskripButton');
-            var downloadSuratBtn = document.getElementById('downloadSuratButton');
             
-            if (downloadFotoBtn) downloadFotoBtn.setAttribute('data-download-url', data.foto ? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' + data.foto : '');
-            if (downloadCVBtn) downloadCVBtn.setAttribute('data-download-url', data.cv ? '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser/' + data.cv : '');
-            if (downloadTranskripBtn) downloadTranskripBtn.setAttribute('data-download-url', data.transkrip ? '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser/' + data.transkrip : '');
-            if (downloadSuratBtn) downloadSuratBtn.setAttribute('data-download-url', data.surat ? '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser/' + data.surat : '');
+            for (const [id, url] of Object.entries(downloads)) {
+                const btn = document.getElementById(id);
+                if (btn) btn.setAttribute('data-download-url', url);
+            }
             
-            // Set download URLs for presentasi files - with null checks
+            // Presentasi Files
             var makalahBtn = document.getElementById('downloadMakalahButton');
             var pptBtn = document.getElementById('downloadPptButton');
             var hasPresentasiFiles = false;
@@ -211,216 +241,61 @@
                 }
             }
             
-            // Show/hide no files message
             if (noPresentasiFiles) {
                 noPresentasiFiles.style.display = hasPresentasiFiles ? 'none' : 'inline-block';
             }
             
-            // SHOW MODAL MANUALLY NOW
-            // This prevents race condition with data-bs-toggle vs JS data population
+            // Show modal
             var detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
             detailModal.show();
             
-            } catch (error) {
-                console.error('Error opening detail modal:', error);
-                showAlert('Terjadi kesalahan saat membuka detail peserta: ' + error.message, false);
-            }
-        });
+        } catch (error) {
+            console.error('Error opening detail modal:', error);
+            showAlert('Terjadi kesalahan saat membuka detail peserta: ' + error.message, false);
+        }
     });
 
-    // Handle send message button in detail modal
-    var btnSendMessage = document.getElementById('btnSendMessageToUser');
-    if (btnSendMessage) {
-        btnSendMessage.addEventListener('click', function() {
-            if (currentRowData) {
-                // Close detail modal
-                var detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
-                if (detailModal) detailModal.hide();
-                
-                // Set data for send message modal
-                var messageRecipient = document.getElementById('messageRecipient');
-                var messageUserId = document.getElementById('messageUserId');
-                var messageMahasiswaId = document.getElementById('messageMahasiswaId');
-                var individualMessage = document.getElementById('individualMessage');
-                
-                if (messageRecipient) messageRecipient.textContent = currentRowData.stambuk + ' - ' + currentRowData.nama;
-                if (messageUserId) messageUserId.value = currentRowData.userId;
-                if (messageMahasiswaId) messageMahasiswaId.value = currentRowData.id;
-                if (individualMessage) individualMessage.value = '';
-                
-            
-            // Show send message modal
-            setTimeout(function() {
-                var sendMessageModalEl = document.getElementById('sendMessageModal');
-                if (sendMessageModalEl) {
-                    var sendMessageModal = new bootstrap.Modal(sendMessageModalEl);
-                    sendMessageModal.show();
-                }
-            }, 300);
+    // Handle delete button click (Event Delegation)
+    $(document).on('click', '.btn-delete', function() {
+        var row = $(this).closest('tr');
+        var userId = row.attr('data-userid'); 
+        var mhsId = row.attr('data-id');
+        
+        // Determine which ID to use
+        var bodyParams = '';
+        if (userId) {
+            bodyParams = 'id=' + userId; // Delete User (and linked Mahasiswa)
+        } else if (mhsId) {
+            bodyParams = 'mahasiswaId=' + mhsId; // Delete Mahasiswa only
+        } else {
+            showAlert('ID data tidak ditemukan', false);
+            return;
         }
-        });
-    }
-
-    // Handle send individual message
-    var sendIndividualMessageBtn = document.getElementById('sendIndividualMessage');
-    if (sendIndividualMessageBtn) {
-        sendIndividualMessageBtn.addEventListener('click', function() {
-            var mahasiswaIdEl = document.getElementById('messageMahasiswaId');
-            var messageEl = document.getElementById('individualMessage');
-            
-            if (!mahasiswaIdEl || !messageEl) {
-                console.error('Message form elements not found');
-                return;
-            }
-            
-            var mahasiswaId = mahasiswaIdEl.value;
-            var message = messageEl.value;
-            
-            if (!message.trim()) {
-                showAlert('Pesan tidak boleh kosong', false);
-                return;
-            }
-            
-            // Send notification
-            fetch('/Sistem-Pendaftaran-Calon-Asisten/addallnotif', {
+        
+        showConfirmDelete(function() {
+            fetch(`${APP_URL}/deletemahasiswa`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify({
-                    mahasiswaIds: [mahasiswaId],
-                    message: message
-                })
+                body: bodyParams
             })
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    showAlert('Pesan berhasil dikirim!', true);
-                    var modal = bootstrap.Modal.getInstance(document.getElementById('sendMessageModal'));
-                    if (modal) modal.hide();
-                } else {
-                showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('Terjadi kesalahan saat mengirim pesan', false);
-        });
-        });
-    }
-
-    // Handle download buttons
-    document.querySelectorAll('[id^="download"]').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var url = this.getAttribute('data-download-url');
-            if (url) {
-                window.open(url, '_blank');
-            } else {
-                showAlert('File tidak tersedia', false);
-            }
-        });
-    });
-
-    /* DEPRECATED: These IDs do not exist. Use acceptParticipant() and rejectParticipant() instead.
-    // Get accept button reference
-    const acceptButton = document.getElementById('acceptButton');
-    if (acceptButton) {
-        acceptButton.addEventListener('click', function() {
-           // ... logic moved to acceptParticipant()
-        });
-    }
-    */
-
-    // Function to verify berkas
-    function verifyBerkas(mahasiswaId, button, fromModal) {
-        fetch('/Sistem-Pendaftaran-Calon-Asisten/public/acceptberkas', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'id=' + mahasiswaId
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                showAlert('Berkas berhasil diverifikasi!', true);
-
-                // Update button state if from table
-                if (button && !fromModal) {
-                    // Change verify button to verified button
-                    button.classList.remove('btn-verify');
-                    button.classList.add('btn-verified');
-                    button.setAttribute('title', 'Berkas Terverifikasi');
-                    button.setAttribute('disabled', 'disabled');
-                    button.style.cursor = 'not-allowed';
-                }
-
-                // Update status badge in table row
-                var row = document.querySelector('tr[data-id="' + mahasiswaId + '"]');
-                if (row) {
-                    var statusBadge = row.querySelector('.badge-status');
-                    if (statusBadge) {
-                        statusBadge.className = 'badge-status badge-diterima';
-                        statusBadge.innerHTML = '<i class="bi bi-check-circle-fill"></i> Diterima';
-                    }
-
-                    // Also update the view button data
-                    var viewBtn = row.querySelector('.btn-view');
-                    if (viewBtn) {
-                        viewBtn.dataset.berkas_accepted = '1';
-                    }
-                }
-
-                // Close modal if from modal
-                if (fromModal) {
-                    var modal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
-                    if (modal) modal.hide();
-                }
-
-                // Reload page after 1 second to reflect changes
-                setTimeout(function() {
-                    location.reload();
-                }, 1000);
-            } else {
-                showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('Terjadi kesalahan saat memverifikasi berkas', false);
-        });
-    }
-
-    // Handle delete button click
-    // Handle delete button click
-    document.querySelectorAll('.btn-delete').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var row = this.closest('tr');
-            var userId = row.getAttribute('data-userid');
-            
-            showConfirmDelete(function() {
-                fetch('/Sistem-Pendaftaran-Calon-Asisten/deletemahasiswa', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'id=' + userId
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        showAlert('Data berhasil dihapus!', true);
+                    showAlert('Data berhasil dihapus!', true);
+                    setTimeout(function() {
                         location.reload();
-                    } else {
-                        showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showAlert('Terjadi kesalahan saat menghapus data', false);
-                });
-            }, 'Apakah Anda yakin ingin menghapus data peserta ini?<br>Tindakan ini tidak dapat dibatalkan.');
-        });
+                    }, 1000);
+                } else {
+                    showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Terjadi kesalahan saat menghapus data', false);
+            });
+        }, 'Apakah Anda yakin ingin menghapus data peserta ini?<br>Tindakan ini tidak dapat dibatalkan.');
     });
 
     // ============ NOTIFICATION FORM HANDLERS ============
@@ -1453,6 +1328,10 @@ function confirmReject(mahasiswaId) {
 
     waitForJQuerySearch(initParticipantsSearch);
 })();
+
+// ============================================
+// SEND MESSAGE FUNCTIONS (Dynamic Event Listeners)
+// ============================================
 
 
 

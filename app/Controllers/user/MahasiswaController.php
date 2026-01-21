@@ -74,7 +74,15 @@ class MahasiswaController extends Controller {
 
         try {
             if ($idUser) {
-                // Primary: Delete User (Cascades to Mahasiswa usually)
+                // Delete Mahasiswa record first to avoid Foreign Key Constraint fail
+                $mahasiswa = new Mahasiswa();
+                $mhsData = $mahasiswa->getMahasiswaId($idUser);
+                
+                if ($mhsData) {
+                    $mahasiswa->deleteMahasiswaById($mhsData['id']);
+                }
+
+                // Primary: Delete User
                 if (UserModel::deleteUser($idUser)) {
                     echo json_encode(['status' => 'success', 'message' => 'Mahasiswa berhasil dihapus']);
                     return;

@@ -18,6 +18,23 @@ $result = $result ?? [];
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
+<style>
+/* Force table rows and cells to be white */
+#daftarPesertaTable tbody tr,
+#daftarPesertaTable tbody td {
+    background-color: #ffffff !important;
+}
+/* Ensure hover effect also stays white (or very light gray if desired, but user asked for white) */
+#daftarPesertaTable tbody tr:hover td {
+    background-color: #ffffff !important;
+}
+
+/* Override Bootstrap table-hover to keep white background */
+#daftarPesertaTable tbody tr:hover td {
+    background-color: #ffffff !important;
+}
+</style>
+
 <!-- Main Content -->
 <div class="container-fluid px-4">
     <!-- Table Card -->
@@ -35,7 +52,7 @@ $result = $result ?? [];
                             <th class="text-center py-3" style="width: 50px;">No</th>
                             <th class="text-center py-3" style="width: 100px;">Avatar</th>
                             <th class="py-3">Nama Lengkap</th>
-                            <th class="py-3">Judul Presentasi</th>
+                            <th class="py-3" style="white-space: nowrap;">Judul Presentasi</th>
                             <th class="py-3">Stambuk</th>
                             <th class="py-3">Jurusan</th>
                             <th class="py-3">Kelas</th>
@@ -169,9 +186,7 @@ $result = $result ?? [];
                                             <!-- Delete Button -->
                                             <button class="btn btn-delete p-2 rounded-3 border-0" 
                                                     style="background-color: #FEE2E2; color: #DC2626; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
-                                                    title="Hapus" 
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#deleteModal">
+                                                    title="Hapus">
                                                 <i class="bi bi-trash3"></i>
                                             </button>
                                         </div>
@@ -722,32 +737,7 @@ $result = $result ?? [];
     </div>
 </div>
 
-<!-- Modal Konfirmasi Hapus -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="deleteModalLabel">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Konfirmasi Hapus
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center py-4">
-                <i class="bi bi-trash3 text-danger" style="font-size: 3rem;"></i>
-                <p class="mt-3 mb-0">Apakah Anda yakin ingin menghapus data peserta ini?</p>
-                <small class="text-muted">Tindakan ini tidak dapat dibatalkan.</small>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i>Batal
-                </button>
-                <button type="button" class="btn btn-danger" id="confirmDelete">
-                    <i class="bi bi-trash3 me-1"></i>Hapus
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Bootstrap Bundle JS -->
 

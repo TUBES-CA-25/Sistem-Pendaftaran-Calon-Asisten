@@ -113,10 +113,57 @@ class Mahasiswa extends Model
     }
     public function deleteMahasiswaById($mahasiswaId)
     {
-        $query = "DELETE FROM " . static::$table . " WHERE id = :id";
-        $stmt = self::getDB()->prepare($query);
-        $stmt->bindParam(':id', $mahasiswaId);
-        $stmt->execute();
+        $pdo = self::getDB();
+        try {
+            $pdo->beginTransaction();
+
+            // 1. Delete Berkas
+            $query = "DELETE FROM berkas_mahasiswa WHERE id_mahasiswa = :id";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':id', $mahasiswaId);
+            $stmt->execute();
+
+            // 2. Delete Presentasi
+            $query = "DELETE FROM presentasi WHERE id_mahasiswa = :id";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':id', $mahasiswaId);
+            $stmt->execute();
+
+            // 3. Delete Jawaban
+            $query = "DELETE FROM jawaban WHERE id_mahasiswa = :id";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':id', $mahasiswaId);
+            $stmt->execute();
+
+            // 4. Delete Nilai Akhir
+            $query = "DELETE FROM nilai_akhir WHERE id_mahasiswa = :id";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':id', $mahasiswaId);
+            $stmt->execute();
+
+            // 5. Delete Absensi
+            $query = "DELETE FROM absensi WHERE id_mahasiswa = :id";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':id', $mahasiswaId);
+            $stmt->execute();
+
+            // 6. Delete Notifikasi
+            $query = "DELETE FROM notifikasi WHERE id_mahasiswa = :id";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':id', $mahasiswaId);
+            $stmt->execute();
+
+            // 7. Finally Delete Mahasiswa
+            $query = "DELETE FROM " . static::$table . " WHERE id = :id";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':id', $mahasiswaId);
+            $stmt->execute();
+
+            $pdo->commit();
+        } catch (\Exception $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
     }
 
     public function updateBiodataMahasiswaById(

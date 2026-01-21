@@ -385,7 +385,8 @@ body {
   margin-left: var(--sidebar-width);
   width: calc(100% - var(--sidebar-width));
   min-height: 100vh;
-  padding: var(--section-padding);
+  padding: 0 var(--section-padding) var(--section-padding) var(--section-padding);
+  padding-top: calc(80px + var(--section-padding)); /* Add padding for fixed navbar overlap */
   background-color: var(--bs-body-bg);
 }
 
@@ -452,10 +453,15 @@ body {
    PAGE NAVBAR COMPONENT
    ============================== */
 .page-navbar {
-  margin: calc(var(--section-padding) * -1) calc(var(--section-padding) * -1) 1.5rem calc(var(--section-padding) * -1);
-  width: calc(100% + (var(--section-padding) * 2));
-  padding: 1rem 0;
-  position: relative;
+  /* margin: 0 calc(var(--section-padding) * -1) 1.5rem calc(var(--section-padding) * -1); */
+  margin: 0; 
+  /* width: calc(100% + (var(--section-padding) * 2)); NO, fixed needs direct width */
+  width: calc(100% - var(--sidebar-width));
+  padding: 1rem var(--section-padding); /* Restore horizontal padding internally */
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width);
+  right: 0;
   /* overflow: hidden; -- REMOVED to allow dropdowns */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   z-index: 1000; /* Ensure dropdowns appear above page content */

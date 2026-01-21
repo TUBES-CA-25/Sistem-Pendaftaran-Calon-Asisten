@@ -13,11 +13,7 @@ abstract class Model {
     
     protected static $db;
     public static function getDB() {
-        if (!self::$db) {
-            self::$db = new PDO('mysql:host=localhost; dbname=DB_TUBES', 'root', '');
-            self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        }
-        return self::$db;
+        return Database::getInstance();
     }
     
     public static function all() {
