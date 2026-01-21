@@ -4,7 +4,8 @@ use app\Controllers\user\DashboardUserController;
 use App\Controllers\Profile\ProfileController;
 use app\Controllers\user\WawancaraController;
 
-// 1. DATA PENGGUNA & PROGRESS
+// 1. DATA PHP & PROGRESS
+$role = ProfileController::viewUser()["role"];
 $bio = DashboardUserController::getBiodataDetail();
 $persen = DashboardUserController::getPercentage();
 $totalSelesai = DashboardUserController::getNumberTahapanSelesai();
@@ -13,7 +14,6 @@ $noHp = ProfileController::viewBiodata() == null ? "No Telephone" : ProfileContr
 
 // 2. JADWAL (Filter 3 terdekat untuk Preview Dashboard)
 $wawancara = WawancaraController::getAllById();
-// Ambil jadwal yang tanggalnya >= hari ini, lalu potong ambil 3 saja
 $upcomingJadwal = array_slice(array_filter($wawancara ?? [], function($j) {
     return isset($j['tanggal']) && $j['tanggal'] >= date('Y-m-d');
 }), 0, 3);
@@ -152,18 +152,48 @@ $namaBulan = date('F Y');
 
 <div id="scheduleModal" class="custom-modal" style="display: none;">
   <div class="custom-modal-content modal-lg"> 
-    <div class="custom-modal-header"><h3>📅 Jadwal Lengkap</h3><button id="closeScheduleBtn">&times;</button></div>
+    
+    <div class="custom-modal-header">
+      <h3>
+          <i class='bx bx-calendar-event' style="color: #4B8DF8;"></i> 
+          Jadwal Lengkap
+      </h3>
+      <button id="closeScheduleBtn">&times;</button>
+    </div>
+    
     <div class="custom-modal-body">
         <div class="table-responsive">
             <table class="modern-table">
-                <thead><tr><th>Kegiatan</th><th>Lokasi</th><th>Waktu</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th width="5%">No</th>
+                        <th width="30%">Kegiatan</th>
+                        <th width="40%">Lokasi</th>
+                        <th width="25%">Waktu</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    <?php if(empty($wawancara)): ?><tr><td colspan="3">Belum ada jadwal.</td></tr><?php else: ?>
+                    <?php if(empty($wawancara)): ?>
+                        <tr><td colspan="4" style="text-align:center; padding: 30px; color:#999;">Belum ada jadwal kegiatan.</td></tr>
+                    <?php else: $no=1; ?>
                     <?php foreach ($wawancara as $val) : ?>
                         <tr>
-                            <td><?= htmlspecialchars($val['jenis_wawancara']) ?></td>
-                            <td><?= htmlspecialchars($val['ruangan']) ?></td>
-                            <td><?= date('d M Y H:i', strtotime($val['tanggal'] . ' ' . $val['waktu'])) ?></td>
+                            <td><?= $no++ ?></td>
+                            <td>
+                                <span style="font-weight:600; color:#333;"><?= htmlspecialchars($val['jenis_wawancara']) ?></span>
+                            </td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:5px;">
+                                    <i class='bx bx-map' style="color:#999;"></i>
+                                    <?= htmlspecialchars($val['ruangan']) ?>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display:flex; flex-direction:column;">
+                                    <span style="font-weight:500;"><?= date('d M Y', strtotime($val['tanggal'])) ?></span>
+                                    <small style="color:#888;"><?= substr($val['waktu'], 0, 5) ?> WITA</small>
+                                </div>
+                            </td>
                         </tr>
                     <?php endforeach; endif; ?>
                 </tbody>
@@ -175,10 +205,29 @@ $namaBulan = date('F Y');
 
 <div id="customMessageModal" class="custom-modal" style="display: none;">
     <div class="custom-modal-content">
-        <div class="custom-modal-header"><h5>Notifikasi</h5><button id="closeModalButton">&times;</button></div>
+        <div class="custom-modal-header">
+            <h3><i class='bx bx-bell' style="color: #FFC107;"></i> Notifikasi</h3>
+            <button id="closeModalButton">&times;</button>
+        </div>
         <div class="custom-modal-body">
-            <?php if (empty($notifikasi)): ?><p>Tidak ada pesan baru.</p><?php else: ?>
-            <?php foreach($notifikasi as $n): ?><div class="notif-item"><p><?= htmlspecialchars($n['pesan']) ?></p></div><?php endforeach; endif; ?>
+            <?php if (empty($notifikasi)): ?>
+                <div class="empty-state">
+                    <p>Tidak ada pesan baru.</p>
+                </div>
+            <?php else: ?>
+                <?php foreach($notifikasi as $n): 
+                    // Format Tanggal: 21 Jan, 14:30
+                    $waktu = isset($n['created_at']) ? date('d M, H:i', strtotime($n['created_at'])) : '';
+                ?>
+                <div class="notif-item">
+                    <div class="notif-header">
+                        <span class="notif-sender">Admin ICLABS</span>
+                        <span class="notif-time"><?= $waktu ?></span>
+                    </div>
+                    <p class="notif-message"><?= htmlspecialchars($n['pesan']) ?></p>
+                </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 </div>
