@@ -10,65 +10,37 @@ $mahasiswaList = $mahasiswaList ?? [];
 $result = $result ?? [];
 ?>
 
-<!-- FILE VERSION: 2.0.FIXED - Last Updated: 2026-01-13 16:52 -->
-<!-- If you see this comment in browser source, the new version is loaded -->
+<!-- Page Header -->
+<?php
+    $title = 'Daftar Peserta';
+    $subtitle = 'Kelola data peserta pendaftaran calon asisten';
+    $icon = 'bi bi-people-fill';
+    require_once __DIR__ . '/../../templates/components/PageHeader.php';
+?>
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
-
-
-<!-- Custom Styles Removed - Using Bootstrap 5 Utilities -->
-
-
-<main>
-    <!-- Page Header -->
-    <!-- Page Header -->
-    <?php
-        $title = 'Daftar Peserta';
-        $subtitle = 'Kelola data peserta pendaftaran calon asisten';
-        $icon = 'bi bi-people-fill';
-        require_once __DIR__ . '/../../templates/components/PageHeader.php';
-    ?>
-
+<!-- Main Content -->
+<div class="container-fluid px-4" style="margin-top: -2.5rem; position: relative; z-index: 10;">
     <!-- Table Card -->
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-4">
             <!-- Table Controls -->
-            <div class="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
-                <div class="d-flex align-items-center gap-2 text-secondary small">
-                    <span>Show</span>
-                    <select id="entriesPerPage" class="form-select form-select-sm" style="width: auto; cursor: pointer;">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                    <span>entries</span>
-                </div>
 
-                <div class="position-relative" style="width: 250px;">
-                    <i class="bi bi-search position-absolute text-secondary" style="left: 12px; top: 50%; transform: translateY(-50%);"></i>
-                    <input type="text" id="searchInput" class="form-control ps-5" placeholder="Search..." style="border-radius: 8px;">
-                </div>
-            </div>
 
             <!-- Data Table -->
-            <div class="table-responsive rounded-3">
-                <table id="daftarPesertaTable" class="table table-hover align-middle mb-0">
-                    <thead class="bg-primary text-white">
+            <!-- Data Table -->
+            <!-- Data Table -->
+            <div class="table-responsive">
+                <table id="daftarPesertaTable" class="table table-hover align-middle mb-0" style="width:100%">
+                    <thead class="bg-primary text-white text-uppercase">
                         <tr>
-                            <th class="text-center py-3" style="width: 50px;">No</th>
-                            <th class="py-3">Nama</th>
-                            <th class="py-3">Judul Presentasi</th>
-                            <th class="py-3">Stambuk</th>
-                            <th class="py-3">Jurusan</th>
-                            <th class="py-3">Kelas</th>
-                            <th class="text-center py-3">Status</th>
-                            <th class="text-center py-3" style="width: 120px;">Aksi</th>
+                            <th class="text-center py-3" style="width: 50px;">NO</th>
+                            <th class="py-3">NAMA LENGKAP</th>
+                            <th class="py-3">JUDUL PRESENTASI</th>
+                            <th class="py-3">STAMBUK</th>
+                            <th class="py-3">JURUSAN</th>
+                            <th class="py-3">KELAS</th>
+                            <th class="text-center py-3">STATUS</th>
+                            <th class="text-center py-3" style="width: 150px;">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -102,31 +74,59 @@ $result = $result ?? [];
                                 $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . ($row['berkas']['foto'] ?? 'default.png');
                             ?>
                             <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
-                                <td class="text-center fw-medium text-secondary"><?= $i ?></td>
-                                <td>
+                                <td class="text-center text-secondary py-3"><?= $i ?></td>
+                                <td class="py-3">
                                     <div class="d-flex align-items-center gap-3">
-                                        <img src="<?= $photoPath ?>" alt="Avatar" class="rounded-circle border shadow-sm" style="width: 40px; height: 40px; object-fit: cover;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
-                                        <p class="mb-0 fw-bold text-dark small"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></p>
+                                        <img src="<?= $photoPath ?>" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
+                                        <div>
+                                            <p class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></p>
+                                            <small class="text-muted d-block" style="font-size: 0.75rem;">Mahasiswa</small>
+                                        </div>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="py-3">
                                     <?php if (!empty($row['judul_presentasi'])): ?>
-                                        <span class="text-dark small"><?= htmlspecialchars($row['judul_presentasi']) ?></span>
+                                        <span class="text-dark fw-medium small"><?= htmlspecialchars($row['judul_presentasi']) ?></span>
                                     <?php else: ?>
-                                        <span class="text-muted fst-italic small">-</span>
+                                        <span class="badge bg-light text-secondary border rounded-1 fw-normal">Belum Ada</span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="text-secondary small"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
-                                <td class="text-secondary small"><?= htmlspecialchars($row['jurusan'] ?? '-') ?></td>
-                                <td class="text-secondary small"><?= htmlspecialchars($row['kelas'] ?? '-') ?></td>
-                                <td class="text-center">
-                                    <span class="<?= $statusClass ?> px-3 py-2 fw-medium">
-                                        <?= $statusIcon ?><?= $statusText ?>
+                                <td class="text-secondary small fw-medium py-3"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
+                                <td class="text-secondary small py-3"><?= htmlspecialchars($row['jurusan'] ?? '-') ?></td>
+                                <td class="text-secondary small py-3"><?= htmlspecialchars($row['kelas'] ?? '-') ?></td>
+                                <td class="text-center py-3">
+                                    <?php
+                                        // Custom Solid Badge Style matching reference
+                                        $badgeStyle = 'bg-secondary text-white'; // Default
+                                        $badgeLabel = 'Pending';
+                                        
+                                        if (isset($row['berkas']['accepted'])) {
+                                            if ($row['berkas']['accepted'] == 1) {
+                                                $badgeStyle = 'bg-success text-white'; // Lolos/Disetujui
+                                                $badgeLabel = 'Lolos';
+                                            } elseif ($row['berkas']['accepted'] == 2) {
+                                                $badgeStyle = 'bg-danger text-white'; // Ditolak
+                                                $badgeLabel = 'Ditolak';
+                                            } elseif ($row['berkas']['accepted'] == 0) {
+                                                $badgeStyle = 'bg-primary text-white'; // Proses
+                                                $badgeLabel = 'Proses';
+                                            }
+                                        } else {
+                                            // No status yet
+                                            $badgeStyle = 'bg-light text-secondary border';
+                                            $badgeLabel = 'Belum Ada';
+                                        }
+                                    ?>
+                                    <span class="badge <?= $badgeStyle ?> rounded-1 px-3 py-2 fw-medium" style="font-size: 0.75rem;">
+                                        <?= $badgeLabel ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td class="py-3">
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button class="btn btn-sm btn-outline-primary btn-view" title="Lihat Detail"
+                                            <!-- View Button -->
+                                            <button class="btn btn-view p-2 rounded-3 border-0" 
+                                                    style="background-color: #E0F2FE; color: #0284C7; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
+                                                    title="Lihat Detail"
                                                     data-id="<?= $row['id'] ?>"
                                                     data-userid="<?= $row['idUser'] ?>"
                                                     data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>"
@@ -146,12 +146,13 @@ $result = $result ?? [];
                                                     data-berkas_accepted="<?= $row['berkas']['accepted'] ?? '' ?>"
                                                     data-makalah="<?= $row['presentasi']['makalah'] ?? '' ?>"
                                                     data-ppt="<?= $row['presentasi']['ppt'] ?? ''?>">
-                                                <i class="bi bi-pencil-square"></i>
+                                                <i class="bi bi-eye"></i>
                                             </button>
                                             
                                             <?php if (!isset($row['berkas']['accepted']) || $row['berkas']['accepted'] === null): ?>
-                                                <!-- Button Kirim Reminder untuk yang belum upload -->
-                                                <button class="btn btn-sm btn-outline-warning btn-reminder" 
+                                                <!-- Reminder Button -->
+                                                <button class="btn btn-reminder p-2 rounded-3 border-0" 
+                                                        style="background-color: #FEF3C7; color: #D97706; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
                                                         title="Kirim Reminder" 
                                                         data-id="<?= $row['id'] ?>"
                                                         data-userid="<?= $row['idUser'] ?>"
@@ -160,7 +161,12 @@ $result = $result ?? [];
                                                 </button>
                                             <?php endif; ?>
                                             
-                                            <button class="btn btn-sm btn-outline-danger btn-delete" title="Hapus" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                            <!-- Delete Button -->
+                                            <button class="btn btn-delete p-2 rounded-3 border-0" 
+                                                    style="background-color: #FEE2E2; color: #DC2626; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
+                                                    title="Hapus" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteModal">
                                                 <i class="bi bi-trash3"></i>
                                             </button>
                                         </div>
@@ -174,7 +180,7 @@ $result = $result ?? [];
             </div>
         </div>
     </div>
-</main>
+</div>
 
 <!-- Modal Kirim Notifikasi -->
 <div class="modal fade" id="addNotification" tabindex="-1" aria-labelledby="addNotificationLabel" aria-hidden="true">
@@ -751,30 +757,26 @@ $result = $result ?? [];
         console.log('Daftar Peserta script loaded');
         
         // Initialize DataTable
+        // Initialize DataTable with standard Bootstrap 5 styling
         var table = $('#daftarPesertaTable').DataTable({
-        dom: 'rtip', // Remove default search and length selector
-        pageLength: 10,
-        language: {
-            info: "Showing _START_ to _END_ of _TOTAL_ entries",
-            paginate: {
-                previous: "Previous",
-                next: "Next"
-            }
-        },
-        columnDefs: [
-            { orderable: false, targets: -1 } // Disable sorting on action column
-        ]
-    });
-
-    // Custom entries per page selector
-    $('#entriesPerPage').on('change', function() {
-        table.page.len($(this).val()).draw();
-    });
-
-    // Custom search box
-    $('#searchInput').on('keyup', function() {
-        table.search($(this).val()).draw();
-    });
+            dom: "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" + 
+                 "<'row'<'col-sm-12'tr>>" + 
+                 "<'row mt-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            pageLength: 10,
+            language: {
+                search: "", 
+                searchPlaceholder: "Cari peserta...",
+                lengthMenu: "Tampilkan _MENU_ data per halaman",
+                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                paginate: {
+                    previous: "Sebelumnya",
+                    next: "Selanjutnya"
+                }
+            },
+            columnDefs: [
+                { orderable: false, targets: -1 } // Disable sorting on action column
+            ]
+        });
 
     // Store current row data
     var currentRowData = null;

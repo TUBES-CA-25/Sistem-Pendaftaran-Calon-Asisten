@@ -7,14 +7,7 @@
 $ruanganList = $ruanganList ?? [];
 ?>
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-
-<!-- Custom Styles Removed for Bootstrap 5 Refactoring -->
-
+<!-- Duplicate CSS links removed - Bootstrap is already loaded in mainAdmin.php -->
 
 <main>
     <!-- SECTION: LIST VIEW -->

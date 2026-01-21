@@ -3,6 +3,7 @@ namespace App\Controllers\exam;
 
 use App\Core\Controller;
 use App\Model\exam\SoalExam;
+use App\Model\exam\BankSoal;
 
 class SoalController extends Controller
 {
@@ -147,8 +148,8 @@ class SoalController extends Controller
             'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
         ];
 
-        // Clean output buffer
-        if (ob_get_level()) {
+        // Clean ALL output buffers
+        while (ob_get_level()) {
             ob_end_clean();
         }
 
@@ -166,18 +167,30 @@ class SoalController extends Controller
         
         fputcsv($output, $headers);
         
-        // Add an example row (optional, but helpful)
-        $exampleRow = [
-            'Contoh Soal: 1 + 1 = ?',
+        // Add example rows (pilihan ganda and essay)
+        $examplePG = [
+            'Contoh Soal Pilihan Ganda: Berapa hasil dari 2 + 2?',
             'pilihan_ganda',
-            '1',
             '2',
             '3',
             '4',
             '5',
-            'B'
+            '6',
+            'C'
         ];
-        fputcsv($output, $exampleRow);
+        fputcsv($output, $examplePG);
+        
+        $exampleEssay = [
+            'Contoh Soal Essay: Jelaskan pengertian MVC (Model-View-Controller)',
+            'essay',
+            '',
+            '',
+            '',
+            '',
+            '',
+            'MVC adalah pola arsitektur software yang memisahkan aplikasi menjadi tiga komponen utama: Model (data), View (tampilan), dan Controller (logika)'
+        ];
+        fputcsv($output, $exampleEssay);
         
         fclose($output);
         exit;
@@ -423,24 +436,64 @@ class SoalController extends Controller
             return ['valid' => false, 'errors' => $errors];
         }
         
-        // Check each header name (case-insensitive, trim whitespace)
+        // Helper function to clean and normalize text to ASCII only
+        $cleanText = function($text) {
+            // Remove BOM
+            $text = str_replace("\xEF\xBB\xBF", '', $text);
+            // Convert to ASCII, removing all non-ASCII characters (including Unicode quotes, etc.)
+            $text = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
+            // Remove any remaining control characters
+            $text = preg_replace('/[\x00-\x1F\x7F]/', '', $text);
+            // Trim and normalize spaces
+            $text = trim(preg_replace('/\s+/', ' ', $text));
+            return strtolower($text);
+        };
+        
+        // Check each header name with flexible matching
         for ($i = 0; $i < 8; $i++) {
-            $expected = trim($expectedHeaders[$i]);
-            $actual = trim($headers[$i] ?? '');
+            $expected = $expectedHeaders[$i];
+            $actual = $headers[$i] ?? '';
             
-            // Normalize for comparison (remove extra spaces, case-insensitive)
-            $expectedNorm = strtolower(preg_replace('/\s+/', ' ', $expected));
-            $actualNorm = strtolower(preg_replace('/\s+/', ' ', $actual));
+            // Clean both expected and actual
+            $expectedClean = $cleanText($expected);
+            $actualClean = $cleanText($actual);
             
-            if ($expectedNorm !== $actualNorm) {
+            // Log for debugging
+            error_log("Header validation [{$i}]: Expected='{$expectedClean}' (len=" . strlen($expectedClean) . "), Actual='{$actualClean}' (len=" . strlen($actualClean) . ")");
+            error_log("  Raw bytes - Expected: " . bin2hex($expected) . ", Actual: " . bin2hex($actual));
+            
+            // More flexible matching - check if actual contains expected keywords
+            $isValid = false;
+            
+            if ($i === 0) {
+                // Column 1: "Deskripsi Soal"
+                $isValid = (strpos($actualClean, 'deskripsi') !== false && strpos($actualClean, 'soal') !== false);
+            } elseif ($i === 1) {
+                // Column 2: "Tipe Soal"
+                $isValid = (strpos($actualClean, 'tipe') !== false && strpos($actualClean, 'soal') !== false);
+            } elseif ($i >= 2 && $i <= 5) {
+                // Columns 3-6: "Pilihan A/B/C/D"
+                $letter = chr(97 + ($i - 2)); // a, b, c, d (lowercase)
+                $isValid = (strpos($actualClean, 'pilihan') !== false && strpos($actualClean, $letter) !== false);
+            } elseif ($i === 6) {
+                // Column 7: "Pilihan E"
+                $isValid = (strpos($actualClean, 'pilihan') !== false && strpos($actualClean, 'e') !== false);
+            } elseif ($i === 7) {
+                // Column 8: "Jawaban Benar" or "Jawaban"
+                $isValid = (strpos($actualClean, 'jawaban') !== false);
+            }
+            
+            if (!$isValid) {
                 $errors[] = "Kolom ke-" . ($i + 1) . " tidak sesuai. Diharapkan: '{$expected}', Ditemukan: '{$actual}'";
             }
         }
         
         if (!empty($errors)) {
+            error_log("Header validation failed: " . implode('; ', $errors));
             return ['valid' => false, 'errors' => $errors];
         }
         
+        error_log("Header validation passed!");
         return ['valid' => true];
     }
     
@@ -504,6 +557,11 @@ class SoalController extends Controller
     }
 
     public function importSoal() {
+        // Clean any previous output FIRST
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        
         header('Content-Type: application/json');
         
         try {
@@ -512,41 +570,125 @@ class SoalController extends Controller
             }
 
             if (!isset($_SESSION['user']['id'])) {
-                throw new \Exception('User tidak terautentikasi');
+                error_log("Import failed: User not authenticated");
+                echo json_encode([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => 'User tidak terautentikasi. Silakan login kembali.'
+                ]);
+                http_response_code(403);
+                exit;
             }
 
             $bankId = $_POST['bank_id'] ?? null;
             if (!$bankId) {
-                throw new \Exception('Bank Soal ID tidak valid');
+                error_log("Import failed: No bank_id provided");
+                echo json_encode([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => 'Bank Soal ID tidak valid'
+                ]);
+                http_response_code(400);
+                exit;
             }
 
+            // Validate that bank_id exists in database
+            $bankSoalModel = new BankSoal();
+            $bank = $bankSoalModel->getBankById($bankId);
+            
+            if (!$bank) {
+                error_log("Import failed: Bank ID {$bankId} not found in database");
+                echo json_encode([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => "Bank Soal dengan ID {$bankId} tidak ditemukan. Silakan refresh halaman dan coba lagi."
+                ]);
+                http_response_code(404);
+                exit;
+            }
+            
+            error_log("Import: Bank validated - ID: {$bankId}, Name: {$bank['nama']}");
+
+
             if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
-                throw new \Exception('File tidak ditemukan atau terjadi kesalahan upload');
+                $errorMsg = 'File tidak ditemukan atau terjadi kesalahan upload';
+                if (isset($_FILES['file']['error'])) {
+                    $errorMsg .= ' (Error code: ' . $_FILES['file']['error'] . ')';
+                }
+                error_log("Import failed: " . $errorMsg);
+                echo json_encode([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => $errorMsg
+                ]);
+                http_response_code(400);
+                exit;
             }
 
             $fileTmpPath = $_FILES['file']['tmp_name'];
             $fileName = $_FILES['file']['name'];
             $fileType = mime_content_type($fileTmpPath);
             
+            error_log("Import attempt: file={$fileName}, type={$fileType}, bank_id={$bankId}");
+            
             // Validate file type
             $fileValidation = $this->validateFileType($fileName, $fileType);
             if (!$fileValidation['valid']) {
-                throw new \Exception($fileValidation['error']);
+                error_log("Import failed: Invalid file type - " . $fileValidation['error']);
+                echo json_encode([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => $fileValidation['error']
+                ]);
+                http_response_code(400);
+                exit;
             }
             
-            // Determine parsing method
+            // Determine file extension
+            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+            
+            // Parse file based on extension
             $data = [];
             $headers = [];
             
-            // Parse file and extract headers
-            if (($handle = fopen($fileTmpPath, "r")) !== FALSE) {
-                // Check if starts with HTML tag (indicating it's our fake XLS)
-                $firstLine = fgets($handle);
-                rewind($handle);
+            if ($fileExtension === 'csv') {
+                // Parse CSV file with better encoding handling
+                if (($handle = fopen($fileTmpPath, "r")) !== FALSE) {
+                    $isHeader = true;
+                    $rowCount = 0;
+                    while (($row = fgetcsv($handle, 10000, ",")) !== FALSE) {
+                        $rowCount++;
+                        
+                        // Skip empty rows
+                        if (empty(array_filter($row))) {
+                            continue;
+                        }
+                        
+                        if ($isHeader) {
+                            // Remove BOM if present
+                            if (!empty($row[0])) {
+                                $row[0] = str_replace("\xEF\xBB\xBF", '', $row[0]);
+                            }
+                            $headers = array_map('trim', $row);
+                            $isHeader = false;
+                            error_log("CSV Headers: " . implode(', ', $headers));
+                            continue;
+                        }
+                        if (count($row) >= 8) {
+                            $data[] = array_map('trim', $row);
+                        } else {
+                            error_log("Skipping row {$rowCount}: insufficient columns (" . count($row) . ")");
+                        }
+                    }
+                    fclose($handle);
+                    error_log("CSV parsed: {$rowCount} total rows, " . count($data) . " data rows");
+                }
+            } elseif ($fileExtension === 'xls' || $fileExtension === 'xlsx') {
+                // Try to parse as HTML-based Excel first
+                $content = file_get_contents($fileTmpPath);
                 
-                if (strpos($firstLine, '<html') !== false || strpos($firstLine, '<xml') !== false) {
-                    // It's the HTML-XLS format
-                    $content = file_get_contents($fileTmpPath);
+                // Check if it's HTML-based Excel
+                if (strpos($content, '<html') !== false || strpos($content, '<table') !== false) {
                     $dom = new \DOMDocument();
                     libxml_use_internal_errors(true);
                     $dom->loadHTML($content);
@@ -561,41 +703,42 @@ class SoalController extends Controller
                             $cols = $row->getElementsByTagName('th');
                         }
                         
+                        if ($cols->length === 0) continue;
+                        
+                        $rowData = [];
+                        foreach ($cols as $col) {
+                            $rowData[] = trim($col->textContent);
+                        }
+                        
                         if ($isHeader) {
-                            // Extract headers
-                            foreach ($cols as $col) {
-                                $headers[] = trim($col->textContent);
-                            }
+                            $headers = $rowData;
                             $isHeader = false;
+                            error_log("Excel Headers: " . implode(', ', $headers));
                             continue;
                         }
                         
-                        if ($cols->length >= 8) {
-                            $rowData = [];
-                            foreach ($cols as $col) {
-                                $rowData[] = trim($col->textContent);
-                            }
+                        if (count($rowData) >= 8) {
                             $data[] = $rowData;
                         }
                     }
+                    error_log("Excel parsed: " . count($data) . " data rows");
                 } else {
-                    // It's a regular CSV
-                    $isHeader = true;
-                    while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                        if ($isHeader) {
-                            $headers = $row;
-                            $isHeader = false;
-                            continue;
-                        }
-                        $data[] = $row;
-                    }
-                    fclose($handle);
+                    // For real Excel files, we need a library like PhpSpreadsheet
+                    error_log("Import failed: Real Excel file detected, not supported");
+                    echo json_encode([
+                        'success' => false,
+                        'status' => 'error',
+                        'message' => 'File Excel asli (.xlsx) belum didukung. Silakan gunakan file CSV atau export dari sistem ini.'
+                    ]);
+                    http_response_code(400);
+                    exit;
                 }
             }
             
             // Validate headers
             $headerValidation = $this->validateTemplateHeaders($headers);
             if (!$headerValidation['valid']) {
+                error_log("Import failed: Invalid headers - " . implode(', ', $headerValidation['errors']));
                 echo json_encode([
                     'success' => false,
                     'status' => 'error',
@@ -603,11 +746,18 @@ class SoalController extends Controller
                     'validation_errors' => $headerValidation['errors']
                 ]);
                 http_response_code(400);
-                return;
+                exit;
             }
 
             if (empty($data)) {
-                 throw new \Exception('File kosong atau tidak ada data untuk diimport');
+                error_log("Import failed: No data rows found");
+                echo json_encode([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => 'File kosong atau tidak ada data untuk diimport'
+                ]);
+                http_response_code(400);
+                exit;
             }
             
             // Validate all rows first
@@ -623,6 +773,7 @@ class SoalController extends Controller
             
             // If any validation errors, return them all
             if (!empty($validationErrors)) {
+                error_log("Import failed: Validation errors - " . implode('; ', $validationErrors));
                 echo json_encode([
                     'success' => false,
                     'status' => 'error',
@@ -630,7 +781,7 @@ class SoalController extends Controller
                     'validation_errors' => $validationErrors
                 ]);
                 http_response_code(400);
-                return;
+                exit;
             }
 
             $successCount = 0;
@@ -640,19 +791,24 @@ class SoalController extends Controller
                 // Row structure based on template:
                 // 0: Deskripsi, 1: Tipe, 2: A, 3: B, 4: C, 5: D, 6: E, 7: Jawaban
 
-                $deskripsi = $row[0];
-                $tipeRaw = strtolower($row[1]);
-                $tipe = (strpos($tipeRaw, 'ganda') !== false) ? 'pilihan_ganda' : 'essay';
+                $deskripsi = trim($row[0]);
+                $tipeRaw = strtolower(trim($row[1]));
+                
+                // Normalize type
+                $tipe = 'essay';
+                if (strpos($tipeRaw, 'ganda') !== false || $tipeRaw === 'pg' || strpos($tipeRaw, 'pilihan') !== false) {
+                    $tipe = 'pilihan_ganda';
+                }
                 
                 $pilihan = '';
                 if ($tipe === 'pilihan_ganda') {
                     $pilihan = "A. {$row[2]}, B. {$row[3]}, C. {$row[4]}, D. {$row[5]}";
-                    if (!empty($row[6])) {
+                    if (!empty(trim($row[6]))) {
                         $pilihan .= ", E. {$row[6]}";
                     }
                 }
 
-                $jawaban = $row[7];
+                $jawaban = trim($row[7]);
                 
                 // Create Soal Object
                 $soal = new SoalExam(
@@ -667,72 +823,91 @@ class SoalController extends Controller
                 }
             }
 
+            error_log("Import success: {$successCount} questions imported to bank {$bankId}");
             echo json_encode([
                 'success' => true,
                 'status' => 'success',
                 'message' => "Berhasil mengimport {$successCount} soal",
                 'count' => $successCount
             ]);
+            http_response_code(200);
+            exit;
             
         } catch (\Exception $e) {
+            error_log("Import exception: " . $e->getMessage());
+            error_log("Import trace: " . $e->getTraceAsString());
             echo json_encode([
                 'success' => false,
                 'status' => 'error',
                 'message' => $e->getMessage()
             ]);
             http_response_code(500);
+            exit;
         }
     }
 
     public function exportSoal() {
         try {
+            // Clean output buffer FIRST before any output
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
+            
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
             }
 
             if (!isset($_SESSION['user']['id'])) {
-                throw new \Exception('User tidak terautentikasi');
+                error_log("Export failed: User not authenticated");
+                header('HTTP/1.1 403 Forbidden');
+                die('User tidak terautentikasi. Silakan login kembali.');
             }
 
             $bankId = $_GET['bank_id'] ?? null;
             if (!$bankId) {
-                throw new \Exception('Bank Soal ID tidak valid');
+                error_log("Export failed: No bank_id provided");
+                header('HTTP/1.1 400 Bad Request');
+                die('Bank Soal ID tidak valid');
             }
 
             // Get Bank Info
             $bankModel = new \App\Model\Exam\BankSoal();
             $bank = $bankModel->getBankById($bankId);
             if (!$bank) {
-                throw new \Exception('Bank soal tidak ditemukan');
+                error_log("Export failed: Bank not found for ID: " . $bankId);
+                header('HTTP/1.1 404 Not Found');
+                die('Bank soal tidak ditemukan');
             }
 
             // Get Soal
             $soalModel = new SoalExam();
             $soalList = $soalModel->getSoalByBankId($bankId);
 
-            // Clean output buffer to ensure clean file download
-            if (ob_get_level()) {
-                ob_end_clean();
+            if (empty($soalList)) {
+                error_log("Export warning: Bank {$bankId} has no questions");
+                // Still allow export of empty bank with just headers
             }
             
-            // Use XLS extension
-            $filename = "Export_Bank_" . preg_replace('/[^a-zA-Z0-9]/', '_', $bank['nama']) . "_" . date('Ymd') . ".xls";
+            // Use CSV extension
+            $filename = "Export_Bank_" . preg_replace('/[^a-zA-Z0-9]/', '_', $bank['nama']) . "_" . date('Ymd') . ".csv";
             
-            // Force download headers for Excel
-            header('Content-Type: application/vnd.ms-excel');
+            // Set headers for CSV download
+            header('Content-Type: text/csv; charset=utf-8');
             header("Content-Disposition: attachment; filename=\"$filename\"");
             header("Pragma: no-cache");
             header("Expires: 0");
+            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 
-            // Open HTML wrapper for Excel
-            echo '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
-            echo '<head>';
-            echo '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Bank Soal</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->';
-            echo '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/>';
-            echo '<style>td { mso-number-format:"\@"; } .header { font-weight: bold; background-color: #f0f0f0; }</style>'; // Force text format for all cells and basic styling
-            echo '</head>';
-            echo '<body>';
-            echo '<table border="1">';
+            // Open output stream
+            $output = fopen('php://output', 'w');
+            
+            if ($output === false) {
+                error_log("Export failed: Could not open output stream");
+                die('Gagal membuat file export');
+            }
+            
+            // Add BOM for Excel UTF-8 compatibility
+            fputs($output, "\xEF\xBB\xBF");
             
             // Headers
             $headers = [
@@ -746,17 +921,12 @@ class SoalController extends Controller
                 'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
             ];
             
-            echo '<thead><tr>';
-            foreach ($headers as $header) {
-                echo '<th class="header" style="background-color: #DDEBF7; height: 30px; vertical-align: middle;">' . htmlspecialchars($header) . '</th>';
-            }
-            echo '</tr></thead>';
-            echo '<tbody>';
+            fputcsv($output, $headers);
 
             foreach ($soalList as $soal) {
                 
-                // 1. Deskripsi
-                $deskripsi = $soal['deskripsi'];
+                // 1. Deskripsi - strip HTML tags for CSV
+                $deskripsi = strip_tags($soal['deskripsi']);
                 
                 // 2. Tipe
                 $isPG = ($soal['status_soal'] ?? '') === 'pilihan_ganda';
@@ -788,26 +958,29 @@ class SoalController extends Controller
                     }
                 }
                 
-                echo '<tr>';
-                echo '<td>' . htmlspecialchars($deskripsi) . '</td>';
-                echo '<td>' . htmlspecialchars($tipe) . '</td>';
-                echo '<td>' . htmlspecialchars($opts['A']) . '</td>';
-                echo '<td>' . htmlspecialchars($opts['B']) . '</td>';
-                echo '<td>' . htmlspecialchars($opts['C']) . '</td>';
-                echo '<td>' . htmlspecialchars($opts['D']) . '</td>';
-                echo '<td>' . htmlspecialchars($opts['E']) . '</td>';
-                echo '<td>' . htmlspecialchars($soal['jawaban']) . '</td>';
-                echo '</tr>';
+                // Write row to CSV
+                $row = [
+                    $deskripsi,
+                    $tipe,
+                    $opts['A'],
+                    $opts['B'],
+                    $opts['C'],
+                    $opts['D'],
+                    $opts['E'],
+                    $soal['jawaban']
+                ];
+                
+                fputcsv($output, $row);
             }
 
-            echo '</tbody>';
-            echo '</table>';
-            echo '</body>';
-            echo '</html>';
+            fclose($output);
             exit();
 
         } catch (\Exception $e) {
-           die("Error export: " . $e->getMessage());
+            error_log("Export error: " . $e->getMessage());
+            error_log("Export trace: " . $e->getTraceAsString());
+            header('HTTP/1.1 500 Internal Server Error');
+            die("Error export: " . $e->getMessage());
         }
     }
 }

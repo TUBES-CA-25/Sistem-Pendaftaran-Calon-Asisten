@@ -118,42 +118,44 @@ class HomeController extends Controller
     private function renderPageContent($page)
     {
         if ($this->getRole() == "Admin") {
+            $sidebarData = $this->getSidebarData(); // Fetch once
+            
             switch ($page) {
                 case 'dashboard':
-                    $data = $this->getDashboardAdminData();
+                    $data = array_merge($sidebarData, $this->getDashboardAdminData());
                     View::render('index', 'admin/dashboard', $data);
                     break;
                 case 'ruangan':
-                    $data = $this->getRuanganData();
+                    $data = array_merge($sidebarData, $this->getRuanganData());
                     View::render('index', 'admin/rooms', $data);
                     break;
                 case 'lihatPeserta':
-                    $data = $this->getDaftarPesertaData();
+                    $data = array_merge($sidebarData, $this->getDaftarPesertaData());
                     View::render('index', 'admin/participants', $data);
                     break;
                 case 'daftarKehadiran':
-                    $data = $this->getDaftarHadirData();
+                    $data = array_merge($sidebarData, $this->getDaftarHadirData());
                     View::render('index', 'admin/attendance', $data);
                     break;
                 case 'presentasi':
-                    $data = $this->getPresentasiAdminData();
+                    $data = array_merge($sidebarData, $this->getPresentasiAdminData());
                     View::render('index', 'admin/presentation', $data);
                     break;
                 case 'tesTulis':
                 case 'bankSoal':
-                    $data = $this->getTesTulisAdminData();
+                    $data = array_merge($sidebarData, $this->getTesTulisAdminData());
                     View::render('index', 'admin/exam', $data);
                     break;
                 case 'wawancara':
-                    $data = $this->getWawancaraAdminData();
+                    $data = array_merge($sidebarData, $this->getWawancaraAdminData());
                     View::render('index', 'admin/interview', $data);
                     break;
                 case 'profile':
-                    $data = $this->getProfileData();
+                    $data = array_merge($sidebarData, $this->getProfileData());
                     View::render('index', 'admin/profile', $data);
                     break;
                 case 'lihatnilai':
-                    $data = $this->getNilaiAdminData();
+                    $data = array_merge($sidebarData, $this->getNilaiAdminData());
                     View::render('index', 'admin/grades', $data);
                     break;
             }
@@ -217,11 +219,21 @@ class HomeController extends Controller
     private function getSidebarData(): array
     {
         $user = ProfileController::viewUser();
-        $photo = BerkasUserController::viewPhoto();
+        
+        // Use Session role as source of truth
+        $role = $_SESSION['user']['role'] ?? ($user['role'] ?? 'User');
+        
+        if ($role === 'Admin') {
+            $photoPath = \App\Controllers\Admin\AdminProfileController::getAdminPhoto($_SESSION['user']['id']);
+        } else {
+            $photo = BerkasUserController::viewPhoto();
+            $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . ($photo['foto'] ?? 'default.png');
+        }
+
         return [
-            'role' => $user['role'] ?? 'User',
-            'userName' => $user['username'] ?? 'Guest',
-            'photo' => '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . ($photo['foto'] ?? 'default.png')
+            'role' => $role,
+            'userName' => $user['username'] ?? ($_SESSION['user']['username'] ?? 'Guest'),
+            'photo' => $photoPath
         ];
     }
 
@@ -292,7 +304,16 @@ class HomeController extends Controller
     {
         $biodata = ProfileController::viewBiodata();
         $user = ProfileController::viewUser();
-        $photo = BerkasUserController::viewPhoto();
+        
+        $role = $user['role'] ?? 'User';
+        
+        if ($role === 'Admin') {
+            $photoPath = \App\Controllers\Admin\AdminProfileController::getAdminPhoto($_SESSION['user']['id']);
+        } else {
+            $photo = BerkasUserController::viewPhoto();
+            $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . ($photo['foto'] ?? 'default.png');
+        }
+
         return [
             'userName' => $user['username'] ?? 'Guest',
             'nama' => $biodata['namaLengkap'] ?? 'Nama Lengkap',
@@ -304,7 +325,7 @@ class HomeController extends Controller
             'tempatLahir' => $biodata['tempatLahir'] ?? 'Tempat Lahir',
             'tanggalLahir' => $biodata['tanggalLahir'] ?? 'Tanggal Lahir',
             'noHp' => $biodata['noHp'] ?? 'No Telephone',
-            'photo' => '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . ($photo['foto'] ?? 'default.png')
+            'photo' => $photoPath
         ];
     }
 

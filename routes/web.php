@@ -24,9 +24,19 @@ use App\Core\Router;
 
 Router::get('/soal', [new ExamController, 'index']);
 Router::get('/login', [new LoginController, 'index']);
+
+// IMPORTANT: Specific routes MUST come before catch-all route /{page}
+// Export and download routes
+Router::get("/exportSoal", [new SoalController, 'exportSoal']);
+Router::get("/soal/export",[new SoalController,'exportSoal']);
+Router::get("/getBankDetails", [new SoalController, 'getBankDetails']);
+Router::get("/downloadTemplatesoal", [new SoalController, 'downloadTemplate']);
+Router::get("/soal/download-template",[new SoalController, 'downloadTemplate']);
+Router::get('/download',[new BerkasUserController, 'downloadBerkas']);
+
+// Home routes - catch-all MUST be last
 Router::get('/',[new HomeController, 'index']);
 Router::get('/{page}', [new HomeController, 'loadContent']);
-Router::get('/download',[new BerkasUserController, 'downloadBerkas']);
 
 
 Router::post('/login/authenticate', [new LoginController, 'authenticate']);
@@ -46,13 +56,10 @@ Router::post("/tambahjadwal",[new JadwalPresentasiController,'saveJadwal']);
 
 Router::post("/addingsoal",[new SoalController,'saveSoal']);
 Router::post("/deletesoal",[new SoalController,'deleteSoal']);
-Router::get("/soal/export",[new SoalController,'exportSoal']);
 Router::post("/updatesoal",[new SoalController,'updateSoal']);
 
 Router::post("/importSoal", [new SoalController, 'importSoal']);
-Router::get("/exportSoal", [new SoalController, 'exportSoal']);
-Router::get("/getBankDetails", [new SoalController, 'getBankDetails']);
-Router::get("/downloadTemplatesoal", [new SoalController, 'downloadTemplate']);
+
 Router::post("/absensi",[new AbsensiUserController, 'saveData']);
 Router::post("/wawancara",[new WawancaraController, 'save']);
 Router::post("/updatewawancara",[new WawancaraController, 'update']);
@@ -97,6 +104,10 @@ Router::post("/getallruangan",[new JadwalPresentasiController, 'getAllRuangan'])
 
 // Admin Dashboard Activities
 use App\Controllers\admin\DashboardAdminController;
+use App\Controllers\Admin\AdminProfileController;
+
 Router::post("/addkegiatan", [new DashboardAdminController, 'storeKegiatan']);
 Router::post("/updatedeadline", [new DashboardAdminController, 'saveDeadline']);
 Router::post("/dashboard/stats", [new DashboardAdminController, 'getStats']);
+
+Router::post("/updateadminprofile", [new AdminProfileController, 'updateProfile']);

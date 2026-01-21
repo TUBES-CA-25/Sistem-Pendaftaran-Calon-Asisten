@@ -63,7 +63,7 @@
                     </button>
                     
                     <!-- Download Template Link -->
-                    <a href="<?= APP_URL ?>/downloadTemplatesoal" class="text-decoration-none fw-medium" style="color: #2563eb; font-size: 0.8rem;">
+                    <a href="javascript:void(0)" onclick="downloadTemplate()" class="text-decoration-none fw-medium" style="color: #2563eb; font-size: 0.8rem;">
                         <i class='bx bx-download me-1'></i> Download Template
                     </a>
                 </div>

@@ -12,7 +12,7 @@
  */
 
 // Default values
-$userName = $userName ?? ($_SESSION['userName'] ?? 'User');
+$userName = $userName ?? ($_SESSION['user']['username'] ?? 'User');
 $defaultPhoto = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9InVybCgjZ3JhZGllbnQwKSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkaWVudDAiIHgxPSIwIiB5MT0iMCIgeDI9IjQwIiB5Mj0iNDAiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzNkYzJlYyIvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyNTYzZWIiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8cGF0aCBkPSJNMjAgMThDMjIuMjA5MSAxOCAyNCAxNi4yMDkxIDI0IDE0QzI0IDExLjc5MDkgMjIuMjA5MSAxMCAyMCAxMEMxNy43OTA5IDEwIDE2IDExLjc5MDkgMTYgMTRDMTYgMTYuMjA5MSAxNy43OTA5IDE4IDIwIDE4WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTMwIDMwQzMwIDI1LjU4MTcgMjUuNTIyOCAyMiAyMCAyMkMxNC40NzcyIDIyIDEwIDI1LjU4MTcgMTAgMzBIMTJDMTIgMjYuNjg2MyAxNS41ODE3IDI0IDIwIDI0QzI0LjQxODMgMjQgMjggMjYuNjg2MyAyOCAzMEgzMFoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg==';
 
 if (isset($photo) && is_array($photo) && !empty($photo)) {
@@ -34,8 +34,10 @@ if (!isset($breadcrumb)) {
 }
 
 // Determine navbar style based on role
-$role = $role ?? ($_SESSION['role'] ?? 'User');
-$navbarClass = ($role === 'Admin') ? 'page-navbar page-navbar-admin' : 'page-navbar page-navbar-user';
+// Determine navbar style based on role
+$role = $role ?? ($_SESSION['user']['role'] ?? ($_SESSION['role'] ?? 'User'));
+// User requested white navbar for all roles
+$navbarClass = 'page-navbar page-navbar-user';
 
 // Count notifications for badge (only for user)
 if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
@@ -44,6 +46,9 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
 ?>
 
 <nav class="navbar <?= $navbarClass ?>">
+    <!-- Background Decoration Container -->
+    <div class="navbar-decoration"></div>
+    
     <div class="container-fluid px-4">
         <!-- Left: Icon + Title -->
         <div class="navbar-brand d-flex align-items-center gap-3">
@@ -60,25 +65,7 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
             </div>
         </div>
 
-        <!-- Center: Breadcrumb -->
-        <nav aria-label="breadcrumb" class="d-none d-md-block">
-            <ol class="breadcrumb navbar-breadcrumb mb-0">
-                <?php
-                $items = array_keys($breadcrumb);
-                $lastIndex = count($items) - 1;
-                foreach ($breadcrumb as $label => $page):
-                    $isLast = ($label === $items[$lastIndex]);
-                ?>
-                    <li class="breadcrumb-item <?= $isLast ? 'active' : '' ?>">
-                        <?php if (!$isLast && !empty($page)): ?>
-                            <a href="#" data-page="<?= $page ?>"><?= htmlspecialchars($label) ?></a>
-                        <?php else: ?>
-                            <?= htmlspecialchars($label) ?>
-                        <?php endif; ?>
-                    </li>
-                <?php endforeach; ?>
-            </ol>
-        </nav>
+
 
         <!-- Right: Actions -->
         <div class="d-flex align-items-center gap-2">

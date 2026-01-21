@@ -126,5 +126,13 @@ class UserModel extends Model {
         $stmt->bindParam(1, $id);
         return $stmt->execute();
     }
-    
+
+    public function updateUser($id, $username) {
+        $query = "UPDATE " . static::$table . " SET username = :username WHERE id = :id";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':id', $id);
+        
+        return $stmt->execute();
+    }
 }

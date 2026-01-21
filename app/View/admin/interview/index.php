@@ -20,51 +20,6 @@ $colors = ['#2f66f6'];
         font-family: 'Poppins', sans-serif;
     }
 
-    /* ==================== PAGE HEADER ==================== */
-    .page-header {
-        background: #2f66f6;
-        padding: 35px 30px;
-        border-radius: 0;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .page-header::after {
-        content: "";
-        position: absolute;
-        right: -180px;
-        top: 50%;
-        width: 400px;
-        height: 400px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        transform: translateY(-50%);
-    }
-
-    .page-header h1 {
-        color: #fff;
-        font-size: 1.75rem;
-        font-weight: 700;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        position: relative;
-        z-index: 1;
-    }
-
-    .page-header h1 i {
-        font-size: 1.5rem;
-    }
-
-    .page-header .subtitle {
-        color: rgba(255, 255, 255, 0.85);
-        font-size: 0.95rem;
-        margin-top: 8px;
-        position: relative;
-        z-index: 1;
-    }
-
     /* ==================== CARD CONTENT ==================== */
     .card-content {
         background: #fff;
@@ -333,13 +288,6 @@ $colors = ['#2f66f6'];
 
     /* ==================== RESPONSIVE ==================== */
     @media (max-width: 768px) {
-        .page-header {
-            padding: 25px 20px;
-        }
-
-        .page-header h1 {
-            font-size: 1.4rem;
-        }
 
         .card-content {
             padding: 16px;
@@ -362,12 +310,14 @@ $colors = ['#2f66f6'];
     }
 </style>
 
+<?php
+    $title = 'Jadwal Kegiatan';
+    $subtitle = 'Kelola jadwal wawancara dan kegiatan seleksi';
+    $icon = 'bi bi-calendar-event';
+    require_once __DIR__ . '/../../templates/components/PageHeader.php';
+?>
+
 <main>
-    <!-- Page Header -->
-    <div class="page-header">
-        <h1><i class="bi bi-calendar-event"></i> Jadwal Kegiatan</h1>
-        <p class="subtitle">Kelola jadwal wawancara dan kegiatan seleksi</p>
-    </div>
 
     <!-- Card Content -->
     <div class="card-content">
