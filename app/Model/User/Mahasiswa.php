@@ -50,28 +50,47 @@ class Mahasiswa extends Model
 
     public function getAll()
     {
-        $query = "SELECT * FROM " . static::$table;
+        // Select ALL users (excluding Admins) and join their biodata (if any)
+        $query = "SELECT u.id as id_user_real, u.username, u.stambuk as stambuk_user, m.* 
+                  FROM user u 
+                  LEFT JOIN " . static::$table . " m ON u.id = m.id_user 
+                  WHERE (u.role != 'Admin' OR u.role IS NULL)";
+        
         $stmt = self::getDB()->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll();
 
         $data = [];
         foreach ($result as $stmt) {
-            $berkas = $this->getBerkasMahasiswa($stmt['id']);
-            $presentasi = $this->getPresentasiMahasiswa($stmt['id']);
+            // Only fetch relations if Mahasiswa record exists (id is not null)
+            $mahasiswaId = $stmt['id'] ?? null;
+            
+            $berkas = $mahasiswaId ? $this->getBerkasMahasiswa($mahasiswaId) : [
+                'foto' => null, 'cv' => null, 'transkrip_nilai' => null, 'surat_pernyataan' => null, 'accepted' => null
+            ];
+            
+            $presentasi = $mahasiswaId ? $this->getPresentasiMahasiswa($mahasiswaId) : [
+                'judul' => null, 'makalah' => null, 'ppt' => null, 'is_accepted' => null, 'is_revisi' => null
+            ];
+
+            // Resolve Name: Prefer Biodata Name, else Username
+            $displayName = $stmt['nama_lengkap'] ?? $stmt['username'];
+
+            // Resolve Stambuk: Prefer Biodata Stambuk, else User Stambuk
+            $displayStambuk = $stmt['stambuk'] ?? ($stmt['stambuk_user'] ?? '-');
 
             $data[] = [
-                'id' => $stmt['id'],
-                'idUser' => $stmt['id_user'],
-                'nama_lengkap' => $stmt['nama_lengkap'],
-                'stambuk' => $stmt['stambuk'],
-                'jurusan' => $this->getJurusan($stmt['id_jurusan'])['nama'] ?? null,
-                'kelas' => $this->getKelas($stmt['id_kelas'])['nama'] ?? null,
-                'alamat' => $stmt['alamat'],
-                'notelp' => $stmt['no_telp'],
-                'tempat_lahir' => $stmt['tempat_lahir'],
-                'tanggal_lahir' => $stmt['tanggal_lahir'],
-                'jenis_kelamin' => $stmt['jenis_kelamin'],
+                'id' => $stmt['id'], // Can be null if not yet registered in mahasiswa table
+                'idUser' => $stmt['id_user_real'],
+                'nama_lengkap' => $displayName,
+                'stambuk' => $displayStambuk,
+                'jurusan' => isset($stmt['id_jurusan']) ? ($this->getJurusan($stmt['id_jurusan'])['nama'] ?? null) : null,
+                'kelas' => isset($stmt['id_kelas']) ? ($this->getKelas($stmt['id_kelas'])['nama'] ?? null) : null,
+                'alamat' => $stmt['alamat'] ?? null,
+                'notelp' => $stmt['no_telp'] ?? null,
+                'tempat_lahir' => $stmt['tempat_lahir'] ?? null,
+                'tanggal_lahir' => $stmt['tanggal_lahir'] ?? null,
+                'jenis_kelamin' => $stmt['jenis_kelamin'] ?? null,
                 'judul_presentasi' => $presentasi['judul'] ?? null,
                 'berkas' => [
                     'foto' => $berkas['foto'],

@@ -1272,3 +1272,25 @@ body {
     text-align: center;
   }
 }
+
+/* ==============================
+   FIX PARTICIPANTS TABLE FOUC / GLITCH
+   Enforce White Header override globally to prevent blue flash
+   ============================== */
+#daftarPesertaTable thead,
+#daftarPesertaTable thead th {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    background-image: none !important;
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+
+#daftarPesertaTable thead th.text-center {
+    text-align: center !important;
+}
+
+/* Hide default DataTables search to use custom Navbar search */
+#daftarPesertaTable_filter {
+    display: none !important;
+}

@@ -34,7 +34,6 @@ if (!isset($breadcrumb)) {
 }
 
 // Determine navbar style based on role
-// Determine navbar style based on role
 $role = $role ?? ($_SESSION['user']['role'] ?? ($_SESSION['role'] ?? 'User'));
 // User requested white navbar for all roles
 $navbarClass = 'page-navbar page-navbar-user';
@@ -65,7 +64,8 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
             </div>
         </div>
 
-
+        <!-- Spacer -->
+        <div class="flex-grow-1"></div>
 
         <!-- Right: Actions -->
         <div class="d-flex align-items-center gap-2">

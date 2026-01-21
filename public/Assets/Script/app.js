@@ -14,6 +14,9 @@ function loadPage(page, updateUrl = true) {
         });
     }
 
+    // Cleanup dynamic navbar elements (e.g. Search Bar from Participants page)
+    $('#navbarSearchContainer').remove();
+
     // Save to localStorage
     localStorage.setItem('activePage', page);
 
@@ -62,6 +65,8 @@ $(document).ready(function () {
             console.error("Data page tidak ditemukan pada elemen ini:", this);
             return;
         }
+
+
 
         // Handle logout separately
         if (page === 'logout') {
