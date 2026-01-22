@@ -147,3 +147,47 @@ $(document).ready(function () {
         window.location.href = targetURL;
     });
 });
+
+// Global showModal function
+window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
+    const modalEl = document.getElementById("customModal");
+    if (!modalEl) {
+        alert(message);
+        if (onCloseCallback) onCloseCallback();
+        return;
+    }
+
+    const modalMessage = document.getElementById("modalMessage");
+    const modalGif = document.getElementById("modalGif");
+
+    if (modalMessage) modalMessage.textContent = message;
+    
+    if (modalGif) {
+        if (gifUrl) {
+            modalGif.src = gifUrl;
+            modalGif.style.display = "block";
+        } else {
+            modalGif.style.display = "none";
+        }
+    }
+
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+
+    // Handle close callback
+    const closeBtn = document.getElementById("closeModal");
+    if (closeBtn && onCloseCallback) {
+        // Remove previous listeners to avoid stacking
+        const newBtn = closeBtn.cloneNode(true);
+        closeBtn.parentNode.replaceChild(newBtn, closeBtn);
+        newBtn.addEventListener('click', onCloseCallback);
+    }
+    
+    // Also handle modal hidden event
+    if (onCloseCallback) {
+        modalEl.addEventListener('hidden.bs.modal', function handler() {
+            onCloseCallback();
+            modalEl.removeEventListener('hidden.bs.modal', handler);
+        }, { once: true });
+    }
+};

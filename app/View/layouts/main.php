@@ -18,6 +18,12 @@
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    
+    <script>
+        const APP_URL = '<?php echo APP_URL; ?>';
+        window.INITIAL_PAGE = '<?= $initialPage ?? 'dashboard' ?>';
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <title>IC-ASSIST</title>
 </head>
@@ -66,7 +72,7 @@
 
     <!-- Toast Container -->
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
-        <div id="liveToast" class="toast align-items-center text-white border-0 rounded-3" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="liveToast" class="toast align-items-center text-white border-0 rounded-3" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body d-flex align-items-center gap-2">
                     <i id="toastIcon" class="bi bi-check-circle-fill fs-5"></i>
@@ -77,12 +83,6 @@
         </div>
     </div>
    
-    <script>
-        const APP_URL = '<?php echo APP_URL; ?>';
-        window.INITIAL_PAGE = '<?= $initialPage ?? 'dashboard' ?>';
-    </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     

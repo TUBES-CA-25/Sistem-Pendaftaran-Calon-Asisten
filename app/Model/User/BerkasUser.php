@@ -79,7 +79,7 @@ class BerkasUser extends Model {
     
         $idMahasiswaData = $this->getIdMahasiswa($berkas->id_mahasiswa);
         if (!$idMahasiswaData || !isset($idMahasiswaData['id'])) {
-            throw new Exception("Mahasiswa tidak ditemukan" . var_export($idMahasiswaData, true)); 
+            throw new Exception("Mahasiswa tidak ditemukan"); 
         }
         $idMahasiswa = $idMahasiswaData['id']; 
         
@@ -283,7 +283,7 @@ class BerkasUser extends Model {
         }
         $idMahasiswaData = $this->getIdMahasiswa($berkasUser->id_mahasiswa);
         if(!$idMahasiswaData || !isset($idMahasiswaData['id'])) {
-            throw new Exception("Mahasiswa tidak ditemukan" + var_dump($idMahasiswaData));
+            throw new Exception("Mahasiswa tidak ditemukan");
         }
         $idMahasiswa = $idMahasiswaData['id'];
         $stmt->bindParam(1,$gambar);

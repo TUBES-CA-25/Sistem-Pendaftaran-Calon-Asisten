@@ -229,7 +229,7 @@ function updateUpcomingSection() {
     const upcoming = calendarActivities
         .filter(act => act.tanggal >= today)
         .sort((a, b) => a.tanggal.localeCompare(b.tanggal))
-        .slice(0, 3);
+        .slice(0, 1);
 
     if (upcoming.length === 0) {
         // Keep original PHP content or show empty state if no activities found
@@ -259,6 +259,52 @@ function updateUpcomingSection() {
 
     upcomingBody.innerHTML = html;
 }
+
+/**
+ * Show all upcoming activities in a modal
+ */
+window.showAllUpcoming = function() {
+    const today = new Date().toISOString().split('T')[0];
+    const upcoming = calendarActivities
+        .filter(act => act.tanggal >= today)
+        .sort((a, b) => a.tanggal.localeCompare(b.tanggal));
+
+    let html = '';
+    if (upcoming.length === 0) {
+        html = `
+            <div class="text-center py-5">
+                <i class="bi bi-calendar-x fs-1 text-muted d-block mb-3"></i>
+                <p class="text-muted fw-semibold mb-0">No upcoming activities found</p>
+            </div>`;
+    } else {
+        upcoming.forEach(act => {
+            const icon = act.jenis === 'Wawancara' ? 'bi-people' : (act.jenis === 'Presentasi' ? 'bi-display' : 'bi-calendar-event');
+            const colorClass = act.jenis === 'Wawancara' ? 'bg-primary' : (act.jenis === 'Presentasi' ? 'bg-info' : 'bg-warning');
+            
+            html += `
+                <div class="d-flex gap-3 mb-3 pb-3 border-bottom last-child-no-border">
+                    <div class="rounded-circle ${colorClass} d-flex align-items-center justify-content-center flex-shrink-0"
+                         style="width:48px; height:48px">
+                        <i class="bi ${icon} text-white fs-5"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="mb-1 fw-bold">${act.judul}</p>
+                        <div class="d-flex gap-3 small text-muted">
+                            <span><i class="bi bi-calendar3 me-1"></i>${formatDate(act.tanggal)}</span>
+                            <span><i class="bi bi-folder me-1"></i>${act.jenis}</span>
+                        </div>
+                    </div>
+                </div>`;
+        });
+    }
+
+    const modalBody = document.getElementById('upcomingActivitiesBody');
+    if (modalBody) {
+        modalBody.innerHTML = html;
+        const modal = new bootstrap.Modal(document.getElementById('upcomingActivitiesModal'));
+        modal.show();
+    }
+};
 
 function formatDate(dateStr) {
     const options = { day: 'numeric', month: 'short', year: 'numeric' };
@@ -297,6 +343,6 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
 // Helper for navigation
 window.navigateTo = function(page) {
-    const baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/home';
+    const baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
     window.location.href = baseUrl + '/' + page;
 };

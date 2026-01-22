@@ -492,7 +492,7 @@ $dokumen = $dokumen ?? [];
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center">
                     <h6 class="fw-semibold mb-0">Upcoming</h6>
-                    <a href="javascript:void(0)" onclick="navigateTo('dashboard')" class="text-primary text-decoration-none small fw-semibold">View All</a>
+                    <a href="javascript:void(0)" onclick="showAllUpcoming()" class="text-primary text-decoration-none small fw-semibold">View All</a>
                 </div>
                 <div class="card-body p-4">
                     <?php if ($jadwalPresentasiUser): ?>
@@ -578,6 +578,24 @@ $dokumen = $dokumen ?? [];
             </div>
             <div class="modal-footer border-0 pt-0">
                 <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upcoming Activities Modal -->
+<div class="modal fade" id="upcomingActivitiesModal" tabindex="-1" aria-labelledby="upcomingActivitiesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-header bg-white border-0 py-3">
+                <h5 class="modal-title fw-bold" id="upcomingActivitiesModalLabel">Upcoming Activities</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 pt-0" id="upcomingActivitiesBody">
+                <!-- Content populated by JS -->
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
