@@ -26,6 +26,9 @@ class HomeController extends Controller
     {
         if ($this->isLoggedIn() && $this->getRole() == "User") {
             $data = $this->getSidebarData();
+            // FIXED: Merge Dashboard Data for initial load!
+            $dashboardData = $this->getDashboardData();
+            $data = array_merge($data, $dashboardData);
             View::render('main', 'layouts', $data);
 
         } else if ($this->isLoggedIn() && $this->getRole() == "Admin") {
@@ -236,8 +239,17 @@ class HomeController extends Controller
             $photoPath = \App\Controllers\Admin\AdminProfileController::getAdminPhoto($_SESSION['user']['id']);
             $notifikasi = [];
         } else {
-            $photo = BerkasUserController::viewPhoto();
-            $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . ($photo['foto'] ?? 'default.png');
+            // Updated Logic: Fetch Profile Photo specifically
+            $mahasiswaModel = new \App\Model\User\Mahasiswa();
+            $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id']);
+            
+            $photoName = $mahasiswa['foto_profil'] ?? 'default.png';
+            $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $photoName;
+            
+            // Fallback check if file doesn't exist (optional, but good for UX)
+            // Note: Relative path check requires document root knowledge, simplistically trusting url for now
+            // or we could check file_exists($_SERVER['DOCUMENT_ROOT'] ... )
+            
             $notifikasi = NotificationControllers::getMessageById() ?? [];
         }
 
@@ -272,7 +284,12 @@ class HomeController extends Controller
         // Tambahkan data biodata, user, dan photo
         $biodata = ProfileController::viewBiodata();
         $user = ProfileController::viewUser();
-        $photo = BerkasUserController::viewPhoto();
+        
+        // Updated Logic: Fetch Profile Photo specifically
+        $mahasiswaModel = new \App\Model\User\Mahasiswa();
+        $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id']);
+        $photoName = $mahasiswa['foto_profil'] ?? 'default.png';
+        $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $photoName;
 
         // Tambahkan data dokumen/berkas
         $berkas = BerkasUserController::viewBerkas();
@@ -296,7 +313,7 @@ class HomeController extends Controller
             ],
             'biodata' => $biodata,
             'user' => $user,
-            'photo' => $photo['foto'] ?? 'default.png',
+            'photo' => $photoPath,
             'dokumen' => $dokumen,
             'graduationStatus' => DashboardUserController::getGraduationStatus(),
             'isPengumumanOpen' => DashboardUserController::isPengumumanOpen(),
@@ -372,8 +389,10 @@ class HomeController extends Controller
         if ($role === 'Admin') {
             $photoPath = \App\Controllers\Admin\AdminProfileController::getAdminPhoto($_SESSION['user']['id']);
         } else {
-            $photo = BerkasUserController::viewPhoto();
-            $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . ($photo['foto'] ?? 'default.png');
+             $mahasiswaModel = new \App\Model\User\Mahasiswa();
+             $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id']);
+             $photoName = $mahasiswa['foto_profil'] ?? 'default.png';
+             $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $photoName;
         }
 
         return [

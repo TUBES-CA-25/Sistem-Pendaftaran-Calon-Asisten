@@ -23,6 +23,7 @@ class Mahasiswa extends Model
     protected $tempatLahir;
     protected $tanggalLahir;
     protected $noHp;
+    protected $fotoProfil;
 
     public function __construct(
         $idUser = null,
@@ -91,6 +92,7 @@ class Mahasiswa extends Model
                 'tempat_lahir' => $stmt['tempat_lahir'] ?? null,
                 'tanggal_lahir' => $stmt['tanggal_lahir'] ?? null,
                 'jenis_kelamin' => $stmt['jenis_kelamin'] ?? null,
+                'foto_profil' => $stmt['foto_profil'] ?? null,
                 'judul_presentasi' => $presentasi['judul'] ?? null,
                 'berkas' => [
                     'foto' => $berkas['foto'],
@@ -296,6 +298,7 @@ class Mahasiswa extends Model
             'tempat_lahir' => $result['tempat_lahir'],
             'tanggal_lahir' => $result['tanggal_lahir'],
             'jenis_kelamin' => $result['jenis_kelamin'],
+            'foto_profil' => $result['foto_profil'] ?? null,
             'judul_presentasi' => $presentasi['judul'] ?? null,
             'berkas' => [
                 'foto' => $berkas['foto'],
@@ -320,6 +323,14 @@ class Mahasiswa extends Model
         $stmt->bindValue(':id_user', $idUser);
         $stmt->bindValue(':stambuk', $stambuk);
         $stmt->bindValue(':nama', $nama);
+        return $stmt->execute();
+    }
+    public function updateProfilePhoto($idUser, $filename)
+    {
+        $query = "UPDATE " . static::$table . " SET foto_profil = :foto WHERE id_user = :id";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(':foto', $filename);
+        $stmt->bindParam(':id', $idUser);
         return $stmt->execute();
     }
 }

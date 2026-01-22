@@ -126,13 +126,30 @@ class ProfileController extends Controller {
 
             // 3. Update Profile Picture
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $berkasModel = new \App\Model\User\BerkasUser();
-                $berkasModel->updatePhoto($userId, $_FILES['image']['tmp_name'], $_FILES['image']['size']);
+                $image = $_FILES['image'];
+                $ext = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png'];
+                
+                if (in_array($ext, $allowed) && $image['size'] <= 2 * 1024 * 1024) {
+                    $newName = uniqid() . '.' . $ext;
+                    $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/profile/';
+                    
+                    if (!is_dir($targetDir)) {
+                        mkdir($targetDir, 0755, true);
+                    }
+                    
+                    if (move_uploaded_file($image['tmp_name'], $targetDir . $newName)) {
+                        $mahasiswaModel = new \App\Model\User\Mahasiswa();
+                        $mahasiswaModel->updateProfilePhoto($userId, $newName);
+                        $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $newName;
+                    }
+                }
             }
 
             echo json_encode([
                 'status' => 'success',
-                'message' => 'Profil berhasil diperbarui.'
+                'message' => 'Profil berhasil diperbarui.',
+                'newPhoto' => $photoUrl ?? null
             ]);
         } catch (\Exception $e) {
             echo json_encode([

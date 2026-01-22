@@ -317,6 +317,15 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'
                         
                         if (res.status === 'success') {
                             showModal(res.message || 'Profil berhasil diperbarui', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
+                            
+                            // Update all profile images on the page immediately
+                            if (res.newPhoto) {
+                                const newPhotoUrl = res.newPhoto + '?v=' + new Date().getTime();
+                                // Select common profile image indicators: navbar img, sidebar icons if any, and page images
+                                // FIXED: Removed .sidebar img.icon because it targets the App Logo!
+                                $('.navbar-profile-img, .rounded-circle.border-primary img, img.rounded-4, img[alt="Profile Picture"]').attr('src', newPhotoUrl);
+                            }
+
                             setTimeout(() => {
                                 if(window.loadPage) loadPage('profile');
                                 else window.location.reload();
