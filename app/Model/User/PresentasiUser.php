@@ -17,9 +17,9 @@ class PresentasiUser extends Model {
     protected $pptSize;
     protected $makalahSize;
     protected $fileMakalahAcc = "pdf";
-    protected $filePptAcc = "pptx";
-    protected $maxMakalahSize = 1024 * 1024;
-    protected $maxPptSize = 1024 * 1024 * 4;
+    protected $filePptAcc = ["ppt", "pptx"];
+    protected $maxMakalahSize = 2048 * 1024;
+    protected $maxPptSize = 10240 * 1024;
     protected $keterangan;
     public function __construct(
         $id_mahasiswa = null,
@@ -123,8 +123,8 @@ class PresentasiUser extends Model {
     
     private function getFilePpt($berkas, $berkasSize) {
         $fileExt = strtolower(pathinfo($_FILES['ppt']['name'], PATHINFO_EXTENSION));
-        if ($fileExt !== $this->filePptAcc) {
-            throw new Exception("Gunakan ekstensi PPTX untuk file ppt.");
+        if (!in_array($fileExt, $this->filePptAcc)) {
+            throw new Exception("Gunakan ekstensi PPT atau PPTX untuk file ppt.");
         }
     
         if ($berkasSize > $this->maxPptSize) {

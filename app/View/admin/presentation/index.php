@@ -531,13 +531,15 @@ $(document).ready(function() {
 
     $('#btnDownloadPpt').on('click', function() {
         const ppt = $(this).data('url');
-        if (ppt) window.location.href = APP_URL + '/res/pptUser/' + ppt;
+        const baseUrl = APP_URL.replace(/\/public$/, '');
+        if (ppt) window.location.href = baseUrl + '/res/pptUser/' + ppt;
         else showAlert('PPT tidak tersedia', false);
     });
 
     $('#btnDownloadMakalah').on('click', function() {
         const makalah = $(this).data('url');
-        if (makalah) window.location.href = APP_URL + '/res/makalahUser/' + makalah;
+        const baseUrl = APP_URL.replace(/\/public$/, '');
+        if (makalah) window.location.href = baseUrl + '/res/makalahUser/' + makalah;
         else showAlert('Makalah tidak tersedia', false);
     });
 

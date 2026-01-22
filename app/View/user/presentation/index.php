@@ -79,7 +79,7 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
                                     <i class="bi bi-file-earmark-ppt me-1"></i>File PPT
                                 </label>
                                 <input class="form-control form-control-lg rounded-3" type="file" id="ppt" name="ppt" accept=".ppt,.pptx" required <?php if (!$canSubmitPpt) echo 'disabled'; ?>>
-                                <small class="text-muted">Format: PPT, PPTX</small>
+                                <small class="text-muted">Format: PPT, PPTX (Max 10MB)</small>
                             </div>
 
                             <div class="mb-4">
@@ -87,12 +87,12 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
                                     <i class="bi bi-file-earmark-pdf me-1"></i>Makalah
                                 </label>
                                 <input class="form-control form-control-lg rounded-3" type="file" id="makalah" name="makalah" accept="application/pdf" required <?php if (!$canSubmitPpt) echo 'disabled'; ?>>
-                                <small class="text-muted">Format: PDF</small>
+                                <small class="text-muted">Format: PDF (Max 2MB)</small>
                             </div>
 
                             <!-- Download Template -->
                             <div class="p-3 rounded-3 mb-4" style="background: #f0f9ff;">
-                                <a id="downloadFile1" href="#" download class="d-flex align-items-center gap-3 text-decoration-none">
+                                <a id="downloadFile1" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/Template-Laporan-Makalah.docx" download class="d-flex align-items-center gap-3 text-decoration-none">
                                     <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 48px; height: 48px; background: var(--gradient-primary);">
                                         <i class="bx bx-file text-white fs-4"></i>
                                     </div>

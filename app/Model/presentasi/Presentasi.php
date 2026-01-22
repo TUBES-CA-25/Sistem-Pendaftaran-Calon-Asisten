@@ -8,29 +8,28 @@ class Presentasi extends Model {
     static protected $table = 'presentasi';
 
     public function getAll() {
-        $sql = "SELECT p.*,
+        $sql = "SELECT p.*, m.nama_lengkap, m.stambuk,
                        (SELECT COUNT(*) FROM jadwal_presentasi jp WHERE jp.id_presentasi = p.id) as has_schedule
-                FROM " . static::$table . " p";
+                FROM " . static::$table . " p
+                JOIN mahasiswa m ON p.id_mahasiswa = m.id
+                ORDER BY p.id DESC";
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute();
-        $stmt = $stmt->fetchAll();
+        $results = $stmt->fetchAll();
         $data = [];
-        foreach ($stmt as $result) {
-            $nama = $this->getNameAndStambukFromPresentation($result['id_mahasiswa'])['nama_lengkap'];
-            $stambuk =  $this->getNameAndStambukFromPresentation($result['id_mahasiswa'])['stambuk'];
-            $berkas = $this->getPptAndMakalah($result['id_mahasiswa']);
+        foreach ($results as $result) {
             $data[] = [
                 'id' => $result['id'],
                 'id_mahasiswa' => $result['id_mahasiswa'],
-                'nama' => $nama,
-                'stambuk' => $stambuk,
+                'nama' => $result['nama_lengkap'],
+                'stambuk' => $result['stambuk'],
                 'judul' =>  $result['judul'],
                 'is_accepted' => $result['is_accepted'] ?? 0,
                 'is_revisi' => $result['is_revisi'] ?? 0,
                 'has_schedule' => $result['has_schedule'] > 0,
                 'berkas' => [
-                    'ppt' => $berkas['ppt'],
-                    'makalah' => $berkas['makalah']
+                    'ppt' => $result['ppt'],
+                    'makalah' => $result['makalah']
                 ]
             ];
         }
@@ -38,24 +37,25 @@ class Presentasi extends Model {
     }
 
     public function getAllAccStatus() {
-        $sql = "SELECT * FROM " . static::$table . " WHERE is_accepted = 1";
+        $sql = "SELECT p.*, m.nama_lengkap, m.stambuk
+                FROM " . static::$table . " p
+                JOIN mahasiswa m ON p.id_mahasiswa = m.id
+                WHERE p.is_accepted = 1
+                ORDER BY p.id DESC";
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute();
-        $stmt = $stmt->fetchAll();
+        $results = $stmt->fetchAll();
         $data = [];
-        foreach ($stmt as $result) {
-            $nama = $this->getNameAndStambukFromPresentation($result['id_mahasiswa'])['nama_lengkap'];
-            $stambuk =  $this->getNameAndStambukFromPresentation($result['id_mahasiswa'])['stambuk'];
-            $berkas = $this->getPptAndMakalah($result['id_mahasiswa']);
+        foreach ($results as $result) {
             $data[] = [
                 'id' => $result['id'],
                 'id_mahasiswa' => $result['id_mahasiswa'],
-                'nama' => $nama,
-                'stambuk' => $stambuk,
+                'nama' => $result['nama_lengkap'],
+                'stambuk' => $result['stambuk'],
                 'judul' =>  $result['judul'],
                 'berkas' => [
-                    'ppt' => $berkas['ppt'],
-                    'makalah' => $berkas['makalah']
+                    'ppt' => $result['ppt'],
+                    'makalah' => $result['makalah']
                 ]
             ];
         }
