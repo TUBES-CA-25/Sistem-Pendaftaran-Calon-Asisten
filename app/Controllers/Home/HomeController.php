@@ -161,44 +161,53 @@ class HomeController extends Controller
             }
 
         } else {
+            // Only fetch once if not done in Admin block (though admin block returns early usually, structure implies shared or else)
+            // Actually renderPageContent splits by logic. 
+            // In the original code, $sidebarData variable scope was inside the Admin if block?
+            // Wait, line 121 defined $sidebarData inside "if ($this->getRole() == 'Admin')".
+            // I need to define it for User as well.
+            
+            $sidebarData = $this->getSidebarData(); 
+
             switch ($page) {
                 case 'dashboard':
-                    $data = $this->getDashboardData();
+                    $data = array_merge($sidebarData, $this->getDashboardData());
                     View::render('index', 'user/dashboard', $data);
                     break;
                 case 'biodata':
-                    $data = $this->getBiodataData();
+                    $data = array_merge($sidebarData, $this->getBiodataData());
                     View::render('index', 'user/biodata', $data);
                     break;
                 case 'pengumuman':
-                    View::render('index', 'user/announcement');
+                    // Pengumuman might not return data array, so just pass sidebarData
+                    View::render('index', 'user/announcement', $sidebarData);
                     break;
                 case 'presentasi':
-                    $data = $this->getPresentasiData();
+                    $data = array_merge($sidebarData, $this->getPresentasiData());
                     View::render('index', 'user/presentation', $data);
                     break;
                 case 'tesTulis':
-                    $data = $this->getTesTulisData();
+                    $data = array_merge($sidebarData, $this->getTesTulisData());
                     View::render('index', 'user/exam', $data);
                     break;
                 case 'uploadBerkas':
-                    $data = $this->getUploadBerkasData();
+                    $data = array_merge($sidebarData, $this->getUploadBerkasData());
                     View::render('index', 'user/documents', $data);
                     break;
                 case 'wawancara':
-                    $data = $this->getWawancaraData();
+                    $data = array_merge($sidebarData, $this->getWawancaraData());
                     View::render('index', 'user/interview', $data);
                     break;
                 case 'profile':
-                    $data = $this->getProfileData();
+                    $data = array_merge($sidebarData, $this->getProfileData());
                     View::render('index', 'user/profile', $data);
                     break;
                 case 'editprofile':
-                    $data = $this->getProfileData();
+                    $data = array_merge($sidebarData, $this->getProfileData());
                     View::render('edit', 'user/profile', $data);
                     break;
                 case 'notification':
-                    View::render('index', 'user/notifications');
+                    View::render('index', 'user/notifications', $sidebarData);
                     break;
             }
         }
@@ -225,15 +234,18 @@ class HomeController extends Controller
         
         if ($role === 'Admin') {
             $photoPath = \App\Controllers\Admin\AdminProfileController::getAdminPhoto($_SESSION['user']['id']);
+            $notifikasi = [];
         } else {
             $photo = BerkasUserController::viewPhoto();
             $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . ($photo['foto'] ?? 'default.png');
+            $notifikasi = NotificationControllers::getMessageById() ?? [];
         }
 
         return [
             'role' => $role,
             'userName' => $user['username'] ?? ($_SESSION['user']['username'] ?? 'Guest'),
-            'photo' => $photoPath
+            'photo' => $photoPath,
+            'notifikasi' => $notifikasi
         ];
     }
 

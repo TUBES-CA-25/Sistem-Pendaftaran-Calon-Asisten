@@ -50,6 +50,16 @@ class BerkasUser extends Model {
     }
 
     public function save(BerkasUser $berkas) {
+        // Check if record already exists for this student
+        $checkQuery = "SELECT id FROM " . static::$table . " WHERE id_mahasiswa = ?";
+        $stmtCheck = self::getDB()->prepare($checkQuery);
+        $stmtCheck->bindParam(1, $berkas->id_mahasiswa);
+        $stmtCheck->execute();
+
+        if ($stmtCheck->rowCount() > 0) {
+            return $this->update($berkas);
+        }
+
         $query = "INSERT INTO " . static::$table . " 
             (id_mahasiswa, foto, cv, transkrip_nilai, surat_pernyataan) 
             VALUES 

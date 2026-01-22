@@ -64,19 +64,26 @@ const namaInput = document.getElementById("nama");
     });
   });
 
-  telephoneInput.addEventListener("input", function () {
-    telephoneInput.setCustomValidity("");
-    telephoneInput.reportValidity();
-  });
+  if (telephoneInput) {
+    telephoneInput.addEventListener("input", function () {
+      telephoneInput.setCustomValidity("");
+      telephoneInput.reportValidity();
+    });
+  }
 
-  namaInput.addEventListener("input", function () {
-    namaInput.setCustomValidity("");
-    namaInput.reportValidity();
-  });
-  tempatLahirInput.addEventListener("input", function () {
-    tempatLahirInput.setCustomValidity("");
-    tempatLahirInput.reportValidity();
-  });
+  if (namaInput) {
+    namaInput.addEventListener("input", function () {
+      namaInput.setCustomValidity("");
+      namaInput.reportValidity();
+    });
+  }
+
+  if (tempatLahirInput) {
+    tempatLahirInput.addEventListener("input", function () {
+      tempatLahirInput.setCustomValidity("");
+      tempatLahirInput.reportValidity();
+    });
+  }
   
   $("#biodataForm").submit(function (e) {
     e.preventDefault();

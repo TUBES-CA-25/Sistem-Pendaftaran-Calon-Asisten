@@ -203,7 +203,7 @@ class Mahasiswa extends Model
 
     public function getBerkasMahasiswa($mahasiswaId)
     {
-        $query = "SELECT foto, cv, transkrip_nilai, surat_pernyataan, accepted FROM berkas_mahasiswa WHERE id_mahasiswa = :mahasiswa_id";
+        $query = "SELECT foto, cv, transkrip_nilai, surat_pernyataan, accepted FROM berkas_mahasiswa WHERE id_mahasiswa = :mahasiswa_id ORDER BY id DESC LIMIT 1";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(':mahasiswa_id', $mahasiswaId);
         $stmt->execute();

@@ -280,6 +280,16 @@
         }
     });
 
+    // Handle download button click (Event Delegation)
+    $(document).on('click', '.btn-download-berkas, #downloadMakalahButton, #downloadPptButton', function() {
+        var url = $(this).attr('data-download-url');
+        if (url && url.trim() !== '') {
+            window.open(url, '_blank');
+        } else {
+            showAlert('File tidak tersedia', false);
+        }
+    });
+
     // Handle delete button click (Event Delegation)
     $(document).on('click', '.btn-delete', function() {
         var row = $(this).closest('tr');
