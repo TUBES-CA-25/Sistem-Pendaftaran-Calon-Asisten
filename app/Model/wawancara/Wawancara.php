@@ -69,38 +69,64 @@ class Wawancara extends Model
     }
 
     /**
-     * Get all activities (Wawancara, Presentasi, and General Activities) for a student
+     * Get all activities (Wawancara, Presentasi, and General Activities) with an 'is_mine' flag and attendance status
      */
     public function getJadwalKegiatanById($idUser) {
-        $idMhs = $this->getIdMahasiswa($idUser);
+        $idMhsOfUser = $this->getIdMahasiswa($idUser);
         
         $activities = [];
 
-        // 1. Fetch Wawancara
-        if ($idMhs) {
-            $sqlWawancara = "SELECT r.nama as ruangan, w.jenis_wawancara as judul, w.waktu, w.tanggal, 'Wawancara' as jenis 
-                             FROM wawancara w 
-                             JOIN ruangan r ON w.id_ruangan = r.id 
-                             WHERE w.id_mahasiswa = ?";
-            $stmt = self::getDB()->prepare($sqlWawancara);
-            $stmt->execute([$idMhs]);
-            $activities = array_merge($activities, $stmt->fetchAll(\PDO::FETCH_ASSOC));
+        // 1. Fetch ALL Wawancara (which also contains Tes Tertulis and Presentasi sometimes)
+        // We join with absensi to get the status
+        $sqlWawancara = "SELECT r.nama as ruangan, w.jenis_wawancara as judul, w.waktu, w.tanggal, 'Wawancara' as jenis,
+                                m.nama_lengkap, (w.id_mahasiswa = :idMhs) as is_mine,
+                                a.absensi_tes_tertulis, a.absensi_presentasi, 
+                                a.absensi_wawancara_I, a.absensi_wawancara_II, a.absensi_wawancara_III
+                         FROM wawancara w 
+                         JOIN ruangan r ON w.id_ruangan = r.id 
+                         JOIN mahasiswa m ON w.id_mahasiswa = m.id
+                         LEFT JOIN absensi a ON w.id_mahasiswa = a.id_mahasiswa";
+        $stmt = self::getDB()->prepare($sqlWawancara);
+        $stmt->bindValue(':idMhs', $idMhsOfUser, \PDO::PARAM_INT);
+        $stmt->execute();
+        $rawWawancara = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        foreach ($rawWawancara as $row) {
+            $row['status_kehadiran'] = 'Belum Ada';
+            $judul = $row['judul'];
+            
+            if ($judul === 'Tes Tertulis') {
+                $row['status_kehadiran'] = $row['absensi_tes_tertulis'];
+            } elseif ($judul === 'Presentasi') {
+                $row['status_kehadiran'] = $row['absensi_presentasi'];
+            } elseif (strpos($judul, 'Wawancara I') !== false && strpos($judul, 'II') === false) {
+                $row['status_kehadiran'] = $row['absensi_wawancara_I'];
+            } elseif (strpos($judul, 'Wawancara II') !== false && strpos($judul, 'III') === false) {
+                $row['status_kehadiran'] = $row['absensi_wawancara_II'];
+            } elseif (strpos($judul, 'Wawancara III') !== false) {
+                $row['status_kehadiran'] = $row['absensi_wawancara_III'];
+            }
+            
+            $activities[] = $row;
         }
 
-        // 2. Fetch Presentasi
-        if ($idMhs) {
-            $sqlPresentasi = "SELECT r.nama as ruangan, p.judul, jp.waktu, jp.tanggal, 'Presentasi' as jenis 
-                              FROM jadwal_presentasi jp 
-                              JOIN presentasi p ON jp.id_presentasi = p.id 
-                              JOIN ruangan r ON jp.id_ruangan = r.id 
-                              WHERE p.id_mahasiswa = ?";
-            $stmt = self::getDB()->prepare($sqlPresentasi);
-            $stmt->execute([$idMhs]);
-            $activities = array_merge($activities, $stmt->fetchAll(\PDO::FETCH_ASSOC));
-        }
+        // 2. Fetch ALL Presentasi from jadwal_presentasi
+        $sqlPresentasi = "SELECT r.nama as ruangan, p.judul, jp.waktu, jp.tanggal, 'Presentasi' as jenis, 
+                                 m.nama_lengkap, (p.id_mahasiswa = :idMhs) as is_mine,
+                                 a.absensi_presentasi as status_kehadiran
+                          FROM jadwal_presentasi jp 
+                          JOIN presentasi p ON jp.id_presentasi = p.id 
+                          JOIN ruangan r ON jp.id_ruangan = r.id 
+                          JOIN mahasiswa m ON p.id_mahasiswa = m.id
+                          LEFT JOIN absensi a ON p.id_mahasiswa = a.id_mahasiswa";
+        $stmt = self::getDB()->prepare($sqlPresentasi);
+        $stmt->bindValue(':idMhs', $idMhsOfUser, \PDO::PARAM_INT);
+        $stmt->execute();
+        $activities = array_merge($activities, $stmt->fetchAll(\PDO::FETCH_ASSOC));
 
         // 3. Fetch General Activities (kegiatan_admin)
-        $sqlGeneral = "SELECT 'Laboratorium' as ruangan, judul, '00:00:00' as waktu, tanggal, 'Kegiatan' as jenis 
+        $sqlGeneral = "SELECT 'Laboratorium' as ruangan, judul, '00:00:00' as waktu, tanggal, 'Kegiatan' as jenis, 
+                              'Sistem' as nama_lengkap, 0 as is_mine, 'Belum Ada' as status_kehadiran
                        FROM kegiatan_admin";
         $stmt = self::getDB()->prepare($sqlGeneral);
         $stmt->execute();

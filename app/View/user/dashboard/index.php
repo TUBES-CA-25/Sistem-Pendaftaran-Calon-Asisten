@@ -98,34 +98,34 @@ $dokumen = $dokumen ?? [];
         <!-- Main Content (Left Column) - 8 col -->
         <div class="col-lg-8">
 
-            <?php if ($isPengumumanOpen): ?>
-                <!-- Graduation Announcement Card (Visible when open) -->
+            <?php if ($graduationStatus !== 'Pending' || $isPengumumanOpen): ?>
+                <!-- Graduation Announcement Card (Visible when finalized or announcement open) -->
                 <div class="card border-0 shadow rounded-4 mb-4 overflow-hidden position-relative" 
-                     style="background: <?= $graduationStatus === 'Lulus' ? 'linear-gradient(135deg, #22c55e, #16a34a)' : 'linear-gradient(135deg, #ef4444, #dc2626)' ?>; color: white;">
-                    <div class="card-body p-4 p-md-5 text-center position-relative" style="z-index: 2;">
-                        <div class="mb-3">
-                            <i class="bi bi-patch-check-fill display-1" style="opacity: 0.9;"></i>
+                     style="background: <?= $graduationStatus === 'Lulus' ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #dc2626)' ?>; color: white;">
+                    <div class="card-body p-4 text-center position-relative" style="z-index: 2;">
+                        <div class="mb-2">
+                            <i class="bi bi-patch-check-fill display-4" style="opacity: 0.9;"></i>
                         </div>
-                        <h2 class="fw-bold mb-2">
-                            <?= $graduationStatus === 'Lulus' ? 'Selamat, Anda LULUS!' : 'Mohon Maaf, Anda Belum Lulus.' ?>
-                        </h2>
-                        <p class="lead mb-4" style="opacity: 0.9;">
+                        <h4 class="fw-bold mb-2">
+                            <?= $graduationStatus === 'Lulus' ? 'Selamat, Anda telah lulus!' : 'Mohon Maaf, Anda Belum Lulus.' ?>
+                        </h4>
+                        <p class="small mb-3" style="opacity: 0.9;">
                             <?= $graduationStatus === 'Lulus' 
                                 ? 'Anda telah berhasil melewati seluruh tahapan seleksi calon asisten laboratorium. Silakan cek informasi selanjutnya.' 
                                 : 'Terima kasih telah berpartisipasi dalam proses seleksi. Tetap semangat dan coba lagi di kesempatan berikutnya.' ?>
                         </p>
                         <?php if ($graduationStatus === 'Lulus'): ?>
-                            <button class="btn btn-light rounded-pill px-4 fw-bold text-primary shadow-sm">
-                                <i class="bi bi-info-circle me-2"></i>Informasi Lanjutan
+                            <button class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-primary shadow-sm">
+                                <i class="bi bi-info-circle me-1"></i>Informasi Lanjutan
                             </button>
                         <?php endif; ?>
                     </div>
                     <!-- Decorative Circles (Bubbles) -->
-                    <div class="position-absolute rounded-circle bg-white opacity-10" style="width: 200px; height: 200px; top: -50px; right: -50px;"></div>
-                    <div class="position-absolute rounded-circle bg-white opacity-10" style="width: 100px; height: 100px; bottom: -20px; left: 10%;"></div>
+                    <div class="position-absolute rounded-circle bg-white opacity-10" style="width: 150px; height: 150px; top: -40px; right: -40px;"></div>
+                    <div class="position-absolute rounded-circle bg-white opacity-10" style="width: 80px; height: 80px; bottom: -15px; left: 5%;"></div>
                 </div>
             <?php else: ?>
-                <!-- Announcement Coming Soon Card (Visible when closed) -->
+                <!-- Announcement Coming Soon Card (Visible when closed and pending) -->
                 <div class="card border-0 shadow-sm rounded-4 mb-4 bg-primary bg-opacity-10 border border-primary border-opacity-25">
                     <div class="card-body p-4 d-flex align-items-center gap-3">
                         <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 45px; height: 45px;">

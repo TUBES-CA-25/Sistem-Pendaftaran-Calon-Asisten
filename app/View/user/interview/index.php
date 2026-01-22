@@ -53,25 +53,47 @@ $wawancara = $wawancara ?? [];
                                         <span class="badge bg-light text-dark"><?= $i ?></span>
                                     </td>
                                     <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <?php 
-                                            $icon = 'bi-calendar-event';
-                                            $color = 'text-primary';
-                                            if (isset($value['jenis'])) {
-                                                if ($value['jenis'] === 'Wawancara') {
-                                                    $icon = 'bi-people';
-                                                    $color = 'text-success';
-                                                } elseif ($value['jenis'] === 'Presentasi') {
-                                                    $icon = 'bi-display';
-                                                    $color = 'text-info';
+                                        <div class="d-flex flex-column gap-1">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <?php 
+                                                $icon = 'bi-calendar-event';
+                                                $color = 'text-primary';
+                                                if (isset($value['jenis'])) {
+                                                    if ($value['jenis'] === 'Wawancara') {
+                                                        $icon = 'bi-people';
+                                                        $color = 'text-success';
+                                                    } elseif ($value['jenis'] === 'Presentasi') {
+                                                        $icon = 'bi-display';
+                                                        $color = 'text-info';
+                                                    }
                                                 }
-                                            }
-                                            ?>
-                                            <i class="bi <?= $icon ?> <?= $color ?>"></i>
-                                            <span class="fw-medium"><?= htmlspecialchars($value['judul'] ?? '-') ?></span>
-                                            <span class="badge bg-secondary bg-opacity-10 text-secondary small ms-1" style="font-size: 0.65rem;">
-                                                <?= htmlspecialchars($value['jenis'] ?? 'Kegiatan') ?>
-                                            </span>
+                                                ?>
+                                                <i class="bi <?= $icon ?> <?= $color ?>"></i>
+                                                <span class="fw-bold"><?= htmlspecialchars($value['judul'] ?? '-') ?></span>
+                                                <span class="badge bg-secondary bg-opacity-10 text-secondary small ms-1" style="font-size: 0.65rem;">
+                                                    <?= htmlspecialchars($value['jenis'] ?? 'Kegiatan') ?>
+                                                </span>
+                                                <?php if (isset($value['is_mine']) && $value['is_mine']): ?>
+                                                    <span class="badge bg-primary rounded-pill px-2 py-1 ms-2" style="font-size: 0.65rem;">
+                                                        <i class="bi bi-person-check-fill me-1"></i>Milik Anda
+                                                    </span>
+
+                                                    <?php if (isset($value['status_kehadiran'])): ?>
+                                                        <?php if ($value['status_kehadiran'] === 'Hadir'): ?>
+                                                            <span class="badge bg-success rounded-pill px-2 py-1 ms-1" style="font-size: 0.65rem;">
+                                                                <i class="bi bi-check-circle-fill me-1"></i>Selesai
+                                                            </span>
+                                                        <?php elseif ($value['status_kehadiran'] === 'Alpha'): ?>
+                                                            <span class="badge bg-danger rounded-pill px-2 py-1 ms-1" style="font-size: 0.65rem;">
+                                                                <i class="bi bi-x-circle-fill me-1"></i>Alpha
+                                                            </span>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="small text-muted ms-4">
+                                                <i class="bi bi-person me-1"></i><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?>
+                                            </div>
                                         </div>
                                     </td>
                                     <td>
