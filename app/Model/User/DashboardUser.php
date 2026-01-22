@@ -163,6 +163,41 @@ class DashboardUser extends Model {
         }
         return false;
     }
+    public function getGraduationStatus() {
+        $id = $this->getMahasiswaId();
+        if (!$id) return 'Pending';
+
+        $query = "SELECT COALESCE(total_nilai, nilai) as final_score FROM nilai_akhir WHERE id_mahasiswa = :id";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$result) return 'Pending';
+
+        return ($result['final_score'] >= 70) ? 'Lulus' : 'Gagal';
+    }
+
+    public function isPengumumanOpen() {
+        try {
+            // Check deadline_kegiatan table for 'pengumuman'
+            $query = "SELECT tanggal FROM deadline_kegiatan WHERE jenis = 'pengumuman'";
+            $stmt = self::getDB()->prepare($query);
+            $stmt->execute();
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if ($row) {
+                $today = date('Y-m-d');
+                return $today >= $row['tanggal'];
+            }
+
+            // Fallback: If no deadline set, assume closed or check if all stages complete
+            return false;
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
     private function getMahasiswaId() {
         $query = "SELECT id FROM " . self::$tableMahasiswa . " WHERE id_user = :id";
         $stmt = self::getDB()->prepare($query);

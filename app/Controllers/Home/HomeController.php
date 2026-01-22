@@ -286,6 +286,9 @@ class HomeController extends Controller
             'user' => $user,
             'photo' => $photo['foto'] ?? 'default.png',
             'dokumen' => $dokumen,
+            'graduationStatus' => DashboardUserController::getGraduationStatus(),
+            'isPengumumanOpen' => DashboardUserController::isPengumumanOpen(),
+            'currentActivities' => DashboardUserController::getKegiatanByMonth(),
         ];
     }
 
@@ -443,7 +446,8 @@ class HomeController extends Controller
             'pendaftarGagal' => DashboardAdminController::getPendaftarGagal(),
             'statusKegiatan' => DashboardAdminController::getStatusKegiatan(),
             'kegiatanBulanIni' => DashboardAdminController::getKegiatanByMonth($currentYear, $currentMonth) ?? [],
-            'jadwalPresentasiMendatang' => JadwalPresentasiController::getUpcomingJadwal(5)
+            'jadwalPresentasiMendatang' => JadwalPresentasiController::getUpcomingJadwal(5),
+            'presentationStats' => DashboardAdminController::getPresentationStats()
         ];
     }
 

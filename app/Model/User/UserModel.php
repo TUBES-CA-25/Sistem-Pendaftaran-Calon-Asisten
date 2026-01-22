@@ -127,11 +127,20 @@ class UserModel extends Model {
         return $stmt->execute();
     }
 
-    public function updateUser($id, $username) {
-        $query = "UPDATE " . static::$table . " SET username = :username WHERE id = :id";
-        $stmt = self::getDB()->prepare($query);
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':id', $id);
+    public function updateUser($id, $username, $password = null) {
+        if ($password) {
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+            $query = "UPDATE " . static::$table . " SET username = :username, password = :password WHERE id = :id";
+            $stmt = self::getDB()->prepare($query);
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':password', $hashedPassword);
+            $stmt->bindParam(':id', $id);
+        } else {
+            $query = "UPDATE " . static::$table . " SET username = :username WHERE id = :id";
+            $stmt = self::getDB()->prepare($query);
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':id', $id);
+        }
         
         return $stmt->execute();
     }

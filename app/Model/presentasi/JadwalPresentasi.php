@@ -65,6 +65,11 @@ class JadwalPresentasi extends Model
             (id_presentasi,id_ruangan,tanggal,waktu) VALUES (?,?,?,?)";
             $idRuangan = (int) $jadwalPresentasi->id_ruangan;
             $idPresentasi = (int) $mahasiswa['id'];
+            
+            if ($this->hasSchedule($idPresentasi)) {
+                continue;
+            }
+
             $date = $this->validateAndFormatDate($jadwalPresentasi->tanggal);
             $time = $this->validateAndFormatTime($jadwalPresentasi->waktu);
             $stmt = self::getDB()->prepare($sql);
@@ -189,6 +194,7 @@ class JadwalPresentasi extends Model
             JOIN mahasiswa m ON p.id_mahasiswa = m.id
             JOIN ruangan r ON jp.id_ruangan = r.id
             WHERE jp.tanggal >= CURDATE()
+            GROUP BY p.id
             ORDER BY jp.tanggal ASC, jp.waktu ASC
             LIMIT ?";
 

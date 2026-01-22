@@ -41,6 +41,17 @@ class DashboardUserController extends Controller {
         $dashboardUser = new DashboardUser();
         return $dashboardUser->getPptAccStatus();
     }
+    public static function getGraduationStatus() {
+        $dashboardUser = new DashboardUser();
+        return $dashboardUser->getGraduationStatus();
+    }
+    public static function isPengumumanOpen() {
+        $dashboardUser = new DashboardUser();
+        return $dashboardUser->isPengumumanOpen();
+    }
+    public static function getKegiatanByMonth() {
+        return \App\Model\admin\DashboardAdmin::getKegiatanByMonth((int)date('Y'), (int)date('m'));
+    }
     public static function getNumberTahapanSelesai() {
         $i = 0;
         if(self::getBiodataStatus()) {
@@ -106,4 +117,30 @@ class DashboardUserController extends Controller {
         </div>";
     }
     
+    public static function getActivities() {
+        header('Content-Type: application/json');
+        
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+        
+        // Default to current date if no data passed
+        $year = isset($data['year']) ? (int)$data['year'] : (int)date('Y');
+        $month = isset($data['month']) ? (int)$data['month'] : (int)date('m');
+        
+        try {
+            // Re-use logic from DashboardAdmin to get activities
+            $activities = \App\Model\admin\DashboardAdmin::getKegiatanByMonth($year, $month);
+            
+            echo json_encode([
+                'status' => 'success',
+                'data' => $activities
+            ]);
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
 }

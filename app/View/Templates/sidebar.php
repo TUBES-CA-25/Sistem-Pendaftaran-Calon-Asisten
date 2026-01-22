@@ -29,15 +29,9 @@ if (isset($photo) && is_array($photo) && !empty($photo)) {
             <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="icon">
             <span>IC-ASSIST</span>
         </div>
-        <i class="bx bx-menu" id="btn"></i>
+
     </div>
-    <div class="user">
-        <a href="#" data-page="profile"><img src=<?= $photo ?> alt="foto" name="userphoto" id="userphoto"
-                class="user-img"></a>
-        <div>
-            <p class="bold" id="username"><?= $userName ?></p>
-        </div>
-    </div>
+
     <ul>
         <li>
             <a href="#" data-page="dashboard">

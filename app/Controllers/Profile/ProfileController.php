@@ -79,5 +79,66 @@ class ProfileController extends Controller {
             ]);
         }
     }
+
+    public function updateProfile() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     
+        if (!isset($_SESSION['user']['id'])) {
+            echo json_encode(['status' => 'error', 'message' => 'User tidak terautentikasi']);
+            return;
+        }
+
+        $userId = $_SESSION['user']['id'];
+        $nama = $_POST['nama'] ?? '';
+        $jurusan = $_POST['jurusan'] ?? '';
+        $kelas = $_POST['kelas'] ?? '';
+        $alamat = $_POST['alamat'] ?? '';
+        $jenisKelamin = $_POST['jenisKelamin'] ?? '';
+        $tempatLahir = $_POST['tempatLahir'] ?? '';
+        $tanggalLahir = $_POST['tanggalLahir'] ?? '';
+        $noHp = $_POST['noHp'] ?? '';
+        $username = $_POST['username'] ?? '';
+        $password = $_POST['password'] ?? '';
+
+        try {
+            // 1. Update Username & Password
+            if (!empty($username)) {
+                $userModel = new UserModel();
+                $userModel->updateUser($userId, $username, !empty($password) ? $password : null);
+                $_SESSION['user']['username'] = $username; // Update session
+            }
+
+            // 2. Update Biodata
+            $biodata = new BiodataUser(
+                idUser: $userId,
+                jurusan: $jurusan,
+                alamat: $alamat,
+                kelas: $kelas,
+                namaLengkap: $nama,
+                jenisKelamin: $jenisKelamin,
+                tempatLahir: $tempatLahir,
+                tanggalLahir: $tanggalLahir,
+                noHp: $noHp
+            );
+            $biodata->updateBiodata($biodata);
+
+            // 3. Update Profile Picture
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $berkasModel = new \App\Model\User\BerkasUser();
+                $berkasModel->updatePhoto($userId, $_FILES['image']['tmp_name'], $_FILES['image']['size']);
+            }
+
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Profil berhasil diperbarui.'
+            ]);
+        } catch (\Exception $e) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
+        }
+    }
 }

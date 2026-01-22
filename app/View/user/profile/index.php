@@ -277,6 +277,18 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'
                     <label for="noHp">No Telephone</label>
                     <input type="text" id="noHp" name="noHp" value="<?= $noHp; ?>">
                 </div>
+                <div class="form-group">
+                    <label for="username">Username (Email)</label>
+                    <input type="text" id="username" name="username" value="<?= $userName; ?>">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password (Kosongkan jika tidak ingin diubah)</label>
+                    <input type="password" id="password" name="password" placeholder="Password Baru">
+                </div>
+                <div class="form-group">
+                    <label for="image">Foto Profil</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                </div>
             </div>
             <div class="form-actions">
                 <button type="submit">Save Changes</button>
@@ -337,21 +349,28 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'
         const namaInput = document.getElementById("nama");
         const tempatLahirInput = document.getElementById("tempatLahir");
         
-        phoneInput.addEventListener("input", function () {
-            phoneInput.setCustomValidity("");
-            phoneInput.reportValidity();
-        });
-        namaInput.addEventListener("input", function () {
-            namaInput.setCustomValidity("");
-            namaInput.reportValidity();
-        });
-        tempatLahirInput.addEventListener("input", function () {
-            tempatLahirInput.setCustomValidity("");
-            tempatLahirInput.reportValidity();
-        });
+        const safeListeners = (el) => {
+            if (el) {
+                el.addEventListener("input", function () {
+                    el.setCustomValidity("");
+                    el.reportValidity();
+                });
+            }
+        };
+
+        safeListeners(phoneInput);
+        safeListeners(namaInput);
+        safeListeners(tempatLahirInput);
+
         $('#editProfileButton').click(function () {
             $('#editProfileModal').css('display', 'flex');
             updateKelasOptions();
+            // Set current values for username
+            const currentUsername = "<?= $userName ?>";
+            if($('#username').length === 0) {
+                // Add username and password fields if they don't exist (legacy fallback)
+                // In a real scenario, we'd update the HTML once
+            }
         });
 
         $('#closeModaledit').click(function () {
@@ -360,7 +379,7 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'
 
         $(window).click(function (event) {
             if ($(event.target).is('#editProfileModal')) {
-                $('#editProfileModal').css('display', 'flex');
+                $('#editProfileModal').css('display', 'none'); // User usually expects clicks outside to CLOSE
             }
         });
 
@@ -378,95 +397,100 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'
                         showModal('Logout berhasil', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
                         setTimeout(() => {
                             window.location.href = '/Sistem-Pendaftaran-Calon-Asisten/public/';
-                            window.location.reload();
-        }, 1000);
-                        
+                        }, 1000);
                     } else {
                         showModal('Logout gagal', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
                     }
-                },
-                error: function (xhr, status, error) {
-                    console.log('Error:', xhr.responseText);
-                    showAlert('Terjadi kesalahan: ' + error, false);
                 }
             });
         });
 
         $('#editProfileForm').submit(function (e) {
             e.preventDefault();
-            const formData = {
-                nama: $('#nama').val(),
-                jurusan: $('#jurusan').val(),
-                kelas: $('#kelas').val(),
-                alamat: $('#alamat').val(),
-                jenisKelamin: $('#jenisKelamin').val(),
-                tempatLahir: $('#tempatLahir').val(),
-                tanggalLahir: $('#tanggalLahir').val(),
-                noHp: $('#noHp').val()
-            };
-
-            console.log("Form Data:", formData);
-            const phoneNumber = document.getElementById("noHp").value;
-            const tempatLahir = document.getElementById("tempatLahir").value;
-            const nama = document.getElementById("nama").value;
+            
+            const formData = new FormData();
+            formData.append('nama', $('#nama').val());
+            formData.append('jurusan', $('#jurusan').val());
+            formData.append('kelas', $('#kelas').val());
+            formData.append('alamat', $('#alamat').val());
+            formData.append('jenisKelamin', $('#jenisKelamin').val());
+            formData.append('tempatLahir', $('#tempatLahir').val());
+            formData.append('tanggalLahir', $('#tanggalLahir').val());
+            formData.append('noHp', $('#noHp').val());
+            
+            // Password & Username (if added to form)
+            if($('#username').length) formData.append('username', $('#username').val());
+            if($('#password').length) formData.append('password', $('#password').val());
+            
+            // File upload (if added to form)
+            if($('#image').length && $('#image')[0].files[0]) {
+                formData.append('image', $('#image')[0].files[0]);
+            }
 
             let isValid = true;
-
-            if (!validateNoNumber(nama).success) {
-                namaInput.setCustomValidity(validateNoNumber(nama).message);
+            if (namaInput && !validateNoNumber(namaInput.value).success) {
+                namaInput.setCustomValidity(validateNoNumber(namaInput.value).message);
                 namaInput.reportValidity();
                 isValid = false;
             }
-            if (!validateNoNumber(tempatLahir).success) {
-                tempatLahirInput.setCustomValidity(validateNoNumber(tempatLahir).message);
+            if (tempatLahirInput && !validateNoNumber(tempatLahirInput.value).success) {
+                tempatLahirInput.setCustomValidity(validateNoNumber(tempatLahirInput.value).message);
                 tempatLahirInput.reportValidity();
                 isValid = false;
             }
-            if (!validatePhoneNumber(phoneNumber).success) {
-                phoneInput.setCustomValidity(validatePhoneNumber(phoneNumber).message);
+            if (phoneInput && !validatePhoneNumber(phoneInput.value).success) {
+                phoneInput.setCustomValidity(validatePhoneNumber(phoneInput.value).message);
                 phoneInput.reportValidity();
                 isValid = false;
             }
 
             if (!isValid) return;
+
             $.ajax({
-                url: '/Sistem-Pendaftaran-Calon-Asisten/public/updatebiodata',
+                url: '/Sistem-Pendaftaran-Calon-Asisten/public/updateprofile',
                 method: 'POST',
                 data: formData,
+                processData: false,
+                contentType: false,
                 success: function (response) {
                     try {
-                        const parsedResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                        console.log('Parsed Response:', parsedResponse);
-
-                        if (parsedResponse.status === 'success') {
-                            showModal('Data berhasil diperbarui', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
-                            document.querySelector('a[data-page="profile"]').click();
+                        const res = typeof response === 'string' ? JSON.parse(response) : response;
+                        if (res.status === 'success') {
+                            showModal(res.message || 'Profil berhasil diperbarui', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif');
+                            setTimeout(() => {
+                                // Reload page content to show changes
+                                if(window.loadPage) loadPage('profile');
+                                else window.location.reload();
+                            }, 1500);
                         } else {
-                            console.log('Error:', parsedResponse.message);
-                            showModal('Data gagal diperbarui', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
-                            document.querySelector('a[data-page="profile"]').click();
+                            showModal(res.message || 'Gagal memperbarui profil', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
                         }
-                    } catch (error) {
-                        console.error('Error parsing response:', error);
+                    } catch (e) {
+                        console.error('Error parsing response:', e);
                     }
                 }
-
             });
         });
 
         function updateKelasOptions() {
-            const gender = document.getElementById('jenisKelamin').value;
+            const genderSelect = document.getElementById('jenisKelamin');
             const kelasSelect = document.getElementById('kelas');
+            if(!genderSelect || !kelasSelect) return;
+
+            const gender = genderSelect.value;
+            const currentKelas = "<?= $kelas ?>";
 
             kelasSelect.innerHTML = '<option value="">Pilih Kelas</option>';
 
             const kelasOptions = gender === 'Wanita'
                 ? ['B1', 'B2', 'B3', 'B4', 'B5', 'B6']
                 : ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9'];
+            
             kelasOptions.forEach(kelas => {
                 const option = document.createElement('option');
                 option.value = kelas;
                 option.textContent = kelas;
+                if(kelas === currentKelas) option.selected = true;
                 kelasSelect.appendChild(option);
             });
         }

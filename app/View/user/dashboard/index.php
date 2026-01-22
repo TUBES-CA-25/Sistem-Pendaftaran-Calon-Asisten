@@ -25,6 +25,56 @@ $photo = $photo ?? 'default.png';
 $dokumen = $dokumen ?? [];
 ?>
 
+<style>
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+    }
+    .calendar-date {
+        aspect-ratio: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        border-radius: 10px;
+        position: relative;
+    }
+    .calendar-date.other-month {
+        opacity: 0.3;
+    }
+    .calendar-date.today {
+        background: rgba(37, 99, 235, 0.1);
+        color: #2563eb;
+        font-weight: 700;
+    }
+    .calendar-date.has-activity {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .calendar-date.has-activity:hover {
+        background: rgba(0,0,0,0.02);
+        transform: scale(1.05);
+    }
+    .activity-dots {
+        display: flex;
+        justify-content: center;
+        gap: 2px;
+        margin-top: 2px;
+    }
+    .dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+    }
+    .last-child-no-border:last-child {
+        border-bottom: none !important;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+</style>
+
 <!-- Page Header -->
 <?php
     $title = 'Dashboard';
@@ -44,110 +94,163 @@ $dokumen = $dokumen ?? [];
     </div>
 
     <div class="row g-4">
+
         <!-- Main Content (Left Column) - 8 col -->
         <div class="col-lg-8">
 
-            <!-- Progress Circular Card -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4">
-                    <h5 class="fw-semibold mb-4">Progress Pendaftaran</h5>
-
-                    <div class="d-flex align-items-center justify-content-center position-relative mb-4" style="height: 220px;">
-                        <!-- SVG Circular Progress -->
-                        <svg width="200" height="200" class="progress-ring">
-                            <circle class="progress-ring-circle-bg"
-                                stroke="#e5e7eb"
-                                stroke-width="12"
-                                fill="transparent"
-                                r="85"
-                                cx="100"
-                                cy="100"/>
-                            <circle class="progress-ring-circle"
-                                stroke="url(#gradient)"
-                                stroke-width="12"
-                                fill="transparent"
-                                r="85"
-                                cx="100"
-                                cy="100"
-                                style="stroke-dasharray: 534.07; stroke-dashoffset: <?= 534.07 * (1 - $percentage/100) ?>; transform: rotate(-90deg); transform-origin: center;"/>
-                            <defs>
-                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#3dc2ec"/>
-                                    <stop offset="100%" style="stop-color:#2563eb"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-
-                        <!-- Text di tengah -->
-                        <div class="position-absolute text-center">
-                            <div class="display-4 fw-bold text-primary"><?= $percentage ?>%</div>
-                            <small class="text-muted">Complete</small>
+            <?php if ($isPengumumanOpen): ?>
+                <!-- Graduation Announcement Card (Visible when open) -->
+                <div class="card border-0 shadow rounded-4 mb-4 overflow-hidden position-relative" 
+                     style="background: <?= $graduationStatus === 'Lulus' ? 'linear-gradient(135deg, #22c55e, #16a34a)' : 'linear-gradient(135deg, #ef4444, #dc2626)' ?>; color: white;">
+                    <div class="card-body p-4 p-md-5 text-center position-relative" style="z-index: 2;">
+                        <div class="mb-3">
+                            <i class="bi bi-patch-check-fill display-1" style="opacity: 0.9;"></i>
                         </div>
+                        <h2 class="fw-bold mb-2">
+                            <?= $graduationStatus === 'Lulus' ? 'Selamat, Anda LULUS!' : 'Mohon Maaf, Anda Belum Lulus.' ?>
+                        </h2>
+                        <p class="lead mb-4" style="opacity: 0.9;">
+                            <?= $graduationStatus === 'Lulus' 
+                                ? 'Anda telah berhasil melewati seluruh tahapan seleksi calon asisten laboratorium. Silakan cek informasi selanjutnya.' 
+                                : 'Terima kasih telah berpartisipasi dalam proses seleksi. Tetap semangat dan coba lagi di kesempatan berikutnya.' ?>
+                        </p>
+                        <?php if ($graduationStatus === 'Lulus'): ?>
+                            <button class="btn btn-light rounded-pill px-4 fw-bold text-primary shadow-sm">
+                                <i class="bi bi-info-circle me-2"></i>Informasi Lanjutan
+                            </button>
+                        <?php endif; ?>
                     </div>
-
-                    <!-- Legend -->
-                    <div class="d-flex justify-content-center gap-4">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="rounded-circle bg-primary" style="width:12px;height:12px"></div>
-                            <small class="text-muted">Terisi</small>
+                    <!-- Decorative Circles (Bubbles) -->
+                    <div class="position-absolute rounded-circle bg-white opacity-10" style="width: 200px; height: 200px; top: -50px; right: -50px;"></div>
+                    <div class="position-absolute rounded-circle bg-white opacity-10" style="width: 100px; height: 100px; bottom: -20px; left: 10%;"></div>
+                </div>
+            <?php else: ?>
+                <!-- Announcement Coming Soon Card (Visible when closed) -->
+                <div class="card border-0 shadow-sm rounded-4 mb-4 bg-primary bg-opacity-10 border border-primary border-opacity-25">
+                    <div class="card-body p-4 d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 45px; height: 45px;">
+                            <i class="bi bi-bell-fill text-white"></i>
                         </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="rounded-circle bg-light border" style="width:12px;height:12px"></div>
-                            <small class="text-muted">Kosong</small>
+                        <div>
+                            <h6 class="fw-bold mb-1 text-primary">Hasil Seleksi Sedang Diproses</h6>
+                            <p class="small text-muted mb-0">Pengumuman kelulusan akan ditampilkan di sini setelah seluruh tahapan seleksi berakhir. Tetap pantau!</p>
                         </div>
                     </div>
                 </div>
-            </div>
+            <?php endif; ?>
 
-            <!-- Status Stepper Card -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4">
-                    <h5 class="fw-semibold mb-3">
-                        Anda telah menyelesaikan <?= $tahapanSelesai ?> dari 9 tahapan pendaftaran
-                    </h5>
+            <!-- Progress & Stepper Row -->
+            <div class="row g-4 mb-4">
+                <!-- Progress Circular Card -->
+                <div class="col-md-5">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4 d-flex flex-column justify-content-center">
+                            <h6 class="fw-semibold mb-3 text-center">Progress Pendaftaran</h6>
 
-                    <!-- Stepper -->
-                    <div class="d-flex align-items-center justify-content-between position-relative mb-4">
-                        <!-- Progress Line Background -->
-                        <div class="position-absolute w-100 bg-light" style="height:4px; top:12px; left:0; z-index:0"></div>
-                        <!-- Progress Line Active (calculated dynamically) -->
-                        <?php $stepProgress = min(($tahapanSelesai / 9) * 100, 100); ?>
-                        <div class="position-absolute bg-primary stepper-line" style="height:4px; top:12px; left:0; width:<?= $stepProgress ?>%; z-index:1"></div>
+                            <div class="d-flex align-items-center justify-content-center position-relative mb-3" style="height: 160px;">
+                                <!-- SVG Circular Progress (Scaled down for tighter layout) -->
+                                <svg width="150" height="150" class="progress-ring">
+                                    <defs>
+                                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#3dc2ec" />
+                                            <stop offset="100%" stop-color="#2563eb" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle class="progress-ring-circle-bg"
+                                        stroke="#e5e7eb"
+                                        stroke-width="10"
+                                        fill="transparent"
+                                        r="65"
+                                        cx="75"
+                                        cy="75"/>
+                                    <circle class="progress-ring-circle"
+                                        stroke="url(#gradient)"
+                                        stroke-width="10"
+                                        fill="transparent"
+                                        r="65"
+                                        cx="75"
+                                        cy="75"
+                                        style="stroke-dasharray: 408.41; stroke-dashoffset: <?= 408.41 * (1 - $percentage/100) ?>; transform: rotate(-90deg); transform-origin: center;"/>
+                                </svg>
 
-                        <?php
-                        // Define 4 main steps for stepper with corresponding tahapan thresholds
-                        $stepperStages = [
-                            ['number' => 1, 'color' => 'danger', 'label' => 'Lengkapi Berkas', 'threshold' => 2],  // Tahap 1-2
-                            ['number' => 2, 'color' => 'warning', 'label' => 'Tes Tertulis', 'threshold' => 4],    // Tahap 3-4
-                            ['number' => 3, 'color' => 'success', 'label' => 'Tahap Wawancara', 'threshold' => 7], // Tahap 5-7
-                            ['number' => 4, 'color' => 'primary', 'label' => 'Pengumuman', 'threshold' => 9]       // Tahap 8-9
-                        ];
-
-                        foreach ($stepperStages as $step):
-                            $isActive = $tahapanSelesai >= $step['threshold'];
-                        ?>
-                            <div class="text-center position-relative" style="z-index:2">
-                                <div class="rounded-circle bg-<?= $step['color'] ?> d-flex align-items-center justify-content-center mx-auto mb-2"
-                                     style="width:28px; height:28px">
-                                    <?php if ($isActive): ?>
-                                        <i class="bi bi-check text-white fw-bold"></i>
-                                    <?php else: ?>
-                                        <span class="text-white fw-bold small"><?= $step['number'] ?></span>
-                                    <?php endif; ?>
+                                <!-- Text di tengah -->
+                                <div class="position-absolute text-center">
+                                    <div class="h3 fw-bold text-primary mb-0"><?= $percentage ?>%</div>
+                                    <small class="text-muted" style="font-size: 0.65rem;">Complete</small>
                                 </div>
-                                <small class="text-<?= $step['color'] ?> fw-semibold d-block"><?= $step['label'] ?></small>
                             </div>
-                        <?php endforeach; ?>
-                    </div>
 
-                    <!-- Legend -->
-                    <div class="d-flex flex-wrap gap-3 small">
-                        <?php foreach ($stepperStages as $step): ?>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="rounded-circle bg-<?= $step['color'] ?>" style="width:8px;height:8px"></div>
-                                <span class="text-muted"><?= $step['label'] ?></span>
+                            <!-- Legend -->
+                            <div class="d-flex justify-content-center gap-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle bg-primary" style="width:8px;height:8px"></div>
+                                    <small class="text-muted" style="font-size: 0.7rem;">Terisi</small>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle bg-light border" style="width:8px;height:8px"></div>
+                                    <small class="text-muted" style="font-size: 0.7rem;">Kosong</small>
+                                </div>
                             </div>
-                        <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Stepper Card -->
+                <div class="col-md-7">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4">
+                            <h6 class="fw-semibold mb-4">Status Pendaftaran</h6>
+                            
+                            <p class="small text-muted mb-4 lh-sm">
+                                Anda telah menyelesaikan <strong><?= $tahapanSelesai ?></strong> dari 9 tahapan pendaftaran.
+                            </p>
+
+                            <!-- Stepper Vertical layout or cramped horizontal? 
+                                 Let's stick to horizontal but with better spacing for side-by-side -->
+                            <div class="d-flex align-items-center justify-content-between position-relative mb-4 mt-2 px-1">
+                                <!-- Progress Line Background -->
+                                <div class="position-absolute w-100 bg-light" style="height:3px; top:10px; left:0; z-index:0"></div>
+                                <!-- Progress Line Active -->
+                                <?php $stepProgress = min(($tahapanSelesai / 9) * 100, 100); ?>
+                                <div class="position-absolute bg-primary stepper-line" style="height:3px; top:10px; left:0; width:<?= $stepProgress ?>%; z-index:1; transition: width 1s ease;"></div>
+
+                                <?php
+                                $stepperStages = [
+                                    ['number' => 1, 'color' => 'danger', 'label' => 'Berkas', 'threshold' => 2],
+                                    ['number' => 2, 'color' => 'warning', 'label' => 'Tes', 'threshold' => 4],
+                                    ['number' => 3, 'color' => 'success', 'label' => 'Wawancara', 'threshold' => 7],
+                                    ['number' => 4, 'color' => 'primary', 'label' => 'Final', 'threshold' => 9]
+                                ];
+
+                                foreach ($stepperStages as $step):
+                                    $isActive = $tahapanSelesai >= $step['threshold'];
+                                ?>
+                                    <div class="text-center position-relative" style="z-index:2">
+                                        <div class="rounded-circle bg-<?= $isActive ? $step['color'] : 'light' ?> <?= $isActive ? '' : 'border' ?> d-flex align-items-center justify-content-center mx-auto mb-2 shadow-sm"
+                                             style="width:22px; height:22px">
+                                            <?php if ($isActive): ?>
+                                                <i class="bi bi-check text-white fw-bold" style="font-size: 0.7rem;"></i>
+                                            <?php else: ?>
+                                                <span class="text-muted fw-bold" style="font-size: 0.6rem;"><?= $step['number'] ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <small class="fw-bold d-block text-<?= $isActive ? $step['color'] : 'muted' ?>" style="font-size: 0.6rem;"><?= $step['label'] ?></small>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+
+                            <!-- New Legend/Info section -->
+                            <div class="mt-4 pt-2 border-top">
+                                <small class="text-muted d-block mb-1" style="font-size: 0.65rem;">Sistem Seleksi:</small>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <?php foreach ($stepperStages as $step): ?>
+                                        <div class="badge bg-<?= $step['color'] ?> bg-opacity-10 text-<?= $step['color'] ?> border border-<?= $step['color'] ?> border-opacity-25" style="font-size: 0.55rem;">
+                                            <?= $step['label'] ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -298,7 +401,14 @@ $dokumen = $dokumen ?? [];
                     <!-- Profile Photo -->
                     <div class="mb-3">
                         <?php if (!empty($photo) && $photo !== 'default.png'): ?>
-                            <img src="/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/<?= htmlspecialchars($photo) ?>"
+                            <?php 
+                                $imagePath = $photo;
+                                // If photo already contains a path, use it as is, otherwise prepend our standard path
+                                if (strpos($photo, '/') === false) {
+                                    $imagePath = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . $photo;
+                                }
+                            ?>
+                            <img src="<?= htmlspecialchars($imagePath) ?>"
                                  alt="Profile"
                                  class="rounded-circle border border-3 border-primary"
                                  style="width: 100px; height: 100px; object-fit: cover;"
@@ -327,7 +437,7 @@ $dokumen = $dokumen ?? [];
                     <p class="text-muted mb-3 small">Calon Asisten Lab</p>
 
                     <!-- Edit Button -->
-                    <button class="btn btn-sm btn-outline-primary w-100" onclick="navigateTo('biodata')">
+                    <button class="btn btn-sm btn-outline-primary w-100" onclick="loadPage('profile')">
                         <i class="bi bi-pencil me-2"></i>Edit Profile
                     </button>
                 </div>
@@ -337,7 +447,14 @@ $dokumen = $dokumen ?? [];
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center">
                     <h6 class="fw-semibold mb-0">Calendar</h6>
-                    <i class="bi bi-chevron-down"></i>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-light rounded-circle" id="prev-month">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <button class="btn btn-sm btn-light rounded-circle" id="next-month">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body p-4">
                     <!-- Calendar Header -->
@@ -365,6 +482,11 @@ $dokumen = $dokumen ?? [];
                     </div>
                 </div>
             </div>
+
+            <!-- Pass initial data to JS -->
+            <script>
+                window.initialActivities = <?= json_encode($currentActivities) ?>;
+            </script>
 
             <!-- Upcoming Events -->
             <div class="card border-0 shadow-sm rounded-4">

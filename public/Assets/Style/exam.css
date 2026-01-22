@@ -236,7 +236,7 @@ footer {
     display: block;
     width: 100%;
     padding: 12px;
-    background-color: #3DC2EC;
+    background-color: #2563EB;
     color: white;
     border: none;
     border-radius: 5px;
@@ -260,7 +260,7 @@ footer {
 }
 
 .nav button.answered {
-    background-color:#3DC2EC;
+    background-color: #3DC2EC;
     color: white;
     border: 1px solid #05c925; /* Untuk membedakan */
 }

@@ -332,4 +332,32 @@ class DashboardAdmin extends Model
             return [];
         }
     }
+
+    /**
+     * Get statistics for presentation fullness chart
+     * @return array{scheduled: int, eligible: int}
+     */
+    public static function getPresentationStats(): array
+    {
+        $stats = ['scheduled' => 0, 'eligible' => 0];
+
+        try {
+            // Count Scheduled (Distinct presentations that have a schedule)
+            $sql = "SELECT COUNT(DISTINCT id_presentasi) FROM jadwal_presentasi";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->execute();
+            $stats['scheduled'] = (int) $stmt->fetchColumn();
+
+            // Count Eligible (Presentations that are accepted)
+            $sql = "SELECT COUNT(*) FROM presentasi WHERE is_accepted = 1";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->execute();
+            $stats['eligible'] = (int) $stmt->fetchColumn();
+
+        } catch (\Throwable $e) {
+            // Return defaults on error
+        }
+
+        return $stats;
+    }
 }

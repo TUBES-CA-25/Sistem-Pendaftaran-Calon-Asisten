@@ -131,7 +131,7 @@ class PresentasiUser extends Model {
             throw new Exception("Ukuran file terlalu besar.");
         }
     
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Kelompok1_IC-ASSIST/res/pptUser/';
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/pptUser/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true); 
         }
@@ -159,7 +159,7 @@ class PresentasiUser extends Model {
             throw new Exception("Ukuran file terlalu besar.");
         }
     
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Kelompok1_IC-ASSIST/res/makalahUser/';
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/makalahUser/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true); 
         }

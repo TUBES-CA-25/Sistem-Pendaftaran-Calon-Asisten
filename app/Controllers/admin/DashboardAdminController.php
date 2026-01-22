@@ -111,4 +111,9 @@ class DashboardAdminController extends Controller
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
+
+    public static function getPresentationStats(): array
+    {
+        return DashboardAdmin::getPresentationStats();
+    }
 }

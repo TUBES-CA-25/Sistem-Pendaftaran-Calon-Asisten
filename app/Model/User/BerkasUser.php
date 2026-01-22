@@ -92,8 +92,11 @@ class BerkasUser extends Model {
         return $stmt->execute();
     }
 
-    private function getImageName($berkas, $berkasSize) {
-        $imageExt = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
+    private function getImageName($berkas, $berkasSize, $inputName = 'foto') {
+        if (!isset($_FILES[$inputName])) {
+            throw new Exception("File input '$inputName' tidak ditemukan.");
+        }
+        $imageExt = strtolower(pathinfo($_FILES[$inputName]['name'], PATHINFO_EXTENSION));
         if (!in_array($imageExt, $this->imageAccepted)) {
             throw new Exception("Gunakan ekstensi jpg, jpeg, atau png untuk gambar.");
         }
@@ -102,7 +105,7 @@ class BerkasUser extends Model {
             throw new Exception("Ukuran file gambar terlalu besar.");
         }
     
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Kelompok1_IC-ASSIST/res/imageUser/';
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true); // Membuat direktori jika tidak ada
         }
@@ -131,7 +134,7 @@ class BerkasUser extends Model {
             throw new Exception("Ukuran file terlalu besar.");
         }
     
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Kelompok1_IC-ASSIST/res/berkasUser/';
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true); // Membuat direktori jika tidak ada
         }
@@ -159,7 +162,7 @@ class BerkasUser extends Model {
             throw new Exception("Ukuran file terlalu besar.");
         }
     
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Kelompok1_IC-ASSIST/res/berkasUser/';
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true); // Membuat direktori jika tidak ada
         }
@@ -187,7 +190,7 @@ class BerkasUser extends Model {
             throw new Exception("Ukuran file terlalu besar.");
         }
     
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Kelompok1_IC-ASSIST/res/berkasUser/';
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true); 
         }
@@ -288,6 +291,40 @@ class BerkasUser extends Model {
         $stmt->bindParam(3,$fileNilai);
         $stmt->bindParam(4,$filePernyataan);
         $stmt->bindParam(5,$idMahasiswa);
+        return $stmt->execute();
+    }
+
+    public function updatePhoto($idUser, $foto, $fotoSize) {
+        $idMahasiswaData = $this->getIdMahasiswa($idUser);
+        if (!$idMahasiswaData) {
+            // If no mahasiswa record yet, we might need to handle it or just return false
+            return false;
+        }
+        $idMahasiswa = $idMahasiswaData['id'];
+
+        $gambar = $this->getImageName($foto, $fotoSize, 'image');
+        if (!$gambar) {
+            throw new \Exception("Gagal memproses foto");
+        }
+
+        // Check if record exists in berkas
+        $checkQuery = "SELECT id_mahasiswa FROM " . static::$table . " WHERE id_mahasiswa = ?";
+        $stmtCheck = self::getDB()->prepare($checkQuery);
+        $stmtCheck->bindParam(1, $idMahasiswa);
+        $stmtCheck->execute();
+
+        if ($stmtCheck->rowCount() > 0) {
+            $query = "UPDATE " . static::$table . " SET foto = ? WHERE id_mahasiswa = ?";
+            $stmt = self::getDB()->prepare($query);
+            $stmt->bindParam(1, $gambar);
+            $stmt->bindParam(2, $idMahasiswa);
+        } else {
+            $query = "INSERT INTO " . static::$table . " (id_mahasiswa, foto, cv, transkrip_nilai, surat_pernyataan, accepted) VALUES (?, ?, '', '', '', 0)";
+            $stmt = self::getDB()->prepare($query);
+            $stmt->bindParam(1, $idMahasiswa);
+            $stmt->bindParam(2, $gambar);
+        }
+
         return $stmt->execute();
     }
     public function getBerkasAdmin() {
