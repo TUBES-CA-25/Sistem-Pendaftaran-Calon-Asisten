@@ -43,7 +43,7 @@ class Wawancara extends Model
     {
         $idMhs = $this->getIdMahasiswa($id);
         if (!$idMhs) {
-            error_log("Error: ID mahasiswa tidak ditemukan untuk user ID $id");
+            error_log("Error: ID mahasiswa tidak ditemukan for user ID $id");
             return [];
         }
     
@@ -66,6 +66,54 @@ class Wawancara extends Model
             error_log("Error in getWawancaraById: " . $e->getMessage());
             return [];
         }
+    }
+
+    /**
+     * Get all activities (Wawancara, Presentasi, and General Activities) for a student
+     */
+    public function getJadwalKegiatanById($idUser) {
+        $idMhs = $this->getIdMahasiswa($idUser);
+        
+        $activities = [];
+
+        // 1. Fetch Wawancara
+        if ($idMhs) {
+            $sqlWawancara = "SELECT r.nama as ruangan, w.jenis_wawancara as judul, w.waktu, w.tanggal, 'Wawancara' as jenis 
+                             FROM wawancara w 
+                             JOIN ruangan r ON w.id_ruangan = r.id 
+                             WHERE w.id_mahasiswa = ?";
+            $stmt = self::getDB()->prepare($sqlWawancara);
+            $stmt->execute([$idMhs]);
+            $activities = array_merge($activities, $stmt->fetchAll(\PDO::FETCH_ASSOC));
+        }
+
+        // 2. Fetch Presentasi
+        if ($idMhs) {
+            $sqlPresentasi = "SELECT r.nama as ruangan, p.judul, jp.waktu, jp.tanggal, 'Presentasi' as jenis 
+                              FROM jadwal_presentasi jp 
+                              JOIN presentasi p ON jp.id_presentasi = p.id 
+                              JOIN ruangan r ON jp.id_ruangan = r.id 
+                              WHERE p.id_mahasiswa = ?";
+            $stmt = self::getDB()->prepare($sqlPresentasi);
+            $stmt->execute([$idMhs]);
+            $activities = array_merge($activities, $stmt->fetchAll(\PDO::FETCH_ASSOC));
+        }
+
+        // 3. Fetch General Activities (kegiatan_admin)
+        $sqlGeneral = "SELECT 'Laboratorium' as ruangan, judul, '00:00:00' as waktu, tanggal, 'Kegiatan' as jenis 
+                       FROM kegiatan_admin";
+        $stmt = self::getDB()->prepare($sqlGeneral);
+        $stmt->execute();
+        $activities = array_merge($activities, $stmt->fetchAll(\PDO::FETCH_ASSOC));
+
+        // Sort by date and time
+        usort($activities, function($a, $b) {
+            $dateA = $a['tanggal'] . ' ' . $a['waktu'];
+            $dateB = $b['tanggal'] . ' ' . $b['waktu'];
+            return strcmp($dateA, $dateB);
+        });
+
+        return $activities;
     }
     
 

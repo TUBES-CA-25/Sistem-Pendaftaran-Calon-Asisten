@@ -492,7 +492,7 @@ $dokumen = $dokumen ?? [];
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center">
                     <h6 class="fw-semibold mb-0">Upcoming</h6>
-                    <a href="javascript:void(0)" onclick="showAllUpcoming()" class="text-primary text-decoration-none small fw-semibold">View All</a>
+                    <a href="javascript:void(0)" onclick="navigateTo('wawancara')" class="text-primary text-decoration-none small fw-semibold">View All</a>
                 </div>
                 <div class="card-body p-4">
                     <?php if ($jadwalPresentasiUser): ?>

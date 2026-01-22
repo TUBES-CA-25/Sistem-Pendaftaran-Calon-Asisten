@@ -53,7 +53,26 @@ $wawancara = $wawancara ?? [];
                                         <span class="badge bg-light text-dark"><?= $i ?></span>
                                     </td>
                                     <td>
-                                        <span class="fw-medium"><?= htmlspecialchars($value['jenis_wawancara'] ?? '-') ?></span>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <?php 
+                                            $icon = 'bi-calendar-event';
+                                            $color = 'text-primary';
+                                            if (isset($value['jenis'])) {
+                                                if ($value['jenis'] === 'Wawancara') {
+                                                    $icon = 'bi-people';
+                                                    $color = 'text-success';
+                                                } elseif ($value['jenis'] === 'Presentasi') {
+                                                    $icon = 'bi-display';
+                                                    $color = 'text-info';
+                                                }
+                                            }
+                                            ?>
+                                            <i class="bi <?= $icon ?> <?= $color ?>"></i>
+                                            <span class="fw-medium"><?= htmlspecialchars($value['judul'] ?? '-') ?></span>
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary small ms-1" style="font-size: 0.65rem;">
+                                                <?= htmlspecialchars($value['jenis'] ?? 'Kegiatan') ?>
+                                            </span>
+                                        </div>
                                     </td>
                                     <td>
                                         <span class="d-flex align-items-center gap-2">
@@ -69,7 +88,7 @@ $wawancara = $wawancara ?? [];
                                     </td>
                                     <td>
                                         <span class="badge badge-info-subtle rounded-pill px-3 py-2">
-                                            <i class="bi bi-clock me-1"></i><?= htmlspecialchars($value['waktu'] ?? '-') ?>
+                                            <i class="bi bi-clock me-1"></i><?= $value['waktu'] !== '00:00:00' ? htmlspecialchars($value['waktu']) : 'Full Day' ?>
                                         </span>
                                     </td>
                                 </tr>

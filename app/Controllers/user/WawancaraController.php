@@ -66,10 +66,11 @@ class WawancaraController extends Controller
         $wawancara = new Wawancara(0, 0, 0, 0);
 
         try {
-            $data = $wawancara->getWawancaraById($id);
+            // Updated: Fetch all activities instead of just interviews
+            $data = $wawancara->getJadwalKegiatanById($id);
             return is_array($data) ? $data : [];
         } catch (\Exception $e) {
-            error_log("Error in getAllById: " . $e->getMessage());
+            error_log("Error in getAllById (Jadwal Kegiatan): " . $e->getMessage());
             return [];
         }
     }
