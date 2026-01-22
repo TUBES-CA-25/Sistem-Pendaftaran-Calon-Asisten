@@ -79,56 +79,8 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
 
     <!-- Presentation Progress & Upcoming Schedule -->
     <div class="row g-4 mb-4">
-        <!-- Progress Chart -->
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
-                <div class="card-body p-4 text-center">
-                    <h6 class="fw-bold text-dark mb-4">Progress Jadwal Presentasi</h6>
-                    
-                    <?php
-                    // Get Stats
-                    $pStats = $presentationStats ?? ['scheduled' => 0, 'eligible' => 0];
-                    $scheduledCount = $pStats['scheduled'];
-                    $eligibleCount = $pStats['eligible'];
-                    $percent = ($eligibleCount > 0) ? round(($scheduledCount / $eligibleCount) * 100) : 0;
-                    ?>
-
-                    <!-- Circular Chart -->
-                    <div class="position-relative d-inline-flex align-items-center justify-content-center mb-4" 
-                         style="width: 180px; height: 180px;">
-                        <!-- Outer Ring (Background) -->
-                        <div class="position-absolute w-100 h-100 rounded-circle" 
-                             style="background: #eef2ff;"></div>
-                        
-                        <!-- Progress Ring (Conic Gradient) -->
-                        <div class="position-absolute w-100 h-100 rounded-circle"
-                             style="background: conic-gradient(var(--bs-primary) <?= $percent ?>%, transparent 0);"></div>
-                        
-                        <!-- Inner Circle (White) -->
-                        <div class="position-absolute bg-white rounded-circle d-flex flex-column align-items-center justify-content-center"
-                             style="width: 150px; height: 150px;">
-                            <h2 class="fw-bold mb-0" style="color: var(--bs-primary);"><?= $percent ?>%</h2>
-                            <small class="text-muted fw-semibold">Terjadwal</small>
-                        </div>
-                    </div>
-
-                    <!-- Legend -->
-                    <div class="d-flex justify-content-center gap-4">
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="rounded-circle" style="width: 10px; height: 10px; background-color: var(--bs-primary);"></span>
-                            <span class="small text-muted">Terisi (<?= $scheduledCount ?>)</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="rounded-circle" style="width: 10px; height: 10px; background-color: #eef2ff;"></span>
-                            <span class="small text-muted">Belum (<?= $eligibleCount - $scheduledCount ?>)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Jadwal Presentasi List -->
-        <div class="col-lg-8">
+        <div class="col-12">
             <div class="card border shadow-sm rounded-4 h-100 bg-white">
         <div class="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
             <h6 class="mb-0 fw-bold text-dark"><i class='bx bx-calendar-event me-2'></i>Jadwal Presentasi Mendatang</h6>
@@ -173,6 +125,8 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                 </div>
             <?php endif; ?>
         </div>
+    </div>
+    </div>
     </div>
 
     <div class="row g-4">
