@@ -588,9 +588,14 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
                                             </span>
                                         </div>
                                         
-                                        <div class="d-none">
-                                                <input class="form-check-input" type="checkbox" id="activeSwitch_${newId}" 
+                                        <div class="mt-3 pt-3 border-top border-light d-flex justify-content-between align-items-center" onclick="event.stopPropagation()">
+                                            <span class="small fw-bold text-secondary">Status: 
+                                                <span id="statusText_${newId}" class="text-danger">Tidak Aktif</span>
+                                            </span>
+                                            <div class="form-check form-switch cursor-pointer">
+                                                <input class="form-check-input bank-active-switch cursor-pointer" type="checkbox" id="activeSwitch_${newId}" 
                                                 onchange="window.activateBank(${newId})">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -624,6 +629,62 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
     }
 
 
+// Activate/Deactivate Bank
+window.activateBank = function(bankId) {
+    const switchEl = document.getElementById('activeSwitch_' + bankId);
+    const isActive = switchEl.checked;
+    
+    // Disable switch temporarily
+    switchEl.disabled = true;
+    
+    const endpoint = isActive ? '/activateBank' : '/deactivateBank';
+    
+    fetch(baseUrl + endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'id=' + bankId
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Server returned ' + res.status);
+        }
+        return res.text().then(text => {
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('SERVER RESPONSE:', text);
+                throw new Error('Invalid JSON response');
+            }
+        });
+    })
+    .then(data => {
+        if (data.status === 'success') {
+            const statusText = document.getElementById('statusText_' + bankId);
+            if (isActive) {
+                statusText.innerText = 'Aktif';
+                statusText.classList.remove('text-danger');
+                statusText.classList.add('text-success');
+            } else {
+                statusText.innerText = 'Tidak Aktif';
+                statusText.classList.remove('text-success');
+                statusText.classList.add('text-danger');
+            }
+        } else {
+            showAlert(data.message || 'Gagal mengubah status', false);
+            // Revert state on failure
+            switchEl.checked = !isActive;
+        }
+    })
+    .catch((err) => {
+        console.error('Error changing bank status:', err);
+        showAlert('Terjadi kesalahan', false);
+        // Revert state on error
+        switchEl.checked = !isActive;
+    })
+    .finally(() => {
+        switchEl.disabled = false;
+    });
+}
 
 })();
 

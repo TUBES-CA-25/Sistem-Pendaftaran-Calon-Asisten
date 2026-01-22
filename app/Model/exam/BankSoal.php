@@ -68,7 +68,7 @@ class BankSoal extends Model {
      * Create new question bank
      */
     public function save($nama, $deskripsi, $token) {
-        $sql = "INSERT INTO " . self::$table . " (nama, deskripsi, token) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO " . self::$table . " (nama, deskripsi, token, is_active) VALUES (?, ?, ?, 0)";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(1, $nama);
         $stmt->bindParam(2, $deskripsi);
@@ -94,23 +94,25 @@ class BankSoal extends Model {
      */
     public function setActiveBank($id) {
         try {
-            self::getDB()->beginTransaction();
-
-            // Deactivate all
-            $resetSql = "UPDATE " . self::$table . " SET is_active = 0";
-            self::getDB()->exec($resetSql);
-
-            // Activate specific one
+            // Activate specific one without deactivating others
             $setSql = "UPDATE " . self::$table . " SET is_active = 1 WHERE id = ?";
             $stmt = self::getDB()->prepare($setSql);
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            return self::getDB()->commit();
+            return $stmt->execute();
         } catch (\Exception $e) {
-            self::getDB()->rollBack();
+            error_log("Error in setActiveBank: " . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Deactivate a specific bank
+     */
+    public function deactivateBank($id) {
+        $sql = "UPDATE " . self::$table . " SET is_active = 0 WHERE id = ?";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 
     /**

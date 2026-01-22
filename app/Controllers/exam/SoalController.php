@@ -384,6 +384,22 @@ class SoalController extends Controller
         }
     }
 
+    public function deactivateBank() {
+        header('Content-Type: application/json');
+        try {
+            $id = $_POST['id'] ?? 0;
+            $bankModel = new \App\Model\Exam\BankSoal();
+            
+            if ($bankModel->deactivateBank($id)) {
+                echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil dinonaktifkan']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Gagal menonaktifkan bank soal']);
+            }
+        } catch (\Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
 
 
     

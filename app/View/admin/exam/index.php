@@ -179,11 +179,18 @@ $essayCount = $stats['essay_count'];
                                         </span>
                                     </div>
                                     
-                                    <!-- Hidden Active Switch for logic continuity -->
-                                    <div class="d-none">
-                                            <input class="form-check-input" type="checkbox" id="activeSwitch_<?= $bank['id'] ?>" 
+                                    <!-- Active Switch -->
+                                    <div class="mt-3 pt-3 border-top border-light d-flex justify-content-between align-items-center" onclick="event.stopPropagation()">
+                                        <span class="small fw-bold text-secondary">Status: 
+                                            <span id="statusText_<?= $bank['id'] ?>" class="<?= ($bank['is_active'] ?? 0) == 1 ? 'text-success' : 'text-danger' ?>">
+                                                <?= ($bank['is_active'] ?? 0) == 1 ? 'Aktif' : 'Tidak Aktif' ?>
+                                            </span>
+                                        </span>
+                                        <div class="form-check form-switch cursor-pointer">
+                                            <input class="form-check-input bank-active-switch cursor-pointer" type="checkbox" id="activeSwitch_<?= $bank['id'] ?>" 
                                             <?= ($bank['is_active'] ?? 0) == 1 ? 'checked' : '' ?>
                                             onchange="window.activateBank(<?= $bank['id'] ?>)">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
