@@ -136,7 +136,29 @@ class SoalController extends Controller
 
     public function downloadTemplate()
     {
-        // Headers for the template
+        // Try to serve physical file if exists
+        $rootPath = dirname(__DIR__, 3);
+        $physicalFilePath = $rootPath . '/public/Assets/Downloads/template_soal.csv';
+        
+        if (file_exists($physicalFilePath)) {
+            // Clean ALL output buffers
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
+
+            header('Content-Description: File Transfer');
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="template_soal.csv"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($physicalFilePath));
+            
+            readfile($physicalFilePath);
+            exit;
+        }
+
+        // Fallback: Headers for the template
         $headers = [
             'Deskripsi Soal',
             'Tipe Soal (pilihan_ganda/essay)',
@@ -672,7 +694,19 @@ class SoalController extends Controller
                 if (($handle = fopen($fileTmpPath, "r")) !== FALSE) {
                     $isHeader = true;
                     $rowCount = 0;
-                    while (($row = fgetcsv($handle, 10000, ",")) !== FALSE) {
+                    $delimiter = ",";
+                    // Detect delimiter from first line
+                    $firstLine = fgets($handle);
+                    if ($firstLine !== FALSE) {
+                        $commaCount = substr_count($firstLine, ',');
+                        $semicolonCount = substr_count($firstLine, ';');
+                        if ($semicolonCount > $commaCount) {
+                            $delimiter = ";";
+                        }
+                        rewind($handle);
+                    }
+                    
+                    while (($row = fgetcsv($handle, 10000, $delimiter)) !== FALSE) {
                         $rowCount++;
                         
                         // Skip empty rows
@@ -687,7 +721,7 @@ class SoalController extends Controller
                             }
                             $headers = array_map('trim', $row);
                             $isHeader = false;
-                            error_log("CSV Headers: " . implode(', ', $headers));
+                            error_log("CSV Headers (delimiter: {$delimiter}): " . implode(', ', $headers));
                             continue;
                         }
                         if (count($row) >= 8) {
