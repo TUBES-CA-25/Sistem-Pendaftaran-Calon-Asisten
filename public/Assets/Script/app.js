@@ -38,6 +38,11 @@ function loadPage(page, updateUrl = true) {
             $('#content').html(response);
             // Scroll to top after page load
             window.scrollTo(0, 0);
+            
+            // Re-attach listeners for dynamic content
+            if (typeof attachNotificationListeners === 'function') {
+                attachNotificationListeners();
+            }
         },
         error: function(xhr, status, error) {
             console.error("Error loading page:", error);
@@ -191,3 +196,171 @@ window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
         }, { once: true });
     }
 };
+// Notification Polling Logic
+// Global AbortController for notifications
+let notificationAbortController = null;
+
+// Notification Polling Logic
+function initNotificationPolling() {
+    // Only start interval if not already running
+    if (!window.notificationInterval) {
+        // Initial check
+        checkNotifications();
+        // Poll every 5 seconds
+        window.notificationInterval = setInterval(checkNotifications, 5000);
+    }
+    
+    // Attach listeners for current page
+    attachNotificationListeners();
+}
+
+function attachNotificationListeners() {
+    const bellBtn = document.querySelector('.navbar-action-btn');
+    if (!bellBtn) return; 
+
+    const dropdownElement = bellBtn.closest('.dropdown');
+    if (dropdownElement) {
+        // Remove existing listener to avoid duplicates if re-attaching
+        dropdownElement.removeEventListener('shown.bs.dropdown', handleDropdownShown);
+        dropdownElement.addEventListener('shown.bs.dropdown', handleDropdownShown);
+    }
+}
+
+function handleDropdownShown() {
+    markNotificationsAsRead();
+}
+
+function markNotificationsAsRead() {
+    fetch(`${APP_URL}/marknotificationsread`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const badge = document.querySelector('.navbar-action-btn .badge');
+            if (badge) badge.classList.add('d-none');
+        }
+    })
+    .catch(err => console.error("Error marking read:", err));
+}
+
+function checkNotifications() {
+    // Check if bell button exists on current page before fetching
+    if (!document.querySelector('.navbar-action-btn')) return;
+
+    // Abort previous request if it's still running
+    if (notificationAbortController) {
+        notificationAbortController.abort();
+    }
+    notificationAbortController = new AbortController();
+
+    fetch(`${APP_URL}/getnotifications`, {
+        signal: notificationAbortController.signal
+    })
+        .then(res => {
+            if (!res.ok) throw new Error('Network response was not ok');
+            return res.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                updateNotificationUI(data.data, data.count);
+            }
+        })
+        .catch(err => {
+            if (err.name === 'AbortError') return; // Ignore aborts
+            // Silently fail for other errors
+        });
+}
+
+function updateNotificationUI(notifications, count) {
+    // Update Badge
+    const badge = document.querySelector('.navbar-action-btn .badge');
+    if (badge) {
+        if (count > 0) {
+            badge.innerText = count;
+            badge.classList.remove('d-none');
+            badge.style.display = ''; 
+        } else {
+            badge.classList.add('d-none');
+        }
+    }
+
+    // Update Dropdown List
+    const dropdownMenu = document.querySelector('.navbar-notification-dropdown');
+    if (dropdownMenu) {
+        // Set fixed width for better readability
+        dropdownMenu.style.width = '320px';
+        dropdownMenu.style.maxWidth = '90vw';
+
+        let html = `
+            <li class="dropdown-header d-flex justify-content-between align-items-center">
+                <span class="fw-bold">Notifikasi</span>
+                ${count > 0 ? `<span class="badge bg-primary rounded-pill">${count}</span>` : ''}
+            </li>
+            <li><hr class="dropdown-divider my-1"></li>
+        `;
+
+        if (notifications.length > 0) {
+            notifications.slice(0, 5).forEach(notif => {
+                // Format Date
+                let dateStr = '';
+                if (notif.created_at) {
+                    const date = new Date(notif.created_at.replace(' ', 'T'));
+                    dateStr = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+                }
+
+                html += `
+                    <li>
+                        <a class="dropdown-item notification-item p-3" href="#" data-page="notification" style="white-space: normal;">
+                            <div class="d-flex gap-3 align-items-start">
+                                <div class="notification-icon flex-shrink-0 mt-1">
+                                    <i class='bx bx-info-circle text-primary'></i>
+                                </div>
+                                <div class="flex-grow-1" style="min-width: 0;">
+                                    <p class="mb-1 small text-dark fw-medium lh-sm text-wrap text-break">${escapeHtml(notif.pesan)}</p>
+                                    <small class="text-muted d-block" style="font-size: 0.75rem;">${dateStr}</small>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                `;
+            });
+            html += `
+                <li><hr class="dropdown-divider my-1"></li>
+                <li>
+                    <a class="dropdown-item text-center small text-primary fw-semibold py-2" href="#" data-page="notification">
+                        Lihat Semua Notifikasi
+                    </a>
+                </li>
+            `;
+        } else {
+            html += `
+                <li>
+                    <div class="dropdown-item text-center text-muted py-3">
+                        <i class='bx bx-bell-off fs-3 d-block mb-2'></i>
+                        <small>Tidak ada notifikasi</small>
+                    </div>
+                </li>
+            `;
+        }
+
+        dropdownMenu.innerHTML = html;
+    }
+}
+
+function escapeHtml(text) {
+    if (!text) return "";
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+$(document).ready(function() {
+    initNotificationPolling();
+});

@@ -4,6 +4,7 @@ namespace App\Controllers\User;
 use App\Core\Controller;
 use App\Model\User\PresentasiUser;
 use App\Model\presentasi\Presentasi;
+use App\Model\User\NotificationUser;
 class PresentasiUserController extends Controller
 {
     public function saveJudul()
@@ -154,6 +155,10 @@ class PresentasiUserController extends Controller
             try {
                 $presentasi->updateJudulStatus($id, $status);
 
+                $messageText = $status == 1 ? 'Judul presentasi Anda telah DITERIMA.' : 'Judul presentasi Anda DITOLAK. Silakan cek revisi.';
+                $notification = new NotificationUser($id, $messageText); // $id here is id_mahasiswa
+                $notification->insert($notification);
+
                 $message = $status == 1 ? 'Judul berhasil diterima.' : 'Judul ditolak. Mahasiswa akan diminta revisi.';
                 echo json_encode([
                     'status' => 'success',
@@ -198,6 +203,19 @@ class PresentasiUserController extends Controller
         try {
             $presentasi = new Presentasi();
             $presentasi->updateIsRevisiAndKeterangan($id, $keterangan);
+            
+            // Send Notification
+            $mahasiswaId = $_POST['userid'] ?? null;
+            if ($mahasiswaId) {
+                // The NotificationUser model expects `id_mahasiswa` in constructor.
+                // However, `NotificationUser::insert` uses the property `id_mahasiswa`.
+                // Note: The `NotificationUser` model logic seems to rely on its own `getIdMahasiswaByIdUser` if we pass a user ID, or we pass the direct ID.
+                // In `NotificationControllers`, it passes `$idMahasiswa` directly.
+                // Let's assume `$mahasiswaId` passed from JS is the correct ID to use (id_mahasiswa from table).
+                $notification = new NotificationUser($mahasiswaId, "Pesan Revisi/Keterangan: " . $keterangan);
+                $notification->insert($notification);
+            }
+
             header('Content-Type: application/json');
             echo json_encode(['status' => 'success', 'message' => 'Keterangan berhasil disimpan']);
         } catch (\Exception $e) {

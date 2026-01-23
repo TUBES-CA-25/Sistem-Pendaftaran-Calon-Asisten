@@ -484,6 +484,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 $(document).ready(function() {
     const APP_URL = '<?= APP_URL ?>';
     let currentMessageId = null;
+    let currentUserId = null;
     let ruanganData = [];
 
     // Tab Navigation
@@ -576,6 +577,7 @@ $(document).ready(function() {
     // Send Message - Bootstrap Modal API
     $('.btn-send-message').on('click', function() {
         currentMessageId = $(this).data('id');
+        currentUserId = $(this).data('userid'); // Capture User ID
         $('#messageContent').val('');
         const modal = new bootstrap.Modal(document.getElementById('sendMessageModal'));
         modal.show();
@@ -585,6 +587,7 @@ $(document).ready(function() {
         e.preventDefault();
         $.post(APP_URL + '/updatepresentasi', {
             id: currentMessageId,
+            userid: currentUserId, // Send User ID
             message: $('#messageContent').val()
         }, function(res) {
             const modal = bootstrap.Modal.getInstance(document.getElementById('sendMessageModal'));

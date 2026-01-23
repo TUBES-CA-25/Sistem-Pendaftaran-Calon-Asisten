@@ -78,6 +78,8 @@ Router::post("/updatenilaiakhir",[new NilaiAkhirController, 'updateTotalNilai'])
 Router::post("/updateabsensi",[new AbsensiUserController, 'updateData']);
 Router::post("/deleteabsensi",[new AbsensiUserController, 'deleteData']);
 Router::post("/addallnotif",[new NotificationControllers, 'sendAllMessage']);
+Router::get("/getnotifications",[new NotificationControllers, 'fetchNotifications']);
+Router::post("/marknotificationsread",[new NotificationControllers, 'markRead']);
 
 // Bank Soal Routes
 Router::post("/createBank",[new SoalController, 'createBank']);

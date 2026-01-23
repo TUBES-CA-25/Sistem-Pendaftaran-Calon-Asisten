@@ -39,8 +39,14 @@ $role = $role ?? ($_SESSION['user']['role'] ?? ($_SESSION['role'] ?? 'User'));
 $navbarClass = 'page-navbar page-navbar-user';
 
 // Count notifications for badge (only for user)
+// Count notifications for badge (only for user)
 if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
-    $notificationCount = count($notifikasi);
+    // Filter only unread notifications
+    $unreadNotifs = array_filter($notifikasi, function($n) {
+        // If is_read not set, assume unread (0). If set, check if 0.
+        return !isset($n['is_read']) || $n['is_read'] == 0;
+    });
+    $notificationCount = count($unreadNotifs);
 }
 ?>
 
@@ -74,49 +80,49 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
                 <div class="dropdown">
                     <button class="btn navbar-action-btn position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class='bx bx-bell fs-5'></i>
+                        <?php if (isset($notificationCount) && $notificationCount > 0): ?>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem; padding: 0.2rem 0.4rem;">
-                            <?= isset($notificationCount) && $notificationCount > 0 ? $notificationCount : '' ?>
+                            <?= $notificationCount ?>
                             <span class="visually-hidden">unread notifications</span>
                         </span>
+                        <?php endif; ?>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end navbar-notification-dropdown">
-                        <li class="dropdown-header d-flex justify-content-between align-items-center">
-                            <span class="fw-bold">Notifikasi</span>
+                    <ul class="dropdown-menu dropdown-menu-end navbar-notification-dropdown border-0 shadow-lg rounded-4 p-0 overflow-hidden" style="width: 320px; max-width: 90vw;">
+                        <li class="dropdown-header d-flex justify-content-between align-items-center bg-light px-3 py-2 border-bottom">
+                            <span class="fw-bold text-dark">Notifikasi</span>
                             <?php if (isset($notificationCount) && $notificationCount > 0): ?>
                                 <span class="badge bg-primary rounded-pill"><?= $notificationCount ?></span>
                             <?php endif; ?>
                         </li>
-                        <li><hr class="dropdown-divider my-1"></li>
+                        <li class="list-group list-group-flush">
                         <?php if (isset($notifikasi) && !empty($notifikasi)): ?>
                             <?php foreach (array_slice($notifikasi, 0, 5) as $notif): ?>
-                                <li>
-                                    <a class="dropdown-item notification-item" href="#" data-page="notification">
-                                        <div class="d-flex gap-2">
-                                            <div class="notification-icon">
-                                                <i class='bx bx-info-circle'></i>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <p class="mb-0 small"><?= htmlspecialchars(mb_strimwidth($notif['pesan'] ?? 'Notifikasi baru', 0, 60, '...')) ?></p>
-                                                <small class="text-muted" style="font-size: 0.75rem;"><?= isset($notif['created_at']) ? date('d M, H:i', strtotime($notif['created_at'])) : '' ?></small>
-                                            </div>
+                                <a class="list-group-item list-group-item-action p-3 notification-item border-bottom-0 border-top-0" href="#" data-page="notification">
+                                    <div class="d-flex gap-3 align-items-start">
+                                        <div class="notification-icon flex-shrink-0 mt-1">
+                                            <i class='bx bx-info-circle text-primary fs-5'></i>
                                         </div>
-                                    </a>
-                                </li>
-                            <?php endforeach; ?>
-                            <li><hr class="dropdown-divider my-1"></li>
-                            <li>
-                                <a class="dropdown-item text-center small text-primary fw-semibold" href="#" data-page="notification">
-                                    Lihat Semua Notifikasi
+                                        <div class="flex-grow-1" style="min-width: 0;">
+                                            <p class="mb-1 small text-dark fw-medium lh-sm text-wrap text-break">
+                                                <?= htmlspecialchars($notif['pesan'] ?? 'Notifikasi baru') ?>
+                                            </p>
+                                            <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                <?= isset($notif['created_at']) ? date('d M, H:i', strtotime($notif['created_at'])) : '' ?>
+                                            </small>
+                                        </div>
+                                    </div>
                                 </a>
-                            </li>
+                            <?php endforeach; ?>
+                            <a class="list-group-item list-group-item-action text-center small text-primary fw-semibold py-2 bg-light border-top" href="#" data-page="notification">
+                                Lihat Semua Notifikasi
+                            </a>
                         <?php else: ?>
-                            <li>
-                                <div class="dropdown-item text-center text-muted py-3">
-                                    <i class='bx bx-bell-off fs-3 d-block mb-2'></i>
-                                    <small>Tidak ada notifikasi</small>
-                                </div>
-                            </li>
+                            <div class="text-center text-muted py-4">
+                                <i class='bx bx-bell-off fs-3 d-block mb-2 text-secondary'></i>
+                                <small>Tidak ada notifikasi</small>
+                            </div>
                         <?php endif; ?>
+                        </li>
                     </ul>
                 </div>
             <?php endif; ?>

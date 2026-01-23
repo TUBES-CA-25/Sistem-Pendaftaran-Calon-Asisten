@@ -413,6 +413,8 @@
         e.preventDefault();
         
         var message = document.getElementById('notifMessage').value;
+        var btnSubmit = this.querySelector('button[type="submit"]');
+        var originalText = btnSubmit.innerHTML;
         
         if (selectedMahasiswa.length === 0) {
             showAlert('Pilih peserta terlebih dahulu', false);
@@ -424,9 +426,13 @@
             return;
         }
         
+        // Disable button and show loading state
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mengirim...';
+        
         var mahasiswaIds = selectedMahasiswa.map(function(m) { return m.id; });
         
-        fetch('/Sistem-Pendaftaran-Calon-Asisten/addallnotif', {
+        fetch(`${APP_URL}/addallnotif`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -455,6 +461,11 @@
         .catch(error => {
             console.error('Error:', error);
             showAlert('Terjadi kesalahan saat mengirim notifikasi', false);
+        })
+        .finally(() => {
+            // Re-enable button
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = originalText;
         });
     });
     
@@ -646,7 +657,7 @@ function confirmCancellation(mahasiswaId) {
     showAlert('Membatalkan verifikasi...', true);
     
     // Send cancellation request
-    fetch('/Sistem-Pendaftaran-Calon-Asisten/public/acceptberkas', {
+    fetch(`${APP_URL}/acceptberkas`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -757,7 +768,7 @@ function confirmVerification(mahasiswaId) {
     showAlert('Memproses verifikasi...', true);
     
     // Send verification request
-    fetch('/Sistem-Pendaftaran-Calon-Asisten/public/acceptberkas', {
+    fetch(`${APP_URL}/acceptberkas`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
