@@ -202,7 +202,7 @@ $dokumen = $dokumen ?? [];
                             <h6 class="fw-semibold mb-4">Status Pendaftaran</h6>
                             
                             <p class="small text-muted mb-4 lh-sm">
-                                Anda telah menyelesaikan <strong><?= $tahapanSelesai ?></strong> dari 9 tahapan pendaftaran.
+                                Anda telah menyelesaikan <strong><?= $tahapanSelesai ?></strong> dari 4 tahapan pendaftaran.
                             </p>
 
                             <!-- Stepper Vertical layout or cramped horizontal? 
@@ -211,15 +211,15 @@ $dokumen = $dokumen ?? [];
                                 <!-- Progress Line Background -->
                                 <div class="position-absolute w-100 bg-light" style="height:3px; top:10px; left:0; z-index:0"></div>
                                 <!-- Progress Line Active -->
-                                <?php $stepProgress = min(($tahapanSelesai / 9) * 100, 100); ?>
+                                <?php $stepProgress = min(($tahapanSelesai / 4) * 100, 100); ?>
                                 <div class="position-absolute bg-primary stepper-line" style="height:3px; top:10px; left:0; width:<?= $stepProgress ?>%; z-index:1; transition: width 1s ease;"></div>
 
                                 <?php
                                 $stepperStages = [
-                                    ['number' => 1, 'color' => 'danger', 'label' => 'Berkas', 'threshold' => 2],
-                                    ['number' => 2, 'color' => 'warning', 'label' => 'Tes', 'threshold' => 4],
-                                    ['number' => 3, 'color' => 'success', 'label' => 'Wawancara', 'threshold' => 7],
-                                    ['number' => 4, 'color' => 'primary', 'label' => 'Final', 'threshold' => 9]
+                                    ['number' => 1, 'color' => 'danger', 'label' => 'Berkas', 'threshold' => 1],
+                                    ['number' => 2, 'color' => 'warning', 'label' => 'Tes', 'threshold' => 2],
+                                    ['number' => 3, 'color' => 'success', 'label' => 'Wawancara', 'threshold' => 3],
+                                    ['number' => 4, 'color' => 'primary', 'label' => 'Final', 'threshold' => 4]
                                 ];
 
                                 foreach ($stepperStages as $step):

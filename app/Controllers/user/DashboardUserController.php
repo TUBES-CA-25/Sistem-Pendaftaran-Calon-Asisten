@@ -52,44 +52,48 @@ class DashboardUserController extends Controller {
     public static function getKegiatanByMonth() {
         return \App\Model\admin\DashboardAdmin::getKegiatanByMonth((int)date('Y'), (int)date('m'));
     }
-    public static function getNumberTahapanSelesai() {
+    public static function getMajorStagesSelesai() {
         $i = 0;
-        if(self::getBiodataStatus()) {
+        // Stage 1: Berkas (Biodata + Documents)
+        if (self::getBiodataStatus() && self::getBerkasStatus()) {
             $i++;
         }
-        if(self::getBerkasStatus()) {
+        // Stage 2: Tes (Written Test + PPT Judul)
+        if (self::getAbsensiTesTertulis() && self::getPptJudulAccStatus()) {
             $i++;
         }
-        if(self::getAbsensiTesTertulis()) {
+        // Stage 3: Wawancara (PPT Submission + Presentation + Interview I)
+        if (self::getPptStatus() && self::getAbsensiPresentasi() && self::getAbsensiWawancaraI()) {
             $i++;
         }
-        if(self::getAbsensiWawancaraI()) {
-            $i++;
-        }
-        if(self::getAbsensiWawancaraII()) {
-            $i++;
-        }
-        if(self::getAbsensiWawancaraIII()) {
-            $i++;
-        }
-        if(self::getAbsensiPresentasi()) {
-            $i++;
-        }
-        if(self::getPptStatus()) {
-            $i++;
-        }
-        if(self::getPptJudulAccStatus()) {
+        // Stage 4: Final (Interview II + Interview III + Selection Result)
+        if (self::getAbsensiWawancaraII() && self::getAbsensiWawancaraIII() && self::getGraduationStatus() !== 'Pending') {
             $i++;
         }
         return $i;
     }
+    public static function getNumberTahapanSelesai() {
+        // Keep raw count for internal use if needed, but major stages is what's displayed
+        $i = 0;
+        if(self::getBiodataStatus()) { $i++; }
+        if(self::getBerkasStatus()) { $i++; }
+        if(self::getAbsensiTesTertulis()) { $i++; }
+        if(self::getAbsensiWawancaraI()) { $i++; }
+        if(self::getAbsensiWawancaraII()) { $i++; }
+        if(self::getAbsensiWawancaraIII()) { $i++; }
+        if(self::getAbsensiPresentasi()) { $i++; }
+        if(self::getPptStatus()) { $i++; }
+        if(self::getPptJudulAccStatus()) { $i++; }
+        if(self::getGraduationStatus() !== 'Pending') { $i++; }
+        return $i;
+    }
     public static function getPercentage() {
-        $completed = self::getNumberTahapanSelesai(); 
-        $total = 9; 
+        $completed = self::getMajorStagesSelesai(); 
+        $total = 4; 
         if ($completed == 0) {
             return 0;
         }
-        return floor(($completed / $total) * 100); 
+        return ($completed / $total) * 100; 
     }
     
     public static function generateCircle($percentage) {
