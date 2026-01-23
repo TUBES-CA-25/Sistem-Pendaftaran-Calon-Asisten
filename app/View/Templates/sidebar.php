@@ -38,42 +38,37 @@ if (isset($photo) && is_array($photo) && !empty($photo)) {
                 <i class="bx bx-home"></i>
                 <span class="nav-item">Dashboard</span>
             </a>
-            <span class="tooltip">Dashboard</span>
         </li>
+        <li class="menu-label">MENU UTAMA</li>
         <li>
             <a href="#" data-page="biodata">
                 <i class="bx bxs-id-card"></i>
                 <span class="nav-item">Lengkapi Biodata</span>
             </a>
-            <span class="tooltip">Lengkapi Biodata</span>
         </li>
         <li>
             <a href="#" data-page="uploadBerkas">
                 <i class="bx bx-file"></i>
                 <span class="nav-item">Upload Berkas</span>
             </a>
-            <span class="tooltip">Upload Berkas</span>
         </li>
         <li>
             <a href="#" data-page="tesTulis">
                 <i class="bx bx-task"></i>
                 <span class="nav-item">Tes Tulis</span>
             </a>
-            <span class="tooltip">Tes Tulis</span>
         </li>
         <li>
             <a href="#" data-page="presentasi">
                 <i class="bx bx-chalkboard"></i>
                 <span class="nav-item">Presentasi</span>
             </a>
-            <span class="tooltip">Presentasi</span>
         </li>
         <li>
             <a href="#" data-page="wawancara">
                 <i class="bx bx-user-voice"></i>
                 <span class="nav-item">Jadwal</span>
             </a>
-            <span class="tooltip">Jadwal</span>
         </li>
         <!-- <li>
             <a href="#" data-page="pengumuman">
@@ -82,12 +77,11 @@ if (isset($photo) && is_array($photo) && !empty($photo)) {
             </a>
             <span class="tooltip">Pengumuman</span>
         </li> -->
-        <li>
-            <a href="#" data-page="logout">
-                <i class="bx bx-log-out"></i>
-                <span class="nav-item">Logout</span>
-            </a>
-            <span class="tooltip">Logout</span>
-        </li>
     </ul>
+    <div class="sidebar-footer">
+        <a href="#" data-page="logout">
+            <i class="bx bx-log-out"></i>
+            <span class="nav-item">Logout</span>
+        </a>
+    </div>
 </div>

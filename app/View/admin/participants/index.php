@@ -252,7 +252,7 @@ $result = $result ?? [];
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0" style="border-radius: var(--bs-border-radius-2xl); overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
             <!-- Header dengan Background Gradient -->
-            <div class="position-relative" style="background: var(--bs-primary-dark); padding: 25px 30px 90px 30px;">
+            <div class="position-relative" style="background: var(--bs-primary-dark); padding: 25px 30px;">
                 <button type="button" class="btn-close btn-close-white position-absolute" style="top: 15px; right: 15px; opacity: 0.8; z-index: 20;" data-bs-dismiss="modal" aria-label="Close"></button>
                 
                 <!-- Decorative Elements -->
@@ -267,7 +267,7 @@ $result = $result ?? [];
             </div>
             
             <!-- Profile Card yang Overlap -->
-            <div class="px-4" style="margin-top: -70px; position: relative; z-index: 10;">
+            <div class="px-4 mt-4" style="position: relative; z-index: 10;">
                 <div class="bg-white rounded-4 shadow p-4" style="border: 1px solid rgba(0,0,0,0.05);">
                     <div class="row align-items-center">
                         <!-- Photo Column -->

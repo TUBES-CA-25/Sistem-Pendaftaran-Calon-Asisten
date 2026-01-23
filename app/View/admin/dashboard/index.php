@@ -26,7 +26,7 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
 ?>
 
 <!-- Main Content -->
-<div class="container-fluid px-4" style="margin-top: -2.5rem; position: relative; z-index: 10;">
+<div class="container-fluid px-4" style="position: relative; z-index: 10;">
 
     <!-- Stats Cards Grid -->
     <div class="row g-4 mb-4">

@@ -109,7 +109,7 @@ $ruanganList = $ruanganList ?? [];
 </main>
 
 <!-- SECTION: DETAIL VIEW (Outside main to avoid padding) -->
-<div id="ruanganDetailSection" class="d-none" style="position: fixed; top: 0; left: 250px; right: 0; bottom: 0; background: white; z-index: 1000; overflow-y: auto;">
+<div id="ruanganDetailSection" class="d-none" style="position: fixed; top: 0; left: var(--sidebar-width); right: 0; bottom: 0; background: white; z-index: 1000; overflow-y: auto;">
     
     <!-- Simple Clean Header -->
     <div class="bg-white border-bottom shadow-sm">
