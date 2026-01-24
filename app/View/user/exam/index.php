@@ -21,7 +21,7 @@ $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="pb-4" style="margin-top: -30px; position: relative; z-index: 10;">
+<main class="pb-4">
 
     <!-- Exam Card -->
     <div class="card border-0 shadow-sm rounded-4 mx-auto" style="max-width: 700px;">

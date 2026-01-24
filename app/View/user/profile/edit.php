@@ -12,7 +12,7 @@
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<div class="container-fluid px-4 py-4" style="margin-top: -30px; position: relative; z-index: 10;">
+<div class="container-fluid px-4 py-4">
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm rounded-4">
