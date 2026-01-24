@@ -222,7 +222,7 @@
             <div class="modal-content border-0 rounded-4">
                 <div class="modal-body text-center p-4">
                     <!-- GIF Animasi -->
-                    <img id="modalGif" src="" alt="Animation" class="mb-3" style="width: 100px; display: none;">
+                    <img id="modalGif" src="" alt="Animation" class="mb-3 mx-auto" style="width: 100px; display: none;">
 
                     <!-- Pesan Custom -->
                     <p id="modalMessage" class="fs-5 mb-3">Pesan akan ditampilkan di sini.</p>
