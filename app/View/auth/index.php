@@ -25,38 +25,53 @@
         .input-wrapper {
             position: relative;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px !important;
+            padding: 0 15px;
+            height: 52px;
+            transition: all 0.3s ease;
+        }
+        .input-wrapper:focus-within {
+            border-color: #3dc2ec;
+            box-shadow: 0 0 0 4px rgba(61, 194, 236, 0.1);
         }
         .input-wrapper .input-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-            opacity: 0.6;
+            width: 22px;
+            height: 22px;
+            opacity: 0.5;
+            flex-shrink: 0;
+            margin-right: 12px;
+            display: block;
         }
         .input-wrapper input {
-            padding-left: 42px !important;
-            padding-right: 42px !important;
-            height: 48px;
-            font-size: 15px;
-            border-radius: 10px !important;
-            border: 1px solid #ddd;
-            width: 100%;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            height: 100% !important;
+            font-size: 15px !important;
+            flex: 1;
+            background: transparent !important;
+            outline: none !important;
+            box-shadow: none !important;
+            color: #333;
         }
-        .input-wrapper input:focus {
-            border-color: #3dc2ec;
-            box-shadow: 0 0 0 3px rgba(61, 194, 236, 0.15);
-            outline: none;
+        .input-wrapper input::placeholder {
+            color: #999;
         }
         .input-wrapper .toggle-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
+            margin-left: 10px;
             cursor: pointer;
-            color: #666;
+            color: #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            transition: color 0.2s;
         }
         .input-wrapper .toggle-password:hover {
             color: #3dc2ec;
