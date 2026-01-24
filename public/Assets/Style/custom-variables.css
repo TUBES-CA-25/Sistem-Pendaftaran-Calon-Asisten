@@ -40,9 +40,9 @@
      TYPOGRAPHY
      ============================== */
   --bs-body-font-family: 'Poppins', sans-serif;
-  --bs-body-font-size: 0.9375rem;
+  --bs-body-font-size: 0.85rem;
   --bs-body-font-weight: 400;
-  --bs-body-line-height: 1.6;
+  --bs-body-line-height: 1.5;
 
   /* ==============================
      LAYOUT VARIABLES
@@ -71,8 +71,8 @@
   /* ==============================
      SPACING
      ============================== */
-  --card-padding: 1.5rem;
-  --section-padding: 1.25rem;
+  --card-padding: 1.2rem;
+  --section-padding: 1rem;
 }
 
 /* ==============================
@@ -85,6 +85,7 @@
 }
 
 html {
+  font-size: 95%;
   overflow-y: scroll; /* Force scrollbar to always be visible to prevent layout shift */
 }
 
@@ -268,10 +269,10 @@ body {
   text-decoration: none;
   display: flex;
   align-items: center;
-  padding: 14px 18px;
+  padding: 10px 16px;
   border-radius: 10px;
   transition: all 0.2s ease;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
   gap: 14px;
 }
@@ -298,7 +299,7 @@ body {
 
 .sidebar ul li .nav-item {
   white-space: nowrap;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .sidebar ul li .tooltip {
@@ -329,10 +330,10 @@ body {
   text-decoration: none;
   display: flex;
   align-items: center;
-  padding: 14px 18px;
+  padding: 10px 16px;
   border-radius: 10px;
   transition: all 0.2s ease;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
   gap: 14px;
 }
@@ -355,11 +356,11 @@ body {
 /* Bootstrap nav-link compatibility */
 .sidebar .nav-link {
   color: #333;
-  padding: 0.875rem 1.125rem;
+  padding: 0.7rem 1rem;
   border-radius: 0.625rem;
   transition: all 0.2s ease;
   font-weight: 500;
-  font-size: 0.9375rem;
+  font-size: 0.85rem;
 }
 
 .sidebar .nav-link:hover {
@@ -457,7 +458,7 @@ body {
   margin: 0; 
   /* width: calc(100% + (var(--section-padding) * 2)); NO, fixed needs direct width */
   width: calc(100% - var(--sidebar-width));
-  padding: 1rem var(--section-padding); /* Restore horizontal padding internally */
+  padding: 0.75rem var(--section-padding); /* Restore horizontal padding internally */
   position: fixed;
   top: 0;
   left: var(--sidebar-width);
@@ -547,15 +548,15 @@ body {
 
 /* Navbar Icon */
 .navbar-icon {
-  width: 50px;
-  height: 50px;
+  width: 42px;
+  height: 42px;
   background: rgba(255,255,255,0.2);
   backdrop-filter: blur(10px);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: white;
   flex-shrink: 0;
 }
@@ -567,7 +568,7 @@ body {
 
 /* Navbar Title */
 .navbar-title {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: white;
   margin: 0;

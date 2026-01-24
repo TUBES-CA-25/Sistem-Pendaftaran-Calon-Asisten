@@ -23,7 +23,7 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="container-fluid pb-4">
+<main class="container-fluid px-4 pb-4">
     <div class="row g-4 justify-content-center">
         <!-- Profile Card -->
         <div class="col-12 col-lg-10">

@@ -26,7 +26,7 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="pb-4">
+<main class="container-fluid px-4 pb-4">
 
     <div class="row g-4">
         <!-- Form Card -->

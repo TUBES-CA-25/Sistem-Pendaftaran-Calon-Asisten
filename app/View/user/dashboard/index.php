@@ -83,7 +83,7 @@ $dokumen = $dokumen ?? [];
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="pb-4 page-content">
+<main class="container-fluid px-4 pb-4">
 
     <!-- Greeting Header -->
     <div class="mb-4">

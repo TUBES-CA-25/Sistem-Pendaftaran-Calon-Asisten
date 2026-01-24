@@ -34,10 +34,10 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="pb-4">
+<main class="container-fluid px-4 pb-4">
 
     <!-- Form Card -->
-    <div class="card border-0 shadow-sm rounded-4 mx-auto" style="max-width: 900px;">
+    <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-4 p-lg-5">
             <?php if ($isBiodataEmpty): ?>
                 <!-- Form Input -->
