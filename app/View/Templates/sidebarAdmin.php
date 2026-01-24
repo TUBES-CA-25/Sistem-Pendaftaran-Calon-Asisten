@@ -38,7 +38,7 @@ $userName = $userName ?? 'Admin';
         <li>
             <a href="#" data-page="bankSoal">
                 <i class='bx bx-edit'></i>
-                <span class="nav-item">Ujian</span>
+                <span class="nav-item">Bank Soal</span>
             </a>
         </li>
         <li>
