@@ -247,15 +247,15 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                 <form id="addActivityForm">
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Judul Kegiatan</label>
-                        <input type="text" class="form-control rounded-3" name="judul" required>
+                        <input type="text" class="form-control rounded-3" name="judul" id="judulKegiatan" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Tanggal</label>
-                        <input type="date" class="form-control rounded-3" name="tanggal" required>
+                        <input type="date" class="form-control rounded-3" name="tanggal" id="tanggalKegiatan" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Deskripsi</label>
-                        <textarea class="form-control rounded-3" name="deskripsi" rows="3"></textarea>
+                        <textarea class="form-control rounded-3" name="deskripsi" id="deskripsiKegiatan" rows="3"></textarea>
                     </div>
                     <div class="d-flex justify-content-end gap-2 mt-4">
                         <button type="button" class="btn btn-light rounded-3 px-4" data-bs-dismiss="modal">Batal</button>

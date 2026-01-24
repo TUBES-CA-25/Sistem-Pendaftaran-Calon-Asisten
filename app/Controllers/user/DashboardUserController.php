@@ -53,6 +53,9 @@ class DashboardUserController extends Controller {
         return \App\Model\admin\DashboardAdmin::getKegiatanByMonth((int)date('Y'), (int)date('m'));
     }
     public static function getMajorStagesSelesai() {
+        if (self::getGraduationStatus() === 'Lulus' && self::isPengumumanOpen()) {
+            return 4;
+        }
         $i = 0;
         // Stage 1: Berkas (Biodata + Documents)
         if (self::getBiodataStatus() && self::getBerkasStatus()) {
@@ -88,6 +91,10 @@ class DashboardUserController extends Controller {
         return $i;
     }
     public static function getPercentage() {
+        if (self::getGraduationStatus() === 'Lulus' && self::isPengumumanOpen()) {
+            return 100;
+        }
+
         $completed = self::getMajorStagesSelesai(); 
         $total = 4; 
         if ($completed == 0) {
