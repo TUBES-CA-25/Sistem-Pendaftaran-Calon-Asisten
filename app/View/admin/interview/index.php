@@ -12,303 +12,6 @@ $mahasiswaList = $mahasiswaList ?? [];
 $ruanganList = $ruanganList ?? [];
 $colors = ['#2f66f6'];
 ?>
-<style>
-    /* Import Font */
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-    * {
-        font-family: 'Poppins', sans-serif;
-    }
-
-    /* ==================== CARD CONTENT ==================== */
-    .card-content {
-        background: #fff;
-        border-radius: 0;
-        padding: 24px;
-        margin: 0;
-        min-height: calc(100vh - 140px);
-    }
-
-    /* ==================== TABLE CONTROLS ==================== */
-    .table-controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-
-    .filter-buttons {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    .filter-btn {
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: all 0.2s ease;
-        border: none;
-        cursor: pointer;
-    }
-
-    .filter-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    /* ==================== PRIMARY BUTTON ==================== */
-    .btn-add {
-        background: linear-gradient(135deg, #2f66f6 0%, #1e4fd8 100%);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .btn-add:hover {
-        background: linear-gradient(135deg, #1e4fd8 0%, #1a3fc0 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(47, 102, 246, 0.4);
-        color: white;
-    }
-
-    /* ==================== DATA TABLE ==================== */
-    .data-table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #fff;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    .data-table thead th {
-        background: #2f66f6;
-        color: #fff;
-        font-weight: 600;
-        padding: 16px 20px;
-        text-align: left;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-size: 0.85rem;
-    }
-
-    .data-table tbody td {
-        padding: 14px 20px;
-        border-bottom: 1px solid #f0f0f0;
-        color: #333;
-        font-size: 0.9rem;
-    }
-
-    .data-table tbody tr:nth-child(odd) {
-        background-color: #f8fafc;
-    }
-
-    .data-table tbody tr:nth-child(even) {
-        background-color: #fff;
-    }
-
-    .data-table tbody tr:hover {
-        background-color: rgba(47, 102, 246, 0.08);
-    }
-
-    .data-table tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    /* Clickable name */
-    .open-detail {
-        color: #2f66f6;
-        cursor: pointer;
-        font-weight: 500;
-        transition: color 0.2s ease;
-    }
-
-    .open-detail:hover {
-        color: #1e4fd8;
-        text-decoration: underline;
-    }
-
-    /* ==================== MODAL STYLES ==================== */
-    .modal-wawancara .modal-content {
-        border-radius: 16px;
-        border: none;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
-    }
-
-    .modal-wawancara .modal-header {
-        background: linear-gradient(135deg, #2f66f6 0%, #1e4fd8 100%);
-        color: #fff;
-        border-radius: 0;
-        padding: 20px 24px;
-        border: none;
-    }
-
-    .modal-wawancara .modal-header h5 {
-        font-size: 1.15rem;
-        font-weight: 600;
-        margin: 0;
-    }
-
-    .modal-wawancara .btn-close {
-        filter: brightness(0) invert(1);
-        opacity: 0.8;
-    }
-
-    .modal-wawancara .btn-close:hover {
-        opacity: 1;
-    }
-
-    .modal-wawancara .modal-body {
-        padding: 24px;
-        color: #333;
-    }
-
-    .modal-wawancara .modal-footer {
-        border-top: 1px solid #f0f0f0;
-        padding: 16px 24px;
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-    }
-
-    /* ==================== FORM STYLES ==================== */
-    .form-label {
-        font-weight: 500;
-        color: #374151;
-        margin-bottom: 6px;
-        font-size: 0.9rem;
-    }
-
-    .form-control,
-    .form-select {
-        border-radius: 8px;
-        border: 2px solid #e5e7eb;
-        padding: 10px 14px;
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-    }
-
-    .form-control:focus,
-    .form-select:focus {
-        border-color: #2f66f6;
-        box-shadow: 0 0 0 3px rgba(47, 102, 246, 0.15);
-        outline: none;
-    }
-
-    .form-select {
-        appearance: none;
-        background: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%232f66f6' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 5.646a.5.5 0 0 1 .708 0L8 11.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E") no-repeat right 12px center;
-        background-color: #fff;
-        background-size: 12px 12px;
-    }
-
-    .form-control-plaintext {
-        padding: 8px 0;
-        font-size: 0.95rem;
-        color: #1f2937;
-        font-weight: 500;
-    }
-
-    /* ==================== BUTTONS ==================== */
-    .btn-primary {
-        background: linear-gradient(135deg, #2f66f6 0%, #1e4fd8 100%);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-    }
-
-    .btn-primary:hover {
-        background: linear-gradient(135deg, #1e4fd8 0%, #1a3fc0 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(47, 102, 246, 0.35);
-    }
-
-    .btn-secondary {
-        background: #f1f5f9;
-        color: #475569;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 500;
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-    }
-
-    .btn-secondary:hover {
-        background: #e2e8f0;
-        color: #334155;
-    }
-
-    .btn-success {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        color: white;
-        border: none;
-    }
-
-    .btn-success:hover {
-        background: linear-gradient(135deg, #047857 0%, #065f46 100%);
-        color: white;
-    }
-
-    .btn-danger {
-        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-        color: white;
-        border: none;
-    }
-
-    .btn-danger:hover {
-        background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
-        color: white;
-    }
-
-    /* ==================== LIST GROUP ==================== */
-    .list-group-item {
-        border: 1px solid #e5e7eb;
-        border-radius: 8px !important;
-        margin-bottom: 6px;
-        padding: 10px 14px;
-        font-size: 0.9rem;
-    }
-
-    /* ==================== RESPONSIVE ==================== */
-    @media (max-width: 768px) {
-
-        .card-content {
-            padding: 16px;
-        }
-
-        .table-controls {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .filter-buttons {
-            justify-content: center;
-        }
-
-        .data-table thead th,
-        .data-table tbody td {
-            padding: 12px 14px;
-            font-size: 0.85rem;
-        }
-    }
-</style>
 
 <?php
     $title = 'Kelola Wawancara';
@@ -317,36 +20,35 @@ $colors = ['#2f66f6'];
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main>
-
-    <!-- Card Content -->
-    <div class="card-content">
-        <!-- Table Controls -->
-        <div class="table-controls mb-4">
-            <div class="search-box position-relative" style="flex: 1; max-width: 400px;">
-                <input type="text" id="searchInput" class="form-control" placeholder="Cari nama atau stambuk..." 
-                       style="padding-left: 40px; border-radius: 8px;">
-                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y text-muted ms-3"></i>
+<div class="container-fluid px-4 py-4">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <!-- Table Controls -->
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <div class="position-relative" style="flex: 1; max-width: 400px;">
+                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                    <input type="text" id="searchInput" class="form-control ps-5 rounded-3" placeholder="Cari nama atau stambuk...">
+                </div>
+                
+                <button type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal" class="btn btn-primary d-inline-flex align-items-center gap-2 rounded-3 px-4 py-2">
+                    <i class="bi bi-plus-circle"></i> 
+                    <span>Tambah Data</span>
+                </button>
             </div>
-            
-            <button type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal" class="btn btn-primary btn-add">
-                <i class="bi bi-plus-circle"></i> Tambah Data
-            </button>
-        </div>
 
-        <!-- Data Table -->
-        <div class="table-responsive">
-            <table id="wawancaraMahasiswa" class="data-table table">
-                <thead>
-                    <tr>
-                        <th class="text-center" width="5%">NO</th>
-                        <th width="30%">NAMA LENGKAP</th>
-                        <th width="20%">STAMBUK</th>
-                        <th class="text-center" width="20%">WAWANCARA I</th>
-                        <th class="text-center" width="20%">WAWANCARA II</th>
-                        <th class="text-center" width="5%">AKSI</th>
-                    </tr>
-                </thead>
+            <!-- Data Table -->
+            <div class="table-responsive rounded-3">
+                <table id="wawancaraMahasiswa" class="table table-hover align-middle mb-0">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th class="py-3 px-3 text-center" width="5%">NO</th>
+                            <th class="py-3 px-3" width="30%">NAMA LENGKAP</th>
+                            <th class="py-3 px-3" width="20%">STAMBUK</th>
+                            <th class="py-3 px-3 text-center" width="20%">WAWANCARA I</th>
+                            <th class="py-3 px-3 text-center" width="20%">WAWANCARA II</th>
+                            <th class="py-3 px-3 text-center" width="5%">AKSI</th>
+                        </tr>
+                    </thead>
                 <tbody id="table-body" class="bg-white">
                     <?php if (empty($wawancara)): ?>
                         <tr>
@@ -424,7 +126,7 @@ $colors = ['#2f66f6'];
             </div>
         </div>
     </div>
-</main>
+</div>
 <script>
     // Simple Client-side Search (Optional, given server-side might be better for large data)
     document.getElementById('searchInput').addEventListener('keyup', function() {
