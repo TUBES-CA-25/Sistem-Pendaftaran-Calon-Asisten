@@ -23,6 +23,28 @@ $essayCount = $stats['essay_count'];
 
 
 
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+    <style>
+        .editor-toolbar { border-color: #dee2e6; border-radius: 0.5rem 0.5rem 0 0; }
+        .CodeMirror { border-color: #dee2e6; border-radius: 0 0 0.5rem 0.5rem; }
+        .editor-statusbar { display: none; }
+        
+        /* Limit rendered markdown image size */
+        .condition-render-markdown img {
+            max-width: 100%;
+            max-height: 400px; /* Reasonable limit */
+            object-fit: contain;
+            border-radius: 8px;
+            margin-top: 10px;
+            margin-bottom: 10px; /* Space between image and text */
+            border: 1px solid #dee2e6;
+            display: block; /* Force new line */
+        }
+    </style>
 <main>
     <!-- Page Header -->
     <?php
@@ -367,7 +389,7 @@ $essayCount = $stats['essay_count'];
                     <!-- Pertanyaan -->
                     <div class="mb-4">
                         <label class="form-label fw-bold text-dark">Pertanyaan</label>
-                        <textarea class="form-control p-3 mb-3" name="deskripsi" rows="4" placeholder="Tulis pertanyaan disini..." required style="resize: vertical;"></textarea>
+                        <textarea class="form-control p-3 mb-3" name="deskripsi" rows="4" placeholder="Tulis pertanyaan disini..." style="resize: vertical;"></textarea>
                         
                         <label class="form-label fw-bold text-dark small">Gambar Soal (Opsional)</label>
                         <input type="file" class="form-control" name="soal_image" accept="image/*">
@@ -450,7 +472,7 @@ $essayCount = $stats['essay_count'];
                     <!-- Pertanyaan -->
                     <div class="mb-4">
                         <label class="form-label fw-bold text-dark">Pertanyaan</label>
-                        <textarea class="form-control p-3" name="deskripsi" id="editDeskripsi" rows="4" required></textarea>
+                        <textarea class="form-control p-3" name="deskripsi" id="editDeskripsi" rows="4"></textarea>
                     </div>
 
                     <!-- Pilihan Ganda -->
@@ -503,7 +525,38 @@ $essayCount = $stats['essay_count'];
 .type-option.selected .check-icon { display: block !important; }
 
 /* Modal Customization (Bootstrap overrides) */
+/* Modal Customization (Bootstrap overrides) */
 .modal-backdrop.show { opacity: 0.5; }
+
+/* Allow scrolling in modals with EasyMDE */
+.modal-dialog-scrollable .modal-body {
+    overflow-y: auto !important;
+    max-height: 70vh !important; /* Force height limit to trigger scroll */
+    scrollbar-width: thin; /* Firefox */
+}
+/* Webkit scrollbar styling */
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar {
+    width: 6px; /* Slightly thinner */
+}
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Fix EasyMDE z-index issues in modal */
+.EasyMDEContainer {
+    z-index: 1055; 
+}
+.CodeMirror {
+    min-height: 200px;
+    max-height: 400px;
+}
 </style>
 
 <!-- Pass PHP Data to JavaScript -->
@@ -532,4 +585,119 @@ $essayCount = $stats['essay_count'];
 
 <!-- Load External JavaScript -->
 <script src="<?= APP_URL ?>/assets/Script/admin/exam_import_export.js"></script>
+<script src="<?= APP_URL ?>/assets/Script/admin/exam_import_export.js"></script>
 <script src="<?= APP_URL ?>/assets/Script/admin/exam.js"></script>
+<script>
+    // Initialize EasyMDE
+    document.addEventListener('DOMContentLoaded', function() {
+        // Options matching user screenshot
+        const mdeOptions = {
+             element: null, // to be set
+             autoDownloadFontAwesome: false,
+             spellChecker: false,
+             status: false,
+             uploadImage: true,
+             imageUploadEndpoint: baseUrl + '/uploadImage',
+             imagePathAbsolute: true,
+             imageAccept: "image/png, image/jpeg, image/gif, image/webp",
+             imageTexts: {
+                 sbInit: 'Drag & drop image here',
+                 sbOnDragEnter: 'Drop image to upload',
+                 sbOnDrop: 'Uploading...',
+                 sbProgress: 'Uploading... (#progress#)',
+                 sbOnUploaded: 'Uploaded',
+                 sizeUnits: 'b,kb,mb'
+             },
+             errorMessages: {
+                 noFileGiven: 'Please select a file.',
+                 typeNotAllowed: 'This file type is not allowed.',
+                 fileTooLarge: 'Image is too big detected.',
+                 importError: 'Something went wrong during image upload.'
+             },
+             toolbar: [
+                 "bold", "italic", "heading", "|", 
+                 "quote", "unordered-list", "ordered-list", "|",
+                 "link", "image", "upload-image", "|",
+                 "preview", "side-by-side", "fullscreen", "|",
+                 "guide"
+             ]
+        };
+
+        // Create Editor for Add Question
+        window.easyMDE_add = new EasyMDE({
+            ...mdeOptions,
+            element: document.querySelector('#addSoalForm textarea[name="deskripsi"]')
+        });
+
+        // Create Editor for Edit Question
+        window.easyMDE_edit = new EasyMDE({
+            ...mdeOptions,
+            element: document.querySelector('#editSoalForm textarea[name="deskripsi"]') 
+        });
+
+        // Refresh on Modal Open to fix rendering issues
+        const addModal = document.getElementById('addSoalModal');
+        addModal.addEventListener('shown.bs.modal', function () {
+            window.easyMDE_add.codemirror.refresh();
+        });
+
+        const editModal = document.getElementById('editSoalModal');
+        editModal.addEventListener('shown.bs.modal', function () {
+            window.easyMDE_edit.codemirror.refresh();
+        });
+
+        // Sync before submit
+        document.getElementById('addSoalForm').addEventListener('submit', function(e) {
+             const val = window.easyMDE_add.value();
+             if (!val.trim()) {
+                 e.preventDefault();
+                 alert('Pertanyaan tidak boleh kosong');
+                 return;
+             }
+        });
+
+        document.getElementById('editSoalForm').addEventListener('submit', function(e) {
+             const val = window.easyMDE_edit.value();
+             if (!val.trim()) {
+                 e.preventDefault();
+                 alert('Pertanyaan tidak boleh kosong');
+                 return;
+             }
+        });
+    });
+</script>
+
+<!-- Error Handling & Suppression Scripts -->
+<script>
+    // 1. Suppress external extension errors (Visual cleanup for console)
+    const originalConsoleError = console.error;
+    console.error = function(...args) {
+        if (args[0] && typeof args[0] === 'string' && 
+           (args[0].includes('chrome-extension://') || args[0].includes('quillbot'))) {
+            return; // Suppress extension noise
+        }
+        originalConsoleError.apply(console, args);
+    };
+
+    // 2. Global Image Error Handler (Handle 404s gracefully in UI)
+    document.addEventListener('error', function(e) {
+        if (e.target && e.target.tagName === 'IMG') {
+            // Stop if specific suppression class is present
+            if (e.target.classList.contains('suppress-error')) return;
+
+            // Check if src is current page (often happens with src="" or src="#")
+            if (e.target.src === window.location.href || e.target.getAttribute('src') === '') {
+                e.target.style.display = 'none'; // Just hide empty images
+                return;
+            }
+
+            // Check if it's already a placeholder to prevent loops
+            if (!e.target.src.includes('placehold.co')) {
+                console.warn('Image failed to load, swapping with placeholder:', e.target.src);
+                e.target.src = 'https://placehold.co/600x400?text=Image+Not+Found';
+                e.target.alt = 'Broken Image';
+                e.target.style.border = '1px dashed #ff0000';
+            }
+        }
+    }, true); // Capture phase to catch load errors
+</script>

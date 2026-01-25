@@ -94,6 +94,72 @@ class SoalController extends Controller
         }
     }
 
+    public function uploadImage()
+    {
+        // Clean any previous output
+        if (ob_get_level()) ob_end_clean();
+        
+        header('Content-Type: application/json');
+        
+        try {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            if (!isset($_SESSION['user']['id'])) {
+                throw new \Exception('User tidak terautentikasi');
+            }
+
+            if (!isset($_FILES['image'])) {
+                throw new \Exception('No image uploaded');
+            }
+
+            $file = $_FILES['image'];
+            if ($file['error'] !== UPLOAD_ERR_OK) {
+                throw new \Exception('Upload error: ' . $file['error']);
+            }
+
+            // Validate type
+            $allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mime = $finfo->file($file['tmp_name']);
+            
+            if (!in_array($mime, $allowed)) {
+                throw new \Exception('Invalid file type. Only JPG, PNG, GIF, WEBP allowed.');
+            }
+
+            // Create directory if not exists
+            $uploadDir = __DIR__ . '/../../../public/uploads/soal_content/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            // Generate filename
+            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $newFilename = 'img_' . time() . '_' . uniqid() . '.' . $ext;
+            $destPath = $uploadDir . $newFilename;
+
+            if (move_uploaded_file($file['tmp_name'], $destPath)) {
+                $webPath = '/Sistem-Pendaftaran-Calon-Asisten/public/uploads/soal_content/' . $newFilename;
+                
+                echo json_encode([
+                    'data' => [
+                        'filePath' => $webPath
+                    ]
+                ]);
+            } else {
+                throw new \Exception('Failed to move uploaded file');
+            }
+
+        } catch (\Exception $e) {
+            http_response_code(400);
+            echo json_encode([
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit;
+    }
+
     public function getBankDetails()
     {
         // Clean any previous output

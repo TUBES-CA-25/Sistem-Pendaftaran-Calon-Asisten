@@ -107,7 +107,7 @@ window.renderSoalList = function(soalArray) {
                         </button>
                     </div>
                 </div>
-                <div class="mb-3 text-dark">${soal.deskripsi || ''}</div>
+                <div class="mb-3 text-dark condition-render-markdown">${soal.deskripsi ? marked.parse(soal.deskripsi) : ''}</div>
                 ${optionsHtml}
                 ${soal.jawaban ? `
                 <div class="alert alert-success bg-success bg-opacity-10 border-success border-start border-3 d-flex align-items-center gap-2 mb-0">
@@ -334,70 +334,7 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
         });
     }
 
-    // Form Submit - Add Soal
-    const addSoalForm = document.getElementById('addSoalForm');
-    if (addSoalForm) {
-        addSoalForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (!window.currentBankId) {
-                showAlert('Error: Bank Soal ID tidak ditemukan', false);
-                return;
-            }
-            
-            // Manual construction to handle fields properly based on type
-            const formData = new FormData(this);
-            const type = formData.get('status_soal');
-            
-            // Construct pilihan string for PG
-            let pilihanStr = '';
-            if (type === 'pilihan_ganda') {
-                const opts = [];
-                ['A', 'B', 'C', 'D', 'E'].forEach(opt => {
-                    const val = formData.get('pilihan_' + opt);
-                    if (val) opts.push(`${opt}. ${val}`);
-                });
-                pilihanStr = opts.join(', ');
-            } else {
-                // For essay, use 'jawaban_essay' as 'jawaban'
-                const jawEssay = formData.get('jawaban_essay');
-                formData.set('jawaban', jawEssay);
-            }
-            
-            const dataToSend = new URLSearchParams();
-            dataToSend.append('bank_id', window.currentBankId);
-            dataToSend.append('deskripsi', formData.get('deskripsi'));
-            dataToSend.append('status_soal', type);
-            dataToSend.append('pilihan', pilihanStr);
-            dataToSend.append('jawaban', formData.get('jawaban'));
-            
-            fetch(baseUrl + '/saveSoal', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: dataToSend
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showAlert('Soal berhasil ditambahkan!');
-                    bootstrap.Modal.getInstance(document.getElementById('addSoalModal')).hide();
-                    this.reset();
-                    window.loadBankQuestions(window.currentBankId);
-                    
-                    // Update stats
-                    updateDashboardStats('total', 1);
-                    if(type === 'pilihan_ganda') updateDashboardStats('pg', 1);
-                    else updateDashboardStats('essay', 1);
-                    
-                } else {
-                    showAlert(data.message || 'Gagal menambahkan soal', false);
-                }
-            })
-            .catch((err) => {
-                console.error('Error adding soal:', err);
-                showAlert('Terjadi kesalahan', false);
-            });
-        });
-    }
+
 
     // Form Submit - Edit Soal
     const editSoalForm = document.getElementById('editSoalForm');
@@ -406,6 +343,12 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
             e.preventDefault();
             
             const formData = new FormData(this);
+            
+            // Sync EasyMDE to FormData immediately
+            if (window.easyMDE_edit) {
+                const desc = window.easyMDE_edit.value();
+                formData.set('deskripsi', desc);
+            }
             const type = formData.get('status_soal');
             const id = document.getElementById('editSoalId').value;
             
@@ -413,9 +356,9 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
             let pilihanStr = '';
             if (type === 'pilihan_ganda') {
                 const opts = [];
-                ['A', 'B', 'C', 'D', 'E'].forEach(opt => {
+                ['a', 'b', 'c', 'd', 'e'].forEach(opt => {
                     const val = formData.get('pilihan_' + opt);
-                    if (val) opts.push(`${opt}. ${val}`);
+                    if (val) opts.push(`${opt.toUpperCase()}. ${val}`);
                 });
                 pilihanStr = opts.join(', ');
             } else {
@@ -430,7 +373,7 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
             dataToSend.append('pilihan', pilihanStr);
             dataToSend.append('jawaban', formData.get('jawaban'));
             
-            fetch(baseUrl + '/updateSoal', {
+            fetch(baseUrl + '/updatesoal', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: dataToSend
@@ -686,6 +629,106 @@ window.activateBank = function(bankId) {
     });
 }
 
+
+// Make helper functions global
+window.editSoal = function(id) {
+    const card = document.querySelector(`.card[data-id="${id}"]`);
+    if(!card) return;
+    
+    // Find the original data object in memory if possible
+    let soalData = null;
+    if (window.currentBankSoal) {
+        soalData = window.currentBankSoal.find(s => s.id == id);
+    }
+    
+    // If not found in memory (shouldn't happen), try to parse from DOM (fallback)
+    if (!soalData) {
+        // ... (fallback implementation if needed, but for now rely on memory)
+        return; 
+    }
+
+    document.getElementById('editSoalId').value = soalData.id;
+    
+    // Set type
+    const type = soalData.status_soal || 'pilihan_ganda';
+    
+    // Trigger click on appropriate type option to switch view
+    const typeOption = document.querySelector(`#editSoalModal .type-option[data-type="${type}"]`);
+    if(typeOption) typeOption.click();
+
+    // Set description
+    if (window.easyMDE_edit) {
+        window.easyMDE_edit.value(soalData.deskripsi || '');
+    } else {
+        document.getElementById('editDeskripsi').value = soalData.deskripsi || '';
+    }
+    
+    // Set answers
+    if (type === 'pilihan_ganda') {
+        const pilihanContainer = document.getElementById('editPilihanContainer');
+        const pilihanStr = soalData.pilihan || '';
+        
+        // Parse "A. xxx, B. xxx" format
+        const pattern = /([A-E])\.\s*(.*?)(?=(?:,\s*[A-E]\.)|$)/g;
+        let match;
+        // reset first
+        ['A','B','C','D','E'].forEach(opt => {
+            document.getElementById('editPilihan'+opt).value = '';
+        });
+        
+        while ((match = pattern.exec(pilihanStr)) !== null) {
+            const opt = match[1];
+            const val = match[2].trim();
+            const input = document.getElementById('editPilihan' + opt);
+            if(input) input.value = val;
+        }
+        
+        // Check correct answer
+        const jawab = soalData.jawaban;
+        const radio = document.querySelector(`input[name="jawaban"][value="${jawab}"]`);
+        if(radio) radio.checked = true;
+        
+    } else {
+        document.getElementById('editJawabanEssay').value = soalData.jawaban || '';
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById('editSoalModal'));
+    modal.show();
+}
+
+window.deleteSoal = function(id) {
+    showConfirmDelete(function() {
+        fetch(baseUrl + '/deletesoal', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=' + id
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showAlert('Soal berhasil dihapus!');
+                // Update stats
+                const card = document.querySelector(`.card[data-id="${id}"]`);
+                if(card) {
+                    const type = card.dataset.type;
+                    updateDashboardStats('total', -1);
+                    if(type === 'pilihan_ganda') updateDashboardStats('pg', -1);
+                    else updateDashboardStats('essay', -1);
+                    card.remove();
+                }
+                
+                // Reload to be safe or rely on DOM removal
+                // window.loadBankQuestions(window.currentBankId); 
+            } else {
+                showAlert(data.message || 'Gagal menghapus soal', false);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showAlert('Terjadi kesalahan', false);
+        });
+    }, 'Apakah Anda yakin ingin menghapus soal ini?');
+}
 })();
 
 // Question Type Selection Handler
@@ -767,6 +810,12 @@ window.activateBank = function(bankId) {
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
 
             const formData = new FormData(this);
+
+            // Sync EasyMDE to FormData immediately
+            if (window.easyMDE_add) {
+                const desc = window.easyMDE_add.value();
+                formData.set('deskripsi', desc);
+            }
             
             // Handle essay type - copy jawaban_essay to jawaban and clear pilihan
             const soalType = formData.get('status_soal');
