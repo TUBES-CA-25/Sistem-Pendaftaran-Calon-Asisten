@@ -60,6 +60,12 @@ $userName = $userName ?? 'Admin';
             </a>
         </li>
         <li>
+            <a href="#" data-page="wawancara">
+                <i class='bx bx-user-voice'></i>
+                <span class="nav-item">Kelola Wawancara</span>
+            </a>
+        </li>
+        <li>
             <a href="#" data-page="daftarKehadiran">
                 <i class='bx bx-calendar-check'></i>
                 <span class="nav-item">Rekap</span>

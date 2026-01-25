@@ -166,7 +166,11 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                                 $isRejected = isset($row['is_accepted']) && $row['is_accepted'] == 2;
                                 $hasSchedule = isset($row['has_schedule']) && $row['has_schedule'];
 
-                                // Status badge class and text
+                                // Status logic
+                                // Keep the 'Terjadwal' logic if it was in the original, or revert to standard status? 
+                                // User asked to "kembalikan seperti semula". The original likely used $isAccepted logic primarily.
+                                // I will use the code block I deleted in step 186.
+                                
                                 if ($hasSchedule) {
                                     $badgeClass = 'bg-primary text-white';
                                     $badgeText = 'Terjadwal';
@@ -262,7 +266,41 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                             </tr>
                         </thead>
                         <tbody id="jadwalTableBody">
-                            <!-- Data loaded via AJAX -->
+                            <?php if (empty($jadwalPresentasi)): ?>
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">Belum ada jadwal presentasi</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php $i = 1; foreach ($jadwalPresentasi as $row): ?>
+                                    <tr>
+                                        <td><?= $i ?></td>
+                                        <td><strong><?= htmlspecialchars($row['nama_lengkap'] ?? $row['nama'] ?? '-') ?></strong></td>
+                                        <td><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
+                                        <td><?= htmlspecialchars($row['judul'] ?? '-') ?></td>
+                                        <td><?= htmlspecialchars($row['ruangan'] ?? $row['nama_ruangan'] ?? '-') ?></td>
+                                        <td><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
+                                        <td><?= htmlspecialchars($row['waktu']) ?></td>
+                                        <td>
+                                            <div class="d-flex gap-2 flex-nowrap align-items-center">
+                                                <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 d-inline-flex align-items-center justify-content-center btn-edit-jadwal"
+                                                        data-id="<?= $row['id'] ?>"
+                                                        data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? $row['nama'] ?? '') ?>"
+                                                        data-ruangan="<?= $row['id_ruangan'] ?>"
+                                                        data-tanggal="<?= $row['tanggal'] ?>"
+                                                        data-waktu="<?= $row['waktu'] ?>"
+                                                        title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3 d-inline-flex align-items-center justify-content-center btn-delete-jadwal"
+                                                        data-id="<?= $row['id'] ?>"
+                                                        title="Hapus">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php $i++; endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -485,35 +523,11 @@ $(document).ready(function() {
     const APP_URL = '<?= APP_URL ?>';
     let currentMessageId = null;
     let currentUserId = null;
-    let ruanganData = [];
-
-    // Tab Navigation
-    $('.tab-btn').on('click', function() {
-        const tab = $(this).data('tab');
-        $('.tab-btn').removeClass('active');
-        $(this).addClass('active');
-        $('.tab-content').removeClass('active');
-        $('#tab-' + tab).addClass('active');
-
-        if (tab === 'jadwal') {
-            loadJadwalData();
-        }
-    });
-
-
 
     // Search functionality
-    $('#searchPengajuan').on('input', function() {
+    $('#searchInput').on('keyup', function() {
         const term = $(this).val().toLowerCase();
-        $('#tablePengajuan tbody tr').each(function() {
-            const text = $(this).text().toLowerCase();
-            $(this).toggle(text.includes(term));
-        });
-    });
-
-    $('#searchJadwal').on('input', function() {
-        const term = $(this).val().toLowerCase();
-        $('#tableJadwal tbody tr').each(function() {
+        $('#table-body tr').each(function() {
             const text = $(this).text().toLowerCase();
             $(this).toggle(text.includes(term));
         });

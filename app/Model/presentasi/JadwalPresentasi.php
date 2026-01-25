@@ -23,6 +23,7 @@ class JadwalPresentasi extends Model
     public function getJadwalPresentasi()
     {
         $sql = "SELECT 
+        jp.id AS id,
         m.stambuk AS stambuk,
         m.nama_lengkap AS nama_lengkap,
         p.judul AS judul_presentasi,
@@ -45,9 +46,13 @@ class JadwalPresentasi extends Model
         foreach ($results as $result) {
             $ruangan = $this->getRuangan($result['id_ruangan']);
             $finalResults[] = [
+                'id' => $result['id'],
                 'stambuk' => $result['stambuk'],
                 'nama' => $result['nama_lengkap'],
+                'nama_lengkap' => $result['nama_lengkap'],
+                'judul' => $result['judul_presentasi'],
                 'judul_presentasi' => $result['judul_presentasi'],
+                'id_ruangan' => $result['id_ruangan'],
                 'ruangan' => $ruangan['nama'],
                 'tanggal' => $result['tanggal'],
                 'waktu' => $result['waktu']

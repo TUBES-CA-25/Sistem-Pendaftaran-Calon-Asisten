@@ -28,6 +28,7 @@ class Absensi extends Model {
     public function getAbsensi() {
         $sql = "SELECT
         a.id, 
+        a.id_mahasiswa,
                     m.nama_lengkap, 
                     m.stambuk, 
                     a.absensi_wawancara_I, 

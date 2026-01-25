@@ -311,8 +311,8 @@ $colors = ['#2f66f6'];
 </style>
 
 <?php
-    $title = 'Jadwal Kegiatan';
-    $subtitle = 'Kelola jadwal wawancara dan kegiatan seleksi';
+    $title = 'Kelola Wawancara';
+    $subtitle = 'Kelola jadwal wawancara peserta';
     $icon = 'bi bi-calendar-event';
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
@@ -322,60 +322,121 @@ $colors = ['#2f66f6'];
     <!-- Card Content -->
     <div class="card-content">
         <!-- Table Controls -->
-        <div class="table-controls">
-            <div class="filter-buttons">
-                <?php foreach ($ruanganList as $index => $ruangan): ?>
-                    <button id="filter-<?= $ruangan['id'] ?>" class="btn text-white filter-btn"
-                        data-id="<?= (int) $ruangan['id'] ?>"
-                        style="background-color: <?= $colors[$index % count($colors)] ?>;">
-                        <?= htmlspecialchars($ruangan['nama']) ?>
-                    </button>
-                <?php endforeach; ?>
-                <button id="filter-all" class="btn btn-dark filter-btn" data-id=0>Semua</button>
+        <div class="table-controls mb-4">
+            <div class="search-box position-relative" style="flex: 1; max-width: 400px;">
+                <input type="text" id="searchInput" class="form-control" placeholder="Cari nama atau stambuk..." 
+                       style="padding-left: 40px; border-radius: 8px;">
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y text-muted ms-3"></i>
             </div>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal" class="btn btn-add">
-                <i class="bi bi-plus-circle"></i> Tambah Jadwal
+            
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal" class="btn btn-primary btn-add">
+                <i class="bi bi-plus-circle"></i> Tambah Data
             </button>
         </div>
 
         <!-- Data Table -->
-        <table id="wawancaraMahasiswa" class="data-table">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Lengkap</th>
-                    <th>Stambuk</th>
-                    <th>Ruangan</th>
-                    <th>Jadwal Kegiatan</th>
-                    <th>Waktu</th>
-                    <th>Tanggal</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                <?php $i = 1; ?>
-                <?php foreach ($wawancara as $row) { ?>
-                    <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
-                        <td><?= $i ?></td>
-                        <td>
-                            <span class="open-detail" data-bs-toggle="modal" data-bs-target="#wawancaraModal"
-                                data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>" data-stambuk="<?= htmlspecialchars($row['stambuk']) ?>"
-                                data-ruangan="<?= htmlspecialchars($row['ruangan']) ?>" data-jeniswawancara="<?= htmlspecialchars($row['jenis_wawancara']) ?>"
-                                data-waktu="<?= htmlspecialchars($row['waktu']) ?>" data-tanggal="<?= htmlspecialchars($row['tanggal']) ?>">
-                                <?= htmlspecialchars($row['nama_lengkap']) ?>
-                            </span>
-                        </td>
-                        <td><?= htmlspecialchars($row['stambuk']) ?></td>
-                        <td><?= htmlspecialchars($row['ruangan']) ?></td>
-                        <td><?= htmlspecialchars($row['jenis_wawancara']) ?></td>
-                        <td><?= htmlspecialchars($row['waktu']) ?></td>
-                        <td><?= htmlspecialchars($row['tanggal']) ?></td>
+        <div class="table-responsive">
+            <table id="wawancaraMahasiswa" class="data-table table">
+                <thead>
+                    <tr>
+                        <th class="text-center" width="5%">NO</th>
+                        <th width="30%">NAMA LENGKAP</th>
+                        <th width="20%">STAMBUK</th>
+                        <th class="text-center" width="20%">WAWANCARA I</th>
+                        <th class="text-center" width="20%">WAWANCARA II</th>
+                        <th class="text-center" width="5%">AKSI</th>
                     </tr>
-                    <?php $i++; ?>
-                <?php } ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="table-body" class="bg-white">
+                    <?php if (empty($wawancara)): ?>
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
+                                Belum ada data mahasiswa
+                            </td>
+                        </tr>
+                    <?php else: ?>
+                        <?php 
+                        // Determine status badges logic
+                        if (!function_exists('getStatusBadge')) {
+                            function getStatusBadge($absensiStatus, $hasSchedule) {
+                                if (!empty($absensiStatus) && $absensiStatus !== 'Belum Ada') {
+                                    if ($absensiStatus == 'Hadir') return '<span class="badge bg-success rounded-pill px-3">Hadir</span>';
+                                    if ($absensiStatus == 'Tidak Hadir' || $absensiStatus == 'Alpha') return '<span class="badge bg-danger rounded-pill px-3">Alpha</span>';
+                                    return '<span class="badge bg-secondary rounded-pill px-3">' . $absensiStatus . '</span>';
+                                }
+                                if ($hasSchedule) {
+                                    return '<span class="badge bg-info text-white rounded-pill px-3">Terjadwal</span>';
+                                }
+                                return '<span class="badge bg-light text-secondary border rounded-pill px-3">Belum Ada</span>';
+                            }
+                        }
+                        ?>
+                        <?php $i = 1; ?>
+                        <?php foreach ($wawancara as $row): 
+                            $waw1 = getStatusBadge($row['absensi_wawancara_I'] ?? null, $row['wawancara_I_schedule'] ?? false);
+                            $waw2 = getStatusBadge($row['absensi_wawancara_II'] ?? null, $row['wawancara_II_schedule'] ?? false);
+                        ?>
+                            <tr>
+                                <td class="text-center fw-bold text-secondary"><?= $i ?></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary fw-bold" 
+                                             style="width: 40px; height: 40px; font-size: 1.2rem;">
+                                            <?= strtoupper(substr($row['nama_lengkap'], 0, 1)) ?>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
+                                            <div class="text-muted small">Mahasiswa</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="fw-medium text-secondary"><?= htmlspecialchars($row['stambuk']) ?></td>
+                                <td class="text-center"><?= $waw1 ?></td>
+                                <td class="text-center"><?= $waw2 ?></td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button class="btn btn-sm btn-outline-primary rounded-circle border-0 open-detail" 
+                                                data-bs-toggle="modal" data-bs-target="#wawancaraModal"
+                                                data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
+                                                data-id="<?= $row['id'] ?>"
+                                                title="Lihat Detail" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning rounded-circle border-0" 
+                                                id="editButton" data-id="<?= $row['id'] ?>"
+                                                title="Edit Data" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger rounded-circle border-0" 
+                                                id="deleteButton" data-id="<?= $row['id'] ?>"
+                                                title="Hapus Data" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php $i++; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </main>
+<script>
+    // Simple Client-side Search (Optional, given server-side might be better for large data)
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#table-body tr');
+        
+        rows.forEach(row => {
+            let text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? '' : 'none';
+        });
+    });
+</script>
 
 <div class="modal fade modal-wawancara" id="addJadwalModal" tabindex="-1" aria-labelledby="addJadwalModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -428,11 +489,7 @@ $colors = ['#2f66f6'];
                     <div class="mb-3">
                         <label for="wawancara" class="form-label">Jenis Kegiatan</label>
                         <select class="form-select" id="wawancara" required>
-                            <option value="" disabled selected>-- Pilih Jenis Kegiatan --</option>
-                            <option value="Tes Tertulis">Tes Tertulis</option>
-                            <option value="Presentasi">Presentasi</option>
-                            <option value="wawancara kepala lab II">Wawancara Kepala Lab II</option>
-                            <option value="wawancara asisten">Wawancara Asisten</option>
+                            <option value="" disabled selected>-- Pilih Jenis Wawancara --</option>
                             <option value="wawancara kepala lab I">Wawancara Kepala Lab I</option>
                             <option value="wawancara kepala lab II">Wawancara Kepala Lab II</option>
                         </select>
@@ -517,10 +574,8 @@ $colors = ['#2f66f6'];
                         <input type="time" class="form-control" id="updateWaktu" required>
                     </div>
                     <div class="mb-3">
-                        <label for="updateJenisWawancara" class="form-label">Jenis Wawancara</label>
                         <select class="form-select" id="updateJenisWawancara" required>
                             <option value="" disabled selected>-- Pilih Jenis Wawancara --</option>
-                            <option value="wawancara asisten">Wawancara Asisten</option>
                             <option value="wawancara kepala lab I">Wawancara Kepala Lab I</option>
                             <option value="wawancara kepala lab II">Wawancara Kepala Lab II</option>
                         </select>
