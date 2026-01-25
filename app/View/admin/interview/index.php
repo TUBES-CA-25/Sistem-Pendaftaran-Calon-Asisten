@@ -20,9 +20,26 @@ $colors = ['#2f66f6'];
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
+<style>
+    /* Custom styles for action buttons */
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn-action i {
+        font-size: 1rem;
+        line-height: 1;
+    }
+</style>
+
 <div class="container-fluid px-4 py-4">
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4">
+
             <!-- Table Controls -->
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <div class="position-relative" style="flex: 1; max-width: 400px;">
@@ -38,7 +55,7 @@ $colors = ['#2f66f6'];
 
             <!-- Data Table -->
             <div class="table-responsive rounded-3">
-                <table id="wawancaraMahasiswa" class="table table-hover align-middle mb-0">
+                <table id="wawancaraMahasiswa" class="table table-hover table-bordered align-middle mb-0">
                     <thead class="bg-primary text-white">
                         <tr>
                             <th class="py-3 px-3 text-center" width="5%">NO</th>
@@ -98,21 +115,21 @@ $colors = ['#2f66f6'];
                                 <td class="text-center"><?= $waw2 ?></td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-sm btn-outline-primary rounded-circle border-0 open-detail" 
+                                        <button class="btn btn-sm btn-action bg-info-subtle text-info border-0 rounded-3 open-detail" 
                                                 data-bs-toggle="modal" data-bs-target="#wawancaraModal"
                                                 data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
                                                 data-id="<?= $row['id'] ?>"
-                                                title="Lihat Detail" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                                title="Lihat Detail">
                                             <i class="bi bi-eye"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-warning rounded-circle border-0" 
+                                        <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3" 
                                                 id="editButton" data-id="<?= $row['id'] ?>"
-                                                title="Edit Data" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                                title="Edit Data">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-danger rounded-circle border-0" 
+                                        <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3" 
                                                 id="deleteButton" data-id="<?= $row['id'] ?>"
-                                                title="Hapus Data" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                                title="Hapus Data">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
@@ -124,8 +141,7 @@ $colors = ['#2f66f6'];
                 </tbody>
                 </table>
             </div>
-        </div>
-    </div>
+
 </div>
 <script>
     // Simple Client-side Search (Optional, given server-side might be better for large data)
