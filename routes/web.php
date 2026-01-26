@@ -19,10 +19,10 @@ use App\Controllers\notifications\NotificationControllers;
 use App\Controllers\exam\SoalController;
 use App\Controllers\user\WawancaraController;
 use App\Controllers\presentasi\RuanganController;
+use App\Controllers\exam\JadwalTesController;
 use App\Core\Router;
 
-
-
+Router::get('/jadwaltes', [new JadwalTesController, 'index']); // Lowercase route
 Router::get('/soal', [new ExamController, 'index']);
 Router::get('/login', [new LoginController, 'index']);
 

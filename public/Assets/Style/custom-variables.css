@@ -379,6 +379,63 @@ body {
   min-width: 26px;
 }
 
+/* Sidebar Submenu */
+.sidebar ul.submenu {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  padding-left: 20px;
+  background-color: transparent;
+  transition: all 0.4s ease-in-out;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.sidebar ul.submenu.show {
+  max-height: 500px; /* Arbitrary large height */
+  opacity: 1;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.sidebar ul.submenu li {
+  margin: 2px 12px;
+}
+
+.sidebar ul.submenu li a {
+  font-size: 0.85rem;
+  padding: 8px 16px;
+  color: #555;
+  background: transparent; 
+}
+
+.sidebar ul.submenu li a:hover {
+  color: var(--bs-primary);
+  background: transparent;
+  padding-left: 20px; /* Slide effect */
+}
+
+.sidebar ul.submenu li a.active {
+  color: var(--bs-primary);
+  font-weight: 600;
+  background: transparent;
+}
+
+.sidebar ul.submenu li a i {
+  font-size: 1.1rem;
+  margin-right: 8px;
+}
+
+/* Chevron rotation */
+.sidebar .dropdown-toggle .bx-chevron-down {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+.sidebar .dropdown-toggle.show .bx-chevron-down {
+  transform: rotate(180deg);
+}
+
 /* ==============================
    MAIN CONTENT AREA
    ============================== */
@@ -1441,4 +1498,14 @@ body {
     .display-6 {
         font-size: 1.75rem !important;
     }
+}
+
+/* Sidebar Dropdown Toggle Animation */
+.sidebar .dropdown-toggle::after {
+    transition: transform 0.3s ease;
+    margin-left: auto; /* Push to right */
+}
+
+.sidebar .dropdown-toggle.show::after {
+    transform: rotate(180deg);
 }

@@ -99,6 +99,8 @@ class HomeController extends Controller
                 case 'lihatPeserta': return $this->getDaftarPesertaData();
                 case 'daftarKehadiran': return $this->getDaftarHadirData();
                 case 'presentasi': return $this->getPresentasiAdminData();
+                case 'pengajuanJudul': return $this->getPengajuanJudulData();
+                case 'jadwalPresentasi': return $this->getJadwalPresentasiData();
                 case 'tesTulis':
                 case 'bankSoal': return $this->getTesTulisAdminData();
                 case 'wawancara': return $this->getWawancaraAdminData();
@@ -146,9 +148,17 @@ class HomeController extends Controller
                     $data = array_merge($sidebarData, $this->getDaftarHadirData());
                     View::render('index', 'admin/attendance', $data);
                     break;
-                case 'presentasi':
+                case 'presentasi': // Fallback or user role? Admin specific logic below
                     $data = array_merge($sidebarData, $this->getPresentasiAdminData());
                     View::render('index', 'admin/presentation', $data);
+                    break;
+                case 'pengajuanJudul':
+                    $data = array_merge($sidebarData, $this->getPengajuanJudulData());
+                    View::render('titles', 'admin/presentation', $data);
+                    break;
+                case 'jadwalPresentasi':
+                    $data = array_merge($sidebarData, $this->getJadwalPresentasiData());
+                    View::render('schedule', 'admin/presentation', $data);
                     break;
                 case 'tesTulis':
                 case 'bankSoal':
@@ -533,13 +543,35 @@ class HomeController extends Controller
     }
 
     /**
-     * Data untuk presentasi admin view
+     * Data untuk presentasi admin view (Legacy/Combined)
      */
     private function getPresentasiAdminData(): array
     {
         return [
             'mahasiswaList' => PresentasiUserController::viewAllForAdmin() ?? [],
             'mahasiswaAccStatus' => PresentasiUserController::viewAllAccStatusForAdmin() ?? [],
+            'ruanganList' => RuanganController::viewAllRuangan() ?? [],
+            'jadwalPresentasi' => JadwalPresentasiController::getJadwalPresentasi() ?? []
+        ];
+    }
+
+    /**
+     * Data untuk halaman pengajuan judul
+     */
+    private function getPengajuanJudulData(): array
+    {
+        return [
+            'mahasiswaList' => PresentasiUserController::viewAllForAdmin() ?? [],
+            'mahasiswaAccStatus' => PresentasiUserController::viewAllAccStatusForAdmin() ?? []
+        ];
+    }
+
+    /**
+     * Data untuk halaman jadwal presentasi
+     */
+    private function getJadwalPresentasiData(): array
+    {
+        return [
             'ruanganList' => RuanganController::viewAllRuangan() ?? [],
             'jadwalPresentasi' => JadwalPresentasiController::getJadwalPresentasi() ?? []
         ];

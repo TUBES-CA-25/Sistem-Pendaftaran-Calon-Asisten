@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Custom Variables & Bootstrap Overrides (includes Poppins font) -->
-    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/custom-variables.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="Assets/Style/custom-variables.css?v=<?= time() ?>">
 
     <!-- DataTables Bootstrap 5 CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
@@ -86,7 +86,9 @@
             'lihatnilai' => 'admin/grades/index.php',
             'tesTulis' => 'admin/exam/index.php',
             'bankSoal' => 'admin/exam/index.php',
-            'presentasi' => 'admin/presentation/index.php',
+            'jadwaltes' => 'admin/exam/schedule.php',
+            'pengajuanJudul' => 'admin/presentation/titles.php',
+            'jadwalPresentasi' => 'admin/presentation/schedule.php',
             'wawancara' => 'admin/interview/index.php',
             'ruangan' => 'admin/rooms/index.php',
         ];
@@ -138,8 +140,8 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     <!-- App Scripts -->
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/common.js"></script>
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/app.js"></script>
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/sidebar/ScriptSidebar.js"></script>
+    <script src="Assets/Script/common.js"></script>
+    <script src="Assets/Script/app.js"></script>
+    <script src="Assets/Script/sidebar/ScriptSidebar.js"></script>
 </body>
 </html>

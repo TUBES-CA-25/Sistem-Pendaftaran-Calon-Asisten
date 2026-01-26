@@ -17,7 +17,7 @@ $userName = $userName ?? 'Admin';
 <div class="sidebar" id="sidebar">
     <div class="top">
         <div class="logo">
-            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="ICLABS Logo" class="icon">
+            <img src="Assets/Img/iclabs.png" alt="ICLABS Logo" class="icon">
             <span>ICLABS</span>
         </div>
     </div>
@@ -36,10 +36,42 @@ $userName = $userName ?? 'Admin';
             </a>
         </li>
         <li>
+            <a href="#" data-page="pengajuanJudul">
+                <i class='bx bxs-file-doc'></i>
+                <span class="nav-item">Pengajuan Judul</span>
+            </a>
+        </li>
+        <li>
             <a href="#" data-page="bankSoal">
-                <i class='bx bx-edit'></i>
+                <i class="bi bi-journal-text"></i>
                 <span class="nav-item">Bank Soal</span>
             </a>
+        </li>
+        <li>
+            <a href="#" class="dropdown-toggle">
+                <i class="bi bi-calendar-event"></i>
+                <span class="nav-item">Penjadwalan</span>
+            </a>
+            <ul class="submenu">
+                <li>
+                    <a href="#" data-page="jadwaltes">
+                        <i class='bx bx-edit'></i>
+                        <span class="nav-item">Tes Tertulis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-page="jadwalPresentasi">
+                        <i class='bx bx-slideshow'></i>
+                        <span class="nav-item">Presentasi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-page="wawancara">
+                        <i class='bx bx-user-voice'></i>
+                        <span class="nav-item">Wawancara</span>
+                    </a>
+                </li>
+            </ul>
         </li>
         <li>
             <a href="#" data-page="ruangan">
@@ -53,18 +85,8 @@ $userName = $userName ?? 'Admin';
                 <span class="nav-item">Nilai</span>
             </a>
         </li>
-        <li>
-            <a href="#" data-page="presentasi">
-                <i class='bx bx-slideshow'></i>
-                <span class="nav-item">Presentasi</span>
-            </a>
-        </li>
-        <li>
-            <a href="#" data-page="wawancara">
-                <i class='bx bx-user-voice'></i>
-                <span class="nav-item">Kelola Wawancara</span>
-            </a>
-        </li>
+
+
         <li>
             <a href="#" data-page="daftarKehadiran">
                 <i class='bx bx-calendar-check'></i>
