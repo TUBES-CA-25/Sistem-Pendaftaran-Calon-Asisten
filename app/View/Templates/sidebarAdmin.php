@@ -42,10 +42,24 @@ $userName = $userName ?? 'Admin';
             </a>
         </li>
         <li>
-            <a href="#" data-page="bankSoal">
+            <a href="#" class="dropdown-toggle">
                 <i class="bi bi-journal-text"></i>
                 <span class="nav-item">Bank Soal</span>
             </a>
+            <ul class="submenu">
+                <li>
+                    <a href="#" data-page="bankSoal">
+                        <i class='bx bx-list-ul'></i>
+                        <span class="nav-item">Daftar Soal</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-page="importSoal">
+                        <i class='bx bx-transfer'></i>
+                        <span class="nav-item">Import/Export</span>
+                    </a>
+                </li>
+            </ul>
         </li>
         <li>
             <a href="#" class="dropdown-toggle">

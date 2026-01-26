@@ -102,6 +102,7 @@ class HomeController extends Controller
                 case 'pengajuanJudul': return $this->getPengajuanJudulData();
                 case 'jadwalPresentasi': return $this->getJadwalPresentasiData();
                 case 'tesTulis':
+                case 'importSoal':
                 case 'bankSoal': return $this->getTesTulisAdminData();
                 case 'wawancara': return $this->getWawancaraAdminData();
                 case 'profile': return $this->getProfileData();
@@ -164,6 +165,10 @@ class HomeController extends Controller
                 case 'bankSoal':
                     $data = array_merge($sidebarData, $this->getTesTulisAdminData());
                     View::render('index', 'admin/exam', $data);
+                    break;
+                case 'importSoal':
+                    $data = array_merge($sidebarData, $this->getTesTulisAdminData());
+                    View::render('importPage', 'admin/exam', $data);
                     break;
                 case 'wawancara':
                     $data = array_merge($sidebarData, $this->getWawancaraAdminData());
@@ -582,8 +587,11 @@ class HomeController extends Controller
      */
     private function getTesTulisAdminData(): array
     {
+        $examData = ExamController::getAdminExamPageData();
         return [
-            'allSoal' => ExamController::viewAllSoal() ?? []
+            'allSoal' => $examData['allSoal'] ?? [],
+            'bankSoalList' => $examData['bankSoalList'] ?? [],
+            'stats' => $examData['stats'] ?? []
         ];
     }
 

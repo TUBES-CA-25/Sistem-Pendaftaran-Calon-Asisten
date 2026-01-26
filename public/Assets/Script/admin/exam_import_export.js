@@ -303,34 +303,13 @@ window.removeBankFromDropdowns = function(bankId) {
         if (exportSelect && exportSelect.value && totalEl && pgEl && essayEl) {
             const selectedOption = exportSelect.options[exportSelect.selectedIndex];
             const totalCount = selectedOption.getAttribute('data-count') || '0';
+            const pgCount = selectedOption.getAttribute('data-pg') || '0';
+            const essayCount = selectedOption.getAttribute('data-essay') || '0';
             
-            // Display total immediately
+            // Display stats immediately from data attributes
             totalEl.textContent = totalCount;
-            
-            // For now, show total only (PG/Essay breakdown requires backend data)
-            // We'll calculate from the bank's questions
-            const bankId = exportSelect.value;
-            
-            // Try to get breakdown from window.bankSoalList if available
-            if (window.bankSoalList) {
-                const bank = window.bankSoalList.find(b => b.id == bankId);
-                
-                if (bank) {
-                    totalEl.textContent = bank.jumlah_soal || '0';
-                    pgEl.textContent = bank.pg_count || '0';
-                    essayEl.textContent = bank.essay_count || '0';
-                } else {
-                    // Fallback to just showing total
-                    totalEl.textContent = totalCount;
-                    pgEl.textContent = '-';
-                    essayEl.textContent = '-';
-                }
-            } else {
-                // No breakdown available, show total only
-                totalEl.textContent = totalCount;
-                pgEl.textContent = '-';
-                essayEl.textContent = '-';
-            }
+            pgEl.textContent = pgCount;
+            essayEl.textContent = essayCount;
         } else if (totalEl && pgEl && essayEl) {
             // Reset summary
             totalEl.textContent = '-';

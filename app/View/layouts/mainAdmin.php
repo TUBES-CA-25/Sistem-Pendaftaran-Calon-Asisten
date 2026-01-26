@@ -86,6 +86,7 @@
             'lihatnilai' => 'admin/grades/index.php',
             'tesTulis' => 'admin/exam/index.php',
             'bankSoal' => 'admin/exam/index.php',
+            'importSoal' => 'admin/exam/importPage.php',
             'jadwaltes' => 'admin/exam/schedule.php',
             'pengajuanJudul' => 'admin/presentation/titles.php',
             'jadwalPresentasi' => 'admin/presentation/schedule.php',

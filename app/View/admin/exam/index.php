@@ -110,34 +110,23 @@ $essayCount = $stats['essay_count'];
         </div>
     </div>
 
-    <!-- Navigation Tabs -->
+    <!-- Header & Controls -->
     <div class="card border-0 shadow-sm mb-4 rounded-4">
-        <div class="card-body p-2">
+        <div class="card-body p-3">
             <div class="d-flex justify-content-between align-items-center">
-                <ul class="nav nav-pills nav-fill gap-2" id="bankSoalTabs">
-                <li class="nav-item">
-                    <a class="nav-link active px-4 py-2" data-bs-toggle="pill" href="#tabBankSoal">
-                        <i class='bx bx-folder me-2'></i> Bank Soal
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link px-4 py-2" data-bs-toggle="pill" href="#tabImportExport">
-                        <i class='bx bx-transfer me-2'></i> Import/Export
-                    </a>
-                </li>
-            </ul>
-            <button class="btn btn-primary" id="btnCreateBank" data-bs-toggle="modal" data-bs-target="#createBankModal" style="background-color: #2563eb; border-color: #2563eb;">
-                <i class='bx bx-plus me-1'></i> Bank Soal Baru
-            </button>
+                <div class="d-flex align-items-center gap-2">
+                    <h5 class="fw-bold mb-0 text-dark"><i class='bx bx-folder me-2'></i>Daftar Bank Soal</h5>
+                </div>
+                <button class="btn btn-primary px-4 py-2 fw-semibold rounded-3 d-flex align-items-center gap-2" id="btnCreateBank" data-bs-toggle="modal" data-bs-target="#createBankModal" style="background-color: #2563eb; border-color: #2563eb;">
+                    <i class='bx bx-plus fs-5'></i> 
+                    <span>Bank Soal Baru</span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Tab Content -->
-    <div class="tab-content">
-        <!-- Tab: Bank Soal -->
-        <div class="tab-pane fade show active" id="tabBankSoal">
-            <!-- Bank Soal List View -->
-            <div class="bank-list-view" id="bankListView">
+    <!-- Bank Soal List View -->
+    <div class="bank-list-view" id="bankListView">
                 <?php if (empty($bankSoalList)): ?>
                 <div class="text-center py-5">
                     <i class='bx bx-folder-open text-muted' style="font-size: 5rem;"></i>
@@ -278,8 +267,6 @@ $essayCount = $stats['essay_count'];
             </div>
         </div>
 
-        <?php include 'import_export.php'; ?>
-    </div>
 </main>
 
 <!-- Create Bank Modal -->
