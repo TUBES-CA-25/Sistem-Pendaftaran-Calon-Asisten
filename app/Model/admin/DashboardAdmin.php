@@ -51,9 +51,24 @@ class DashboardAdmin extends Model
     {
         $results = [];
 
-        // Try pull from jadwal_wawancara
-        $wawancara = self::selectTanggalByMonth('jadwal_wawancara', $year, $month, 'Wawancara');
-        $results = array_merge($results, $wawancara);
+        // Fetch from wawancara table (Distinct types per day)
+        try {
+            $sql = "SELECT DISTINCT tanggal, jenis_wawancara as judul FROM wawancara WHERE YEAR(tanggal) = :year AND MONTH(tanggal) = :month";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->bindValue(':year', $year, PDO::PARAM_INT);
+            $stmt->bindValue(':month', $month, PDO::PARAM_INT);
+            $stmt->execute();
+            $wawancaraRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($wawancaraRows) {
+                foreach ($wawancaraRows as $row) {
+                    $results[] = [
+                        'tanggal' => $row['tanggal'],
+                        'judul' => $row['judul'],
+                        'jenis' => 'Wawancara'
+                    ];
+                }
+            }
+        } catch (\Throwable $e) {}
 
         // Try pull from jadwal_presentasi
         $presentasi = self::selectTanggalByMonth('jadwal_presentasi', $year, $month, 'Presentasi', true);

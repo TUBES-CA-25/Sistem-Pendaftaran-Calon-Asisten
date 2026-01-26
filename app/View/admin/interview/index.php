@@ -59,71 +59,47 @@ $colors = ['#2f66f6'];
                     <thead class="bg-primary text-white">
                         <tr>
                             <th class="py-3 px-3 text-center" width="5%">NO</th>
-                            <th class="py-3 px-3" width="30%">NAMA LENGKAP</th>
-                            <th class="py-3 px-3" width="20%">STAMBUK</th>
-                            <th class="py-3 px-3 text-center" width="20%">WAWANCARA I</th>
-                            <th class="py-3 px-3 text-center" width="20%">WAWANCARA II</th>
+                            <th class="py-3 px-3" width="25%">NAMA LENGKAP</th>
+                            <th class="py-3 px-3" width="15%">STAMBUK</th>
+                            <th class="py-3 px-3" width="20%">KEGIATAN</th>
+                            <th class="py-3 px-3" width="10%">RUANGAN</th>
+                            <th class="py-3 px-3" width="10%">TANGGAL</th>
+                            <th class="py-3 px-3" width="10%">WAKTU</th>
                             <th class="py-3 px-3 text-center" width="5%">AKSI</th>
                         </tr>
                     </thead>
                 <tbody id="table-body" class="bg-white">
                     <?php if (empty($wawancara)): ?>
                         <tr>
-                            <td colspan="6" class="text-center py-5 text-muted">
+                            <td colspan="8" class="text-center py-5 text-muted">
                                 <i class="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
-                                Belum ada data mahasiswa
+                                Belum ada data jadwal wawancara
                             </td>
                         </tr>
                     <?php else: ?>
-                        <?php 
-                        // Determine status badges logic
-                        if (!function_exists('getStatusBadge')) {
-                            function getStatusBadge($absensiStatus, $hasSchedule) {
-                                if (!empty($absensiStatus) && $absensiStatus !== 'Belum Ada') {
-                                    if ($absensiStatus == 'Hadir') return '<span class="badge bg-success rounded-pill px-3">Hadir</span>';
-                                    if ($absensiStatus == 'Tidak Hadir' || $absensiStatus == 'Alpha') return '<span class="badge bg-danger rounded-pill px-3">Alpha</span>';
-                                    return '<span class="badge bg-secondary rounded-pill px-3">' . $absensiStatus . '</span>';
-                                }
-                                if ($hasSchedule) {
-                                    return '<span class="badge bg-info text-white rounded-pill px-3">Terjadwal</span>';
-                                }
-                                return '<span class="badge bg-light text-secondary border rounded-pill px-3">Belum Ada</span>';
-                            }
-                        }
-                        ?>
                         <?php $i = 1; ?>
-                        <?php foreach ($wawancara as $row): 
-                            $waw1 = getStatusBadge($row['absensi_wawancara_I'] ?? null, $row['wawancara_I_schedule'] ?? false);
-                            $waw2 = getStatusBadge($row['absensi_wawancara_II'] ?? null, $row['wawancara_II_schedule'] ?? false);
-                        ?>
-                            <tr>
+                        <?php foreach ($wawancara as $row): ?>
+                            <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
                                 <td class="text-center fw-bold text-secondary"><?= $i ?></td>
                                 <td>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="rounded-circle d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary fw-bold" 
-                                             style="width: 40px; height: 40px; font-size: 1.2rem;">
-                                            <?= strtoupper(substr($row['nama_lengkap'], 0, 1)) ?>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold text-dark"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
-                                            <div class="text-muted small">Mahasiswa</div>
-                                        </div>
-                                    </div>
+                                    <div class="fw-bold text-dark"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
                                 </td>
                                 <td class="fw-medium text-secondary"><?= htmlspecialchars($row['stambuk']) ?></td>
-                                <td class="text-center"><?= $waw1 ?></td>
-                                <td class="text-center"><?= $waw2 ?></td>
+                                <td><?= htmlspecialchars($row['jenis_wawancara']) ?></td>
+                                <td><?= htmlspecialchars($row['ruangan']) ?></td>
+                                <td><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
+                                <td><?= htmlspecialchars($row['waktu']) ?></td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-sm btn-action bg-info-subtle text-info border-0 rounded-3 open-detail" 
+                                        <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 open-detail" 
                                                 data-bs-toggle="modal" data-bs-target="#wawancaraModal"
                                                 data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
+                                                data-stambuk="<?= htmlspecialchars($row['stambuk']) ?>"
+                                                data-ruangan="<?= htmlspecialchars($row['ruangan']) ?>"
+                                                data-jeniswawancara="<?= htmlspecialchars($row['jenis_wawancara']) ?>"
+                                                data-waktu="<?= htmlspecialchars($row['waktu']) ?>"
+                                                data-tanggal="<?= htmlspecialchars($row['tanggal']) ?>"
                                                 data-id="<?= $row['id'] ?>"
-                                                title="Lihat Detail">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3" 
-                                                id="editButton" data-id="<?= $row['id'] ?>"
                                                 title="Edit Data">
                                             <i class="bi bi-pencil"></i>
                                         </button>
@@ -307,6 +283,11 @@ $colors = ['#2f66f6'];
 
 <script>
     $(document).ready(() => {
+
+        function formatDate(dateString) {
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
 
         function showModal(message, gifUrl = null) {
             const modalEl = document.getElementById('customModal');
@@ -581,26 +562,43 @@ $colors = ['#2f66f6'];
                 data: JSON.stringify(requestData),
                 success: function (response) {
                     if (response.status === "success") {
+
                         let tableBody = $("#table-body");
                         tableBody.empty();
                         let i = 1;
                         response.data.forEach(row => {
                             tableBody.append(`
                             <tr data-id="${row.id}" data-userid="${row.id_mahasiswa}">
-                                <td>${i}</td>
+                                <td class="text-center fw-bold text-secondary">${i}</td>
                                 <td>
-                                    <span class="open-detail" data-bs-toggle="modal" data-bs-target="#wawancaraModal"
-                                        data-nama="${row.nama_lengkap}" data-stambuk="${row.stambuk}"
-                                        data-ruangan="${row.ruangan}" data-jeniswawancara="${row.jenis_wawancara}"
-                                        data-waktu="${row.waktu}" data-tanggal="${row.tanggal}">
-                                        ${row.nama_lengkap}
-                                    </span>
+                                    <div class="fw-bold text-dark">${row.nama_lengkap}</div>
                                 </td>
-                                <td>${row.stambuk}</td>
-                                <td>${row.ruangan}</td>
+                                <td class="fw-medium text-secondary">${row.stambuk}</td>
                                 <td>${row.jenis_wawancara}</td>
+                                <td>${row.ruangan}</td>
+                                <td>${formatDate(row.tanggal)}</td>
                                 <td>${row.waktu}</td>
-                                <td>${row.tanggal}</td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 open-detail" 
+                                                data-bs-toggle="modal" data-bs-target="#wawancaraModal"
+                                                data-nama="${row.nama_lengkap}"
+                                                data-stambuk="${row.stambuk}"
+                                                data-ruangan="${row.ruangan}"
+                                                data-jeniswawancara="${row.jenis_wawancara}"
+                                                data-waktu="${row.waktu}"
+                                                data-tanggal="${row.tanggal}"
+                                                data-id="${row.id}"
+                                                title="Edit Data">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3" 
+                                                id="deleteButton" data-id="${row.id}"
+                                                title="Hapus Data">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
                         `);
                             i++;

@@ -670,14 +670,16 @@ $essayCount = $stats['essay_count'];
 <!-- Error Handling & Suppression Scripts -->
 <script>
     // 1. Suppress external extension errors (Visual cleanup for console)
-    const originalConsoleError = console.error;
-    console.error = function(...args) {
-        if (args[0] && typeof args[0] === 'string' && 
-           (args[0].includes('chrome-extension://') || args[0].includes('quillbot'))) {
-            return; // Suppress extension noise
-        }
-        originalConsoleError.apply(console, args);
-    };
+    if (!window.originalConsoleError) {
+        window.originalConsoleError = console.error;
+        console.error = function(...args) {
+            if (args[0] && typeof args[0] === 'string' && 
+               (args[0].includes('chrome-extension://') || args[0].includes('quillbot'))) {
+                return; // Suppress extension noise
+            }
+            window.originalConsoleError.apply(console, args);
+        };
+    }
 
     // 2. Global Image Error Handler (Handle 404s gracefully in UI)
     document.addEventListener('error', function(e) {

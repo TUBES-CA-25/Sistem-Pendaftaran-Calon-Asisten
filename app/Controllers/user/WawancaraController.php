@@ -6,52 +6,9 @@ class WawancaraController extends Controller
 {
     public static function getAll()
     {
-        $absensiModel = new \App\Model\User\Absensi();
-        $absensiData = $absensiModel->getAbsensi(); // Data from 'absensi' table
-        
-        // Fetch Schedules from 'wawancara' table
+        // Simply fetch all schedules without merging by stambuk
         $wawancaraModel = new \App\Model\Wawancara\Wawancara();
-        $schedules = $wawancaraModel->getAll(); // Fetches all schedules with student info
-
-        // Index Absensi by ID Mahasiswa
-        $mergedData = [];
-        foreach ($absensiData as $row) {
-            // We need a way to link by id_mahasiswa. 
-            // Absensi query returns 'id' as absensi id. 
-            // We need to check if Absensi model returns id_mahasiswa.
-            // Let's assume we can get it or we have to modify Absensi model too.
-            // Wait, Absensi::getAbsensi() (lines 29-44) returns: id, nama_lengkap, stambuk... 
-            // It does NOT return id_mahasiswa explicitly in select! 
-            // We need to add a.id_mahasiswa to select in Absensi model first.
-            // For now, let's index by stambuk or name, which is risky. 
-            // BETTER: Modify Absensi model to include id_mahasiswa.
-            
-            // Assuming we fix Absensi model first.
-            $mergedData[$row['stambuk']] = $row; 
-        }
-
-        // Process Schedules to add "Terjadwal" status if Absensi is missing
-        foreach ($schedules as $sch) {
-            $stambuk = $sch['stambuk'];
-            if (!isset($mergedData[$stambuk])) {
-                // If no absensi record, create a placeholder entry
-                $mergedData[$stambuk] = [
-                    'id' => null, // No absensi ID
-                    'nama_lengkap' => $sch['nama_lengkap'],
-                    'stambuk' => $stambuk,
-                    'absensi_wawancara_I' => null, // Will be interpreted as check schedule
-                    'absensi_wawancara_II' => null,
-                    'wawancara_I_schedule' => strpos($sch['jenis_wawancara'], 'I') !== false,
-                    'wawancara_II_schedule' => strpos($sch['jenis_wawancara'], 'II') !== false,
-                ];
-            } else {
-                // If exists, just mark schedule existence flag
-                $mergedData[$stambuk]['wawancara_I_schedule'] = strpos($sch['jenis_wawancara'], 'I') !== false;
-                $mergedData[$stambuk]['wawancara_II_schedule'] = strpos($sch['jenis_wawancara'], 'II') !== false;
-            }
-        }
-
-        return array_values($mergedData);
+        return $wawancaraModel->getAll(); 
     }
 
     public function getAllFilterByIdRuangan()
