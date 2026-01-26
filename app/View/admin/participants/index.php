@@ -395,36 +395,6 @@ $result = $result ?? [];
                     
                     <!-- Right Column -->
                     <div class="col-lg-6">
-                        <!-- Presentasi Section -->
-                        <div class="bg-white rounded-4 p-4 mb-3 shadow-sm" id="presentasiSection" style="border: 1px solid #e5e7eb;">
-                            <div class="d-flex align-items-center mb-4">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 42px; height: 42px; background: linear-gradient(135deg, #10b981 0%, #059b70 100%);">
-                                    <i class="bi bi-easel text-white" style="font-size: 1.1rem;"></i>
-                                </div>
-                                <div>
-                                    <h6 class="fw-bold mb-0" style="color: #1f2937;">Presentasi</h6>
-                                    <small class="text-muted">Materi presentasi peserta</small>
-                                </div>
-                            </div>
-                            
-                            <div class="p-3 rounded-3 mb-3" style="background: linear-gradient(135deg, #10b98110 0%, #059b7010 100%); border: 1px solid #10b98130;">
-                                <label class="text-muted d-block mb-1" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Judul Presentasi</label>
-                                <p class="fw-semibold mb-0" id="modalJudulPresentasi" style="color: #1f2937; font-size: 0.95rem;">-</p>
-                            </div>
-                            
-                            <div class="d-flex gap-2 flex-wrap" id="presentasiButtons">
-                                <button type="button" class="btn btn-sm px-3 py-2" id="downloadMakalahButton" data-download-url="" style="display: none; background: linear-gradient(135deg, #10b981 0%, #059b70 100%); color: white; border: none; border-radius: 10px;">
-                                    <i class="bi bi-file-earmark-text me-2"></i>Download Makalah
-                                </button>
-                                <button type="button" class="btn btn-sm px-3 py-2" id="downloadPptButton" data-download-url="" style="display: none; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; border-radius: 10px;">
-                                    <i class="bi bi-file-earmark-slides me-2"></i>Download PPT
-                                </button>
-                                <span id="noPresentasiFiles" class="text-muted fst-italic" style="font-size: 0.85rem; display: none;">
-                                    <i class="bi bi-info-circle me-1"></i>Belum ada file presentasi
-                                </span>
-                            </div>
-                        </div>
-                        
                         <!-- Berkas Section -->
                         <div class="bg-white rounded-4 p-4 shadow-sm" style="border: 1px solid #e5e7eb;">
                             <div class="d-flex align-items-center mb-4">

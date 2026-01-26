@@ -58,19 +58,21 @@ $mahasiswaList = $mahasiswaList ?? [];
                     <tbody>
                         <?php $i = 1; foreach ($mahasiswaList as $row): ?>
                             <?php
-                                $isAccepted = isset($row['is_accepted']) && $row['is_accepted'] == 1;
-                                $isRejected = isset($row['is_accepted']) && $row['is_accepted'] == 2;
+                                $statusValue = $row['is_accepted'] ?? 0;
+                                $isAccepted = ($statusValue == 1);
+                                $isRejected = ($statusValue == 2);
+                                $isPending = ($statusValue == 0);
                                 $hasSchedule = isset($row['has_schedule']) && $row['has_schedule'];
                                 
-                                if ($hasSchedule) {
-                                    $badgeClass = 'bg-primary text-white';
-                                    $badgeText = 'Terjadwal';
-                                } elseif ($isRejected) {
+                                if ($isRejected) {
                                     $badgeClass = 'bg-danger text-white';
                                     $badgeText = 'Ditolak';
                                 } elseif ($isAccepted) {
                                     $badgeClass = 'bg-success text-white';
                                     $badgeText = 'Diterima';
+                                } elseif ($hasSchedule) {
+                                    $badgeClass = 'bg-primary text-white';
+                                    $badgeText = 'Terjadwal';
                                 } else {
                                     $badgeClass = 'bg-secondary text-white';
                                     $badgeText = 'Menunggu';
@@ -88,18 +90,14 @@ $mahasiswaList = $mahasiswaList ?? [];
                                     <div class="d-flex gap-2 flex-nowrap align-items-center">
                                         <button class="btn btn-sm btn-action bg-info-subtle text-info border-0 rounded-3 btn-detail-pengajuan"
                                                 data-nama="<?= htmlspecialchars($row['nama'] ?? '') ?>"
-                                                data-stambuk="<?= htmlspecialchars($row['stambuk'] ?? '') ?>"
-                                                data-judul="<?= htmlspecialchars($row['judul'] ?? '') ?>"
+                                                data-stambuk="<?= htmlspecialchars($row['stambuk'] ?? '-') ?>"
+                                                data-judul="<?= htmlspecialchars($row['judul'] ?? '-') ?>"
                                                 data-ppt="<?= htmlspecialchars($row['berkas']['ppt'] ?? '') ?>"
                                                 data-makalah="<?= htmlspecialchars($row['berkas']['makalah'] ?? '') ?>"
+                                                data-userid="<?= $row['id_mahasiswa'] ?>"
+                                                data-status="<?= $statusValue ?>"
                                                 title="Lihat Detail"><i class="bi bi-eye"></i></button>
 
-                                        <?php if (!$isAccepted && !$isRejected): ?>
-                                            <button class="btn btn-sm btn-action bg-success-subtle text-success border-0 rounded-3 btn-accept-judul"
-                                                    data-userid="<?= $row['id_mahasiswa'] ?>" title="Terima Judul"><i class="bi bi-check-lg"></i></button>
-                                            <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3 btn-reject-judul"
-                                                    data-userid="<?= $row['id_mahasiswa'] ?>" title="Tolak Judul"><i class="bi bi-x-lg"></i></button>
-                                        <?php endif; ?>
                                         <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 btn-send-message"
                                                 data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>" title="Kirim Pesan"><i class="bi bi-chat-dots"></i></button>
                                     </div>
@@ -125,11 +123,19 @@ $mahasiswaList = $mahasiswaList ?? [];
                 <div class="mb-3"><strong class="text-secondary">Nama:</strong> <p class="mb-0 text-dark" id="detailNama">-</p></div>
                 <div class="mb-3"><strong class="text-secondary">Stambuk:</strong> <p class="mb-0 text-dark" id="detailStambuk">-</p></div>
                 <div class="mb-3"><strong class="text-secondary">Judul:</strong> <p class="mb-0 text-dark" id="detailJudul">-</p></div>
+                
+                <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                    <button class="btn btn-outline-primary btn-sm rounded-3 w-100" id="btnDownloadPpt"><i class="bi bi-file-earmark-ppt"></i> Download PPT</button>
+                    <button class="btn btn-outline-primary btn-sm rounded-3 w-100" id="btnDownloadMakalah"><i class="bi bi-file-earmark-pdf"></i> Download Makalah</button>
+                </div>
             </div>
-            <div class="modal-footer border-top border-light">
-                <button class="btn btn-primary bg-gradient-primary rounded-3" id="btnDownloadPpt"><i class="bi bi-file-earmark-ppt"></i> PPT</button>
-                <button class="btn btn-primary bg-gradient-primary rounded-3" id="btnDownloadMakalah"><i class="bi bi-file-earmark-pdf"></i> Makalah</button>
-                <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Tutup</button>
+            <div class="modal-footer border-top-0 pb-4 px-4 justify-content-center gap-2">
+                <button class="btn btn-success px-4 rounded-3 d-flex align-items-center gap-2 shadow-sm" id="btnModalAccept">
+                    <i class="bi bi-check-circle"></i> Terima Judul
+                </button>
+                <button class="btn btn-danger px-4 rounded-3 d-flex align-items-center gap-2 shadow-sm" id="btnModalReject">
+                    <i class="bi bi-x-circle"></i> Tolak Judul
+                </button>
             </div>
         </div>
     </div>
@@ -172,11 +178,28 @@ $(document).ready(function() {
     });
 
     $('.btn-detail-pengajuan').on('click', function() {
-        $('#detailNama').text($(this).data('nama'));
-        $('#detailStambuk').text($(this).data('stambuk'));
-        $('#detailJudul').text($(this).data('judul'));
-        $('#btnDownloadPpt').data('url', $(this).data('ppt'));
-        $('#btnDownloadMakalah').data('url', $(this).data('makalah'));
+        const data = $(this).data();
+        currentUserId = data.userid;
+        
+        $('#detailNama').text(data.nama);
+        $('#detailStambuk').text(data.stambuk);
+        $('#detailJudul').text(data.judul);
+        
+        $('#btnDownloadPpt').data('url', data.ppt);
+        $('#btnDownloadMakalah').data('url', data.makalah);
+        
+        // Visual indicator for active status in modal
+        if (data.status == 1) { // Accepted
+            $('#btnModalAccept').removeClass('btn-success').addClass('btn-outline-success').attr('disabled', true).html('<i class="bi bi-check-circle-fill"></i> Berhasil Diterima');
+            $('#btnModalReject').removeClass('btn-outline-danger').addClass('btn-danger').attr('disabled', false).html('<i class="bi bi-x-circle"></i> Tolak Judul');
+        } else if (data.status == 2) { // Rejected
+            $('#btnModalReject').removeClass('btn-danger').addClass('btn-outline-danger').attr('disabled', true).html('<i class="bi bi-x-circle-fill"></i> Berhasil Ditolak');
+            $('#btnModalAccept').removeClass('btn-outline-success').addClass('btn-success').attr('disabled', false).html('<i class="bi bi-check-circle"></i> Terima Judul');
+        } else {
+            $('#btnModalAccept').removeClass('btn-outline-success').addClass('btn-success').attr('disabled', false).html('<i class="bi bi-check-circle"></i> Terima Judul');
+            $('#btnModalReject').removeClass('btn-outline-danger').addClass('btn-danger').attr('disabled', false).html('<i class="bi bi-x-circle"></i> Tolak Judul');
+        }
+        
         new bootstrap.Modal('#detailPengajuanModal').show();
     });
 
@@ -191,19 +214,26 @@ $(document).ready(function() {
         else showAlert('File tidak tersedia', false);
     });
 
-    $('.btn-accept-judul').click(function() {
-        if(confirm('Terima judul?')) {
-            $.post(APP_URL + '/updatestatus', { id: $(this).data('userid'), status: 1 }, function(res) {
-                if(res.status === 'success') { showAlert('Judul diterima!'); setTimeout(() => location.reload(), 1000); }
-                else showAlert(res.message, false);
+    $('#btnModalAccept').click(function() {
+        if(confirm('Terima judul ini?')) {
+            $.post(APP_URL + '/updatestatus', { id: currentUserId, status: 1 }, function(res) {
+                if(res.status === 'success') { 
+                    showAlert('Judul diterima!'); 
+                    bootstrap.Modal.getInstance(document.getElementById('detailPengajuanModal')).hide();
+                    setTimeout(() => location.reload(), 1000); 
+                } else showAlert(res.message, false);
             }, 'json');
         }
     });
-    $('.btn-reject-judul').click(function() {
-        if(confirm('Tolak judul?')) {
-            $.post(APP_URL + '/updatestatus', { id: $(this).data('userid'), status: 2 }, function(res) {
-                if(res.status === 'success') { showAlert('Judul ditolak!'); setTimeout(() => location.reload(), 1000); }
-                else showAlert(res.message, false);
+
+    $('#btnModalReject').click(function() {
+        if(confirm('Tolak judul ini?')) {
+            $.post(APP_URL + '/updatestatus', { id: currentUserId, status: 2 }, function(res) {
+                if(res.status === 'success') { 
+                    showAlert('Judul ditolak!'); 
+                    bootstrap.Modal.getInstance(document.getElementById('detailPengajuanModal')).hide();
+                    setTimeout(() => location.reload(), 1000); 
+                } else showAlert(res.message, false);
             }, 'json');
         }
     });
