@@ -99,12 +99,16 @@ class Wawancara extends Model
                 $row['status_kehadiran'] = $row['absensi_tes_tertulis'];
             } elseif ($judul === 'Presentasi') {
                 $row['status_kehadiran'] = $row['absensi_presentasi'];
-            } elseif (strpos($judul, 'Wawancara I') !== false && strpos($judul, 'II') === false) {
-                $row['status_kehadiran'] = $row['absensi_wawancara_I'];
-            } elseif (strpos($judul, 'Wawancara II') !== false && strpos($judul, 'III') === false) {
-                $row['status_kehadiran'] = $row['absensi_wawancara_II'];
-            } elseif (strpos($judul, 'Wawancara III') !== false) {
-                $row['status_kehadiran'] = $row['absensi_wawancara_III'];
+            } else {
+                // Use regex to match Wawancara types more reliably
+                $judulStr = (string)$judul;
+                if (preg_match('/Wawancara.*I($|\s)/i', $judulStr) && !preg_match('/Wawancara.*II/i', $judulStr)) {
+                     $row['status_kehadiran'] = $row['absensi_wawancara_I'];
+                } elseif (preg_match('/Wawancara.*II($|\s)/i', $judulStr) && !preg_match('/Wawancara.*III/i', $judulStr)) {
+                     $row['status_kehadiran'] = $row['absensi_wawancara_II'];
+                } elseif (preg_match('/Wawancara.*III($|\s)/i', $judulStr)) {
+                     $row['status_kehadiran'] = $row['absensi_wawancara_III'];
+                }
             }
             
             $activities[] = $row;

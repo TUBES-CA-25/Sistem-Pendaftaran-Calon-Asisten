@@ -45,6 +45,12 @@ class HomeController extends Controller
 
     public function loadContent($page)
     {
+        if (!$this->isLoggedIn()) {
+            $baseUrl = dirname($_SERVER['SCRIPT_NAME']);
+            header('Location: ' . $baseUrl . '/login');
+            exit();
+        }
+
         if (is_array($page)) {
             $page = $page['page'];
         }
@@ -222,7 +228,7 @@ class HomeController extends Controller
     }
     private function getRole()
     {
-        return $_SESSION['user']['role'];
+        return $_SESSION['user']['role'] ?? null;
     }
 
     /**
