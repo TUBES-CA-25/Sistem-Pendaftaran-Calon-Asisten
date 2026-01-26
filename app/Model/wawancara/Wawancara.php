@@ -31,9 +31,27 @@ class Wawancara extends Model
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function getAllWawancaraOnly()
+    {
+        $sql = "SELECT w.id, w.id_mahasiswa, m.nama_lengkap, m.stambuk, r.nama as ruangan, w.jenis_wawancara, w.waktu, w.tanggal, w.id_ruangan 
+                FROM " . self::$table . " w 
+                JOIN mahasiswa m ON w.id_mahasiswa = m.id 
+                JOIN ruangan r ON w.id_ruangan = r.id 
+                WHERE w.jenis_wawancara NOT LIKE 'Tes Tertulis%'
+                ORDER BY w.tanggal DESC, w.waktu DESC";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function getAllFilterByRuangan($id)
     {
-        $sql = "SELECT w.id,w.id_mahasiswa,m.nama_lengkap, m.stambuk, r.nama as ruangan, w.jenis_wawancara, w.waktu, w.tanggal FROM " . self::$table . " w JOIN mahasiswa m ON w.id_mahasiswa = m.id JOIN ruangan r ON w.id_ruangan = r.id WHERE w.id_ruangan = ?";
+        $sql = "SELECT w.id, w.id_mahasiswa, m.nama_lengkap, m.stambuk, r.nama as ruangan, w.jenis_wawancara, w.waktu, w.tanggal, w.id_ruangan 
+                FROM " . self::$table . " w 
+                JOIN mahasiswa m ON w.id_mahasiswa = m.id 
+                JOIN ruangan r ON w.id_ruangan = r.id 
+                WHERE w.id_ruangan = ? AND w.jenis_wawancara NOT LIKE 'Tes Tertulis%'
+                ORDER BY w.tanggal DESC, w.waktu DESC";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(1, $id);
         $stmt->execute();
@@ -95,11 +113,17 @@ class Wawancara extends Model
             $row['status_kehadiran'] = 'Belum Ada';
             $judul = $row['judul'];
             
+            // Set dynamic type based on title
             if ($judul === 'Tes Tertulis') {
                 $row['status_kehadiran'] = $row['absensi_tes_tertulis'];
+                $row['jenis'] = 'Ujian Tertulis'; 
             } elseif ($judul === 'Presentasi') {
                 $row['status_kehadiran'] = $row['absensi_presentasi'];
+                $row['jenis'] = 'Presentasi';
             } else {
+                // Default to Wawancara for other types in this table
+                $row['jenis'] = 'Wawancara';
+                
                 // Use regex to match Wawancara types more reliably
                 $judulStr = (string)$judul;
                 if (preg_match('/Wawancara.*I($|\s)/i', $judulStr) && !preg_match('/Wawancara.*II/i', $judulStr)) {
@@ -163,10 +187,10 @@ class Wawancara extends Model
     public function updateWawancara($id, Wawancara $wawancara) {
         $sql = "UPDATE " . self::$table . " SET id_ruangan = ?, jenis_wawancara = ?, waktu = ?, tanggal = ? WHERE id = ?";
         $stmt = self::getDB()->prepare($sql);
-        $stmt->bindValue(1, $this->id_ruangan);
-        $stmt->bindValue(2, $this->jenis_wawancara);
-        $stmt->bindValue(3, $this->waktu);
-        $stmt->bindValue(4, $this->tanggal);
+        $stmt->bindValue(1, $wawancara->id_ruangan);
+        $stmt->bindValue(2, $wawancara->jenis_wawancara);
+        $stmt->bindValue(3, $wawancara->waktu);
+        $stmt->bindValue(4, $wawancara->tanggal);
         $stmt->bindValue(5, $id);
         $stmt->execute();
         return true;

@@ -94,11 +94,12 @@ $colors = ['#2f66f6'];
                                 <td><?= htmlspecialchars($row['waktu']) ?></td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 open-detail" 
-                                                data-bs-toggle="modal" data-bs-target="#wawancaraModal"
+                                        <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 open-update" 
+                                                data-bs-toggle="modal" data-bs-target="#updateWawancaraModal"
                                                 data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
                                                 data-stambuk="<?= htmlspecialchars($row['stambuk']) ?>"
                                                 data-ruangan="<?= htmlspecialchars($row['ruangan']) ?>"
+                                                data-ruangan_id="<?= $row['id_ruangan'] ?>"
                                                 data-jeniswawancara="<?= htmlspecialchars($row['jenis_wawancara']) ?>"
                                                 data-waktu="<?= htmlspecialchars($row['waktu']) ?>"
                                                 data-tanggal="<?= htmlspecialchars($row['tanggal']) ?>"
@@ -106,8 +107,8 @@ $colors = ['#2f66f6'];
                                                 title="Edit Data">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3" 
-                                                id="deleteButton" data-id="<?= $row['id'] ?>"
+                                        <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3 btn-delete-wawancara" 
+                                                data-id="<?= $row['id'] ?>"
                                                 title="Hapus Data">
                                             <i class="bi bi-trash"></i>
                                         </button>
@@ -265,47 +266,6 @@ $colors = ['#2f66f6'];
     </div>
 </div>
 
-<div class="modal fade modal-wawancara" id="wawancaraModal" tabindex="-1" aria-labelledby="presentasiModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="presentasiModalLabel"><i class="bi bi-info-circle me-2"></i>Detail Wawancara</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label">Nama Lengkap</label>
-                    <p id="modalNama" class="form-control-plaintext"></p>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Stambuk</label>
-                    <p id="modalStambuk" class="form-control-plaintext"></p>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Ruangan</label>
-                    <p id="modalRuangan" class="form-control-plaintext"></p>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Jenis Wawancara</label>
-                    <p id="modalJenisWawancara" class="form-control-plaintext"></p>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Waktu</label>
-                    <p id="modalWaktu" class="form-control-plaintext"></p>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Tanggal</label>
-                    <p id="modalTanggal" class="form-control-plaintext"></p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="editButton">Edit jadwal wawancara</button>
-                <button type="button" class="btn btn-danger" id="deleteButton">Hapus jadwal wawancara</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade modal-wawancara" id="updateWawancaraModal" tabindex="-1" aria-labelledby="updateWawancaraModalLabel"
     aria-hidden="true">
@@ -458,18 +418,6 @@ $colors = ['#2f66f6'];
             mahasiswaDropdown.selectedIndex = 0;
         });
 
-        $(addAllMahasiswaButton).on("click", () => {
-            for (let i = 0; i < mahasiswaDropdown.options.length; i++) {
-                const option = mahasiswaDropdown.options[i];
-                const mahasiswaId = option.value;
-                const mahasiswaText = option.text;
-
-                if (mahasiswaId && !selectedMahasiswa.some(item => item.id === mahasiswaId)) {
-                    selectedMahasiswa.push({ id: mahasiswaId, text: mahasiswaText });
-                }
-            }
-            renderSelectedMahasiswa();
-        });
 
         // Bulk Search logic
         $('#searchBulkMhs').on('keyup', function() {
@@ -556,40 +504,19 @@ $colors = ['#2f66f6'];
 
             saveWawancara(jadwalData, '#addJadwalModal');
         });
-        $(document).on("click", ".open-detail", function () {
-            const id = $(this).closest("tr").data("id");
-            const nama = $(this).data("nama");
-            const stambuk = $(this).data("stambuk");
-            const ruangan = $(this).data("ruangan");
-            const jenisWawancara = $(this).data("jeniswawancara");
-            const waktu = $(this).data("waktu");
-            const tanggal = $(this).data("tanggal");
+        $(document).on("click", ".open-update", function () {
+            const btn = $(this);
+            const id = btn.data("id") || btn.attr("data-id");
+            const ruangan_id = btn.data("ruangan_id") || btn.attr("data-ruangan_id");
+            const jenisWawancara = btn.data("jeniswawancara") || btn.attr("data-jeniswawancara");
+            const waktu = btn.data("waktu") || btn.attr("data-waktu");
+            const tanggal = btn.data("tanggal") || btn.attr("data-tanggal");
 
-            $("#modalNama").text(nama || "-");
-            $("#modalStambuk").text(stambuk || "-");
-            $("#modalRuangan").text(ruangan || "-");
-            $("#modalJenisWawancara").text(jenisWawancara || "-");
-            $("#modalWaktu").text(waktu || "-");
-            $("#modalTanggal").text(tanggal || "-");
-            $("#editButton").data("id", id);
-            $("#deleteButton").data("id", id);
-        });
-        $(document).on("click", "#editButton", function () {
-            const id = $(this).data("id");
-            const ruangan = $("#modalRuangan").text();
-            const jenisWawancara = $("#modalJenisWawancara").text();
-            const waktu = $("#modalWaktu").text();
-            const tanggal = $("#modalTanggal").text();
-
-            console.log("id " + id);
             $("#updateWawancaraId").val(id);
-            $("#updateRuangan").val(ruangan);
+            $("#updateRuangan").val(ruangan_id);
             $("#updateJenisWawancara").val(jenisWawancara);
             $("#updateWaktu").val(waktu);
             $("#updateTanggal").val(tanggal);
-
-            $("#updateWawancaraModal").modal("show");
-            $("#wawancaraModal").modal("hide");
         });
 
         $("#updateWawancaraForm").on("submit", function (e) {
@@ -609,12 +536,6 @@ $colors = ['#2f66f6'];
                 jenisWawancara,
             };
 
-            console.log("id : " + updateData.id);
-            console.log("ruangan : " + updateData.ruangan);
-            console.log("tanggal : " + updateData.tanggal);
-            console.log("waktu : " + updateData.waktu);
-            console.log("jenis wawancara : " + updateData.jenisWawancara);
-
             $.ajax({
                 url: "<?= APP_URL ?>/updatewawancara",
                 method: "POST",
@@ -622,50 +543,92 @@ $colors = ['#2f66f6'];
                 data: JSON.stringify(updateData),
                 success: function (response) {
                     if (response.status === "success") {
-                    showModal("jadwal berhasil di update");
-                    document.querySelector('a[data-page="wawancara"]').click();
+                        showModal("Jadwal berhasil diupdate");
+                        $("#updateWawancaraModal").modal("hide");
+                        // Refresh content via existing sidebar trigger
+                        document.querySelector('a[data-page="wawancara"]').click();
                     } else {
-                        showModal("Gagal mengupdate jadwal wawancara");
+                        showModal("Gagal mengupdate jadwal wawancara: " + (response.message || "Unknown error"));
                     }
                 },
                 error: function (xhr) {
                     console.error("Error:", xhr.responseText);
+                    showModal("Gagal menghubungi server");
                 },
             });
         });
-        $(document).on("click", "#deleteButton", function () {
-            const id = $(this).data("id");
+
+        $(document).on("click", ".btn-delete-wawancara", function (e) {
+            e.preventDefault();
+            const btn = $(this);
+            const id = btn.data("id") || btn.attr("data-id");
+            
+            if (!id) {
+                console.error("Delete failed: No ID found on button.");
+                return;
+            }
 
             showConfirmDelete(function() {
                 $.ajax({
                     url: "<?= APP_URL ?>/deletewawancara",
                     method: "POST",
                     contentType: "application/json",
-                    data: JSON.stringify({ id }),
+                    data: JSON.stringify({ id: id }),
                     success: function (response) {
                         if (response.status === "success") {
-                            showAlert("Jadwal berhasil dihapus");
-                            // Close the detail modal
-                            $('#wawancaraModal').modal('hide');
+                            showAlert("Jadwal berhasil dihapus", true);
+                            
                             // Remove the row from the table
-                            $(`tr[data-id="${id}"]`).fadeOut(300, function() { $(this).remove(); });
+                            const rowToRemove = $(`.btn-delete-wawancara[data-id="${id}"]`).closest('tr');
+                            rowToRemove.fadeOut(300, function() { 
+                                $(this).remove(); 
+                                // Update row numbers
+                                $("#table-body tr:not(#noResultsRow)").each(function(index) {
+                                    $(this).find('td:first-child').text(index + 1);
+                                });
+                            });
                         } else {
-                            showAlert("Gagal menghapus jadwal", false);
+                            showAlert("Gagal menghapus jadwal: " + (response.message || "Unknown error"), false);
                         }
                     },
                     error: function (xhr) {
-                        console.error("Error:", xhr.responseText);
-                        showAlert("Gagal menghapus jadwal wawancara. Silakan coba lagi.", false);
+                        console.error("Delete AJAX Error:", xhr.responseText);
+                        showAlert("Gagal menghubungi server untuk menghapus jadwal.", false);
                     },
                 });
             }, "Apakah Anda yakin ingin menghapus jadwal wawancara ini?");
         });
 
+        // Search functionality
+        $('#searchInput').on('keyup', function() {
+            var value = $(this).val().toLowerCase();
+            $("#table-body tr").filter(function() {
+                var text = $(this).text().toLowerCase();
+                $(this).toggle(text.indexOf(value) > -1);
+            });
+            
+            // Handle "No results found"
+            var visibleRows = $("#table-body tr:not(#noResultsRow):visible").length;
+            if (visibleRows === 0 && $("#table-body tr:not(#noResultsRow)").length > 0) {
+                if ($('#noResultsRow').length === 0) {
+                    $("#table-body").append(`
+                        <tr id="noResultsRow">
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <i class="bi bi-search fs-1 d-block mb-3 opacity-25"></i>
+                                Data yang Anda cari tidak ditemukan
+                            </td>
+                        </tr>
+                    `);
+                }
+            } else {
+                $('#noResultsRow').remove();
+            }
+        });
+
         $(".filter-btn").click(function () {
             let ruanganId = parseInt($(this).attr("data-id"), 10);
-
             let requestData = { id: ruanganId };
-            console.log(requestData);
+            
             $.ajax({
                 url: "<?= APP_URL ?>/ruangan/getfilter",
                 method: "POST",
@@ -673,52 +636,61 @@ $colors = ['#2f66f6'];
                 data: JSON.stringify(requestData),
                 success: function (response) {
                     if (response.status === "success") {
-
                         let tableBody = $("#table-body");
                         tableBody.empty();
                         let i = 1;
-                        response.data.forEach(row => {
+                        
+                        if (response.data.length === 0) {
                             tableBody.append(`
-                            <tr data-id="${row.id}" data-userid="${row.id_mahasiswa}">
-                                <td class="text-center fw-bold text-secondary">${i}</td>
-                                <td>
-                                    <div class="fw-bold text-dark">${row.nama_lengkap}</div>
-                                </td>
-                                <td class="fw-medium text-secondary">${row.stambuk}</td>
-                                <td>${row.jenis_wawancara}</td>
-                                <td>${row.ruangan}</td>
-                                <td>${formatDate(row.tanggal)}</td>
-                                <td>${row.waktu}</td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 open-detail" 
-                                                data-bs-toggle="modal" data-bs-target="#wawancaraModal"
-                                                data-nama="${row.nama_lengkap}"
-                                                data-stambuk="${row.stambuk}"
-                                                data-ruangan="${row.ruangan}"
-                                                data-jeniswawancara="${row.jenis_wawancara}"
-                                                data-waktu="${row.waktu}"
-                                                data-tanggal="${row.tanggal}"
-                                                data-id="${row.id}"
-                                                title="Edit Data">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3" 
-                                                id="deleteButton" data-id="${row.id}"
-                                                title="Hapus Data">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `);
-                            i++;
-                        });
-
+                                <tr>
+                                    <td colspan="8" class="text-center py-5 text-muted">
+                                        <i class="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
+                                        Belum ada data jadwal wawancara di ruangan ini
+                                    </td>
+                                </tr>
+                            `);
+                        } else {
+                            response.data.forEach(row => {
+                                tableBody.append(`
+                                    <tr data-id="${row.id}" data-userid="${row.id_mahasiswa}">
+                                        <td class="text-center fw-bold text-secondary">${i}</td>
+                                        <td>
+                                            <div class="fw-bold text-dark">${row.nama_lengkap}</div>
+                                        </td>
+                                        <td class="fw-medium text-secondary">${row.stambuk}</td>
+                                        <td>${row.jenis_wawancara}</td>
+                                        <td>${row.ruangan}</td>
+                                        <td>${formatDate(row.tanggal)}</td>
+                                        <td>${row.waktu}</td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 open-update" 
+                                                        data-bs-toggle="modal" data-bs-target="#updateWawancaraModal"
+                                                        data-nama="${row.nama_lengkap}"
+                                                        data-stambuk="${row.stambuk}"
+                                                        data-ruangan="${row.ruangan}"
+                                                        data-ruangan_id="${row.id_ruangan}"
+                                                        data-jeniswawancara="${row.jenis_wawancara}"
+                                                        data-waktu="${row.waktu}"
+                                                        data-tanggal="${row.tanggal}"
+                                                        data-id="${row.id}"
+                                                        title="Edit Data">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3 btn-delete-wawancara" 
+                                                        data-id="${row.id}"
+                                                        title="Hapus Data">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `);
+                                i++;
+                            });
+                        }
                     } else {
-                        // showModal()
-                        console.log("Error:", response.message);
-                        console.log()
+                        showAlert(response.message || "Gagal memfilter data", false);
                     }
                 },
                 error: function (xhr) {

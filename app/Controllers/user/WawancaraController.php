@@ -8,7 +8,7 @@ class WawancaraController extends Controller
     {
         // Simply fetch all schedules without merging by stambuk
         $wawancaraModel = new \App\Model\Wawancara\Wawancara();
-        return $wawancaraModel->getAll(); 
+        return $wawancaraModel->getAllWawancaraOnly(); 
     }
 
     public function getAllFilterByIdRuangan()

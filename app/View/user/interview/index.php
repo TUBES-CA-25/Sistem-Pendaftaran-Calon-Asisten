@@ -20,10 +20,14 @@ $wawancara = $wawancara ?? [];
 
     <!-- Schedule Table Card -->
     <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-header bg-transparent border-0 p-4">
+        <div class="card-header bg-transparent border-0 p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
             <h5 class="fw-bold mb-0">
                 <i class="bi bi-calendar-event me-2 text-primary"></i>Jadwal Kegiatan
             </h5>
+            <div class="position-relative" style="width: 250px; max-width: 100%;">
+                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                <input type="text" id="searchSchedule" class="form-control ps-5 rounded-3 bg-light border-0" placeholder="Cari nama peserta...">
+            </div>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -65,6 +69,9 @@ $wawancara = $wawancara ?? [];
                                                     } elseif ($value['jenis'] === 'Presentasi') {
                                                         $icon = 'bi-display';
                                                         $color = 'text-info';
+                                                    } elseif ($value['jenis'] === 'Ujian Tertulis') {
+                                                        $icon = 'bi-clipboard-check';
+                                                        $color = 'text-danger';
                                                     }
                                                 }
                                                 ?>
@@ -123,3 +130,33 @@ $wawancara = $wawancara ?? [];
         </div>
     </div>
 </main>
+
+<script>
+$(document).ready(function() {
+    // Search functionality
+    $('#searchSchedule').on('keyup', function() {
+        var value = $(this).val().toLowerCase();
+        $("table tbody tr").filter(function() {
+            var text = $(this).text().toLowerCase();
+            $(this).toggle(text.indexOf(value) > -1);
+        });
+        
+        // Handle "No results found" if all rows are hidden
+        var visibleRows = $("table tbody tr:not(#noResultsRow):visible").length;
+        if (visibleRows === 0) {
+            if ($('#noResultsRow').length === 0) {
+                $("table tbody").append(`
+                    <tr id="noResultsRow">
+                        <td colspan="5" class="text-center py-5">
+                            <i class="bi bi-search fs-1 text-muted d-block mb-2"></i>
+                            <span class="text-muted">Data yang Anda cari tidak ditemukan</span>
+                        </td>
+                    </tr>
+                `);
+            }
+        } else {
+            $('#noResultsRow').remove();
+        }
+    });
+});
+</script>

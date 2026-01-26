@@ -161,6 +161,43 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
     </div>
 </div>
 
+<!-- Modal Update Jadwal -->
+<div class="modal fade" id="updateJadwalModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header bg-gradient-header text-white border-0 rounded-top-4">
+                <h5 class="modal-title fw-semibold"><i class="bi bi-pencil-square me-2"></i>Update Jadwal</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="formUpdateJadwal">
+                    <input type="hidden" id="editId">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Mahasiswa:</label>
+                        <input type="text" class="form-control rounded-3 bg-light" id="editNama" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Ruangan:</label>
+                        <select class="form-select rounded-3" id="editRuangan" required></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Tanggal:</label>
+                        <input type="date" class="form-control rounded-3" id="editTanggal" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Waktu:</label>
+                        <input type="time" class="form-control rounded-3" id="editWaktu" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-top border-light">
+                <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" form="formUpdateJadwal" class="btn btn-primary bg-gradient-primary rounded-3"><i class="bi bi-check-lg"></i> Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 $(document).ready(function() {
     const APP_URL = '<?= APP_URL ?>';
@@ -213,9 +250,28 @@ $(document).ready(function() {
                 if(res.data.length===0) html='<tr><td colspan="8" class="text-center text-muted">Belum ada jadwal</td></tr>';
                 else {
                     res.data.forEach((j, i) => {
-                        html += `<tr><td>${i+1}</td><td><strong>${j.nama_lengkap}</strong></td><td>${j.stambuk}</td><td>${j.judul||'-'}</td>
-                        <td>${j.ruangan}</td><td>${new Date(j.tanggal).toLocaleDateString('id-ID')}</td><td>${j.waktu}</td>
-                        <td><button class="btn btn-sm btn-action bg-danger-subtle text-danger btn-delete-jadwal" data-id="${j.id}"><i class="bi bi-trash"></i></button></td></tr>`;
+                        html += `<tr>
+                            <td>${i+1}</td>
+                            <td><strong>${j.nama_lengkap}</strong></td>
+                            <td>${j.stambuk}</td>
+                            <td>${j.judul||'-'}</td>
+                            <td>${j.ruangan}</td>
+                            <td>${new Date(j.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})}</td>
+                            <td>${j.waktu}</td>
+                            <td>
+                                <div class="d-flex gap-2 flex-nowrap align-items-center">
+                                    <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 btn-edit-jadwal"
+                                            data-id="${j.id}"
+                                            data-nama="${j.nama_lengkap}"
+                                            data-ruangan="${j.id_ruangan}"
+                                            data-tanggal="${j.tanggal}"
+                                            data-waktu="${j.waktu}"
+                                            title="Edit"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3 btn-delete-jadwal"
+                                            data-id="${j.id}" title="Hapus"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>`;
                     });
                 }
                 $('#jadwalTableBody').html(html);
@@ -263,12 +319,44 @@ $(document).ready(function() {
         showAlert('Fitur Bulk Schedule belum diimplementasi ulang sepenuhnya di file baru ini. Gunakan Tambah Manual sementara.', false);
     });
 
+    $(document).on('click', '.btn-edit-jadwal', function() {
+        const btn = $(this);
+        loadRuangan();
+        $('#editId').val(btn.data('id'));
+        $('#editNama').val(btn.data('nama'));
+        $('#editTanggal').val(btn.data('tanggal'));
+        $('#editWaktu').val(btn.data('waktu'));
+        
+        // Wait slightly for loadRuangan to finish or set it once options exist
+        setTimeout(() => {
+            $('#editRuangan').val(btn.data('ruangan'));
+        }, 300);
+
+        new bootstrap.Modal('#updateJadwalModal').show();
+    });
+
+    $('#formUpdateJadwal').submit(function(e) {
+        e.preventDefault();
+        $.post(APP_URL + '/updatejadwalpresentasi', {
+            id: $('#editId').val(),
+            id_ruangan: $('#editRuangan').val(),
+            tanggal: $('#editTanggal').val(),
+            waktu: $('#editWaktu').val()
+        }, function(res) {
+            bootstrap.Modal.getInstance(document.getElementById('updateJadwalModal')).hide();
+            if(res.status==='success') { showAlert('Berhasil diupdate!'); loadJadwal(); }
+            else showAlert(res.message, false);
+        }, 'json');
+    });
+
     $(document).on('click', '.btn-delete-jadwal', function() {
-        if(confirm('Hapus jadwal?')) {
-            $.post(APP_URL + '/deletejadwalpresentasi', { id: $(this).data('id') }, function(res) {
-                if(res.status === 'success') { showAlert('Terhapus!'); loadJadwal(); }
+        const id = $(this).data('id');
+        showConfirmDelete(() => {
+            $.post(APP_URL + '/deletejadwalpresentasi', { id: id }, function(res) {
+                if(res.status === 'success') { showAlert('Jadwal terhapus!'); loadJadwal(); }
+                else showAlert(res.message, false);
             }, 'json');
-        }
+        }, 'Apakah Anda yakin ingin menghapus jadwal presentasi ini?');
     });
 
     // Initial Load
