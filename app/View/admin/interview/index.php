@@ -41,16 +41,19 @@ $colors = ['#2f66f6'];
 <div class="container-fluid px-4 py-4">
 
             <!-- Table Controls -->
-            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-                <div class="position-relative" style="flex: 1; max-width: 400px;">
-                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                    <input type="text" id="searchInput" class="form-control ps-5 rounded-3" placeholder="Cari nama atau stambuk...">
+            <div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-3">
+                <div class="position-relative" style="width: 280px;">
+                    <i class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"></i>
+                    <input type="text" id="searchInput" class="form-control rounded-3 ps-5" placeholder="Cari nama atau stambuk...">
                 </div>
-                
-                <button type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal" class="btn btn-primary d-inline-flex align-items-center gap-2 rounded-3 px-4 py-2">
-                    <i class="bi bi-plus-circle"></i> 
-                    <span>Tambah Data</span>
-                </button>
+                <div class="d-flex gap-3">
+                    <button class="btn btn-primary btn-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
+                        <i class="bi bi-plus-circle"></i> Tambah Jadwal
+                    </button>
+                    <button class="btn btn-success btn-gradient-success border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2" data-bs-toggle="modal" data-bs-target="#bulkScheduleModal">
+                        <i class="bi bi-calendar-plus"></i> Bulk Schedule
+                    </button>
+                </div>
             </div>
 
             <!-- Data Table -->
@@ -119,77 +122,144 @@ $colors = ['#2f66f6'];
             </div>
 
 </div>
-<script>
-    // Simple Client-side Search (Optional, given server-side might be better for large data)
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        let filter = this.value.toLowerCase();
-        let rows = document.querySelectorAll('#table-body tr');
-        
-        rows.forEach(row => {
-            let text = row.textContent.toLowerCase();
-            row.style.display = text.includes(filter) ? '' : 'none';
-        });
-    });
-</script>
+
+<!-- Modal Bulk Schedule Interview -->
+<div class="modal fade" id="bulkScheduleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-header modal-header-gradient border-0">
+                <h5 class="modal-title fw-bold text-white"><i class="bi bi-calendar-plus me-2"></i>Bulk Schedule Wawancara</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="bulkInterviewForm">
+                    <div class="row g-4">
+                        <div class="col-md-7">
+                            <label class="form-label fw-bold">Pilih Mahasiswa</label>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                                <input type="text" id="searchBulkMhs" class="form-control border-start-0" placeholder="Cari stambuk/nama...">
+                            </div>
+                            <div class="border rounded-3 p-2 shadow-sm" style="max-height: 300px; overflow-y: auto;">
+                                <div class="list-group list-group-flush" id="bulkMahasiswaChecklist">
+                                    <?php foreach ($mahasiswaList as $m): ?>
+                                        <label class="list-group-item d-flex align-items-center gap-3 py-2 cursor-pointer">
+                                            <input class="form-check-input m-0 flex-shrink-0" type="checkbox" value="<?= $m['id'] ?>">
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-semibold small"><?= htmlspecialchars($m['nama_lengkap']) ?></span>
+                                                <span class="text-secondary smaller" style="font-size: 0.75rem;"><?= htmlspecialchars($m['stambuk']) ?></span>
+                                            </div>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <div class="mt-2 d-flex justify-content-between">
+                                <span class="text-muted smaller" id="selectedCount">0 dipilih</span>
+                                <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" id="selectAllBulk">Pilih Semua</button>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Ruangan</label>
+                                <select class="form-select" name="ruangan" required>
+                                    <option value="" disabled selected>Pilih Ruangan</option>
+                                    <?php foreach ($ruanganList as $r): ?>
+                                        <option value="<?= $r['id'] ?>"><?= $r['nama'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Jenis Wawancara</label>
+                                <select class="form-select" name="wawancara" required>
+                                    <option value="" disabled selected>Pilih Jenis</option>
+                                    <option value="wawancara kepala lab I">Wawancara Kepala Lab I</option>
+                                    <option value="wawancara kepala lab II">Wawancara Kepala Lab II</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Tanggal</label>
+                                <input type="date" class="form-control" name="tanggal" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Waktu Mulai</label>
+                                <input type="time" class="form-control" name="waktu" required>
+                            </div>
+                            <div class="alert alert-info border-0 shadow-sm p-2 mb-0" style="font-size: 0.75rem;">
+                                <i class="bi bi-info-circle me-1"></i> Seluruh mahasiswa terpilih akan dijadwalkan pada waktu dan ruangan yang sama.
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" form="bulkInterviewForm" class="btn btn-success btn-gradient-success px-4 rounded-3 text-white">Simpan Bulk</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade modal-wawancara" id="addJadwalModal" tabindex="-1" aria-labelledby="addJadwalModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addJadwalModalLabel"><i class="bi bi-plus-circle me-2"></i>Tambah Jadwal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content border-0 rounded-4 overflow-hidden">
+            <div class="modal-header modal-header-gradient border-0">
+                <h5 class="modal-title fw-bold text-white" id="addJadwalModalLabel"><i class="bi bi-plus-circle me-2"></i>Tambah Jadwal</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <form id="addJadwalForm">
                     <div class="mb-3">
-                        <label for="mahasiswa" class="form-label">Pilih Mahasiswa</label>
-                        <select class="form-select" id="mahasiswa">
-                            <option value="" disabled selected>-- Pilih Mahasiswa --</option>
-                            <?php foreach ($mahasiswaList as $mahasiswa): ?>
-                                <option value="<?= $mahasiswa['id'] ?>">
-                                    <?= $mahasiswa['stambuk'] ?> - <?= $mahasiswa['nama_lengkap'] ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <button type="button" class="btn btn-secondary mt-2" id="addMahasiswaButton">Tambah
-                            mahasiswa</button>
-                        <button type="button" class="btn btn-success mt-2" id="addAllMahasiswaButton">Tambah
-                            Semua</button>
-                    </div>
-                    <div class="mb-3">
-                        <label for="selectedMahasiswa" class="form-label">Mahasiswa Terpilih</label>
-                        <ul class="list-group" id="selectedMahasiswaList">
+                        <label for="mahasiswa" class="form-label fw-bold">Pilih Mahasiswa</label>
+                        <div class="d-flex gap-2 mb-2">
+                             <select class="form-select" id="mahasiswa">
+                                <option value="" disabled selected>-- Pilih Mahasiswa --</option>
+                                <?php foreach ($mahasiswaList as $mahasiswa): ?>
+                                    <option value="<?= $mahasiswa['id'] ?>">
+                                        <?= $mahasiswa['stambuk'] ?> - <?= $mahasiswa['nama_lengkap'] ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="button" class="btn btn-secondary" id="addMahasiswaButton">Tambah</button>
+                        </div>
+                        <ul class="list-group list-group-flush border rounded-3 overflow-hidden shadow-sm" id="selectedMahasiswaList" style="max-height: 150px; overflow-y: auto;">
                         </ul>
                     </div>
-                    <div class="mb-3">
-                        <label for="ruangan" class="form-label">Ruangan</label>
-                        <select class="form-select" id="ruangan" required>
-                            <option value="" disabled selected>-- Pilih Ruangan --</option>
-                            <?php foreach ($ruanganList as $ruangan): ?>
-                                <option value="<?= $ruangan['id'] ?>">
-                                    <?= $ruangan['nama'] ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                    <div class="row g-3">
+                        <div class="col-6 mb-3">
+                            <label for="ruangan" class="form-label fw-bold">Ruangan</label>
+                            <select class="form-select" id="ruangan" required>
+                                <option value="" disabled selected>-- Pilih --</option>
+                                <?php foreach ($ruanganList as $ruangan): ?>
+                                    <option value="<?= $ruangan['id'] ?>">
+                                        <?= $ruangan['nama'] ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="wawancara" class="form-label fw-bold">Jenis Kegiatan</label>
+                            <select class="form-select" id="wawancara" required>
+                                <option value="" disabled selected>-- Pilih --</option>
+                                <option value="wawancara kepala lab I">Wawancara Kepala Lab I</option>
+                                <option value="wawancara kepala lab II">Wawancara Kepala Lab II</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="tanggal" class="form-label">Tanggal</label>
-                        <input type="date" class="form-control" id="tanggal" required>
+                    <div class="row g-3">
+                        <div class="col-6 mb-3">
+                            <label for="tanggal" class="form-label fw-bold">Tanggal</label>
+                            <input type="date" class="form-control" id="tanggal" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="waktu" class="form-label fw-bold">Waktu</label>
+                            <input type="time" class="form-control" id="waktu" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="waktu" class="form-label">Waktu</label>
-                        <input type="time" class="form-control" id="waktu" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="wawancara" class="form-label">Jenis Kegiatan</label>
-                        <select class="form-select" id="wawancara" required>
-                            <option value="" disabled selected>-- Pilih Jenis Wawancara --</option>
-                            <option value="wawancara kepala lab I">Wawancara Kepala Lab I</option>
-                            <option value="wawancara kepala lab II">Wawancara Kepala Lab II</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Tambah Jadwal</button>
                 </form>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" form="addJadwalForm" class="btn btn-primary px-4 rounded-3">Tambah Jadwal</button>
             </div>
         </div>
     </div>
@@ -401,6 +471,67 @@ $colors = ['#2f66f6'];
             renderSelectedMahasiswa();
         });
 
+        // Bulk Search logic
+        $('#searchBulkMhs').on('keyup', function() {
+            let filter = $(this).val().toLowerCase();
+            $('#bulkMahasiswaChecklist label').each(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(filter) > -1);
+            });
+        });
+
+        // Select All Bulk
+        $('#selectAllBulk').click(function() {
+            const isAllChecked = $('#bulkMahasiswaChecklist input:checked').length === $('#bulkMahasiswaChecklist input:visible').length;
+            $('#bulkMahasiswaChecklist input:visible').prop('checked', !isAllChecked).trigger('change');
+            $(this).text(!isAllChecked ? 'Batalkan Semua' : 'Pilih Semua');
+        });
+
+        $(document).on('change', '#bulkMahasiswaChecklist input', function() {
+            $('#selectedCount').text($('#bulkMahasiswaChecklist input:checked').length + ' dipilih');
+        });
+
+        // Save Bulk Interview
+        $('#bulkInterviewForm').submit(function(e) {
+            e.preventDefault();
+            const checked = [];
+            $('#bulkMahasiswaChecklist input:checked').each(function() { checked.push($(this).val()); });
+
+            if (checked.length === 0) return showAlert('Pilih minimal satu mahasiswa', false);
+
+            const fd = new FormData(this);
+            const data = {
+                id: checked,
+                ruangan: fd.get('ruangan'),
+                wawancara: fd.get('wawancara'),
+                tanggal: fd.get('tanggal'),
+                waktu: fd.get('waktu')
+            };
+
+            saveWawancara(data, '#bulkScheduleModal');
+        });
+
+        function saveWawancara(data, modalId) {
+            $.ajax({
+                url: "<?= APP_URL ?>/wawancara",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    if (response.status === 'success') {
+                        $(modalId).modal('hide');
+                        showModal("Jadwal berhasil disimpan");
+                        document.querySelector('a[data-page="wawancara"]').click();
+                    } else {
+                        showModal("Jadwal gagal disimpan: " + response.message);
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Error:", xhr.responseText);
+                    showAlert("Gagal menyimpan jadwal. Silakan coba lagi.", false);
+                }
+            });
+        }
+
         $(addJadwalForm).on("submit", (e) => {
             e.preventDefault();
 
@@ -409,11 +540,12 @@ $colors = ['#2f66f6'];
             const waktu = document.getElementById("waktu").value;
             const wawancara = document.getElementById("wawancara").value;
             let id = selectedMahasiswa.map((item) => item.id);
+
             if (selectedMahasiswa.length === 0) {
                 showAlert("Pilih setidaknya satu mahasiswa!", false);
                 return;
             }
-            console.log("id " + id);
+
             const jadwalData = {
                 id,
                 ruangan,
@@ -421,29 +553,8 @@ $colors = ['#2f66f6'];
                 waktu,
                 wawancara,
             };
-            $.ajax({
-                url: "<?= APP_URL ?>/wawancara",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(jadwalData),
-                success: function (response) {
-                    if (response.status === 'success') {
-                       showModal("Jadwal berhasil disimpan");
-                       document.querySelector('a[data-page="wawancara"]').click();
-                    } else {
-                        showModal("Jadwal gagal disimpan");
-                    }
 
-                    addJadwalForm.reset();
-                    selectedMahasiswa = [];
-                    renderSelectedMahasiswa();
-                },
-                error: function (xhr) {
-                    console.error("Error:", xhr.responseText);
-                    showAlert("Gagal menyimpan jadwal. Silakan coba lagi.", false);
-                }
-            });
-            $('#addJadwalModal').modal('hide');
+            saveWawancara(jadwalData, '#addJadwalModal');
         });
         $(document).on("click", ".open-detail", function () {
             const id = $(this).closest("tr").data("id");

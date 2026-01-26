@@ -98,6 +98,6 @@ class AdminProfileController extends Controller {
             }
         }
         
-        return $webPath . 'default.png';
+        return '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png';
     }
 }

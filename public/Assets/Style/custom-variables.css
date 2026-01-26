@@ -11,6 +11,7 @@
 
   /* Gradient Variations */
   --gradient-primary: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%);
+  --gradient-success: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
   --gradient-header: linear-gradient(135deg, #0099cc 0%, #0044aa 100%);
   --gradient-sidebar-active: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%);
 
@@ -121,6 +122,21 @@ body {
 
 .btn-gradient-primary:hover {
   background: var(--gradient-header);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Gradient Success Button */
+.btn-gradient-success {
+  background: var(--gradient-success);
+  border: none;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.btn-gradient-success:hover {
+  background: linear-gradient(135deg, #218838 0%, #155724 100%);
   color: #fff;
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
@@ -773,8 +789,10 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid rgba(255,255,255,0.3);
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.05);
+  padding: 2px;
 }
 
 .page-navbar-user .navbar-profile-img {

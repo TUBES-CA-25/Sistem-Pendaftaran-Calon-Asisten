@@ -11,18 +11,32 @@
  * @var array $breadcrumb - Array breadcrumb (opsional, contoh: ['Home' => 'dashboard', 'Current' => ''])
  */
 
-// Default values
-$userName = $userName ?? ($_SESSION['user']['username'] ?? 'User');
-$defaultPhoto = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9InVybCgjZ3JhZGllbnQwKSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkaWVudDAiIHgxPSIwIiB5MT0iMCIgeDI9IjQwIiB5Mj0iNDAiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzNkYzJlYyIvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyNTYzZWIiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8cGF0aCBkPSJNMjAgMThDMjIuMjA5MSAxOCAyNCAxNi4yMDkxIDI0IDE0QzI0IDExLjc5MDkgMjIuMjA5MSAxMCAyMCAxMEMxNy43OTA5IDEwIDE2IDExLjc5MDkgMTYgMTRDMTYgMTYuMjA5MSAxNy43OTA5IDE4IDIwIDE4WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTMwIDMwQzMwIDI1LjU4MTcgMjUuNTIyOCAyMiAyMCAyMkMxNC40NzcyIDIyIDEwIDI1LjU4MTcgMTAgMzBIMTJDMTIgMjYuNjg2MyAxNS41ODE3IDI0IDIwIDI0QzI0LjQxODMgMjQgMjggMjYuNjg2MyAyOCAzMEgzMFoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg==';
+// Priority: Latest Session or static variable
+$role = $role ?? ($_SESSION['user']['role'] ?? ($_SESSION['role'] ?? 'User'));
+$userName = $_SESSION['user']['username'] ?? ($userName ?? 'User');
 
-if (isset($photo) && is_array($photo) && !empty($photo)) {
-    $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . $photo[0];
-} elseif (isset($photo) && is_string($photo) && !empty($photo)) {
-    if (strpos($photo, '/Sistem-Pendaftaran-Calon-Asisten') === false && strpos($photo, 'data:image') === false) {
-        $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . $photo;
+// Dynamic Photo Logic
+if ($role === 'Admin') {
+    if (class_exists('App\Controllers\Admin\AdminProfileController')) {
+        $photo = \App\Controllers\Admin\AdminProfileController::getAdminPhoto($_SESSION['user']['id']);
+    } else {
+        $photo = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png';
     }
 } else {
-    $photo = $defaultPhoto;
+    // Student/User photo logic
+    if (isset($photo)) {
+        if (is_array($photo) && !empty($photo)) {
+            $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $photo[0];
+        } elseif (is_string($photo) && !empty($photo)) {
+            // If it's already a full path or data URL, leave it
+            if (strpos($photo, '/Sistem-Pendaftaran-Calon-Asisten') === false && strpos($photo, 'data:image') === false) {
+                 $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $photo;
+            }
+        }
+    } else {
+        // Fallback for Users if nothing provided
+        $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/default.png';
+    }
 }
 
 // Generate breadcrumb if not provided

@@ -118,3 +118,8 @@ Router::post("/dashboard/stats", [new DashboardAdminController, 'getStats']);
 Router::post("/getactivities", [new DashboardUserController, 'getActivities']);
 
 Router::post("/updateadminprofile", [new AdminProfileController, 'updateProfile']);
+
+// Jadwal Tes Tertulis Individual
+Router::post("/saveJadwalTes", [new JadwalTesController, 'save']);
+Router::post("/deleteJadwalTes", [new JadwalTesController, 'delete']);
+Router::post("/updateJadwalTes", [new JadwalTesController, 'update']);

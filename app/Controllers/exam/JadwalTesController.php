@@ -14,52 +14,154 @@ class JadwalTesController extends Controller
         }
 
         if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'Admin') {
-            // Fix redirect to respect subdirectory
             $baseUrl = dirname($_SERVER['SCRIPT_NAME']);
-            // Remove /public if it exists in the path to get root
             $baseUrl = str_replace('/public', '', $baseUrl);
-            
             header('Location: ' . $baseUrl . '/login');
             exit;
         }
 
-        // Load Bank Soal data for the schedule view
-        // Ideally we would have a separate 'Schedule' mode, but for now we'll allow admins to 
-        // essentially see which banks are active or set up a 'session'.
-        // Since we don't have a 'written_test_schedule' table yet, we will focus on managing 
-        // the 'is_active' state of Bank Soal as the 'Schedule' (Open/Close).
-        
-        $bankSoalModel = new BankSoal();
-        $bankSoalList = $bankSoalModel->getAllBanks();
+        // 1. Load Student Test Schedules from 'wawancara' table
+        // We filter where jenis_wawancara is like 'Tes Tertulis%'
+        $db = \App\Core\Model::getDB();
+        $sql = "SELECT w.id, w.id_mahasiswa, m.nama_lengkap, m.stambuk, r.nama as ruangan, w.jenis_wawancara as kegiatan, w.waktu, w.tanggal 
+                FROM wawancara w 
+                JOIN mahasiswa m ON w.id_mahasiswa = m.id 
+                JOIN ruangan r ON w.id_ruangan = r.id 
+                WHERE w.jenis_wawancara LIKE 'Tes Tertulis%'
+                ORDER BY w.tanggal DESC, w.waktu DESC";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $jadwalTesList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $mahasiswaList = \App\Controllers\user\MahasiswaController::viewAllMahasiswa() ?? [];
+        $ruanganList = \App\Controllers\presentasi\RuanganController::viewAllRuangan() ?? [];
 
         $data = [
-            'bankSoalList' => $bankSoalList
+            'jadwalTesList' => $jadwalTesList,
+            'mahasiswaList' => $mahasiswaList,
+            'ruanganList' => $ruanganList,
         ];
 
-        // Detect AJAX
+        // Detect AJAX (sidebar navigation)
         $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 
         if ($isAjax) {
              $this->view('admin/exam/schedule', $data);
         } else {
-             // Full Page - Need Sidebar Data
-             // We can fetch basic info from Session for now
              $sidebarData = [
                  'role' => 'Admin',
                  'userName' => $_SESSION['user']['username'] ?? 'Admin',
-                 'photo' => '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/default-avatar.png', // Fallback or fetch real photo
+                 'photo' => '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/default-avatar.png',
                  'initialPage' => 'jadwaltes'
              ];
              
-             // Try to get real photo if helper exists
              if (class_exists('App\Controllers\Admin\AdminProfileController')) {
                  $photoPath = \App\Controllers\Admin\AdminProfileController::getAdminPhoto($_SESSION['user']['id']);
                  $sidebarData['photo'] = $photoPath;
              }
              
-             // Merge data
              $fullData = array_merge($data, $sidebarData);
              $this->view('layouts/mainAdmin', $fullData);
+        }
+    }
+
+    /**
+     * AJAX Endpoint to save schedules
+     */
+    public function save()
+    {
+        header('Content-Type: application/json');
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+            return;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $ids = $input['id'] ?? []; // Array of mahasiswa IDs
+        $id_ruangan = $input['ruangan'] ?? null;
+        $tanggal = $input['tanggal'] ?? null;
+        $waktu = $input['waktu'] ?? null;
+        $kegiatan = $input['kegiatan'] ?? 'Tes Tertulis';
+
+        if (empty($ids) || !$id_ruangan || !$tanggal || !$waktu) {
+            echo json_encode(['status' => 'error', 'message' => 'Lengkapi semua data']);
+            return;
+        }
+
+        try {
+            $db = \App\Core\Model::getDB();
+            $sql = "INSERT INTO wawancara (id_mahasiswa, id_ruangan, jenis_wawancara, waktu, tanggal) VALUES (?, ?, ?, ?, ?)";
+            $stmt = $db->prepare($sql);
+
+            foreach ($ids as $id_mahasiswa) {
+                $stmt->execute([$id_mahasiswa, $id_ruangan, $kegiatan, $waktu, $tanggal]);
+            }
+
+            echo json_encode(['status' => 'success', 'message' => 'Jadwal berhasil disimpan']);
+        } catch (\Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * AJAX Endpoint to delete schedule
+     */
+    public function delete()
+    {
+        header('Content-Type: application/json');
+        
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id = $input['id'] ?? null;
+
+        if (!$id) {
+            echo json_encode(['status' => 'error', 'message' => 'ID tidak valid']);
+            return;
+        }
+
+        try {
+            $db = \App\Core\Model::getDB();
+            $stmt = $db->prepare("DELETE FROM wawancara WHERE id = ?");
+            $stmt->execute([$id]);
+            echo json_encode(['status' => 'success', 'message' => 'Jadwal berhasil dihapus']);
+        } catch (\Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * AJAX Endpoint to update schedule
+     */
+    public function update()
+    {
+        header('Content-Type: application/json');
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+            return;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id = $input['id'] ?? null;
+        $id_ruangan = $input['ruangan'] ?? null;
+        $tanggal = $input['tanggal'] ?? null;
+        $waktu = $input['waktu'] ?? null;
+        $kegiatan = $input['kegiatan'] ?? null;
+
+        if (!$id || !$id_ruangan || !$tanggal || !$waktu || !$kegiatan) {
+            echo json_encode(['status' => 'error', 'message' => 'Lengkapi semua data']);
+            return;
+        }
+
+        try {
+            $db = \App\Core\Model::getDB();
+            $sql = "UPDATE wawancara SET id_ruangan = ?, jenis_wawancara = ?, waktu = ?, tanggal = ? WHERE id = ?";
+            $stmt = $db->prepare($sql);
+            $stmt->execute([$id_ruangan, $kegiatan, $waktu, $tanggal, $id]);
+
+            echo json_encode(['status' => 'success', 'message' => 'Jadwal berhasil diupdate']);
+        } catch (\Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
 }
