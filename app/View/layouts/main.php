@@ -87,7 +87,7 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/app.js"></script>
+    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/shared/app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/sidebar/ScriptSidebar.js"></script>
     

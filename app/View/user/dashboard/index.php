@@ -400,15 +400,8 @@ $dokumen = $dokumen ?? [];
                 <div class="card-body p-4 text-center">
                     <!-- Profile Photo -->
                     <div class="mb-3">
-                        <?php if (!empty($photo) && $photo !== 'default.png'): ?>
-                            <?php 
-                                $imagePath = $photo;
-                                // If photo already contains a path, use it as is, otherwise prepend our standard path
-                                if (strpos($photo, '/') === false) {
-                                    $imagePath = "/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/" . $photo;
-                                }
-                            ?>
-                            <img src="<?= htmlspecialchars($imagePath) ?>"
+                        <?php if ($profileDisplay['hasValidPhoto']): ?>
+                            <img src="<?= htmlspecialchars($profileDisplay['photoPath']) ?>"
                                  alt="Profile"
                                  class="rounded-circle border border-3 border-primary"
                                  style="width: 100px; height: 100px; object-fit: cover;"
@@ -417,17 +410,7 @@ $dokumen = $dokumen ?? [];
                             <!-- Default Avatar with Initials -->
                             <div class="rounded-circle border border-3 border-primary d-flex align-items-center justify-content-center text-white fw-bold"
                                  style="width: 100px; height: 100px; background: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%); font-size: 2.5rem;">
-                                <?php
-                                $nama = $biodata['namaLengkap'] ?? $user['username'] ?? 'U';
-                                $words = explode(' ', $nama);
-                                $initials = '';
-                                if (count($words) >= 2) {
-                                    $initials = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
-                                } else {
-                                    $initials = strtoupper(substr($nama, 0, 2));
-                                }
-                                echo $initials;
-                                ?>
+                                <?= $profileDisplay['initials'] ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -505,25 +488,11 @@ $dokumen = $dokumen ?? [];
                                 <p class="mb-1 fw-semibold"><?= htmlspecialchars($jadwalPresentasiUser['judul'] ?? 'Presentasi') ?></p>
                                 <small class="text-muted">
                                     <i class="bi bi-calendar3 me-1"></i>
-                                    <?php
-                                    if (isset($jadwalPresentasiUser['tanggal'])) {
-                                        $timestamp = strtotime($jadwalPresentasiUser['tanggal']);
-                                        echo $timestamp ? date('d F Y', $timestamp) : '-';
-                                    } else {
-                                        echo '-';
-                                    }
-                                    ?>
+                                    <?= $jadwalPresentasiUser['formattedDate'] ?? '-' ?>
                                 </small><br>
                                 <small class="text-muted">
                                     <i class="bi bi-clock me-1"></i>
-                                    <?php
-                                    if (isset($jadwalPresentasiUser['waktu'])) {
-                                        $timestamp = strtotime($jadwalPresentasiUser['waktu']);
-                                        echo $timestamp ? date('H:i', $timestamp) : '-';
-                                    } else {
-                                        echo '-';
-                                    }
-                                    ?> WIB
+                                    <?= $jadwalPresentasiUser['formattedTime'] ?? '-' ?> WIB
                                 </small>
                             </div>
                         </div>

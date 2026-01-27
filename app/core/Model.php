@@ -125,8 +125,6 @@ abstract class Model {
 
         if(!empty(static::$limit)) {
             $query .= " LIMIT " . static::$limit[0];
-            print_r($query);
-
         }
 
         if(!empty(static::$offset)) {
@@ -134,7 +132,6 @@ abstract class Model {
         }
 
         $stmt = Database::query($query, $this->getWhereParameters());
-        var_dump($stmt);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
      

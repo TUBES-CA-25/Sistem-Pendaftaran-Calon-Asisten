@@ -48,31 +48,10 @@ $result = $result ?? [];
             <tbody>
                 <?php $i = 1; ?>
                 <?php foreach ($result as $row): ?>
-                    <?php
-                        // Determine status logic remains same but improved UI
-                        $statusClass = 'badge rounded-pill bg-secondary bg-opacity-10 text-secondary fw-semibold px-3 py-2';
-                        $statusText = 'Belum Upload';
-                        
-                        if (isset($row['berkas']['accepted'])) {
-                            if ($row['berkas']['accepted'] == 1) {
-                                $statusClass = 'badge rounded-pill bg-success bg-opacity-10 text-success fw-semibold px-3 py-2';
-                                $statusText = 'Disetujui';
-                            } elseif ($row['berkas']['accepted'] == 2) {
-                                $statusClass = 'badge rounded-pill bg-danger bg-opacity-10 text-danger fw-semibold px-3 py-2';
-                                $statusText = 'Ditolak';
-                            } elseif ($row['berkas']['accepted'] == 0) {
-                                $statusClass = 'badge rounded-pill bg-info bg-opacity-10 text-info fw-semibold px-3 py-2';
-                                $statusText = 'Proses';
-                            }
-                        }
-                        
-                        $photoName = $row['berkas']['foto'] ?? 'default.png';
-                        $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . $photoName;
-                    ?>
                     <tr class="border-bottom" data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
                         <td class="text-center text-muted fw-medium"><?= $i ?></td>
                         <td class="text-center">
-                            <img src="<?= $photoPath ?>" alt="Avatar" class="rounded-circle border" style="width: 42px; height: 42px; object-fit: cover;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
+                            <img src="<?= $row['photoPath'] ?>" alt="Avatar" class="rounded-circle border" style="width: 42px; height: 42px; object-fit: cover;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
                         </td>
                         <td>
                             <div class="d-flex align-items-center gap-2">
@@ -91,8 +70,8 @@ $result = $result ?? [];
                             <span class="text-muted small"><?= htmlspecialchars($row['jurusan'] ?? '-') ?></span>
                         </td>
                         <td class="text-center">
-                            <span class="<?= $statusClass ?>" style="font-size: 0.7rem;">
-                                <?= $statusText ?>
+                            <span class="<?= $row['statusBadge']['class'] ?>" style="font-size: 0.7rem;">
+                                <?= $row['statusBadge']['text'] ?>
                             </span>
                         </td>
                         <td class="text-center">

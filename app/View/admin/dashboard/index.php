@@ -136,25 +136,13 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                 </div>
                 <div class="card-body p-4 pt-0 d-flex flex-column gap-3">
                 <?php
-                // $statusMeta is still needed for the calendar legend, but not directly for the status cards anymore.
-                // The instruction provided a partial $statusMeta, I will keep the original one.
-                $statusMeta = [
-                    'kelengkapan_berkas' => ['no' => 1, 'color' => 'danger'],
-                    'tes_tertulis' => ['no' => 2, 'color' => 'warning'],
-                    'tahap_wawancara' => ['no' => 3, 'color' => 'success'],
-                    'pengumuman' => ['no' => 4, 'color' => 'info']
-                ];
-                
+                // Status metadata for calendar legend
+                use App\Services\Admin\ActivityStatusService;
+                $statusMeta = ActivityStatusService::getStatusMetadata();
+
                 foreach ($statusKegiatan as $key => $status):
-                    // Default / Akan Datang
-                    $badgeClass = 'bg-light text-secondary border'; 
-                    
-                    if ($status['status'] == 'Selesai') {
-                        $badgeClass = 'bg-success text-white border-0';
-                    }
-                    if ($status['status'] == 'Sedang Berlangsung') {
-                         $badgeClass = 'bg-warning-subtle text-warning border border-warning';
-                    }
+                    // Badge class already provided by Service via Controller
+                    $badgeClass = $status['badgeClass'] ?? 'bg-light text-secondary border';
                 ?>
                     <div class="p-3 border rounded-4 mb-1">
                         <div class="d-flex justify-content-between align-items-center">

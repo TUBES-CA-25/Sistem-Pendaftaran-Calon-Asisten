@@ -87,11 +87,11 @@ class UserModel extends Model {
         $query = "SELECT * FROM " . static::$table . " WHERE stambuk = :stambuk LIMIT 1";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(':stambuk', $stambuk);
-    
+
         if ($stmt->execute()) {
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } else {
-            var_dump($stmt->errorInfo());
+            error_log('Database error: ' . json_encode($stmt->errorInfo()));
             return null;
         }
     }

@@ -161,38 +161,14 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                             </thead>
                     <tbody>
                         <?php $i = 1; foreach ($mahasiswaList as $row): ?>
-                            <?php
-                                $isAccepted = isset($row['is_accepted']) && $row['is_accepted'] == 1;
-                                $isRejected = isset($row['is_accepted']) && $row['is_accepted'] == 2;
-                                $hasSchedule = isset($row['has_schedule']) && $row['has_schedule'];
-
-                                // Status logic
-                                // Keep the 'Terjadwal' logic if it was in the original, or revert to standard status? 
-                                // User asked to "kembalikan seperti semula". The original likely used $isAccepted logic primarily.
-                                // I will use the code block I deleted in step 186.
-                                
-                                if ($hasSchedule) {
-                                    $badgeClass = 'bg-primary text-white';
-                                    $badgeText = 'Terjadwal';
-                                } elseif ($isRejected) {
-                                    $badgeClass = 'bg-danger text-white';
-                                    $badgeText = 'Ditolak';
-                                } elseif ($isAccepted) {
-                                    $badgeClass = 'bg-success text-white';
-                                    $badgeText = 'Diterima';
-                                } else {
-                                    $badgeClass = 'bg-secondary text-white';
-                                    $badgeText = 'Menunggu';
-                                }
-                            ?>
                             <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
                                 <td class="text-muted"><?= $i ?></td>
                                 <td><strong class="text-dark"><?= htmlspecialchars($row['nama'] ?? '-') ?></strong></td>
                                 <td class="text-secondary"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
                                 <td class="text-secondary"><?= htmlspecialchars($row['judul'] ?? '-') ?></td>
                                 <td>
-                                    <span class="badge <?= $badgeClass ?> badge-status px-3 py-2 rounded-3">
-                                        <?= $badgeText ?>
+                                    <span class="badge <?= $row['statusBadge']['class'] ?> badge-status px-3 py-2 rounded-3">
+                                        <?= $row['statusBadge']['text'] ?>
                                     </span>
                                 </td>
                                 <td>

@@ -4,6 +4,7 @@ namespace App\Controllers\admin;
 
 use App\Core\Controller;
 use App\Model\admin\DashboardAdmin;
+use App\Services\Admin\ActivityStatusService;
 
 class DashboardAdminController extends Controller
 {
@@ -43,7 +44,9 @@ class DashboardAdminController extends Controller
      */
     public static function getStatusKegiatan(): array
     {
-        return DashboardAdmin::getStatusKegiatan();
+        $statusKegiatan = DashboardAdmin::getStatusKegiatan();
+        // Format activities with badge classes using Service
+        return ActivityStatusService::formatActivitiesForView($statusKegiatan);
     }
 
     public static function storeKegiatan(): void

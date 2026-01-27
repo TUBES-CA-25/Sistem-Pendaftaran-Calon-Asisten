@@ -26,26 +26,24 @@ $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
     <!-- Exam Card -->
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-4 p-lg-5">
-            <?php if ($absensiTesTertulis): ?>
-                <!-- Already Completed -->
-                <div class="text-center py-4">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4" style="width: 80px; height: 80px; background: #dcfce7;">
-                        <i class="bi bi-check-lg text-success fs-1"></i>
+            <?php if (!$canAccess): ?>
+                <?php if ($accessReason === 'completed'): ?>
+                    <!-- Already Completed -->
+                    <div class="text-center py-4">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4" style="width: 80px; height: 80px; background: #dcfce7;">
+                            <i class="bi bi-check-lg text-success fs-1"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Anda sudah mengikuti tes tertulis</h4>
+                        <p class="text-muted">Anda tidak bisa mengikuti tes tertulis lebih dari sekali.</p>
+                        <p class="text-muted">Terima kasih.</p>
                     </div>
-                    <h4 class="fw-bold mb-3">Anda sudah mengikuti tes tertulis</h4>
-                    <p class="text-muted">Anda tidak bisa mengikuti tes tertulis lebih dari sekali.</p>
-                    <p class="text-muted">Terima kasih.</p>
-                </div>
-            <?php elseif (!$biodataStatus): ?>
-                <div class="alert alert-warning d-flex align-items-center gap-2 rounded-3" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <div>Lengkapi biodata terlebih dahulu</div>
-                </div>
-            <?php elseif (!$berkasStatus): ?>
-                <div class="alert alert-warning d-flex align-items-center gap-2 rounded-3" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <div>Lengkapi berkas terlebih dahulu</div>
-                </div>
+                <?php else: ?>
+                    <!-- Access denied alert -->
+                    <div class="alert alert-warning d-flex align-items-center gap-2 rounded-3" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <div><?= $accessMessage ?></div>
+                    </div>
+                <?php endif; ?>
             <?php elseif (!isset($activeBank) || !$activeBank): ?>
                 <!-- No Active Exam -->
                 <div class="text-center py-4">

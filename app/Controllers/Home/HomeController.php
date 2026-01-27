@@ -19,6 +19,12 @@ use App\Controllers\user\AbsensiUserController;
 use App\Controllers\Exam\NilaiAkhirController;
 use App\Controllers\exam\ExamController;
 use App\Core\Model;
+use App\Services\User\ProfileService;
+use App\Services\User\ProgressService;
+use App\Services\User\ExamAccessService;
+use App\Services\Shared\DateHelper;
+use App\Services\Admin\ParticipantDataService;
+use App\Services\Admin\PresentationStatusService;
 
 class HomeController extends Controller
 {
@@ -299,18 +305,35 @@ class HomeController extends Controller
 
             if ($mahasiswa) {
                 $jadwalPresentasiUser = JadwalPresentasiController::getJadwalByMahasiswaId($mahasiswa['id']);
+
+                // Format schedule dates using DateHelper
+                if ($jadwalPresentasiUser && is_array($jadwalPresentasiUser)) {
+                    if (isset($jadwalPresentasiUser['tanggal'])) {
+                        $jadwalPresentasiUser['formattedDate'] = DateHelper::formatDate($jadwalPresentasiUser['tanggal']);
+                    }
+                    if (isset($jadwalPresentasiUser['waktu'])) {
+                        $jadwalPresentasiUser['formattedTime'] = DateHelper::formatTime($jadwalPresentasiUser['waktu']);
+                    }
+                }
             }
         }
 
         // Tambahkan data biodata, user, dan photo
         $biodata = ProfileController::viewBiodata();
         $user = ProfileController::viewUser();
-        
+
         // Updated Logic: Fetch Profile Photo specifically
         $mahasiswaModel = new \App\Model\User\Mahasiswa();
         $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id']);
         $photoName = $mahasiswa['foto_profil'] ?? 'default.png';
         $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $photoName;
+
+        // Format profile display using ProfileService
+        $profileDisplay = ProfileService::formatProfileDisplay($biodata, $user, $photoName);
+
+        // Calculate progress using ProgressService
+        $tahapanSelesai = DashboardUserController::getMajorStagesSelesai();
+        $progress = ProgressService::calculateProgress($tahapanSelesai);
 
         // Tambahkan data dokumen/berkas
         $berkas = BerkasUserController::viewBerkas();
@@ -318,18 +341,20 @@ class HomeController extends Controller
 
         return [
             'notifikasi' => NotificationControllers::getMessageById() ?? [],
-            'tahapanSelesai' => DashboardUserController::getMajorStagesSelesai(),
-            'percentage' => DashboardUserController::getPercentage(),
+            'tahapanSelesai' => $tahapanSelesai,
+            'percentage' => $progress['percentage'],
+            'stepProgress' => $progress['percentage'],
             'jadwalPresentasiUser' => $jadwalPresentasiUser,
             'tahapan' => [
-                ["1", "Pemberkasan", DashboardUserController::getMajorStagesSelesai() >= 1, "tahap ini"],
-                ["2", "Tes Seleksi", DashboardUserController::getMajorStagesSelesai() >= 2, "tahap ini"],
-                ["3", "Wawancara", DashboardUserController::getMajorStagesSelesai() >= 3, "tahap ini"],
-                ["4", "Hasil Akhir", DashboardUserController::getMajorStagesSelesai() >= 4, "tahap ini"],
+                ["1", "Pemberkasan", $tahapanSelesai >= 1, "tahap ini"],
+                ["2", "Tes Seleksi", $tahapanSelesai >= 2, "tahap ini"],
+                ["3", "Wawancara", $tahapanSelesai >= 3, "tahap ini"],
+                ["4", "Hasil Akhir", $tahapanSelesai >= 4, "tahap ini"],
             ],
             'biodata' => $biodata,
             'user' => $user,
             'photo' => $photoPath,
+            'profileDisplay' => $profileDisplay,
             'dokumen' => $dokumen,
             'graduationStatus' => DashboardUserController::getGraduationStatus(),
             'isPengumumanOpen' => DashboardUserController::isPengumumanOpen(),
@@ -445,10 +470,24 @@ class HomeController extends Controller
      */
     private function getTesTulisData(): array
     {
+        $absensiTesTertulis = DashboardUserController::getAbsensiTesTertulis();
+        $berkasStatus = DashboardUserController::getBerkasStatus();
+        $biodataStatus = DashboardUserController::getBiodataStatus();
+
+        // Check access using ExamAccessService
+        $accessCheck = ExamAccessService::canAccessExam(
+            $absensiTesTertulis,
+            $berkasStatus,
+            $biodataStatus
+        );
+
         return [
-            'absensiTesTertulis' => DashboardUserController::getAbsensiTesTertulis(),
-            'berkasStatus' => DashboardUserController::getBerkasStatus(),
-            'biodataStatus' => DashboardUserController::getBiodataStatus(),
+            'absensiTesTertulis' => $absensiTesTertulis,
+            'berkasStatus' => $berkasStatus,
+            'biodataStatus' => $biodataStatus,
+            'canAccess' => $accessCheck['allowed'],
+            'accessReason' => $accessCheck['reason'],
+            'accessMessage' => $accessCheck['message'],
             'activeBank' => ExamController::getActiveBank()
         ];
     }
@@ -514,25 +553,17 @@ class HomeController extends Controller
     private function getDaftarPesertaData(): array
     {
         $mahasiswa = MahasiswaController::viewAllMahasiswa() ?? [];
-        
-        // Root dir relative to this file (app/Controllers/Home) -> 3 levels up
-        $imageDir = dirname(__DIR__, 3) . '/res/imageUser/';
 
-        foreach ($mahasiswa as &$mhs) {
-            // Check if foto is set and not empty
-            if (!empty($mhs['foto'])) {
-                $filePath = $imageDir . $mhs['foto'];
-                if (!file_exists($filePath)) {
-                    // File record exists in DB but not on disk -> Set to null to trigger default
-                    $mhs['foto'] = null; 
-                }
-            }
+        // Format each participant using ParticipantDataService
+        $formattedMahasiswa = [];
+        foreach ($mahasiswa as $mhs) {
+            // Format participant data with photoPath and statusBadge
+            $formattedMahasiswa[] = ParticipantDataService::formatParticipantForView($mhs);
         }
-        unset($mhs); // Break reference
 
         return [
-            'mahasiswaList' => $mahasiswa,
-            'result' => $mahasiswa
+            'mahasiswaList' => $formattedMahasiswa,
+            'result' => $formattedMahasiswa
         ];
     }
 
@@ -552,8 +583,13 @@ class HomeController extends Controller
      */
     private function getPresentasiAdminData(): array
     {
+        $mahasiswaList = PresentasiUserController::viewAllForAdmin() ?? [];
+
+        // Format mahasiswa list with status badges using Service
+        $formattedMahasiswaList = PresentationStatusService::formatMahasiswaListForView($mahasiswaList);
+
         return [
-            'mahasiswaList' => PresentasiUserController::viewAllForAdmin() ?? [],
+            'mahasiswaList' => $formattedMahasiswaList,
             'mahasiswaAccStatus' => PresentasiUserController::viewAllAccStatusForAdmin() ?? [],
             'ruanganList' => RuanganController::viewAllRuangan() ?? [],
             'jadwalPresentasi' => JadwalPresentasiController::getJadwalPresentasi() ?? []

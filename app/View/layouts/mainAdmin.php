@@ -141,8 +141,8 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     <!-- App Scripts -->
-    <script src="Assets/Script/common.js"></script>
-    <script src="Assets/Script/app.js"></script>
+    <script src="Assets/Script/shared/common.js"></script>
+    <script src="Assets/Script/shared/app.js"></script>
     <script src="Assets/Script/sidebar/ScriptSidebar.js"></script>
 </body>
 </html>
