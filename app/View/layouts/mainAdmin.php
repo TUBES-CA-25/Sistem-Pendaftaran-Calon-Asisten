@@ -20,7 +20,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Custom Variables & Bootstrap Overrides (includes Poppins font) -->
-    <link rel="stylesheet" href="Assets/Style/custom-variables.css?v=<?= time() ?>">
+    <!-- Custom Variables & Bootstrap Overrides (includes Poppins font) -->
+    <link rel="stylesheet" href="Assets/Style/theme.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="Assets/Style/style.css?v=<?= time() ?>">
 
     <!-- DataTables Bootstrap 5 CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
