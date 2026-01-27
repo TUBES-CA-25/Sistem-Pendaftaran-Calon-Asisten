@@ -79,54 +79,6 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
 
     <!-- Presentation Progress & Upcoming Schedule -->
     <div class="row g-4 mb-4">
-        <!-- Jadwal Presentasi List -->
-        <div class="col-12">
-            <div class="card border shadow-sm rounded-4 h-100 bg-white">
-        <div class="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
-            <h6 class="mb-0 fw-bold text-dark"><i class='bx bx-calendar-event me-2'></i>Jadwal Presentasi Mendatang</h6>
-            <a href="#" data-page="jadwalPresentasi" class="text-decoration-none small fw-semibold" style="color: #2563EB;">Lihat Semua <i class='bx bx-chevron-right'></i></a>
-        </div>
-        <div class="card-body p-4 pt-0">
-            <?php if (empty($jadwalPresentasiMendatang)): ?>
-                <div class="text-center py-5 text-muted">
-                    <i class='bx bx-calendar-x fs-1 opacity-25'></i>
-                    <p class="mb-0 mt-2 small">Belum ada jadwal</p>
-                </div>
-            <?php else: ?>
-                <div class="list-group list-group-flush gap-2">
-                <?php foreach ($jadwalPresentasiMendatang as $jadwal): 
-                    $tgl = new DateTime($jadwal['tanggal']);
-                ?>
-                    <div class="list-group-item p-2 border-0 rounded-3 d-flex align-items-center gap-3 bg-light bg-opacity-50 position-relative overflow-hidden" style="background: #F8FAFC;">
-                        <!-- Blue Accent Line -->
-                        <div class="position-absolute bg-primary rounded-pill mb-auto mt-auto" style="width: 3px; height: 60%; left: 0; top: 0; bottom: 0;"></div>
-                        
-                        <!-- Date Box -->
-                        <div class="text-center rounded-3 shadow-sm p-2 flex-shrink-0 text-white" style="min-width: 60px; background-color: #2563EB;">
-                            <div class="fw-bold fs-5 lh-1"><?= $tgl->format('d') ?></div>
-                            <small class="text-uppercase fw-bold text-white-50" style="font-size: 0.6rem; letter-spacing: 1px;"><?= $tgl->format('M') ?></small>
-                        </div>
-
-                        <!-- Content -->
-                        <div class="flex-grow-1">
-                            <h6 class="mb-0 fw-bold text-dark small"><?= htmlspecialchars($jadwal['nama_lengkap']) ?></h6>
-                            <p class="mb-1 text-muted" style="font-size: 0.8rem;">123 <span class="mx-1">•</span> <?= htmlspecialchars($jadwal['judul']) ?></p>
-                            <div class="d-flex align-items-center gap-3 text-muted" style="font-size: 0.75rem;">
-                                <span class="d-flex align-items-center gap-1">
-                                    <i class='bx bx-time'></i> <?= date('H:i', strtotime($jadwal['waktu'])) ?> WIB
-                                </span>
-                                <span class="d-flex align-items-center gap-1">
-                                    <i class='bx bx-building'></i> <?= htmlspecialchars($jadwal['ruangan']) ?>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
-    </div>
     </div>
 
     <div class="row g-4">
