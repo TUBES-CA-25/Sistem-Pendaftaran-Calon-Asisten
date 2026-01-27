@@ -34,7 +34,7 @@ $result = $result ?? [];
     <!-- Table Card -->
     <div class="table-responsive rounded-4 overflow-hidden shadow-sm bg-white border">
         <table id="daftarPesertaTable" class="table table-hover align-middle mb-0" style="width:100%;">
-            <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <thead class="table-header-gradient">
                 <tr>
                     <th class="text-center text-uppercase fw-bold py-3" style="width: 50px; font-size: 0.75rem;">No</th>
                     <th class="text-center text-uppercase fw-bold py-3" style="width: 80px; font-size: 0.75rem;">Avatar</th>
@@ -113,17 +113,7 @@ $result = $result ?? [];
                                         data-ppt="<?= $row['presentasi']['ppt'] ?? ''?>">
                                     <i class="bi bi-eye"></i>
                                 </button>
-                                
-                                <?php if (!isset($row['berkas']['accepted']) || $row['berkas']['accepted'] === null): ?>
-                                    <button class="btn btn-sm btn-action btn-warning bg-warning bg-opacity-10 text-warning border-0 rounded-3 btn-reminder" 
-                                            title="Kirim Reminder" 
-                                            data-id="<?= $row['id'] ?>"
-                                            data-userid="<?= $row['idUser'] ?>"
-                                            data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>">
-                                        <i class="bi bi-bell"></i>
-                                    </button>
-                                <?php endif; ?>
-                                
+
                                 <button class="btn btn-sm btn-action btn-danger bg-danger bg-opacity-10 text-danger border-0 rounded-3 btn-delete" 
                                         title="Hapus">
                                     <i class="bi bi-trash3"></i>
@@ -269,8 +259,8 @@ $result = $result ?? [];
                             <!-- Quick Stats Row -->
                             <div class="row g-2 mt-3">
                                 <div class="col-6 col-lg-3">
-                                    <div class="rounded-3 p-2 text-center" style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border: 1px solid #667eea20;">
-                                        <i class="bi bi-mortarboard-fill d-block mb-1" style="font-size: 1.2rem; color: #667eea;"></i>
+                                    <div class="rounded-3 p-2 text-center info-card-jurusan">
+                                        <i class="bi bi-mortarboard-fill d-block mb-1" style="font-size: 1.2rem;"></i>
                                         <p class="text-muted mb-0" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px;">Jurusan</p>
                                         <p class="fw-semibold mb-0 text-truncate" id="modalJurusan" style="font-size: 0.8rem; color: #374151;" title="">-</p>
                                     </div>
@@ -310,7 +300,7 @@ $result = $result ?? [];
                         <!-- Biodata Section -->
                         <div class="bg-white rounded-4 p-4 h-100 shadow-sm" style="border: 1px solid #e5e7eb;">
                             <div class="d-flex align-items-center mb-4">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 42px; height: 42px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3 biodata-icon" style="width: 42px; height: 42px;">
                                     <i class="bi bi-person-vcard text-white" style="font-size: 1.1rem;"></i>
                                 </div>
                                 <div>
@@ -318,10 +308,10 @@ $result = $result ?? [];
                                     <small class="text-muted">Informasi personal</small>
                                 </div>
                             </div>
-                            
+
                             <div class="row g-3">
                                 <div class="col-12">
-                                    <div class="p-3 rounded-3" style="background: #f8fafc; border-left: 3px solid #667eea;">
+                                    <div class="p-3 rounded-3" style="background: #f8fafc; border-left: 3px solid #3dc2ec;">
                                         <label class="text-muted d-block mb-1" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Nama Lengkap</label>
                                         <p class="fw-semibold mb-0" id="modalNama" style="color: #1f2937; font-size: 1rem;">-</p>
                                     </div>
@@ -464,8 +454,8 @@ $result = $result ?? [];
                         <i class="bi bi-x-lg me-2"></i>Tutup
                     </button>
                     <div class="d-flex gap-2">
-                        <button type="button" class="btn px-4 py-2" id="btnSendMessageToUser" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);">
-                            <i class="bi bi-envelope me-2"></i>Kirim Pesan
+                        <button type="button" class="btn px-4 py-2 btn-send-message" id="btnSendMessageToUser">
+                            <i class="bi bi-envelope-fill me-2"></i>Kirim Pesan
                         </button>
                         
                         <!-- ACCEPT BUTTON FOR BELUM UPLOAD STATUS -->
@@ -512,8 +502,49 @@ $result = $result ?? [];
         box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4) !important;
     }
     
-    #detailModal #btnSendMessageToUser:hover {
-        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3) !important;
+    /* Send Message Button Styling */
+    .btn-send-message {
+        background: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(61, 194, 236, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-send-message::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+        transition: left 0.5s ease;
+    }
+
+    .btn-send-message:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(61, 194, 236, 0.4) !important;
+        background: linear-gradient(135deg, #2ab5d9 0%, #1e4fd4 100%);
+    }
+
+    .btn-send-message:hover::before {
+        left: 100%;
+    }
+
+    .btn-send-message:active {
+        transform: translateY(0);
+    }
+
+    .btn-send-message i {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-send-message:hover i {
+        transform: scale(1.1);
     }
     
     /* Ensure modal body is scrollable */
@@ -531,7 +562,42 @@ $result = $result ?? [];
     }
     
     #detailModal .berkas-btn:hover .bi-download {
-        color: #667eea !important;
+        color: #3dc2ec !important;
+    }
+
+    /* Biodata Icon Styling */
+    .biodata-icon {
+        background: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%);
+        transition: all 0.3s ease;
+    }
+
+    /* Table Header Gradient */
+    .table-header-gradient {
+        background: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%);
+        color: white;
+    }
+
+    /* Info Card Jurusan */
+    .info-card-jurusan {
+        background: linear-gradient(135deg, rgba(61, 194, 236, 0.08) 0%, rgba(37, 99, 235, 0.08) 100%);
+        border: 1px solid rgba(61, 194, 236, 0.12);
+        transition: all 0.3s ease;
+    }
+
+    .info-card-jurusan i {
+        color: #3dc2ec;
+        transition: all 0.3s ease;
+    }
+
+    .info-card-jurusan:hover {
+        background: linear-gradient(135deg, rgba(61, 194, 236, 0.12) 0%, rgba(37, 99, 235, 0.12) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(61, 194, 236, 0.15);
+    }
+
+    .info-card-jurusan:hover i {
+        transform: scale(1.1);
+        color: #2563eb;
     }
     
     #detailModal .rounded-4 {

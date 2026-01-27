@@ -5,8 +5,8 @@
 
 (function() {
     const initRoomsScript = function() {
-        console.log('Rooms script loaded v1.1 - Cleaned');
-        
+        console.log('Rooms script loaded v2.0 - Read Only');
+
         let currentRoomId = null;
         let currentRoomName = '';
         let currentType = 'tes_tulis'; // Default type
@@ -15,27 +15,22 @@
         function showDetailView(id, name) {
             currentRoomId = id;
             currentRoomName = name;
-            
+
             $('#ruanganListSection').addClass('d-none');
             $('#ruanganDetailSection').removeClass('d-none');
-            
-            // Update both title elements
+
+            // Update title
             $('#detailRoomTitle').text(name);
-            $('#detailRoomTitleAlt').text(name);
-            $('#editRoomBtn').data('id', id);
-            $('#deleteRoomBtn').data('id', id);
-            
+
             // Activate Default Tab (Tes Tulis)
-            // Use bootstrap tab instance if possible, or click mock
             const triggerEl = document.querySelector('#pills-testulis-tab');
             if (triggerEl) {
                 const tab = new bootstrap.Tab(triggerEl);
                 tab.show();
-                // Trigger click logic manually if needed for variable update
                 currentType = 'tes_tulis';
-                loadParticipants(); 
+                loadParticipants();
             }
-            
+
             window.scrollTo(0, 0);
         }
 
@@ -70,79 +65,45 @@
 
         function loadParticipants() {
             if(!currentRoomId) return;
-            $('#participantsTableBody').html('<tr><td colspan="6" class="text-center py-5"><div class="spinner-border text-primary speed-fast" role="status"></div></td></tr>');
-            
+            $('#participantsTableBody').html('<tr><td colspan="4" class="text-center py-5"><div class="spinner-border text-primary speed-fast" role="status"></div></td></tr>');
+
             $.ajax({
-                url: `${APP_URL}/getroomparticipants`, // Use global APP_URL
+                url: `${APP_URL}/getroomparticipants`,
                 type: 'POST',
                 data: { id: currentRoomId, type: currentType },
                 dataType: 'json',
                 success: function(res) {
                     if(res.status === 'success') {
                         renderParticipants(res.assigned);
-                        loadAvailableStudents(); // Also load available for the dropdown
+                        updateParticipantCount(res.assigned.length);
                     } else {
                         showAlert('Error: ' + res.message, false);
                     }
                 },
                 error: function() {
-                    $('#participantsTableBody').html('<tr><td colspan="6" class="text-center text-danger py-5">Gagal memuat data. Periksa koneksi.</td></tr>');
+                    $('#participantsTableBody').html('<tr><td colspan="4" class="text-center text-danger py-5">Gagal memuat data. Periksa koneksi.</td></tr>');
                 }
             });
         }
 
-        function loadAvailableStudents() {
-            $.ajax({
-                url: `${APP_URL}/getavailableroomusers`,
-                type: 'POST',
-                data: { type: currentType },
-                dataType: 'json',
-                success: function(res) {
-                    if(res.status === 'success') {
-                        let html = '<option value="" disabled selected>Pilih Mahasiswa...</option>';
-                        res.available.forEach(u => {
-                            html += `<option value="${u.id}">${u.stambuk} - ${u.name}</option>`;
-                        });
-                        $('#selectAvailableMahasiswa').html(html);
-                    }
-                }
-            });
+        function updateParticipantCount(count) {
+            $('#participantCount').text(count);
         }
 
         function renderParticipants(users) {
             const tbody = $('#participantsTableBody');
-            
             let hasStatusCol = (currentType === 'tes_tulis');
-            
-            // Clean table
+
             tbody.empty();
-            
-            // Calculate Stats
-            let total = users.length;
-            let finished = 0;
-            let pending = 0;
-
-            users.forEach(u => {
-                if (hasStatusCol) {
-                    if (u.is_finished == 1) finished++;
-                    else pending++;
-                } else {
-                    pending++; 
-                }
-            });
-
-            // Update Stats UI with animation
-            animateCount('statTotal', total);
-            animateCount('statFinished', finished);
-            animateCount('statPending', pending);
 
             if (users.length === 0) {
                 tbody.html(`
                     <tr>
-                        <td colspan="6" class="text-center py-5">
+                        <td colspan="4" class="text-center py-5">
                             <div class="text-muted">
-                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                <p class="mb-0">Belum ada peserta</p>
+                                <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
+                                <h6 class="fw-semibold">Belum ada peserta</h6>
+                                <p class="small mb-0">Peserta akan muncul di sini setelah ditambahkan</p>
                             </div>
                         </td>
                     </tr>
@@ -154,48 +115,24 @@
                 let statusBadge = '';
                 if(hasStatusCol) {
                     if(u.is_finished == 1) {
-                        statusBadge = `<td class="text-center"><span class="badge bg-success">Selesai</span></td>`;
+                        statusBadge = `<td class="text-center"><span class="badge bg-success px-3 py-2"><i class="bi bi-check-circle me-1"></i>Selesai</span></td>`;
                     } else {
-                        statusBadge = `<td class="text-center"><span class="badge bg-warning">Pending</span></td>`;
+                        statusBadge = `<td class="text-center"><span class="badge bg-warning px-3 py-2"><i class="bi bi-clock me-1"></i>Pending</span></td>`;
                     }
                 } else {
-                    statusBadge = `<td class="text-center"><span class="badge bg-info">Terdaftar</span></td>`;
+                    statusBadge = `<td class="text-center"><span class="badge bg-info px-3 py-2"><i class="bi bi-person-check me-1"></i>Terdaftar</span></td>`;
                 }
 
                 tbody.append(`
                     <tr class="participant-row">
-                        <td class="text-center">${index + 1}</td>
-                        <td class="participant-name">${u.name || '-'}</td>
-                        <td class="participant-stambuk">${u.stambuk || '-'}</td>
+                        <td class="text-center fw-semibold text-muted">${index + 1}</td>
+                        <td class="participant-name fw-medium">${u.name || '-'}</td>
+                        <td class="participant-stambuk text-muted">${u.stambuk || '-'}</td>
                         ${statusBadge}
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-outline-danger btn-remove-participant" data-id="${u.id}" title="Hapus dari Ruangan">
-                                <i class="bi bi-person-dash"></i>
-                            </button>
-                        </td>
                     </tr>
                 `);
             });
-    }
-
-    // Helper for number animation
-    function animateCount(id, target) {
-        let current = 0;
-        let element = $('#' + id);
-        element.text('0');
-        
-        if(target === 0) return;
-
-        let step = Math.ceil(target / 20);
-        let timer = setInterval(() => {
-            current += step;
-            if (current >= target) {
-                current = target;
-                clearInterval(timer);
-            }
-            element.text(current);
-        }, 30);
-    }
+        }
     
         // Search functionality
         $('#searchParticipants').on('keyup', function() {
@@ -206,65 +143,6 @@
                 const matches = name.includes(searchTerm) || stambuk.includes(searchTerm);
                 $(this).toggle(matches);
             });
-        });
-
-        // --- ASSIGN/REMOVE MAHASISWA (Restored) ---
-        $('#assignMahasiswaForm').on('submit', function(e) {
-            e.preventDefault();
-            const userId = $('#selectAvailableMahasiswa').val();
-            if(!userId) return;
-
-            $.ajax({
-                url: `${APP_URL}/assignroomuser`,
-                type: 'POST',
-                data: { 
-                    userId: userId, 
-                    roomId: currentRoomId, 
-                    type: currentType 
-                },
-                dataType: 'json',
-                success: function(res) {
-                    if(res.status === 'success') {
-                        showAlert('Mahasiswa berhasil ditambahkan!');
-                        loadParticipants();
-                    } else {
-                        showAlert(res.message, false);
-                    }
-                }
-            });
-        });
-
-        $(document).on('click', '.btn-remove-participant', function() {
-            const userId = $(this).data('id');
-            showConfirmDelete(() => {
-                $.ajax({
-                    url: `${APP_URL}/removeroomuser`,
-                    type: 'POST',
-                    data: { userId: userId, type: currentType },
-                    dataType: 'json',
-                    success: function(res) {
-                        if(res.status === 'success') {
-                            showAlert('Mahasiswa dihapus dari ruangan');
-                            loadParticipants();
-                        } else {
-                            showAlert(res.message, false);
-                        }
-                    }
-                });
-            }, 'Hapus mahasiswa ini dari ruangan?');
-        });
-
-        // --- EDIT/DELETE ROOM (From Detail View) ---
-        $('#editRoomBtn').on('click', function() {
-            $('#updateRuanganId').val(currentRoomId);
-            $('#updateNamaRuangan').val(currentRoomName);
-            new bootstrap.Modal(document.getElementById('updateRuanganModal')).show();
-        });
-
-        $('#deleteRoomBtn').on('click', function() {
-            showConfirmDelete(() => {
-                handleDeleteRoom(currentRoomId);
-            }, 'Apakah Anda yakin ingin menghapus ruangan ini beserta seluruh datanya?');
         });
         
         // --- ADD ROOM ---
