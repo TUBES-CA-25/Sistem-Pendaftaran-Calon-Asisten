@@ -37,55 +37,55 @@ class Ruangan extends Model {
         $stmt->execute();
     }
 
-    // User Assignment Methods
+    // User Assignment Methods (Refactored to pull from schedules)
     public function getUsersByRoom($roomId, $type) {
-        $column = $this->getColumnByType($type);
-        if(!$column) return [];
-
+        $db = self::getDB();
+        
         if($type === 'tes_tulis') {
-            // Join with mahasiswa and nilai_akhir to check if they have finished
-            $sql = "SELECT u.id, u.username as name, u.stambuk, 
+            // Join with wawancara where jenis_wawancara is Tes Tertulis
+            // also join with nilai_akhir to check finished status
+            $sql = "SELECT m.id_user as id, m.nama_lengkap as name, m.stambuk, 
                            CASE WHEN na.id IS NOT NULL THEN 1 ELSE 0 END as is_finished
-                    FROM user u
-                    LEFT JOIN mahasiswa m ON m.id_user = u.id
+                    FROM wawancara w
+                    JOIN mahasiswa m ON w.id_mahasiswa = m.id
                     LEFT JOIN nilai_akhir na ON na.id_mahasiswa = m.id
-                    WHERE u.$column = ?";
+                    WHERE w.id_ruangan = ? AND w.jenis_wawancara LIKE 'Tes Tertulis%'";
+        } elseif($type === 'presentasi') {
+            // Join with jadwal_presentasi
+            $sql = "SELECT m.id_user as id, m.nama_lengkap as name, m.stambuk, 0 as is_finished
+                    FROM jadwal_presentasi jp
+                    JOIN presentasi p ON jp.id_presentasi = p.id
+                    JOIN mahasiswa m ON p.id_mahasiswa = m.id
+                    WHERE jp.id_ruangan = ?";
+        } elseif($type === 'wawancara') {
+            // Join with wawancara where jenis_wawancara is NOT Tes Tertulis
+            $sql = "SELECT m.id_user as id, m.nama_lengkap as name, m.stambuk, 0 as is_finished
+                    FROM wawancara w
+                    JOIN mahasiswa m ON w.id_mahasiswa = m.id
+                    WHERE w.id_ruangan = ? AND w.jenis_wawancara NOT LIKE 'Tes Tertulis%'";
         } else {
-            $sql = "SELECT id, username as name, stambuk FROM user WHERE $column = ?";
+            return [];
         }
 
-        $stmt = self::getDB()->prepare($sql);
+        $stmt = $db->prepare($sql);
         $stmt->bindParam(1, $roomId);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    // Deprecated: No longer used as it's read-only based on schedules
     public function getAvailableUsers($type) {
-        $column = $this->getColumnByType($type);
-        if(!$column) return [];
-        $sql = "SELECT id, username as name, stambuk FROM user WHERE ($column IS NULL OR $column = 0) AND role = 'User'";
-        $stmt = self::getDB()->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        return [];
     }
 
+    // Deprecated: No longer used as it's read-only based on schedules
     public function assignUserToRoom($userId, $roomId, $type) {
-        $column = $this->getColumnByType($type);
-        if(!$column) return false;
-        $sql = "UPDATE user SET $column = ? WHERE id = ?";
-        $stmt = self::getDB()->prepare($sql);
-        $stmt->bindParam(1, $roomId);
-        $stmt->bindParam(2, $userId);
-        return $stmt->execute();
+        return false;
     }
 
+    // Deprecated: No longer used as it's read-only based on schedules
     public function removeUserFromRoom($userId, $type) {
-        $column = $this->getColumnByType($type);
-        if(!$column) return false;
-        $sql = "UPDATE user SET $column = NULL WHERE id = ?";
-        $stmt = self::getDB()->prepare($sql);
-        $stmt->bindParam(1, $userId);
-        return $stmt->execute();
+        return false;
     }
 
     public function getAllRoomOccupants($roomId) {

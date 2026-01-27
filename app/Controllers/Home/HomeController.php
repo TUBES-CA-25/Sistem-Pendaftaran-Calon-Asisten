@@ -602,7 +602,7 @@ class HomeController extends Controller
     {
         return [
             'wawancara' => WawancaraController::getAll() ?? [],
-            'mahasiswaList' => MahasiswaController::viewAllMahasiswa() ?? [],
+            'mahasiswaList' => MahasiswaController::getAvailableForWawancara() ?? [],
             'ruanganList' => RuanganController::viewAllRuangan() ?? []
         ];
     }

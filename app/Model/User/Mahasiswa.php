@@ -333,4 +333,32 @@ class Mahasiswa extends Model
         $stmt->bindParam(':id', $idUser);
         return $stmt->execute();
     }
+
+    /**
+     * Get students with biodata who are NOT scheduled for Tes Tertulis
+     */
+    public static function getAvailableForTesTulis() {
+        $sql = "SELECT m.id, m.nama_lengkap, m.stambuk 
+                FROM mahasiswa m
+                LEFT JOIN wawancara w ON m.id = w.id_mahasiswa AND w.jenis_wawancara LIKE 'Tes Tertulis%'
+                WHERE w.id IS NULL
+                ORDER BY m.nama_lengkap ASC";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get students with biodata who are NOT scheduled for Wawancara
+     */
+    public static function getAvailableForWawancara() {
+        $sql = "SELECT m.id, m.nama_lengkap, m.stambuk 
+                FROM mahasiswa m
+                LEFT JOIN wawancara w ON m.id = w.id_mahasiswa AND w.jenis_wawancara NOT LIKE 'Tes Tertulis%'
+                WHERE w.id IS NULL
+                ORDER BY m.nama_lengkap ASC";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

@@ -81,6 +81,7 @@ $ruanganList = $ruanganList ?? [];
                                     <div class="w-100 border-top border-light mb-auto"></div>
 
                                     <!-- Buttons (Always Visible but styled) -->
+                                     <!-- Buttons (Always Visible but styled) -->
                                     <div class="d-flex gap-2 mt-3 w-100 justify-content-center">
                                          <button class="btn btn-light text-primary btn-sm px-3 py-2 rounded-3 flex-grow-1 fw-medium btn-edit-room d-flex align-items-center justify-content-center gap-2"
                                             data-id="<?= $ruangan['id'] ?>" 
@@ -122,15 +123,15 @@ $ruanganList = $ruanganList ?? [];
                     </button>
                     <div>
                         <h3 class="fw-bold text-dark mb-1" id="detailRoomTitle">Nama Ruangan</h3>
-                        <p class="text-muted small mb-0">Kelola peserta ruangan</p>
+                        <p class="text-muted small mb-0">Monitor peserta di ruangan ini</p>
                     </div>
                 </div>
                 <div class="d-flex gap-2">
                     <button class="btn btn-outline-primary" id="editRoomBtn" data-id="">
-                        <i class="bi bi-pencil me-2"></i>Edit
+                        <i class="bi bi-pencil me-2"></i>Edit Nama
                     </button>
                     <button class="btn btn-outline-danger" id="deleteRoomBtn" data-id="">
-                        <i class="bi bi-trash me-2"></i>Hapus
+                        <i class="bi bi-trash me-2"></i>Hapus Ruangan
                     </button>
                 </div>
             </div>
@@ -166,18 +167,11 @@ $ruanganList = $ruanganList ?? [];
             <!-- Toolbar -->
             <div class="card-body border-bottom bg-light">
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <input type="text" id="searchParticipants" class="form-control" placeholder="🔍 Cari mahasiswa...">
-                    </div>
-                    <div class="col-md-6">
-                        <form id="addParticipantForm" class="d-flex gap-2">
-                            <select class="form-select" id="availableParticipants" required>
-                                <option value="" selected disabled>Pilih Mahasiswa...</option>
-                            </select>
-                            <button type="submit" class="btn btn-primary text-nowrap">
-                                <i class="bi bi-plus-lg me-2"></i>Tambah
-                            </button>
-                        </form>
+                    <div class="col-md-12">
+                        <div class="position-relative">
+                             <i class="bi bi-search position-absolute text-muted" style="left: 15px; top: 50%; transform: translateY(-50%);"></i>
+                             <input type="text" id="searchParticipants" class="form-control ps-5" placeholder="Cari mahasiswa di ruangan ini...">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -190,8 +184,7 @@ $ruanganList = $ruanganList ?? [];
                             <th class="text-center" style="width: 5%;">No</th>
                             <th style="width: 40%;">Mahasiswa</th>
                             <th style="width: 20%;">Stambuk</th>
-                            <th class="text-center" style="width: 20%;">Status</th>
-                            <th class="text-center" style="width: 15%;">Aksi</th>
+                             <th class="text-center" style="width: 25%;">Status</th>
                         </tr>
                     </thead>
                     <tbody id="participantsTableBody">
@@ -265,4 +258,4 @@ $ruanganList = $ruanganList ?? [];
 </div>
 
 <!-- Load Custom Script -->
-<script src="<?= APP_URL ?>/Assets/Script/admin/rooms.js"></script>
+<script src="<?= APP_URL ?>/Assets/Script/admin/rooms.js?v=1.1"></script>

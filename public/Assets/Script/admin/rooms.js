@@ -5,7 +5,7 @@
 
 (function() {
     const initRoomsScript = function() {
-        console.log('Rooms script loaded');
+        console.log('Rooms script loaded v1.1 - Cleaned');
         
         let currentRoomId = null;
         let currentRoomName = '';
@@ -80,7 +80,6 @@
                 success: function(res) {
                     if(res.status === 'success') {
                         renderParticipants(res.assigned);
-                        renderAvailableOptions(res.available);
                     } else {
                         showAlert('Error: ' + res.message, false);
                     }
@@ -162,12 +161,7 @@
                             </div>
                         </td>
                         <td class="participant-stambuk">${u.stambuk || '-'}</td>
-                        ${statusBadge}
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-outline-danger remove-participant" data-id="${u.id}">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
+                         ${statusBadge}
                     </tr>
                 `);
             });
@@ -203,60 +197,7 @@
         });
     });
 
-    function renderAvailableOptions(users) {
-            const select = $('#availableParticipants');
-            select.empty().append('<option value="" selected disabled>Pilih Mahasiswa...</option>');
-            users.forEach(u => {
-                select.append(`<option value="${u.id}">${u.name} (${u.stambuk})</option>`);
-            });
-        }
-
-        // --- FORMS ---
-        $('#addParticipantForm').on('submit', function(e) {
-            e.preventDefault();
-            const userId = $('#availableParticipants').val();
-            if(!userId) return;
-
-            $.ajax({
-                url: `${APP_URL}/assignparticipant`,
-                type: 'POST',
-                data: { userId: userId, roomId: currentRoomId, type: currentType },
-                dataType: 'json',
-                success: function(res) {
-                    if(res.status === 'success') {
-                        loadParticipants();
-                        showAlert('Peserta berhasil ditambahkan', true);
-                        // Reset select?
-                        $('#availableParticipants').val('');
-                    }
-                    else showAlert(res.message, false);
-                }
-            });
-        });
-
-        $(document).on('click', '.remove-participant', function() {
-            const userId = $(this).data('id');
-            const row = $(this).closest('tr');
-            
-            showConfirmDelete(() => {
-                $.ajax({
-                    url: `${APP_URL}/removeparticipant`,
-                    type: 'POST',
-                    data: { userId: userId, type: currentType },
-                    dataType: 'json',
-                    success: function(res) {
-                        if(res.status === 'success') {
-                            row.fadeOut(300, () => loadParticipants());
-                            showAlert('Perubahan berhasil disimpan!', true);
-                        } else showAlert(res.message, false);
-                    }
-                });
-            }, 'Apakah Anda yakin ingin menghapus peserta ini?');
-        });
-
         // --- EDIT/DELETE ROOM (From Detail View) ---
-        // Note: These buttons are not in the current HTML of Detail View provided in the initial read,
-        // but were in previous versions. If they exist, this handles them.
         $('#editRoomBtn').on('click', function() {
             $('#updateRuanganId').val(currentRoomId);
             $('#updateNamaRuangan').val(currentRoomName);
@@ -308,8 +249,6 @@
                              $('#detailRoomTitle').text(name);
                              currentRoomName = name;
                         }
-                        // Update card in list mode (simple reload or DOM update)
-                        // Reload is safer to ensure consistency
                         sessionStorage.setItem('pendingToast', JSON.stringify({
                              message: 'Nama ruangan diperbarui',
                              isSuccess: true

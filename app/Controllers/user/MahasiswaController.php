@@ -103,4 +103,18 @@ class MahasiswaController extends Controller {
             return;
         }
     }
+
+    /**
+     * Get available students for Tes Tertulis
+     */
+    public static function getAvailableForTesTulis() {
+        return Mahasiswa::getAvailableForTesTulis();
+    }
+
+    /**
+     * Get available students for Wawancara
+     */
+    public static function getAvailableForWawancara() {
+        return Mahasiswa::getAvailableForWawancara();
+    }
 }

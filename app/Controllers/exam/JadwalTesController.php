@@ -33,7 +33,7 @@ class JadwalTesController extends Controller
         $stmt->execute();
         $jadwalTesList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        $mahasiswaList = \App\Controllers\user\MahasiswaController::viewAllMahasiswa() ?? [];
+        $mahasiswaList = \App\Controllers\user\MahasiswaController::getAvailableForTesTulis() ?? [];
         $ruanganList = \App\Controllers\presentasi\RuanganController::viewAllRuangan() ?? [];
 
         $data = [
