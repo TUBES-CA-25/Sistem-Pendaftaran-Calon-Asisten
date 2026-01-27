@@ -34,64 +34,82 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                     </h5>
                 </div>
                 <div class="card-body p-4 pt-0">
-                    <?php if (!$biodataStatus): ?>
-                        <div class="alert alert-warning d-flex align-items-center gap-2 rounded-3" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill"></i>
-                            <div>Lengkapi biodata terlebih dahulu</div>
-                        </div>
-                    <?php else: ?>
-                        <form id="berkasForm" enctype="multipart/form-data">
-                            <div class="mb-4">
-                                <label for="foto" class="form-label fw-semibold">
-                                    <i class="bi bi-image me-1"></i>Foto 3x4
-                                </label>
-                                <input class="form-control form-control-lg rounded-3" type="file" id="foto" name="foto" accept="image/png, image/jpeg, image/jpg" required>
-                                <small class="text-muted">Format: PNG, JPG, JPEG</small>
-                            </div>
+    <?php 
+    // 1. Cek Status Penerimaan dari data $res (ambil data terbaru/pertama)
+    $isAccepted = false;
+    if (!empty($res) && isset($res[0]['accepted']) && $res[0]['accepted'] == 1) {
+        $isAccepted = true;
+    }
+    ?>
 
-                            <div class="mb-4">
-                                <label for="cv" class="form-label fw-semibold">
-                                    <i class="bi bi-file-earmark-text me-1"></i>CV
-                                </label>
-                                <input class="form-control form-control-lg rounded-3" type="file" id="cv" name="cv" accept="application/pdf" required>
-                                <small class="text-muted">Format: PDF</small>
-                            </div>
+    <?php if (!$biodataStatus): ?>
+        <div class="alert alert-warning d-flex align-items-center gap-2 rounded-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <div>Lengkapi biodata terlebih dahulu</div>
+        </div>
 
-                            <div class="mb-4">
-                                <label for="transkrip" class="form-label fw-semibold">
-                                    <i class="bi bi-file-earmark-bar-graph me-1"></i>Transkrip Nilai
-                                </label>
-                                <input class="form-control form-control-lg rounded-3" type="file" id="transkrip" name="transkrip" accept="application/pdf" required>
-                                <small class="text-muted">Format: PDF</small>
-                            </div>
+    <?php elseif ($isAccepted): ?>
+        <div class="alert alert-success d-flex align-items-center gap-2 rounded-3" role="alert">
+            <i class="bi bi-check-circle-fill fs-4"></i>
+            <div>
+                <h6 class="fw-bold mb-0">Berkas Telah Diterima!</h6>
+                <p class="mb-0 small">Seluruh berkas persyaratan Anda telah diverifikasi dan disetujui. Anda tidak perlu mengunggah ulang.</p>
+            </div>
+        </div>
 
-                            <div class="mb-4">
-                                <label for="suratpernyataan" class="form-label fw-semibold">
-                                    <i class="bi bi-file-earmark-check me-1"></i>Surat Pernyataan
-                                </label>
-                                <input class="form-control form-control-lg rounded-3" type="file" id="suratpernyataan" name="suratpernyataan" accept="application/pdf" required>
-                                <small class="text-muted">Format: PDF</small>
-                            </div>
+    <?php else: ?>
+        <form id="berkasForm" enctype="multipart/form-data">
+            <div class="mb-4">
+                <label for="foto" class="form-label fw-semibold">
+                    <i class="bi bi-image me-1"></i>Foto 3x4
+                </label>
+                <input class="form-control form-control-lg rounded-3" type="file" id="foto" name="foto" accept="image/png, image/jpeg, image/jpg" required>
+                <small class="text-muted">Format: PNG, JPG, JPEG</small>
+            </div>
 
-                            <!-- Download Template -->
-                            <div class="p-3 rounded-3 mb-4" style="background: #f0f9ff;">
-                                <a id="downloadFile1" href="#" download class="d-flex align-items-center gap-3 text-decoration-none">
-                                    <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 48px; height: 48px; background: var(--gradient-primary);">
-                                        <i class="bx bx-file text-white fs-4"></i>
-                                    </div>
-                                    <div>
-                                        <span class="fw-semibold text-primary d-block">Download Template CV</span>
-                                        <small class="text-muted">Gunakan template yang disediakan</small>
-                                    </div>
-                                </a>
-                            </div>
+            <div class="mb-4">
+                <label for="cv" class="form-label fw-semibold">
+                    <i class="bi bi-file-earmark-text me-1"></i>CV
+                </label>
+                <input class="form-control form-control-lg rounded-3" type="file" id="cv" name="cv" accept="application/pdf" required>
+                <small class="text-muted">Format: PDF</small>
+            </div>
 
-                            <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3">
-                                <i class="bi bi-upload me-2"></i>Submit Berkas
-                            </button>
-                        </form>
-                    <?php endif; ?>
-                </div>
+            <div class="mb-4">
+                <label for="transkrip" class="form-label fw-semibold">
+                    <i class="bi bi-file-earmark-bar-graph me-1"></i>Transkrip Nilai
+                </label>
+                <input class="form-control form-control-lg rounded-3" type="file" id="transkrip" name="transkrip" accept="application/pdf" required>
+                <small class="text-muted">Format: PDF</small>
+            </div>
+
+            <div class="mb-4">
+                <label for="suratpernyataan" class="form-label fw-semibold">
+                    <i class="bi bi-file-earmark-check me-1"></i>Surat Pernyataan
+                </label>
+                <input class="form-control form-control-lg rounded-3" type="file" id="suratpernyataan" name="suratpernyataan" accept="application/pdf" required>
+                <small class="text-muted">Format: PDF</small>
+            </div>
+
+            <div class="p-3 rounded-3 mb-4" style="background: #f0f9ff;">
+                <a id="downloadFile1" href="#" download class="d-flex align-items-center gap-3 text-decoration-none">
+                    <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 48px; height: 48px; background: var(--gradient-primary);">
+                        <i class="bx bx-file text-white fs-4"></i>
+                    </div>
+                    <div>
+                        <span class="fw-semibold text-primary d-block">Download Template CV</span>
+                        <small class="text-muted">Gunakan template yang disediakan</small>
+                    </div>
+                </a>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3">
+                <i class="bi bi-upload me-2"></i>Submit Berkas
+            </button>
+        </form>
+    <?php endif; ?>
+</div> <!-- pengimputan -->
+                
             </div>
         </div>
 
@@ -143,7 +161,7 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                             <span class="text-muted">Belum ada data berkas</span>
                                         </td>
                                     </tr>
-                                    
+
                                 <?php endif; ?>
                             </tbody>
                         </table>
