@@ -113,6 +113,8 @@ use App\Controllers\admin\DashboardAdminController;
 use App\Controllers\Admin\AdminProfileController;
 
 Router::post("/addkegiatan", [new DashboardAdminController, 'storeKegiatan']);
+Router::post("/updatekegiatan", [new DashboardAdminController, 'updateKegiatan']);
+Router::post("/deletekegiatan", [new DashboardAdminController, 'destroyKegiatan']);
 Router::post("/updatedeadline", [new DashboardAdminController, 'saveDeadline']);
 Router::post("/dashboard/stats", [new DashboardAdminController, 'getStats']);
 Router::post("/getactivities", [new DashboardUserController, 'getActivities']);

@@ -289,6 +289,69 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
     </div>
 </div>
 
+<!-- Activity Detail/Action Modal -->
+<div class="modal fade" id="activityActionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title fw-bold" id="actionModalTitle">Detail Kegiatan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 pt-0">
+                <div id="actionModalContent" class="mb-4">
+                    <h6 class="fw-bold text-primary mb-1" id="displayJudul"></h6>
+                    <p class="text-muted small mb-2"><i class="bx bx-calendar me-1"></i><span id="displayTanggal"></span></p>
+                    <p class="text-dark small mb-0" id="displayDeskripsi"></p>
+                </div>
+                <!-- Only show actions for type 'Kegiatan' (kegiatan_admin table) -->
+                <div id="calendarActions" style="display: none;">
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary rounded-3" id="btnEditActivity">
+                            <i class="bx bx-edit-alt me-1"></i> Edit Kegiatan
+                        </button>
+                        <button type="button" class="btn btn-outline-danger rounded-3" id="btnDeleteActivity">
+                            <i class="bx bx-trash me-1"></i> Hapus Kegiatan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Activity Modal -->
+<div class="modal fade" id="editActivityModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold">Edit Kegiatan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="editActivityForm">
+                    <input type="hidden" name="id" id="editIdKegiatan">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Judul Kegiatan</label>
+                        <input type="text" class="form-control rounded-3" name="judul" id="editJudulKegiatan" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Tanggal</label>
+                        <input type="date" class="form-control rounded-3" name="tanggal" id="editTanggalKegiatan" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Deskripsi</label>
+                        <textarea class="form-control rounded-3" name="deskripsi" id="editDeskripsiKegiatan" rows="3"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-light rounded-3 px-4" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary rounded-3 px-4">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 (function() {
     // Bootstrap Modal instance for deadline editing
@@ -443,14 +506,8 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
     let currentYear = new Date().getFullYear();
     let currentMonth = new Date().getMonth();
 
-    function getEventColor(judul) {
-        const title = (judul || '').toLowerCase();
-        if (title.includes('berkas') || title.includes('kelengkapan')) return 'event-red';
-        if (title.includes('tertulis') || title.includes('tes')) return 'event-yellow';
-        if (title.includes('wawancara') || title.includes('interview')) return 'event-green';
-        if (title.includes('pengumuman') || title.includes('announcement')) return 'event-blue';
-        return 'has-event';
-    }
+    // Click tracker for activities
+    let selectedEvent = null;
 
     function generateCalendar(year, month) {
         const firstDay = new Date(year, month, 1);
@@ -511,6 +568,11 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                     const isToday = date === today.getDate() && month === today.getMonth() && year === today.getFullYear();
 
                     if (daysEvents.length > 0) {
+                        cell.style.cursor = 'pointer';
+                        cell.onclick = function() {
+                            showActivityActions(daysEvents);
+                        };
+
                         // Event date styling - light blue background
                         cell.style.backgroundColor = '#E0E7FF';
                         cell.style.borderRadius = '8px';
@@ -526,7 +588,6 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                         
                         cell.appendChild(dateSpan);
                         cell.appendChild(dot);
-                        cell.title = daysEvents.map(e => e.judul).join(', ');
                     } else if (isToday) {
                         // Today's date - blue border
                         cell.style.border = '2px solid #2563EB';
@@ -547,6 +608,107 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
             }
             if (date > daysInMonth) break;
         }
+    }
+
+    function showActivityActions(events) {
+        // For simplicity, we handle the first event of the day if multiple exist
+        const event = events[0];
+        selectedEvent = event;
+
+        document.getElementById('displayJudul').textContent = event.judul;
+        document.getElementById('displayTanggal').textContent = new Date(event.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('displayDeskripsi').textContent = event.deskripsi || 'Tidak ada deskripsi';
+        
+        const actionsDiv = document.getElementById('calendarActions');
+        if (event.jenis === 'Kegiatan') {
+            actionsDiv.style.display = 'block';
+        } else {
+            actionsDiv.style.display = 'none';
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById('activityActionModal'));
+        modal.show();
+    }
+
+    // Edit Button Handler
+    document.getElementById('btnEditActivity').onclick = function() {
+        if (!selectedEvent) return;
+        
+        // Hide action modal
+        bootstrap.Modal.getInstance(document.getElementById('activityActionModal')).hide();
+
+        document.getElementById('editIdKegiatan').value = selectedEvent.id;
+        document.getElementById('editJudulKegiatan').value = selectedEvent.judul;
+        document.getElementById('editTanggalKegiatan').value = selectedEvent.tanggal;
+        document.getElementById('editDeskripsiKegiatan').value = selectedEvent.deskripsi || '';
+
+        const modal = new bootstrap.Modal(document.getElementById('editActivityModal'));
+        modal.show();
+    };
+
+    // Delete Button Handler
+    document.getElementById('btnDeleteActivity').onclick = function() {
+        if (!selectedEvent) return;
+
+        showConfirmDelete(() => {
+            if (typeof baseUrl === 'undefined') {
+                var baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
+            }
+            fetch(`${baseUrl}/deletekegiatan`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: selectedEvent.id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    bootstrap.Modal.getInstance(document.getElementById('activityActionModal')).hide();
+                    showAlert('Kegiatan berhasil dihapus!', true);
+                    location.reload();
+                } else {
+                    showAlert('Gagal: ' + data.message, false);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Terjadi kesalahan sistem', false);
+            });
+        }, 'Hapus kegiatan ini?');
+    };
+
+    // Handle Edit Activity Submit
+    const editActivityForm = document.getElementById('editActivityForm');
+    if (editActivityForm) {
+        editActivityForm.onsubmit = function(e) {
+            e.preventDefault();
+            const formData = {
+                id: document.getElementById('editIdKegiatan').value,
+                judul: document.getElementById('editJudulKegiatan').value,
+                tanggal: document.getElementById('editTanggalKegiatan').value,
+                deskripsi: document.getElementById('editDeskripsiKegiatan').value
+            };
+            if (typeof baseUrl === 'undefined') {
+                var baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
+            }
+            fetch(`${baseUrl}/updatekegiatan`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showAlert('Kegiatan berhasil diperbarui!', true);
+                    location.reload();
+                } else {
+                    showAlert('Gagal: ' + data.message, false);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Terjadi kesalahan sistem', false);
+            });
+        };
     }
 
     const prevMonthBtn = document.getElementById('prevMonth');

@@ -67,6 +67,48 @@ class DashboardAdminController extends Controller
         }
     }
 
+    public static function updateKegiatan(): void
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!isset($data['id']) || !isset($data['judul']) || !isset($data['tanggal'])) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+            return;
+        }
+
+        $success = DashboardAdmin::updateKegiatan($data);
+
+        if ($success) {
+            echo json_encode(['status' => 'success', 'message' => 'Kegiatan berhasil diperbarui']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => 'Gagal memperbarui kegiatan']);
+        }
+    }
+
+    public static function destroyKegiatan(): void
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!isset($data['id'])) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+            return;
+        }
+
+        $success = DashboardAdmin::deleteKegiatan((int)$data['id']);
+
+        if ($success) {
+            echo json_encode(['status' => 'success', 'message' => 'Kegiatan berhasil dihapus']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus kegiatan']);
+        }
+    }
+
     public static function saveDeadline(): void
     {
         $json = file_get_contents('php://input');

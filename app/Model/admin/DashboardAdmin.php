@@ -75,8 +75,25 @@ class DashboardAdmin extends Model
         $results = array_merge($results, $presentasi);
 
         // Try pull from kegiatan_admin
-        $custom = self::selectTanggalByMonth('kegiatan_admin', $year, $month, 'Kegiatan');
-        $results = array_merge($results, $custom);
+        try {
+            $sql = "SELECT id, judul, tanggal, deskripsi FROM kegiatan_admin WHERE YEAR(tanggal) = :year AND MONTH(tanggal) = :month";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->bindValue(':year', $year, PDO::PARAM_INT);
+            $stmt->bindValue(':month', $month, PDO::PARAM_INT);
+            $stmt->execute();
+            $customRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($customRows) {
+                foreach ($customRows as $row) {
+                    $results[] = [
+                        'id' => $row['id'],
+                        'tanggal' => $row['tanggal'],
+                        'judul' => $row['judul'],
+                        'jenis' => 'Kegiatan',
+                        'deskripsi' => $row['deskripsi'] ?? ''
+                    ];
+                }
+            }
+        } catch (\Throwable $e) {}
 
         return $results;
     }
@@ -89,6 +106,33 @@ class DashboardAdmin extends Model
             $stmt->bindValue(':judul', $data['judul']);
             $stmt->bindValue(':tanggal', $data['tanggal']);
             $stmt->bindValue(':deskripsi', $data['deskripsi'] ?? '');
+            return $stmt->execute();
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    public static function updateKegiatan(array $data): bool
+    {
+        try {
+            $sql = "UPDATE kegiatan_admin SET judul = :judul, tanggal = :tanggal, deskripsi = :deskripsi WHERE id = :id";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->bindValue(':judul', $data['judul']);
+            $stmt->bindValue(':tanggal', $data['tanggal']);
+            $stmt->bindValue(':deskripsi', $data['deskripsi'] ?? '');
+            $stmt->bindValue(':id', $data['id'], PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    public static function deleteKegiatan(int $id): bool
+    {
+        try {
+            $sql = "DELETE FROM kegiatan_admin WHERE id = :id";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             return $stmt->execute();
         } catch (\Throwable $e) {
             return false;
