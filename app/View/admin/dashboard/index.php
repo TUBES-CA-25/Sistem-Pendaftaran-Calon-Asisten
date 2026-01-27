@@ -84,7 +84,7 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
             <div class="card border shadow-sm rounded-4 h-100 bg-white">
         <div class="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
             <h6 class="mb-0 fw-bold text-dark"><i class='bx bx-calendar-event me-2'></i>Jadwal Presentasi Mendatang</h6>
-            <a href="#" data-page="presentasi" class="text-decoration-none small fw-semibold" style="color: #2563EB;">Lihat Semua <i class='bx bx-chevron-right'></i></a>
+            <a href="#" data-page="jadwalPresentasi" class="text-decoration-none small fw-semibold" style="color: #2563EB;">Lihat Semua <i class='bx bx-chevron-right'></i></a>
         </div>
         <div class="card-body p-4 pt-0">
             <?php if (empty($jadwalPresentasiMendatang)): ?>

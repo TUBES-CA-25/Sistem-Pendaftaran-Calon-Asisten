@@ -167,11 +167,22 @@ $ruanganList = $ruanganList ?? [];
             <!-- Toolbar -->
             <div class="card-body border-bottom bg-light">
                 <div class="row g-3">
-                    <div class="col-md-12">
+                    <div class="col-md-7">
                         <div class="position-relative">
                              <i class="bi bi-search position-absolute text-muted" style="left: 15px; top: 50%; transform: translateY(-50%);"></i>
                              <input type="text" id="searchParticipants" class="form-control ps-5" placeholder="Cari mahasiswa di ruangan ini...">
                         </div>
+                    </div>
+                    <!-- Form Tambah Mahasiswa (Restored) -->
+                    <div class="col-md-5">
+                        <form id="assignMahasiswaForm" class="d-flex gap-2">
+                             <select class="form-select flex-grow-1" id="selectAvailableMahasiswa" required>
+                                 <option value="" disabled selected>Pilih Mahasiswa...</option>
+                             </select>
+                             <button type="submit" class="btn btn-primary text-nowrap">
+                                <i class="bi bi-plus-lg"></i> Tambah
+                             </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -184,7 +195,8 @@ $ruanganList = $ruanganList ?? [];
                             <th class="text-center" style="width: 5%;">No</th>
                             <th style="width: 40%;">Mahasiswa</th>
                             <th style="width: 20%;">Stambuk</th>
-                             <th class="text-center" style="width: 25%;">Status</th>
+                             <th class="text-center" style="width: 15%;">Status</th>
+                             <th class="text-center" style="width: 10%;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="participantsTableBody">

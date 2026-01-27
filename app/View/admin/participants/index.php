@@ -41,7 +41,6 @@ $result = $result ?? [];
                     <th class="text-uppercase fw-bold py-3" style="font-size: 0.75rem;">Nama Lengkap</th>
                     <th class="text-uppercase fw-bold py-3 text-center" style="font-size: 0.75rem; width: 120px;">NIM</th>
                     <th class="text-uppercase fw-bold py-3" style="font-size: 0.75rem; width: 150px;">Jurusan</th>
-                    <th class="text-uppercase fw-bold py-3" style="font-size: 0.75rem; width: 220px;">Judul Presentasi</th>
                     <th class="text-uppercase fw-bold py-3 text-center" style="font-size: 0.75rem;">Status</th>
                     <th class="text-center text-uppercase fw-bold py-3" style="width: 150px; font-size: 0.75rem;">Aksi</th>
                 </tr>
@@ -90,15 +89,6 @@ $result = $result ?? [];
                         </td>
                         <td>
                             <span class="text-muted small"><?= htmlspecialchars($row['jurusan'] ?? '-') ?></span>
-                        </td>
-                        <td>
-                            <?php if (!empty($row['judul_presentasi'])): ?>
-                                <div class="text-dark small text-truncate fw-medium" style="max-width: 240px;" title="<?= htmlspecialchars($row['judul_presentasi']) ?>">
-                                    <?= htmlspecialchars($row['judul_presentasi']) ?>
-                                </div>
-                            <?php else: ?>
-                                <span class="text-muted fst-italic small">Belum diisi</span>
-                            <?php endif; ?>
                         </td>
                         <td class="text-center">
                             <span class="<?= $statusClass ?>" style="font-size: 0.7rem;">

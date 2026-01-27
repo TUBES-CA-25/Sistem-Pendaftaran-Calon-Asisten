@@ -37,55 +37,61 @@ class Ruangan extends Model {
         $stmt->execute();
     }
 
-    // User Assignment Methods (Refactored to pull from schedules)
+    // User Assignment Methods (Restored from backup/original state)
     public function getUsersByRoom($roomId, $type) {
-        $db = self::getDB();
-        
-        if($type === 'tes_tulis') {
-            // Join with wawancara where jenis_wawancara is Tes Tertulis
-            // also join with nilai_akhir to check finished status
-            $sql = "SELECT m.id_user as id, m.nama_lengkap as name, m.stambuk, 
-                           CASE WHEN na.id IS NOT NULL THEN 1 ELSE 0 END as is_finished
-                    FROM wawancara w
-                    JOIN mahasiswa m ON w.id_mahasiswa = m.id
-                    LEFT JOIN nilai_akhir na ON na.id_mahasiswa = m.id
-                    WHERE w.id_ruangan = ? AND w.jenis_wawancara LIKE 'Tes Tertulis%'";
-        } elseif($type === 'presentasi') {
-            // Join with jadwal_presentasi
-            $sql = "SELECT m.id_user as id, m.nama_lengkap as name, m.stambuk, 0 as is_finished
-                    FROM jadwal_presentasi jp
-                    JOIN presentasi p ON jp.id_presentasi = p.id
-                    JOIN mahasiswa m ON p.id_mahasiswa = m.id
-                    WHERE jp.id_ruangan = ?";
-        } elseif($type === 'wawancara') {
-            // Join with wawancara where jenis_wawancara is NOT Tes Tertulis
-            $sql = "SELECT m.id_user as id, m.nama_lengkap as name, m.stambuk, 0 as is_finished
-                    FROM wawancara w
-                    JOIN mahasiswa m ON w.id_mahasiswa = m.id
-                    WHERE w.id_ruangan = ? AND w.jenis_wawancara NOT LIKE 'Tes Tertulis%'";
-        } else {
-            return [];
-        }
+        $column = $this->getColumnByType($type);
+        if (!$column) return [];
 
-        $stmt = $db->prepare($sql);
+        $sql = "SELECT id, username as name, stambuk, 
+                CASE WHEN id_ruang_tes_tulis IS NOT NULL AND $column = ? THEN 1 ELSE 0 END as is_finished
+                FROM user 
+                WHERE $column = ?
+                ORDER BY username ASC";
+        
+        $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(1, $roomId);
+        $stmt->bindParam(2, $roomId);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    // Deprecated: No longer used as it's read-only based on schedules
     public function getAvailableUsers($type) {
-        return [];
+        $column = $this->getColumnByType($type);
+        if (!$column) return [];
+
+        // Get users who are NOT assigned to any room for THIS type
+        // and only for students (where role != 'Admin')
+        $sql = "SELECT u.id, u.username as name, u.stambuk 
+                FROM user u
+                LEFT JOIN mahasiswa m ON u.id = m.id_user
+                WHERE u.$column IS NULL 
+                AND (u.role != 'Admin' OR u.role IS NULL)
+                ORDER BY u.username ASC";
+        
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    // Deprecated: No longer used as it's read-only based on schedules
     public function assignUserToRoom($userId, $roomId, $type) {
-        return false;
+        $column = $this->getColumnByType($type);
+        if (!$column) return false;
+
+        $sql = "UPDATE user SET $column = ? WHERE id = ?";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $roomId);
+        $stmt->bindParam(2, $userId);
+        return $stmt->execute();
     }
 
-    // Deprecated: No longer used as it's read-only based on schedules
     public function removeUserFromRoom($userId, $type) {
-        return false;
+        $column = $this->getColumnByType($type);
+        if (!$column) return false;
+
+        $sql = "UPDATE user SET $column = NULL WHERE id = ?";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $userId);
+        return $stmt->execute();
     }
 
     public function getAllRoomOccupants($roomId) {

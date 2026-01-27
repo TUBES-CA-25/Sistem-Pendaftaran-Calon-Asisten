@@ -70,7 +70,7 @@
 
         function loadParticipants() {
             if(!currentRoomId) return;
-            $('#participantsTableBody').html('<tr><td colspan="5" class="text-center py-5"><div class="spinner-border text-primary speed-fast" role="status"></div></td></tr>');
+            $('#participantsTableBody').html('<tr><td colspan="6" class="text-center py-5"><div class="spinner-border text-primary speed-fast" role="status"></div></td></tr>');
             
             $.ajax({
                 url: `${APP_URL}/getroomparticipants`, // Use global APP_URL
@@ -80,12 +80,31 @@
                 success: function(res) {
                     if(res.status === 'success') {
                         renderParticipants(res.assigned);
+                        loadAvailableStudents(); // Also load available for the dropdown
                     } else {
                         showAlert('Error: ' + res.message, false);
                     }
                 },
                 error: function() {
-                    $('#participantsTableBody').html('<tr><td colspan="5" class="text-center text-danger py-5">Gagal memuat data. Periksa koneksi.</td></tr>');
+                    $('#participantsTableBody').html('<tr><td colspan="6" class="text-center text-danger py-5">Gagal memuat data. Periksa koneksi.</td></tr>');
+                }
+            });
+        }
+
+        function loadAvailableStudents() {
+            $.ajax({
+                url: `${APP_URL}/getavailableroomusers`,
+                type: 'POST',
+                data: { type: currentType },
+                dataType: 'json',
+                success: function(res) {
+                    if(res.status === 'success') {
+                        let html = '<option value="" disabled selected>Pilih Mahasiswa...</option>';
+                        res.available.forEach(u => {
+                            html += `<option value="${u.id}">${u.stambuk} - ${u.name}</option>`;
+                        });
+                        $('#selectAvailableMahasiswa').html(html);
+                    }
                 }
             });
         }
@@ -118,10 +137,9 @@
             animateCount('statPending', pending);
 
             if (users.length === 0) {
-                const colSpan = 5;
                 tbody.html(`
                     <tr>
-                        <td colspan="${colSpan}" class="text-center py-5">
+                        <td colspan="6" class="text-center py-5">
                             <div class="text-muted">
                                 <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                 <p class="mb-0">Belum ada peserta</p>
@@ -144,24 +162,17 @@
                     statusBadge = `<td class="text-center"><span class="badge bg-info">Terdaftar</span></td>`;
                 }
 
-                // Initial Avatar
-                let initial = u.name ? u.name.charAt(0).toUpperCase() : '?';
-                let colors = ['bg-primary', 'bg-success', 'bg-info', 'bg-warning', 'bg-danger'];
-                let colorClass = colors[index % colors.length];
-
                 tbody.append(`
                     <tr class="participant-row">
                         <td class="text-center">${index + 1}</td>
-                        <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="rounded-circle ${colorClass} text-white d-flex align-items-center justify-content-center fw-bold" style="width: 35px; height: 35px; font-size: 0.9rem;">
-                                    ${initial}
-                                </div>
-                                <span class="participant-name">${u.name || '-'}</span>
-                            </div>
-                        </td>
+                        <td class="participant-name">${u.name || '-'}</td>
                         <td class="participant-stambuk">${u.stambuk || '-'}</td>
-                         ${statusBadge}
+                        ${statusBadge}
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-danger btn-remove-participant" data-id="${u.id}" title="Hapus dari Ruangan">
+                                <i class="bi bi-person-dash"></i>
+                            </button>
+                        </td>
                     </tr>
                 `);
             });
@@ -186,16 +197,62 @@
         }, 30);
     }
     
-    // Search functionality
-    $('#searchParticipants').on('keyup', function() {
-        const searchTerm = $(this).val().toLowerCase();
-        $('.participant-row').each(function() {
-            const name = $(this).find('.participant-name').text().toLowerCase();
-            const stambuk = $(this).find('.participant-stambuk').text().toLowerCase();
-            const matches = name.includes(searchTerm) || stambuk.includes(searchTerm);
-            $(this).toggle(matches);
+        // Search functionality
+        $('#searchParticipants').on('keyup', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            $('.participant-row').each(function() {
+                const name = $(this).find('.participant-name').text().toLowerCase();
+                const stambuk = $(this).find('.participant-stambuk').text().toLowerCase();
+                const matches = name.includes(searchTerm) || stambuk.includes(searchTerm);
+                $(this).toggle(matches);
+            });
         });
-    });
+
+        // --- ASSIGN/REMOVE MAHASISWA (Restored) ---
+        $('#assignMahasiswaForm').on('submit', function(e) {
+            e.preventDefault();
+            const userId = $('#selectAvailableMahasiswa').val();
+            if(!userId) return;
+
+            $.ajax({
+                url: `${APP_URL}/assignroomuser`,
+                type: 'POST',
+                data: { 
+                    userId: userId, 
+                    roomId: currentRoomId, 
+                    type: currentType 
+                },
+                dataType: 'json',
+                success: function(res) {
+                    if(res.status === 'success') {
+                        showAlert('Mahasiswa berhasil ditambahkan!');
+                        loadParticipants();
+                    } else {
+                        showAlert(res.message, false);
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '.btn-remove-participant', function() {
+            const userId = $(this).data('id');
+            showConfirmDelete(() => {
+                $.ajax({
+                    url: `${APP_URL}/removeroomuser`,
+                    type: 'POST',
+                    data: { userId: userId, type: currentType },
+                    dataType: 'json',
+                    success: function(res) {
+                        if(res.status === 'success') {
+                            showAlert('Mahasiswa dihapus dari ruangan');
+                            loadParticipants();
+                        } else {
+                            showAlert(res.message, false);
+                        }
+                    }
+                });
+            }, 'Hapus mahasiswa ini dari ruangan?');
+        });
 
         // --- EDIT/DELETE ROOM (From Detail View) ---
         $('#editRoomBtn').on('click', function() {
