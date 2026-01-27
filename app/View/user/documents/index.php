@@ -143,6 +143,7 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                             <span class="text-muted">Belum ada data berkas</span>
                                         </td>
                                     </tr>
+                                    
                                 <?php endif; ?>
                             </tbody>
                         </table>

@@ -13,7 +13,7 @@
  * @var string $photo - Nama file foto user
  * @var array $dokumen - Status dokumen/berkas
  */
-
+$userName = $userName ?? 'Guest';
 $notifikasi = $notifikasi ?? [];
 $tahapanSelesai = $tahapanSelesai ?? 0;
 $percentage = $percentage ?? 0;
@@ -261,7 +261,7 @@ $dokumen = $dokumen ?? [];
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="fw-semibold mb-0">Biodata Diri</h5>
                         <button class="btn btn-sm btn-outline-primary" onclick="navigateTo('biodata')">
-                            <i class="bi bi-pencil me-1"></i>Edit
+                            <i class="bi bi-pencil me-1"></i>Lihat
                         </button>
                     </div>
                 </div>
@@ -301,7 +301,7 @@ $dokumen = $dokumen ?? [];
                                 </div>
                                 <div class="flex-grow-1">
                                     <small class="text-muted d-block mb-1">Email</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['email'] ?? '-') ?></p>
+                                    <p class="text-muted mb-0"><?= $userName ?></p>
                                 </div>
                             </div>
                         </div>

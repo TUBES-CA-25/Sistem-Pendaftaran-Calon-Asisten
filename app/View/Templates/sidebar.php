@@ -70,13 +70,13 @@ if (isset($photo) && is_array($photo) && !empty($photo)) {
                 <span class="nav-item">Jadwal</span>
             </a>
         </li>
-        <!-- <li>
+        <li>
             <a href="#" data-page="pengumuman">
                 <i class="bx bx-notepad"></i>
                 <span class="nav-item">Pengumuman</span>
             </a>
             <span class="tooltip">Pengumuman</span>
-        </li> -->
+        </li>
     </ul>
     <div class="sidebar-footer">
         <a href="#" data-page="logout">
