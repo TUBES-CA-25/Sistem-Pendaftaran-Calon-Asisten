@@ -4,7 +4,7 @@ namespace App\Controllers\admin;
 
 use App\Core\Controller;
 use App\Model\admin\DashboardAdmin;
-use App\Services\Admin\ActivityStatusService;
+
 
 class DashboardAdminController extends Controller
 {
@@ -45,8 +45,8 @@ class DashboardAdminController extends Controller
     public static function getStatusKegiatan(): array
     {
         $statusKegiatan = DashboardAdmin::getStatusKegiatan();
-        // Format activities with badge classes using Service
-        return ActivityStatusService::formatActivitiesForView($statusKegiatan);
+        // Format activities with badge classes
+        return self::formatActivitiesForView($statusKegiatan);
     }
 
     public static function storeKegiatan(): void
@@ -160,5 +160,51 @@ class DashboardAdminController extends Controller
     public static function getPresentationStats(): array
     {
         return DashboardAdmin::getPresentationStats();
+    }
+
+    // ==================== HELPER METHODS (menggantikan Services) ====================
+
+    /**
+     * Get badge class based on activity status
+     */
+    private static function getActivityStatusBadge($status)
+    {
+        $badgeClass = 'bg-light text-secondary border';
+
+        if ($status === 'Selesai') {
+            $badgeClass = 'bg-success text-white border-0';
+        } elseif ($status === 'Sedang Berlangsung') {
+            $badgeClass = 'bg-warning-subtle text-warning border border-warning';
+        }
+
+        return $badgeClass;
+    }
+
+    /**
+     * Get activity status metadata
+     */
+    public static function getStatusMetadata()
+    {
+        return [
+            'kelengkapan_berkas' => ['no' => 1, 'color' => 'danger'],
+            'tes_tertulis' => ['no' => 2, 'color' => 'warning'],
+            'tahap_wawancara' => ['no' => 3, 'color' => 'success'],
+            'pengumuman' => ['no' => 4, 'color' => 'info']
+        ];
+    }
+
+    /**
+     * Format activity data for view display
+     */
+    private static function formatActivitiesForView($statusKegiatan)
+    {
+        $formatted = [];
+
+        foreach ($statusKegiatan as $key => $status) {
+            $formatted[$key] = $status;
+            $formatted[$key]['badgeClass'] = self::getActivityStatusBadge($status['status']);
+        }
+
+        return $formatted;
     }
 }

@@ -19,12 +19,7 @@ use App\Controllers\user\AbsensiUserController;
 use App\Controllers\Exam\NilaiAkhirController;
 use App\Controllers\exam\ExamController;
 use App\Core\Model;
-use App\Services\User\ProfileService;
-use App\Services\User\ProgressService;
-use App\Services\User\ExamAccessService;
-use App\Services\Shared\DateHelper;
-use App\Services\Admin\ParticipantDataService;
-use App\Services\Admin\PresentationStatusService;
+
 
 class HomeController extends Controller
 {
@@ -306,13 +301,13 @@ class HomeController extends Controller
             if ($mahasiswa) {
                 $jadwalPresentasiUser = JadwalPresentasiController::getJadwalByMahasiswaId($mahasiswa['id']);
 
-                // Format schedule dates using DateHelper
+                // Format schedule dates
                 if ($jadwalPresentasiUser && is_array($jadwalPresentasiUser)) {
                     if (isset($jadwalPresentasiUser['tanggal'])) {
-                        $jadwalPresentasiUser['formattedDate'] = DateHelper::formatDate($jadwalPresentasiUser['tanggal']);
+                        $jadwalPresentasiUser['formattedDate'] = $this->formatDate($jadwalPresentasiUser['tanggal']);
                     }
                     if (isset($jadwalPresentasiUser['waktu'])) {
-                        $jadwalPresentasiUser['formattedTime'] = DateHelper::formatTime($jadwalPresentasiUser['waktu']);
+                        $jadwalPresentasiUser['formattedTime'] = $this->formatTime($jadwalPresentasiUser['waktu']);
                     }
                 }
             }
@@ -328,12 +323,12 @@ class HomeController extends Controller
         $photoName = $mahasiswa['foto_profil'] ?? 'default.png';
         $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $photoName;
 
-        // Format profile display using ProfileService
-        $profileDisplay = ProfileService::formatProfileDisplay($biodata, $user, $photoName);
+        // Format profile display
+        $profileDisplay = $this->formatProfileDisplay($biodata, $user, $photoName);
 
-        // Calculate progress using ProgressService
+        // Calculate progress
         $tahapanSelesai = DashboardUserController::getMajorStagesSelesai();
-        $progress = ProgressService::calculateProgress($tahapanSelesai);
+        $progress = $this->calculateProgress($tahapanSelesai);
 
         // Tambahkan data dokumen/berkas
         $berkas = BerkasUserController::viewBerkas();
@@ -474,8 +469,8 @@ class HomeController extends Controller
         $berkasStatus = DashboardUserController::getBerkasStatus();
         $biodataStatus = DashboardUserController::getBiodataStatus();
 
-        // Check access using ExamAccessService
-        $accessCheck = ExamAccessService::canAccessExam(
+        // Check access
+        $accessCheck = $this->canAccessExam(
             $absensiTesTertulis,
             $berkasStatus,
             $biodataStatus
@@ -554,11 +549,11 @@ class HomeController extends Controller
     {
         $mahasiswa = MahasiswaController::viewAllMahasiswa() ?? [];
 
-        // Format each participant using ParticipantDataService
+        // Format each participant
         $formattedMahasiswa = [];
         foreach ($mahasiswa as $mhs) {
             // Format participant data with photoPath and statusBadge
-            $formattedMahasiswa[] = ParticipantDataService::formatParticipantForView($mhs);
+            $formattedMahasiswa[] = $this->formatParticipantForView($mhs);
         }
 
         return [
@@ -585,8 +580,8 @@ class HomeController extends Controller
     {
         $mahasiswaList = PresentasiUserController::viewAllForAdmin() ?? [];
 
-        // Format mahasiswa list with status badges using Service
-        $formattedMahasiswaList = PresentationStatusService::formatMahasiswaListForView($mahasiswaList);
+        // Format mahasiswa list with status badges
+        $formattedMahasiswaList = $this->formatMahasiswaListForView($mahasiswaList);
 
         return [
             'mahasiswaList' => $formattedMahasiswaList,
@@ -651,5 +646,230 @@ class HomeController extends Controller
         return [
             'nilai' => NilaiAkhirController::getAllNilaiAkhirMahasiswa() ?? []
         ];
+    }
+
+    // ==================== HELPER METHODS (menggantikan Services) ====================
+
+    /**
+     * Format date from string
+     */
+    private function formatDate($date, $format = 'd F Y')
+    {
+        if (empty($date)) {
+            return '-';
+        }
+        $timestamp = strtotime($date);
+        return $timestamp ? date($format, $timestamp) : '-';
+    }
+
+    /**
+     * Format time from string
+     */
+    private function formatTime($time, $format = 'H:i')
+    {
+        if (empty($time)) {
+            return '-';
+        }
+        $timestamp = strtotime($time);
+        return $timestamp ? date($format, $timestamp) : '-';
+    }
+
+    /**
+     * Get full path for user photo
+     */
+    private function getUserPhotoPath($filename)
+    {
+        $baseImagePath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
+        $defaultPhoto = 'default.png';
+
+        if (empty($filename) || $filename === $defaultPhoto) {
+            return $baseImagePath . $defaultPhoto;
+        }
+
+        if (strpos($filename, '/') !== false) {
+            return $filename;
+        }
+
+        return $baseImagePath . $filename;
+    }
+
+    /**
+     * Check if photo is valid (not default)
+     */
+    private function hasValidPhoto($filename)
+    {
+        return !empty($filename) && $filename !== 'default.png';
+    }
+
+    /**
+     * Generate initials from full name
+     */
+    private function generateInitials($fullName)
+    {
+        if (empty($fullName)) {
+            return 'U';
+        }
+
+        $words = explode(' ', $fullName);
+        if (count($words) >= 2) {
+            return strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
+        } else {
+            return strtoupper(substr($fullName, 0, 2));
+        }
+    }
+
+    /**
+     * Format complete profile display data
+     */
+    private function formatProfileDisplay($biodata, $user, $photo)
+    {
+        $nama = $biodata['namaLengkap'] ?? $user['username'] ?? 'User';
+        $hasValidPhoto = $this->hasValidPhoto($photo);
+
+        return [
+            'hasValidPhoto' => $hasValidPhoto,
+            'photoPath' => $this->getUserPhotoPath($photo),
+            'initials' => $this->generateInitials($nama),
+            'displayName' => $nama
+        ];
+    }
+
+    /**
+     * Calculate progress from tahapan selesai
+     */
+    private function calculateProgress($tahapanSelesai, $maxSteps = 4)
+    {
+        $percentage = min(($tahapanSelesai / $maxSteps) * 100, 100);
+
+        return [
+            'completed' => $tahapanSelesai,
+            'total' => $maxSteps,
+            'percentage' => $percentage
+        ];
+    }
+
+    /**
+     * Check if user can access exam
+     */
+    private function canAccessExam($absensiTesTertulis, $berkasStatus, $biodataStatus)
+    {
+        if ($absensiTesTertulis) {
+            return [
+                'allowed' => false,
+                'reason' => 'completed',
+                'message' => 'Anda sudah mengikuti tes tertulis'
+            ];
+        }
+
+        if (!$biodataStatus) {
+            return [
+                'allowed' => false,
+                'reason' => 'biodata_incomplete',
+                'message' => 'Lengkapi biodata terlebih dahulu'
+            ];
+        }
+
+        if (!$berkasStatus) {
+            return [
+                'allowed' => false,
+                'reason' => 'berkas_incomplete',
+                'message' => 'Lengkapi berkas terlebih dahulu'
+            ];
+        }
+
+        return [
+            'allowed' => true,
+            'reason' => 'ok',
+            'message' => ''
+        ];
+    }
+
+    /**
+     * Get badge style for berkas status
+     */
+    private function getBerkasStatusBadge($acceptedStatus)
+    {
+        $class = 'badge rounded-pill bg-secondary bg-opacity-10 text-secondary fw-semibold px-3 py-2';
+        $text = 'Belum Upload';
+
+        if (isset($acceptedStatus)) {
+            if ($acceptedStatus == 1) {
+                $class = 'badge rounded-pill bg-success bg-opacity-10 text-success fw-semibold px-3 py-2';
+                $text = 'Disetujui';
+            } elseif ($acceptedStatus == 2) {
+                $class = 'badge rounded-pill bg-danger bg-opacity-10 text-danger fw-semibold px-3 py-2';
+                $text = 'Ditolak';
+            } elseif ($acceptedStatus == 0) {
+                $class = 'badge rounded-pill bg-info bg-opacity-10 text-info fw-semibold px-3 py-2';
+                $text = 'Proses';
+            }
+        }
+
+        return ['class' => $class, 'text' => $text];
+    }
+
+    /**
+     * Format participant data for view display
+     */
+    private function formatParticipantForView($rawData)
+    {
+        $formatted = $rawData;
+
+        $photoName = $rawData['berkas']['foto'] ?? 'default.png';
+        $formatted['photoPath'] = $this->getUserPhotoPath($photoName);
+
+        $acceptedStatus = $rawData['berkas']['accepted'] ?? null;
+        $formatted['statusBadge'] = $this->getBerkasStatusBadge($acceptedStatus);
+
+        return $formatted;
+    }
+
+    /**
+     * Get presentation status badge
+     */
+    private function getPresentationStatusBadge($isAccepted, $isRejected, $hasSchedule)
+    {
+        if ($hasSchedule) {
+            return [
+                'class' => 'bg-primary text-white',
+                'text' => 'Terjadwal'
+            ];
+        } elseif ($isRejected) {
+            return [
+                'class' => 'bg-danger text-white',
+                'text' => 'Ditolak'
+            ];
+        } elseif ($isAccepted) {
+            return [
+                'class' => 'bg-success text-white',
+                'text' => 'Diterima'
+            ];
+        } else {
+            return [
+                'class' => 'bg-secondary text-white',
+                'text' => 'Menunggu'
+            ];
+        }
+    }
+
+    /**
+     * Format mahasiswa list with presentation status badges
+     */
+    private function formatMahasiswaListForView($mahasiswaList)
+    {
+        $formatted = [];
+
+        foreach ($mahasiswaList as $mahasiswa) {
+            $isAccepted = isset($mahasiswa['is_accepted']) && $mahasiswa['is_accepted'] == 1;
+            $isRejected = isset($mahasiswa['is_accepted']) && $mahasiswa['is_accepted'] == 2;
+            $hasSchedule = isset($mahasiswa['has_schedule']) && $mahasiswa['has_schedule'];
+
+            $statusBadge = $this->getPresentationStatusBadge($isAccepted, $isRejected, $hasSchedule);
+
+            $mahasiswa['statusBadge'] = $statusBadge;
+            $formatted[] = $mahasiswa;
+        }
+
+        return $formatted;
     }
 }

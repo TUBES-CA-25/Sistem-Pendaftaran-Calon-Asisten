@@ -137,8 +137,8 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                 <div class="card-body p-4 pt-0 d-flex flex-column gap-3">
                 <?php
                 // Status metadata for calendar legend
-                use App\Services\Admin\ActivityStatusService;
-                $statusMeta = ActivityStatusService::getStatusMetadata();
+                use App\Controllers\admin\DashboardAdminController;
+                $statusMeta = DashboardAdminController::getStatusMetadata();
 
                 foreach ($statusKegiatan as $key => $status):
                     // Badge class already provided by Service via Controller
