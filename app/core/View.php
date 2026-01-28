@@ -25,7 +25,8 @@ class View {
                 }
                 require $fallbackFilename;
             } else {
-                redirect('shared/error');
+                header('Location: ' . APP_URL . '/shared/error'); 
+                exit();
             }
         }
     }

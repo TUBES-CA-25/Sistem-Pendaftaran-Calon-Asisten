@@ -137,7 +137,7 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                 <div class="card-body p-4 pt-0 d-flex flex-column gap-3">
                 <?php
                 // Status metadata for calendar legend
-                use App\Controllers\admin\DashboardAdminController;
+                use App\Controllers\DashboardAdminController;
                 $statusMeta = DashboardAdminController::getStatusMetadata();
 
                 foreach ($statusKegiatan as $key => $status):

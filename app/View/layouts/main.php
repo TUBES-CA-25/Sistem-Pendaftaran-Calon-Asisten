@@ -16,8 +16,8 @@
 
     <!-- Custom Variables & Bootstrap Overrides (includes Poppins font) -->
     <!-- Custom Variables & Bootstrap Overrides (includes Poppins font) -->
-    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/theme.css">
-    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/style.css">
+    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/css/theme.css">
+    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/css/style.css">
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -89,9 +89,9 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/shared/app.js"></script>
+    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/sidebar/ScriptSidebar.js"></script>
+    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/ScriptSidebar.js"></script>
     
 </body>
 </html>

@@ -6,7 +6,7 @@
  * MVC Pattern: This View only displays data. 
  * Business logic is handled by Model, data prepared by Controller.
  */
-use App\Controllers\exam\ExamController;
+use App\Controllers\ExamController;
 
 // Get all data from Controller (proper MVC pattern)
 $pageData = ExamController::getAdminExamPageData();
@@ -571,9 +571,9 @@ $essayCount = $stats['essay_count'];
 </script>
 
 <!-- Load External JavaScript -->
-<script src="<?= APP_URL ?>/assets/Script/admin/exam_import_export.js"></script>
-<script src="<?= APP_URL ?>/assets/Script/admin/exam_import_export.js"></script>
-<script src="<?= APP_URL ?>/assets/Script/admin/exam.js"></script>
+<script src="<?= APP_URL ?>/Assets/js/exam_import_export.js"></script>
+<script src="<?= APP_URL ?>/Assets/js/exam_import_export.js"></script>
+<script src="<?= APP_URL ?>/Assets/js/exam.js"></script>
 <script>
     // Initialize EasyMDE
     document.addEventListener('DOMContentLoaded', function() {

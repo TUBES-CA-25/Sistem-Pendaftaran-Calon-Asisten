@@ -17,8 +17,8 @@ $userName = $_SESSION['user']['username'] ?? ($userName ?? 'User');
 
 // Dynamic Photo Logic
 if ($role === 'Admin') {
-    if (class_exists('App\Controllers\Admin\AdminProfileController')) {
-        $photo = \App\Controllers\Admin\AdminProfileController::getAdminPhoto($_SESSION['user']['id']);
+    if (class_exists('App\Controllers\AdminProfileController')) {
+        $photo = \App\Controllers\AdminProfileController::getAdminPhoto($_SESSION['user']['id']);
     } else {
         $photo = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png';
     }

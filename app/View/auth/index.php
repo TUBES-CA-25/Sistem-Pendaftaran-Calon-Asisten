@@ -18,7 +18,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Login Animation Styles -->
-    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Style/login-animation.css">
+    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/css/login-animation.css">
 
     <title>Pendaftaran Calon Asisten ICLABS</title>
     <style>
@@ -240,8 +240,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Load common utilities -->
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/shared/common.js"></script>
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/Login/ScriptLogin.js"></script>
+    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/ScriptLogin.js"></script>
 
 
 </body>

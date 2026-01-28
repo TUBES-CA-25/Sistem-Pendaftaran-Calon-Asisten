@@ -417,4 +417,4 @@ $ruanganList = $ruanganList ?? [];
 </style>
 
 <!-- Load Custom Script -->
-<script src="<?= APP_URL ?>/Assets/Script/admin/rooms.js?v=2.0"></script>
+<script src="<?= APP_URL ?>/Assets/js/rooms.js?v=2.0"></script>

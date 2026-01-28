@@ -21,8 +21,8 @@
 
     <!-- Custom Variables & Bootstrap Overrides (includes Poppins font) -->
     <!-- Custom Variables & Bootstrap Overrides (includes Poppins font) -->
-    <link rel="stylesheet" href="Assets/Style/theme.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="Assets/Style/style.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="Assets/css/theme.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="Assets/css/style.css?v=<?= time() ?>">
 
     <!-- DataTables Bootstrap 5 CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
@@ -143,8 +143,7 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     <!-- App Scripts -->
-    <script src="Assets/Script/shared/common.js"></script>
-    <script src="Assets/Script/shared/app.js"></script>
-    <script src="Assets/Script/sidebar/ScriptSidebar.js"></script>
+    <script src="Assets/js/app.js"></script>
+    <script src="Assets/js/ScriptSidebar.js"></script>
 </body>
 </html>

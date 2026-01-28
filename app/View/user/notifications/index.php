@@ -21,7 +21,7 @@
         </div>
         <div class="card-body p-4">
     <?php
-    use App\Controllers\notifications\NotificationControllers;
+    use App\Controllers\NotificationControllers;
     $notifications = NotificationControllers::getMessageById() ?? [];
     ?>
     <style>

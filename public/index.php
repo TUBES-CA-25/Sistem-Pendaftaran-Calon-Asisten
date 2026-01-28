@@ -24,7 +24,7 @@ header("X-Content-Type-Options: nosniff");
 header("X-Frame-Options: SAMEORIGIN");
 header("Referrer-Policy: strict-origin-when-cross-origin");
 
-require_once '../routes/autoload.php';
+require_once '../app/Core/autoload.php';
 
 $app = new App\Core\App;
 $app->run();

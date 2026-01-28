@@ -8,7 +8,7 @@ class App
 {
     public function run()
     {
-        require_once "../routes/web.php";
+        require_once __DIR__ . "/../config/Routes.php";
 
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         

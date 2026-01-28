@@ -177,4 +177,4 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
     </div>
 </main>
 
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/user/biodata.js"></script>
+<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/biodata.js"></script>

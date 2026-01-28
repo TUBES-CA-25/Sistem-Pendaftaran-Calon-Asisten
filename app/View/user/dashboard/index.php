@@ -571,4 +571,4 @@ $dokumen = $dokumen ?? [];
 </div>
 
 <!-- Load Dashboard JavaScript -->
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/user/dashboard.js"></script>
+<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/dashboard.js"></script>

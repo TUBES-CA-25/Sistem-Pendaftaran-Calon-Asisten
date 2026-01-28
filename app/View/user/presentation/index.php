@@ -186,4 +186,4 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
     </div>
 </main>
 
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/user/presentasi.js"></script>
+<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/presentasi.js"></script>
