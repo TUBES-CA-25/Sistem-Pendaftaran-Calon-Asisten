@@ -48,10 +48,10 @@ class TesTulisController extends Controller {
             shuffle($tesSoal);
             $soal = $tesSoal;
 
-            View::render('index', 'exam', ['results' => $soal, 'bank' => $activeBank]);
+            View::render('index', 'ujian', ['results' => $soal, 'bank' => $activeBank]);
 
         } catch (\Exception $e) {
-            View::render('error', 'exam', ['message' => $e->getMessage()]);
+            View::render('error', 'ujian', ['message' => $e->getMessage()]);
         }
     }
 

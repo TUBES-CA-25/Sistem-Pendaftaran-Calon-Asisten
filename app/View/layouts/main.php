@@ -41,14 +41,14 @@
         $pageViewMap = [
             'dashboard' => 'user/dashboard/index.php',
             'biodata' => 'user/biodata/index.php',
-            'uploadBerkas' => 'user/documents/index.php',
-            'tesTulis' => 'user/exam/index.php',
-            'presentasi' => 'user/presentation/index.php',
-            'wawancara' => 'user/interview/index.php',
-            'profile' => 'user/profile/index.php',
-            'editprofile' => 'user/profile/edit.php',
-            'pengumuman' => 'user/announcement/index.php',
-            'notification' => 'user/notifications/index.php',
+            'uploadBerkas' => 'user/berkas/index.php',
+            'tesTulis' => 'user/ujian/index.php',
+            'presentasi' => 'user/presentasi/index.php',
+            'wawancara' => 'user/wawancara/index.php',
+            'profile' => 'user/profil/index.php',
+            'editprofile' => 'user/profil/edit.php',
+            'pengumuman' => 'user/pengumuman/index.php',
+            'notification' => 'user/notifikasi/index.php',
         ];
         $viewFile = $pageViewMap[$initialPage] ?? 'user/dashboard/index.php';
         require_once __DIR__ . "/../" . $viewFile;

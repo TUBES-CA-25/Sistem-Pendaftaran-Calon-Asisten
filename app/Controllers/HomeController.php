@@ -148,48 +148,48 @@ class HomeController extends Controller
                     break;
                 case 'ruangan':
                     $data = array_merge($sidebarData, $this->getRuanganData());
-                    View::render('index', 'admin/rooms', $data);
+                    View::render('index', 'admin/ruangan', $data);
                     break;
                 case 'lihatPeserta':
                     $data = array_merge($sidebarData, $this->getDaftarPesertaData());
-                    View::render('index', 'admin/participants', $data);
+                    View::render('index', 'admin/peserta', $data);
                     break;
                 case 'daftarKehadiran':
                     $data = array_merge($sidebarData, $this->getDaftarHadirData());
-                    View::render('index', 'admin/attendance', $data);
+                    View::render('index', 'admin/kehadiran', $data);
                     break;
                 case 'presentasi': // Fallback or user role? Admin specific logic below
                     $data = array_merge($sidebarData, $this->getPresentasiAdminData());
-                    View::render('index', 'admin/presentation', $data);
+                    View::render('index', 'admin/presentasi', $data);
                     break;
                 case 'pengajuanJudul':
                     $data = array_merge($sidebarData, $this->getPengajuanJudulData());
-                    View::render('titles', 'admin/presentation', $data);
+                    View::render('titles', 'admin/presentasi', $data);
                     break;
                 case 'jadwalPresentasi':
                     $data = array_merge($sidebarData, $this->getJadwalPresentasiData());
-                    View::render('schedule', 'admin/presentation', $data);
+                    View::render('schedule', 'admin/presentasi', $data);
                     break;
                 case 'tesTulis':
                 case 'bankSoal':
                     $data = array_merge($sidebarData, $this->getTesTulisAdminData());
-                    View::render('index', 'admin/exam', $data);
+                    View::render('index', 'admin/ujian', $data);
                     break;
                 case 'importSoal':
                     $data = array_merge($sidebarData, $this->getTesTulisAdminData());
-                    View::render('importPage', 'admin/exam', $data);
+                    View::render('importPage', 'admin/ujian', $data);
                     break;
                 case 'wawancara':
                     $data = array_merge($sidebarData, $this->getWawancaraAdminData());
-                    View::render('index', 'admin/interview', $data);
+                    View::render('index', 'admin/wawancara', $data);
                     break;
                 case 'profile':
                     $data = array_merge($sidebarData, $this->getProfileData());
-                    View::render('index', 'admin/profile', $data);
+                    View::render('index', 'admin/profil', $data);
                     break;
                 case 'lihatnilai':
                     $data = array_merge($sidebarData, $this->getNilaiAdminData());
-                    View::render('index', 'admin/grades', $data);
+                    View::render('index', 'admin/nilai', $data);
                     break;
             }
 
@@ -213,34 +213,34 @@ class HomeController extends Controller
                     break;
                 case 'pengumuman':
                     // Pengumuman might not return data array, so just pass sidebarData
-                    View::render('index', 'user/announcement', $sidebarData);
+                    View::render('index', 'user/pengumuman', $sidebarData);
                     break;
                 case 'presentasi':
                     $data = array_merge($sidebarData, $this->getPresentasiData());
-                    View::render('index', 'user/presentation', $data);
+                    View::render('index', 'user/presentasi', $data);
                     break;
                 case 'tesTulis':
                     $data = array_merge($sidebarData, $this->getTesTulisData());
-                    View::render('index', 'user/exam', $data);
+                    View::render('index', 'user/ujian', $data);
                     break;
                 case 'uploadBerkas':
                     $data = array_merge($sidebarData, $this->getUploadBerkasData());
-                    View::render('index', 'user/documents', $data);
+                    View::render('index', 'user/berkas', $data);
                     break;
                 case 'wawancara':
                     $data = array_merge($sidebarData, $this->getWawancaraData());
-                    View::render('index', 'user/interview', $data);
+                    View::render('index', 'user/wawancara', $data);
                     break;
                 case 'profile':
                     $data = array_merge($sidebarData, $this->getProfileData());
-                    View::render('index', 'user/profile', $data);
+                    View::render('index', 'user/profil', $data);
                     break;
                 case 'editprofile':
                     $data = array_merge($sidebarData, $this->getProfileData());
-                    View::render('edit', 'user/profile', $data);
+                    View::render('edit', 'user/profil', $data);
                     break;
                 case 'notification':
-                    View::render('index', 'user/notifications', $sidebarData);
+                    View::render('index', 'user/notifikasi', $sidebarData);
                     break;
             }
         }

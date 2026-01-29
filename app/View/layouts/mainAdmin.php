@@ -83,17 +83,17 @@
         $initialPage = $initialPage ?? 'dashboard';
         $pageViewMap = [
             'dashboard' => 'admin/dashboard/index.php',
-            'lihatPeserta' => 'admin/participants/index.php',
-            'daftarKehadiran' => 'admin/attendance/index.php',
-            'lihatnilai' => 'admin/grades/index.php',
-            'tesTulis' => 'admin/exam/index.php',
-            'bankSoal' => 'admin/exam/index.php',
-            'importSoal' => 'admin/exam/importPage.php',
-            'jadwaltes' => 'admin/exam/schedule.php',
-            'pengajuanJudul' => 'admin/presentation/titles.php',
-            'jadwalPresentasi' => 'admin/presentation/schedule.php',
-            'wawancara' => 'admin/interview/index.php',
-            'ruangan' => 'admin/rooms/index.php',
+            'lihatPeserta' => 'admin/peserta/index.php',
+            'daftarKehadiran' => 'admin/kehadiran/index.php',
+            'lihatnilai' => 'admin/nilai/index.php',
+            'tesTulis' => 'admin/ujian/index.php',
+            'bankSoal' => 'admin/ujian/index.php',
+            'importSoal' => 'admin/ujian/importPage.php',
+            'jadwaltes' => 'admin/ujian/schedule.php',
+            'pengajuanJudul' => 'admin/presentasi/titles.php',
+            'jadwalPresentasi' => 'admin/presentasi/schedule.php',
+            'wawancara' => 'admin/wawancara/index.php',
+            'ruangan' => 'admin/ruangan/index.php',
         ];
         $viewFile = $pageViewMap[$initialPage] ?? 'admin/dashboard/index.php';
         require_once __DIR__ . "/../" . $viewFile;
