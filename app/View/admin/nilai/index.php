@@ -9,11 +9,7 @@ $nilai = $nilai ?? [];
 ?>
 <style>
     /* Custom styles that complement Bootstrap */
-    main {
-        padding: 0;
-        margin: -20px -20px -20px -20px;
-        width: calc(100% + 40px);
-    }
+    /* Main layout reset removed to match other pages */
 
     /* Stat Cards with custom gradients */
     .stat-card {
@@ -77,11 +73,11 @@ $nilai = $nilai ?? [];
         require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
-    <div class="container-fluid px-4">
+    <div class="container-fluid px-4 mt-3">
         <!-- View List -->
         <div id="view-list">
         <!-- Search Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-3 mt-3 flex-wrap gap-3">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
             <div class="position-relative" style="width: 280px; max-width: 100%;">
                 <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
                 <input type="text" id="searchInput" class="form-control ps-5 rounded-3" placeholder="Cari mahasiswa...">
@@ -96,16 +92,16 @@ $nilai = $nilai ?? [];
             </div>
         <?php else: ?>
             <!-- Clean Table -->
-            <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+            <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle mb-0" id="tableNilai">
                     <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                         <tr>
-                            <th class="text-center" style="width: 60px;">No</th>
-                            <th>Mahasiswa</th>
-                            <th>Stambuk</th>
-                            <th class="text-center" style="width: 120px;">Nilai Akhir</th>
-                            <th class="text-center" style="width: 140px;">Status</th>
-                            <th class="text-center" style="width: 120px;">Aksi</th>
+                            <th class="text-center py-3 px-3" style="width: 60px;">No</th>
+                            <th class="py-3 px-3">Mahasiswa</th>
+                            <th class="py-3 px-3">Stambuk</th>
+                            <th class="text-center py-3 px-3" style="width: 120px;">Nilai Akhir</th>
+                            <th class="text-center py-3 px-3" style="width: 140px;">Status</th>
+                            <th class="text-center py-3 px-3" style="width: 120px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,22 +132,22 @@ $nilai = $nilai ?? [];
                             }
                             ?>
                             <tr>
-                                <td class="text-center"><?= $i ?></td>
-                                <td>
+                                <td class="text-center py-3 px-3"><?= $i ?></td>
+                                <td class="py-3 px-3">
                                     <strong><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></strong>
                                 </td>
-                                <td><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>
-                                <td class="text-center">
+                                <td class="py-3 px-3"><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>
+                                <td class="text-center py-3 px-3">
                                     <span class="badge bg-info text-dark rounded-pill px-3">
                                         <?= ($displayNilai !== null && $displayNilai !== '') ? $displayNilai : 'Belum ada' ?>
                                     </span>
                                 </td>
-                                <td class="text-center">
+                                <td class="text-center py-3 px-3">
                                     <span class="badge <?= $statusBadge ?> rounded-pill px-3">
                                         <?= $statusLabel ?>
                                     </span>
                                 </td>
-                                <td class="text-center">
+                                <td class="text-center py-3 px-3">
                                     <button class="btn btn-sm btn-primary rounded-3 btn-detail"
                                             data-id="<?= htmlspecialchars($value['id'] ?? '') ?>"
                                             data-nama="<?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?>"

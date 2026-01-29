@@ -15,13 +15,11 @@
             dom: "t",
             paging: false,
             info: false,
+            ordering: false, // Disable sorting to match visual design (remove arrows)
             language: {
                 search: "", 
                 searchPlaceholder: "Cari peserta..."
-            },
-            columnDefs: [
-                { orderable: false, targets: [1, -1] } // Disable sorting on avatar and action columns
-            ]
+            }
         });
 
         // Link custom search input
@@ -32,10 +30,13 @@
     // Store current row data
     var currentRowData = null;
 
-    // Clean up existing handlers first
+    // Clean up existing handlers first to prevent double-binding
     $(document).off('click', '.btn-view');
     $(document).off('click', '.btn-delete');
     $(document).off('click', '.btn-reminder');
+    $(document).off('click', '#btnSendMessageToUser');
+    $(document).off('click', '#sendIndividualMessage');
+    $(document).off('click', '.btn-download-berkas, #downloadMakalahButton, #downloadPptButton');
     
     // ============================================
     // SEND MESSAGE FUNCTIONS (Inside jQuery Ready)
@@ -371,8 +372,8 @@
         updateSelectedCount();
     }
     
-    // Add single mahasiswa
-    document.getElementById('addMahasiswaButton').addEventListener('click', function() {
+    // Add single mahasiswa - Using jQuery off/on to prevent duplicates
+    $('#addMahasiswaButton').off('click').on('click', function() {
         var select = document.getElementById('mahasiswa');
         var selectedOption = select.options[select.selectedIndex];
         
@@ -392,8 +393,8 @@
         }
     });
     
-    // Add all mahasiswa
-    document.getElementById('addAllMahasiswaButton').addEventListener('click', function() {
+    // Add all mahasiswa - Using jQuery off/on to prevent duplicates
+    $('#addAllMahasiswaButton').off('click').on('click', function() {
         var select = document.getElementById('mahasiswa');
         selectedMahasiswa = [];
         
@@ -408,8 +409,8 @@
         renderSelectedMahasiswa();
     });
     
-    // Submit notification form
-    document.getElementById('addNotificationForm').addEventListener('submit', function(e) {
+    // Submit notification form - Using jQuery off/on to prevent duplicates
+    $('#addNotificationForm').off('submit').on('submit', function(e) {
         e.preventDefault();
         
         var message = document.getElementById('notifMessage').value;
@@ -476,8 +477,6 @@
     if (typeof window.initDaftarPeserta === 'function') {
         window.initDaftarPeserta();
     }
-    
-    console.log('Daftar Peserta script initialization complete');
     };
 
     // Robust initialization with polling

@@ -26,10 +26,11 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
 ?>
 
 <!-- Main Content -->
-<div class="container-fluid px-4">
+<!-- Main Content -->
+<div class="container-fluid px-4 mt-3">
 
     <!-- Stats Cards Grid -->
-    <div class="row g-4 mb-4">
+    <div class="row g-3 mb-3">
         <?php 
         $stats = [
             [

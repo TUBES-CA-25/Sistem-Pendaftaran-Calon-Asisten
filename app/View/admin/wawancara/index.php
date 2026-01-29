@@ -38,10 +38,10 @@ $colors = ['#2f66f6'];
     }
 </style>
 
-<div class="container-fluid px-4 py-4">
+<div class="container-fluid px-4 mt-3">
 
             <!-- Table Controls -->
-            <div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
                 <div class="position-relative" style="width: 280px;">
                     <i class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"></i>
                     <input type="text" id="searchInput" class="form-control rounded-3 ps-5" placeholder="Cari nama atau stambuk...">
@@ -57,7 +57,7 @@ $colors = ['#2f66f6'];
             </div>
 
             <!-- Data Table -->
-            <div class="table-responsive rounded-3">
+            <div class="table-responsive">
                 <table id="wawancaraMahasiswa" class="table table-hover table-bordered align-middle mb-0">
                     <thead class="bg-primary text-white">
                         <tr>

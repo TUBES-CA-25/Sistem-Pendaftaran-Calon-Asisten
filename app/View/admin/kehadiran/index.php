@@ -76,9 +76,9 @@ $mahasiswaList = $mahasiswaList ?? [];
         require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
-    <div class="container-fluid px-4">
+    <div class="container-fluid px-4 mt-3">
         <!-- Table Controls -->
-        <div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-3">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
             <div class="position-relative" style="width: 280px; max-width: 100%;">
                 <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
                 <input type="text" id="searchKehadiran" class="form-control ps-5 rounded-3" placeholder="Cari nama atau stambuk...">
@@ -95,19 +95,19 @@ $mahasiswaList = $mahasiswaList ?? [];
                 <p class="mb-0">Data rekap akan muncul setelah Anda menambahkan peserta</p>
             </div>
         <?php else: ?>
-            <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+            <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle mb-0" id="monitoringTable">
                     <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                         <tr>
-                            <th class="fw-semibold text-uppercase small text-center" style="width: 50px;">No</th>
-                            <th class="fw-semibold text-uppercase small">Nama Lengkap</th>
-                            <th class="fw-semibold text-uppercase small">Stambuk</th>
-                            <th class="fw-semibold text-uppercase small text-center">Tes Tertulis</th>
-                            <th class="fw-semibold text-uppercase small text-center">Presentasi</th>
-                            <th class="fw-semibold text-uppercase small text-center">Wawancara I</th>
-                            <th class="fw-semibold text-uppercase small text-center">Wawancara II</th>
-                            <th class="fw-semibold text-uppercase small text-center">Status Akhir</th>
-                            <th class="fw-semibold text-uppercase small text-center">Aksi</th>
+                            <th class="fw-semibold text-uppercase small text-center py-3 px-3" style="width: 50px;">No</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3">Nama Lengkap</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3">Stambuk</th>
+                            <th class="fw-semibold text-uppercase small text-center py-3 px-3">Tes Tertulis</th>
+                            <th class="fw-semibold text-uppercase small text-center py-3 px-3">Presentasi</th>
+                            <th class="fw-semibold text-uppercase small text-center py-3 px-3">Wawancara I</th>
+                            <th class="fw-semibold text-uppercase small text-center py-3 px-3">Wawancara II</th>
+                            <th class="fw-semibold text-uppercase small text-center py-3 px-3">Status Akhir</th>
+                            <th class="fw-semibold text-uppercase small text-center py-3 px-3">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>

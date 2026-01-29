@@ -116,7 +116,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 
     <div class="container-fluid px-4 mt-3">
         <!-- Tab Navigation -->
-        <ul class="nav nav-tabs border-bottom-2 mb-4" role="tablist">
+        <ul class="nav nav-tabs border-bottom-2 mb-3" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active tab-btn fw-semibold px-4 py-3 border-0 rounded-3 me-2" id="pengajuan-tab" data-bs-toggle="tab" data-bs-target="#tab-pengajuan" data-tab="pengajuan" type="button" role="tab">
                     <i class="bi bi-file-text me-2"></i>Pengajuan Judul
@@ -133,7 +133,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
         <div class="tab-content">
             <!-- Tab 1: Pengajuan Judul -->
             <div class="tab-pane fade show active" id="tab-pengajuan" role="tabpanel">
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-3">
+                <div class="d-flex justify-content-between align-items-center mb-3 mt-3 flex-wrap gap-3">
                     <div class="position-relative" style="width: 280px;">
                         <i class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"></i>
                         <input type="text" id="searchPengajuan" class="form-control rounded-3 ps-5" placeholder="Cari mahasiswa...">
@@ -147,16 +147,16 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                         <p>Data pengajuan judul akan muncul setelah mahasiswa mengajukan judul presentasi</p>
                     </div>
                 <?php else: ?>
-                    <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+                    <div class="table-responsive">
                         <table class="table table-bordered table-hover align-middle mb-0" id="tablePengajuan">
                             <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                                 <tr>
-                                    <th class="fw-semibold text-uppercase small">No</th>
-                                    <th class="fw-semibold text-uppercase small">Nama Lengkap</th>
-                                    <th class="fw-semibold text-uppercase small">Stambuk</th>
-                                    <th class="fw-semibold text-uppercase small">Judul Presentasi</th>
-                                    <th class="fw-semibold text-uppercase small">Status</th>
-                                    <th class="fw-semibold text-uppercase small">Aksi</th>
+                                    <th class="fw-semibold text-uppercase small py-3 px-3">No</th>
+                                    <th class="fw-semibold text-uppercase small py-3 px-3">Nama Lengkap</th>
+                                    <th class="fw-semibold text-uppercase small py-3 px-3">Stambuk</th>
+                                    <th class="fw-semibold text-uppercase small py-3 px-3">Judul Presentasi</th>
+                                    <th class="fw-semibold text-uppercase small py-3 px-3">Status</th>
+                                    <th class="fw-semibold text-uppercase small py-3 px-3">Aksi</th>
                                 </tr>
                             </thead>
                     <tbody>
@@ -212,7 +212,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 
             <!-- Tab 2: Jadwal Presentasi -->
             <div class="tab-pane fade" id="tab-jadwal" role="tabpanel">
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-3">
+                <div class="d-flex justify-content-between align-items-center mb-3 mt-3 flex-wrap gap-3">
                     <div class="position-relative" style="width: 280px;">
                         <i class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"></i>
                         <input type="text" id="searchJadwal" class="form-control rounded-3 ps-5" placeholder="Cari mahasiswa...">
@@ -227,18 +227,18 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                     </div>
                 </div>
 
-                <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+                <div class="table-responsive">
                     <table class="table table-bordered table-hover align-middle mb-0" id="tableJadwal">
                         <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                             <tr>
-                                <th class="fw-semibold text-uppercase small">No</th>
-                                <th class="fw-semibold text-uppercase small">Nama Lengkap</th>
-                                <th class="fw-semibold text-uppercase small">Stambuk</th>
-                                <th class="fw-semibold text-uppercase small">Judul</th>
-                                <th class="fw-semibold text-uppercase small">Ruangan</th>
-                                <th class="fw-semibold text-uppercase small">Tanggal</th>
-                                <th class="fw-semibold text-uppercase small">Waktu</th>
-                                <th class="fw-semibold text-uppercase small">Aksi</th>
+                                <th class="fw-semibold text-uppercase small py-3 px-3">No</th>
+                                <th class="fw-semibold text-uppercase small py-3 px-3">Nama Lengkap</th>
+                                <th class="fw-semibold text-uppercase small py-3 px-3">Stambuk</th>
+                                <th class="fw-semibold text-uppercase small py-3 px-3">Judul</th>
+                                <th class="fw-semibold text-uppercase small py-3 px-3">Ruangan</th>
+                                <th class="fw-semibold text-uppercase small py-3 px-3">Tanggal</th>
+                                <th class="fw-semibold text-uppercase small py-3 px-3">Waktu</th>
+                                <th class="fw-semibold text-uppercase small py-3 px-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="jadwalTableBody">

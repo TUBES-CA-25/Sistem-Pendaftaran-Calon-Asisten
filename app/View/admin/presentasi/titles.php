@@ -43,16 +43,16 @@ $mahasiswaList = $mahasiswaList ?? [];
                 <p>Data pengajuan judul akan muncul setelah mahasiswa mengajukan judul presentasi</p>
             </div>
         <?php else: ?>
-            <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+            <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle mb-0" id="tablePengajuan">
                     <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                         <tr>
-                            <th class="fw-semibold text-uppercase small">No</th>
-                            <th class="fw-semibold text-uppercase small">Nama Lengkap</th>
-                            <th class="fw-semibold text-uppercase small">Stambuk</th>
-                            <th class="fw-semibold text-uppercase small">Judul Presentasi</th>
-                            <th class="fw-semibold text-uppercase small">Status</th>
-                            <th class="fw-semibold text-uppercase small">Aksi</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3">No</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3">Nama Lengkap</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3">Stambuk</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3">Judul Presentasi</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3">Status</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>

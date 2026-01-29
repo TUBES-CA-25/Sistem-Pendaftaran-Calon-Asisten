@@ -19,9 +19,9 @@ $ruanganList = $ruanganList ?? [];
             require_once __DIR__ . '/../../templates/components/PageHeader.php';
         ?>
 
-        <div class="container-fluid px-4 pb-4">
+        <div class="container-fluid px-4 mt-3 pb-3">
             <!-- Controls Toolbar -->
-            <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
+            <div class="card border-0 shadow-sm mb-3 rounded-4 overflow-hidden">
                 <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3 bg-white">
                     <div class="position-relative flex-grow-1" style="max-width: 400px;">
                         <i class="bi bi-search position-absolute text-muted" style="left: 18px; top: 50%; transform: translateY(-50%); font-size: 1.1rem;"></i>
@@ -35,7 +35,7 @@ $ruanganList = $ruanganList ?? [];
             </div>
 
             <!-- Grid -->
-            <div class="row g-4" id="ruanganGrid">
+            <div class="row g-3" id="ruanganGrid">
                 <?php if (empty($ruanganList)) { ?>
                     <div class="col-12 py-5">
                         <div class="card border-0 shadow-sm rounded-4 p-5 text-center mx-auto" style="max-width: 500px;">
@@ -192,13 +192,13 @@ $ruanganList = $ruanganList ?? [];
 
             <!-- Table -->
             <div class="table-responsive">
-                <table class="table table-hover table-striped mb-0">
+                <table class="table table-hover table-bordered align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="text-center" style="width: 8%;">No</th>
-                            <th style="width: 45%;">Nama Mahasiswa</th>
-                            <th style="width: 25%;">Stambuk</th>
-                            <th class="text-center" style="width: 22%;">Status</th>
+                            <th class="text-center py-3 px-3" style="width: 8%;">No</th>
+                            <th class="py-3 px-3" style="width: 45%;">Nama Mahasiswa</th>
+                            <th class="py-3 px-3" style="width: 25%;">Stambuk</th>
+                            <th class="text-center py-3 px-3" style="width: 22%;">Status</th>
                         </tr>
                     </thead>
                     <tbody id="participantsTableBody">

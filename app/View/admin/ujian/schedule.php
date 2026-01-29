@@ -37,9 +37,9 @@ $bankSoalList = $data['bankSoalList'] ?? [];
         require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
-    <div class="container-fluid px-4 py-3">
+    <div class="container-fluid px-4 mt-3">
         <!-- Controls -->
-        <div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-3">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
             <div class="position-relative" style="width: 280px;">
                 <i class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"></i>
                 <input type="text" id="searchInput" class="form-control rounded-3 ps-5" placeholder="Cari nama atau stambuk...">
@@ -55,20 +55,20 @@ $bankSoalList = $data['bankSoalList'] ?? [];
         </div>
 
         <!-- Student Schedule Table -->
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+        <div class="card border shadow-sm mb-3">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered mb-0 align-middle table-custom" id="jadwalTable">
+                    <table class="table table-hover table-bordered align-middle mb-0" id="jadwalTable">
                         <thead>
                             <tr>
-                                <th class="text-center" width="5%">NO</th>
-                                <th width="20%">NAMA LENGKAP</th>
-                                <th width="15%">STAMBUK</th>
-                                <th width="20%">KEGIATAN</th>
-                                <th width="15%">RUANGAN</th>
-                                <th width="10%">TANGGAL</th>
-                                <th width="10%">WAKTU</th>
-                                <th class="text-center" width="5%">AKSI</th>
+                                <th class="text-center py-3 px-3" width="5%">NO</th>
+                                <th class="py-3 px-3" width="20%">NAMA LENGKAP</th>
+                                <th class="py-3 px-3" width="15%">STAMBUK</th>
+                                <th class="py-3 px-3" width="20%">KEGIATAN</th>
+                                <th class="py-3 px-3" width="15%">RUANGAN</th>
+                                <th class="py-3 px-3" width="10%">TANGGAL</th>
+                                <th class="py-3 px-3" width="10%">WAKTU</th>
+                                <th class="text-center py-3 px-3" width="5%">AKSI</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">

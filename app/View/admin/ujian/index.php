@@ -55,7 +55,8 @@ $essayCount = $stats['essay_count'];
     ?>
 
     <!-- Stats Badges -->
-    <div class="row g-4 mb-4">
+    <div class="container-fluid px-4 mt-3">
+        <div class="row g-3 mb-3">
         <div class="col-6 col-md-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center mb-0 pb-2">
@@ -111,7 +112,7 @@ $essayCount = $stats['essay_count'];
     </div>
 
     <!-- Header & Controls -->
-    <div class="card border-0 shadow-sm mb-4 rounded-4">
+    <div class="card border-0 shadow-sm mb-3 rounded-4">
         <div class="card-body p-3">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-2">
@@ -134,7 +135,7 @@ $essayCount = $stats['essay_count'];
                     <p class="text-muted">Klik tombol "Buat Bank Soal Baru" untuk membuat bank soal pertama</p>
                 </div>
                 <?php endif; ?>
-                <div class="row g-4" id="bankGrid">
+                <div class="row g-3" id="bankGrid">
                     <!-- Existing Banks -->
                     <?php foreach ($bankSoalList as $bank): ?>
                     <!-- Bank Card Item -->
@@ -266,6 +267,7 @@ $essayCount = $stats['essay_count'];
                 </div>
             </div>
         </div>
+    </div>
 
 </main>
 
