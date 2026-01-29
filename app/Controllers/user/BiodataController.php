@@ -60,8 +60,17 @@ class BiodataController extends Controller
                 $noHp
             );
 
-            if ($biodata->save($biodata)) {
-                echo json_encode(['status' => 'success', 'message' => 'Data berhasil disimpan']);
+            // Check if biodata already exists to decide between save (insert) or update
+            if ($this->isEmpty()) {
+                // Insert new data
+                if ($biodata->save($biodata)) {
+                    echo json_encode(['status' => 'success', 'message' => 'Data berhasil disimpan']);
+                }
+            } else {
+                // Update existing data
+                if ($biodata->updateBiodata($biodata)) {
+                    echo json_encode(['status' => 'success', 'message' => 'Data berhasil diperbarui']);
+                }
             } 
         } catch (\Exception $e) {
             echo json_encode(['status' => 'error', 'message' => 'Data gagal disimpan: ' . $e->getMessage()]);

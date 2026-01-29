@@ -93,7 +93,10 @@ class TesTulisController extends Controller {
 
             $data = json_decode(file_get_contents("php://input"), true);
             if (empty($data)) {
-                throw new \Exception('Data jawaban kosong');
+                // If empty, it means no answers were selected. 
+                // We should still proceed to calculate score (which will be 0)
+                // instead of throwing error.
+                $data = [];
             }
 
             if (!isset($_SESSION['user']['id'])) {
@@ -133,11 +136,11 @@ class TesTulisController extends Controller {
             error_log("Respons backend: " . json_encode($response));
             http_response_code(200);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             header('Content-Type: application/json');
             echo json_encode([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'Backend Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine(),
             ]);
             error_log("Error di backend: " . $e->getMessage());
             http_response_code(500);

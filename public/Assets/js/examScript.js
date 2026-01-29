@@ -20,45 +20,14 @@ document.addEventListener("DOMContentLoaded", () => {
     remainingTime = initialDuration;
   }
 
-  async function submitAndFinish() {
-    const calculateEndpoint = "/Sistem-Pendaftaran-Calon-Asisten/public/calculate";
-
-    try {
-      const response = await fetch(calculateEndpoint, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
-      }
-
-      const textResponse = await response.text();
-      try {
-        const data = JSON.parse(textResponse);
-        console.log("Respons dari backend:", data);
-
-        if (data.status === "success") {
-          setTimeout(() => {
-            window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
-          }, 3000);
-        } else {
-          setTimeout(() => {
-            window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
-          }, 3000);
-        }
-      } catch (parseError) {
-        setTimeout(() => {
-          window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
-        }, 3000);
-      }
-    } catch (error) {
-      setTimeout(() => {
+  async function submitAndFinish(priorResponse) {
+    // Note: The score is already calculated in saveAnswer (/hasil)
+    // We just need to show success and redirect.
+    console.log("Submitting finish...", priorResponse);
+    
+    setTimeout(() => {
         window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
-      }, 3000);
-    }
+    }, 2000);
   }
 
   function updateTimerDisplay(seconds) {
@@ -143,7 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
         error: function (xhr, status, error) {
           console.error("Error saat menyimpan jawaban:", error);
           console.log("Respons backend:", xhr.responseText);
-          reject(new Error("Error saat menyimpan jawaban."));
+          alert("DEBUG ERROR BACKEND:\n" + xhr.responseText); // Force user to see error
+          reject(new Error("Error saat menyimpan jawaban: " + status));
         },
       });
     });
@@ -188,17 +158,23 @@ document.addEventListener("DOMContentLoaded", () => {
         currentQuestion++;
         showQuestion(currentQuestion);
       } else {
-        showConfirm("Apakah Anda yakin ingin menyelesaikan ujian?", () => {
-          submitAllAnswers()
-            .then(() => {
-              return submitAndFinish();
-            })
-            .catch((error) => {
-              console.error(
-                "Error saat menyimpan jawaban atau menghitung nilai:",
-                error
-              );
-            });
+        showActionConfirmation({
+            title: 'Selesaikan Ujian',
+            message: 'Apakah Anda yakin ingin menyelesaikan ujian ini?<br><span class="text-muted small">Jawaban yang sudah dikirim tidak dapat diubah kembali.</span>',
+            btnText: 'Selesai',
+            type: 'success', // Green for positive submission
+            onConfirm: function() {
+              submitAllAnswers()
+                .then(() => {
+                  return submitAndFinish();
+                })
+                .catch((error) => {
+                  console.error(
+                    "Error saat menyimpan jawaban atau menghitung nilai:",
+                    error
+                  );
+                });
+            }
         });
       }
     };

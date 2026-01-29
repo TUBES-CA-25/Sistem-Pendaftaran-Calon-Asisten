@@ -16,6 +16,20 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
     .multi-select-item { cursor: pointer; padding: 5px; }
     .multi-select-item:hover { background: #f0f0f0; }
     .multi-select-item.selected { background: #e0f7ff; }
+
+    /* Unified Table Style */
+    .table-custom { --bs-table-border-color: #e0e0e0; }
+    .table-custom thead th {
+        color: #2f66f6; font-weight: 700; font-size: 0.75rem;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        background-color: #fff; border-top: 1px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1rem 0.75rem;
+    }
+    .table-custom tbody td {
+        padding: 1rem 0.75rem; color: #333; font-size: 0.875rem;
+        border-color: #e0e0e0;
+    }
 </style>
 
 <main>
@@ -33,19 +47,34 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                 <input type="text" id="searchJadwal" class="form-control rounded-3 ps-5" placeholder="Cari mahasiswa...">
             </div>
             <div class="d-flex gap-3">
-                <button class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" id="btnAddJadwal">
-                    <i class="bi bi-plus-circle"></i> Tambah Jadwal
-                </button>
-                <button class="btn btn-success bg-gradient border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" id="btnBulkJadwal">
-                    <i class="bi bi-calendar-plus"></i> Bulk Schedule
-                </button>
+                <div class="dropdown">
+                    <button class="btn btn-primary bg-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-plus-circle"></i> Tambah Data
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 mt-2">
+                        <li>
+                            <a class="dropdown-item px-3 py-2 d-flex align-items-center gap-2" href="javascript:void(0);" id="btnAddJadwal">
+                                <i class="bi bi-person-plus text-primary"></i>
+                                <span>Tambah Satuan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item px-3 py-2 d-flex align-items-center gap-2" href="javascript:void(0);" id="btnBulkJadwal">
+                                <i class="bi bi-people text-success"></i>
+                                <span>Bulk Schedule</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle mb-0" id="tableJadwal">
-                <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                    <tr>
+        <div class="card mb-3 rounded-0 border-0 shadow-none">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle mb-0 table-custom" id="tableJadwal">
+                        <thead>
+                            <tr>
                         <th class="fw-semibold text-uppercase small py-3 px-3">No</th>
                         <th class="fw-semibold text-uppercase small py-3 px-3">Nama Lengkap</th>
                         <th class="fw-semibold text-uppercase small py-3 px-3">Stambuk</th>
@@ -86,7 +115,10 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                         <?php $i++; endforeach; ?>
                     <?php endif; ?>
                 </tbody>
-            </table>
+                </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </main>
@@ -100,7 +132,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="formAddJadwal">
+                <form id="formAddJadwal" method="POST" action="javascript:void(0);">
                     <div class="mb-3">
                         <label class="form-label fw-semibold text-secondary">Pilih Mahasiswa:</label>
                         <select class="form-select rounded-3" id="selectMahasiswa" required><option value="">-- Loading --</option></select>
@@ -136,7 +168,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="formBulkJadwal">
+                <form id="formBulkJadwal" method="POST" action="javascript:void(0);">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -170,7 +202,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="formUpdateJadwal">
+                <form id="formUpdateJadwal" method="POST" action="javascript:void(0);">
                     <input type="hidden" id="editId">
                     <div class="mb-3">
                         <label class="form-label fw-semibold text-secondary">Mahasiswa:</label>
@@ -279,7 +311,8 @@ $(document).ready(function() {
         }, 'json');
     }
 
-    $('#btnAddJadwal').click(function() {
+    $('#btnAddJadwal').click(function(e) {
+        e.preventDefault();
         loadAvailableMahasiswa(); loadRuangan();
         $('#formAddJadwal')[0].reset();
         new bootstrap.Modal('#addJadwalModal').show();
@@ -299,7 +332,8 @@ $(document).ready(function() {
         }, 'json');
     });
 
-    $('#btnBulkJadwal').click(function() {
+    $('#btnBulkJadwal').click(function(e) {
+        e.preventDefault();
         loadAvailableMahasiswa(); loadRuangan();
         $('#formBulkJadwal')[0].reset();
         new bootstrap.Modal('#bulkJadwalModal').show();

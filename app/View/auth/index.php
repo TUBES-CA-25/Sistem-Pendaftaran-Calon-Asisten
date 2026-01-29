@@ -20,106 +20,10 @@
     <!-- Login Animation Styles -->
     <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/css/login-animation.css">
 
+    <!-- Auth Custom Styles -->
+    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/css/auth-custom.css">
+
     <title>Pendaftaran Calon Asisten ICLABS</title>
-    <style>
-        .input-wrapper {
-            position: relative;
-            width: 100%;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 12px !important;
-            padding: 0 15px;
-            height: 52px;
-            transition: all 0.3s ease;
-        }
-        .input-wrapper:focus-within {
-            border-color: #3dc2ec;
-            box-shadow: 0 0 0 4px rgba(61, 194, 236, 0.1);
-        }
-        .input-wrapper .input-icon {
-            width: 22px;
-            height: 22px;
-            opacity: 0.5;
-            flex-shrink: 0;
-            margin-right: 12px;
-            display: block;
-        }
-        .input-wrapper input {
-            border: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            height: 100% !important;
-            font-size: 15px !important;
-            flex: 1;
-            background: transparent !important;
-            outline: none !important;
-            box-shadow: none !important;
-            color: #333;
-        }
-        .input-wrapper input::placeholder {
-            color: #999;
-        }
-        .input-wrapper .toggle-password {
-            margin-left: 10px;
-            cursor: pointer;
-            color: #999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            transition: color 0.2s;
-        }
-        .input-wrapper .toggle-password:hover {
-            color: #3dc2ec;
-        }
-        .error-msg {
-            color: #dc3545;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-        .logo-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-        .logo-section img {
-            width: 70px;
-            height: auto;
-        }
-        .btn-submit {
-            background: linear-gradient(135deg, #3dc2ec 0%, #4B70F5 100%) !important;
-            border: none !important;
-            border-radius: 10px !important;
-            padding: 12px !important;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(61, 194, 236, 0.4);
-        }
-        .helper-links {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .helper-links a {
-            color: #666;
-            text-decoration: none;
-        }
-        .helper-links a:hover {
-            color: #3dc2ec;
-        }
-    </style>
 </head>
 
 <body>
@@ -158,6 +62,10 @@
                 <button type="submit" class="btn btn-primary btn-submit w-100" name="login" id="btnlogin">
                     <i class="bi bi-box-arrow-in-right me-2"></i>Login
                 </button>
+                
+                <div class="d-block d-md-none mt-3 text-center">
+                    <p class="small text-muted mb-0">Belum punya akun? <a href="#" id="mobile-register-btn" class="text-primary fw-semibold text-decoration-none">Daftar</a></p>
+                </div>
             </form>
         </div>
         <div class="form-container sign-up">
@@ -195,6 +103,10 @@
                 <button type="submit" class="btn btn-primary btn-submit w-100 mt-3" name="register" id="btndaftar">
                     <i class="bi bi-person-plus me-2"></i>Daftar
                 </button>
+                
+                <div class="d-block d-md-none mt-3 text-center">
+                    <p class="small text-muted mb-0">Sudah punya akun? <a href="#" id="mobile-login-btn" class="text-primary fw-semibold text-decoration-none">Masuk</a></p>
+                </div>
             </form>
         </div>
         <div class="toggle-container">

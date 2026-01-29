@@ -73,3 +73,45 @@
   --card-padding: 1.2rem;
   --section-padding: 1rem;
 }
+
+/* ==============================
+   RESPONSIVE CSS VARIABLES
+   Adjust spacing, typography, and layout for different screen sizes
+   ============================== */
+
+/* Tablet devices */
+@media (max-width: 991.98px) {
+  :root {
+    --section-padding: 0.875rem;
+    --card-padding: 1.1rem;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 767.98px) {
+  :root {
+    --section-padding: 0.75rem;
+    --card-padding: 1rem;
+    --bs-body-font-size: 0.8rem;
+    --border-radius-card: 0.875rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 575.98px) {
+  :root {
+    --section-padding: 0.5rem;
+    --card-padding: 0.75rem;
+    --bs-body-font-size: 0.75rem;
+    --border-radius-card: 0.75rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 374.98px) {
+  :root {
+    --section-padding: 0.4rem;
+    --card-padding: 0.65rem;
+    --bs-body-font-size: 0.7rem;
+  }
+}

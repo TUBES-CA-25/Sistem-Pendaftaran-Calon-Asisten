@@ -506,38 +506,44 @@
 // ============================================
 // TRIGGER VERIFICATION FROM DETAIL MODAL
 // ============================================
+// ============================================
+// TRIGGER VERIFICATION FROM DETAIL MODAL
+// ============================================
 function triggerVerificationFromModal() {
-    console.log('=== Verification button clicked ===');
-    
-    // Check if button is disabled
-    const btnVerifikasi = document.getElementById('btnVerifikasiModal');
-    if (btnVerifikasi.disabled) {
-        console.log('Button is disabled - cannot verify');
-        showAlert('Status masih pending, tidak bisa diverifikasi', false);
-        return;
-    }
-    
     const mahasiswaId = document.getElementById('modalMahasiswaId').value;
     const namaLengkap = document.getElementById('modalNamaHeader').textContent;
     
-    console.log('Mahasiswa ID:', mahasiswaId);
-    console.log('Nama Lengkap:', namaLengkap);
-    
     if (mahasiswaId && namaLengkap) {
         // Close detail modal first
-        const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
-        if (detailModal) {
-            console.log('Closing detail modal...');
-            detailModal.hide();
-        }
+        bootstrap.Modal.getInstance(document.getElementById('detailModal')).hide();
         
-        // Show verification popup after a short delay
-        setTimeout(function() {
-            console.log('Showing verification popup...');
-            showVerificationPopup(mahasiswaId, namaLengkap);
-        }, 300);
+        showActionConfirmation({
+            title: 'Konfirmasi Verifikasi Berkas',
+            message: `Anda akan memverifikasi berkas untuk:<br><strong class="fs-4 text-dark d-block my-2">${namaLengkap}</strong><span class="text-secondary small"><i class="bi bi-info-circle me-1"></i>Pastikan semua dokumen telah sesuai sebelum melanjutkan</span>`,
+            btnText: 'Verifikasi',
+            type: 'success',
+            onConfirm: function() {
+                // Show loading state
+                showAlert('Memproses verifikasi...', true);
+                
+                fetch(`${APP_URL}/acceptberkas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'id=' + mahasiswaId + '&status=1'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('Berhasil! Berkas berhasil diverifikasi!', true);
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
+                    }
+                })
+                .catch(error => showAlert('Error: ' + error.message, false));
+            }
+        });
     } else {
-        console.error('Missing data - ID:', mahasiswaId, 'Name:', namaLengkap);
         showAlert('Data peserta tidak ditemukan', false);
     }
 }
@@ -546,284 +552,42 @@ function triggerVerificationFromModal() {
 // CANCEL VERIFICATION FROM DETAIL MODAL
 // ============================================
 function cancelVerification() {
-    console.log('=== Cancel verification button clicked ===');
-    
     const mahasiswaId = document.getElementById('modalMahasiswaId').value;
     const namaLengkap = document.getElementById('modalNamaHeader').textContent;
     
-    console.log('Mahasiswa ID:', mahasiswaId);
-    console.log('Nama Lengkap:', namaLengkap);
-    
     if (mahasiswaId && namaLengkap) {
         // Close detail modal first
-        const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
-        if (detailModal) {
-            console.log('Closing detail modal...');
-            detailModal.hide();
-        }
+        bootstrap.Modal.getInstance(document.getElementById('detailModal')).hide();
         
-        // Show cancellation popup after a short delay
-        setTimeout(function() {
-            console.log('Showing cancellation popup...');
-            showCancellationPopup(mahasiswaId, namaLengkap);
-        }, 300);
+        showActionConfirmation({
+            title: 'Batalkan Verifikasi Berkas',
+            message: `Anda akan membatalkan verifikasi berkas untuk:<br><strong class="fs-4 text-dark d-block my-2">${namaLengkap}</strong><span class="text-danger small"><i class="bi bi-exclamation-triangle me-1"></i>Status akan kembali menjadi "Menunggu Verifikasi"</span>`,
+            btnText: 'Batalkan',
+            type: 'danger',
+            onConfirm: function() {
+                showAlert('Membatalkan verifikasi...', true);
+                
+                fetch(`${APP_URL}/acceptberkas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'id=' + mahasiswaId + '&status=0'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('Berhasil! Verifikasi dibatalkan.', true);
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
+                    }
+                })
+                .catch(error => showAlert('Error: ' + error.message, false));
+            }
+        });
     } else {
-        console.error('Missing data - ID:', mahasiswaId, 'Name:', namaLengkap);
         showAlert('Data peserta tidak ditemukan', false);
     }
 }
-
-// ============================================
-// CANCELLATION POPUP FUNCTION
-// ============================================
-function showCancellationPopup(mahasiswaId, namaLengkap) {
-    // Create custom modal HTML
-    const popupHTML = `
-        <div class="modal fade" id="cancellationModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-                    <!-- Header with gradient -->
-                    <div class="modal-header border-0 text-white position-relative" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 30px;">
-                        <div class="position-absolute" style="top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
-                        <div class="w-100 text-center position-relative">
-                            <div class="mb-3">
-                                <i class="bi bi-x-circle" style="font-size: 4rem; opacity: 0.9;"></i>
-                            </div>
-                            <h5 class="modal-title fw-bold mb-0">Batalkan Verifikasi Berkas</h5>
-                        </div>
-                        <button type="button" class="btn-close btn-close-white position-absolute" style="top: 15px; right: 15px;" data-bs-dismiss="modal"></button>
-                    </div>
-                    
-                    <!-- Body -->
-                    <div class="modal-body text-center px-4 py-4">
-                        <p class="text-muted mb-2" style="font-size: 0.9rem;">Anda akan membatalkan verifikasi berkas untuk:</p>
-                        <h6 class="fw-bold mb-4" style="color: #1f2937; font-size: 1.1rem;">${namaLengkap}</h6>
-                        <p class="text-muted" style="font-size: 0.85rem;">
-                            <i class="bi bi-exclamation-triangle me-1"></i>
-                            Status akan kembali menjadi "Menunggu Verifikasi"
-                        </p>
-                    </div>
-                    
-                    <!-- Footer -->
-                    <div class="modal-footer border-0 justify-content-center px-4 pb-4 pt-0">
-                        <button type="button" class="btn px-4 py-2" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: none; border-radius: 10px; min-width: 120px;">
-                            <i class="bi bi-x-lg me-2"></i>Batal
-                        </button>
-                        <button type="button" class="btn px-4 py-2" onclick="confirmCancellation(${mahasiswaId})" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); min-width: 120px;">
-                            <i class="bi bi-x-circle me-2"></i>Batalkan
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // Remove existing modal if any
-    const existingModal = document.getElementById('cancellationModal');
-    if (existingModal) {
-        existingModal.remove();
-    }
-    
-    // Append to body
-    document.body.insertAdjacentHTML('beforeend', popupHTML);
-    
-    // Show modal
-    const modal = new bootstrap.Modal(document.getElementById('cancellationModal'));
-    modal.show();
-    
-    // Remove modal from DOM after it's hidden AND cleanup backdrop
-    document.getElementById('cancellationModal').addEventListener('hidden.bs.modal', function() {
-        this.remove();
-        
-        // Clean up all backdrops
-        setTimeout(function() {
-            var backdrops = document.querySelectorAll('.modal-backdrop');
-            backdrops.forEach(function(backdrop) {
-                backdrop.remove();
-            });
-            
-            // Reset body state
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = '';
-            document.body.style.paddingRight = '';
-        }, 100);
-    }, { once: true });
-}
-
-function confirmCancellation(mahasiswaId) {
-    // Close the modal first
-    const modal = bootstrap.Modal.getInstance(document.getElementById('cancellationModal'));
-    if (modal) modal.hide();
-    
-    // Show loading state
-    showAlert('Membatalkan verifikasi...', true);
-    
-    // Send cancellation request
-    fetch(`${APP_URL}/acceptberkas`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'id=' + mahasiswaId + '&status=0'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showSuccessPopup('Verifikasi berhasil dibatalkan!');
-            // Reload page after 1.5 seconds
-            setTimeout(function() {
-                location.reload();
-            }, 1500);
-        } else {
-            showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('Error 1925: ' + error.message, false);
-    });
-}
-
-// ============================================
-// VERIFICATION POPUP FUNCTION
-// ============================================
-function showVerificationPopup(mahasiswaId, namaLengkap) {
-    // Create custom modal HTML
-    const popupHTML = `
-        <div class="modal fade" id="verificationModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-                    <!-- Header with gradient -->
-                    <div class="modal-header border-0 text-white position-relative" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px;">
-                        <div class="position-absolute" style="top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
-                        <div class="w-100 text-center position-relative">
-                            <div class="mb-3">
-                                <i class="bi bi-check-circle" style="font-size: 4rem; opacity: 0.9;"></i>
-                            </div>
-                            <h5 class="modal-title fw-bold mb-0">Konfirmasi Verifikasi Berkas</h5>
-                        </div>
-                        <button type="button" class="btn-close btn-close-white position-absolute" style="top: 15px; right: 15px;" data-bs-dismiss="modal"></button>
-                    </div>
-                    
-                    <!-- Body -->
-                    <div class="modal-body text-center px-4 py-4">
-                        <p class="text-muted mb-2" style="font-size: 0.9rem;">Anda akan memverifikasi berkas untuk:</p>
-                        <h6 class="fw-bold mb-4" style="color: #1f2937; font-size: 1.1rem;">${namaLengkap}</h6>
-                        <p class="text-muted" style="font-size: 0.85rem;">
-                            <i class="bi bi-info-circle me-1"></i>
-                            Pastikan semua dokumen telah sesuai sebelum melanjutkan
-                        </p>
-                    </div>
-                    
-                    <!-- Footer -->
-                    <div class="modal-footer border-0 justify-content-center px-4 pb-4 pt-0">
-                        <button type="button" class="btn px-4 py-2" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: none; border-radius: 10px; min-width: 120px;">
-                            <i class="bi bi-x-lg me-2"></i>Batal
-                        </button>
-                        <button type="button" class="btn px-4 py-2" onclick="confirmVerification(${mahasiswaId})" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); min-width: 120px;">
-                            <i class="bi bi-check-circle me-2"></i>Verifikasi
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // Remove existing modal if any
-    const existingModal = document.getElementById('verificationModal');
-    if (existingModal) {
-        existingModal.remove();
-    }
-    
-    // Append to body
-    document.body.insertAdjacentHTML('beforeend', popupHTML);
-    
-    // Show modal
-    const modal = new bootstrap.Modal(document.getElementById('verificationModal'));
-    modal.show();
-    
-    // Remove modal from DOM after it's hidden AND cleanup backdrop
-    document.getElementById('verificationModal').addEventListener('hidden.bs.modal', function() {
-        this.remove();
-        
-        // Clean up all backdrops
-        setTimeout(function() {
-            var backdrops = document.querySelectorAll('.modal-backdrop');
-            backdrops.forEach(function(backdrop) {
-                backdrop.remove();
-            });
-            
-            // Reset body state
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = '';
-            document.body.style.paddingRight = '';
-        }, 100);
-    }, { once: true });
-}
-
-function confirmVerification(mahasiswaId) {
-    // Close the modal first
-    const modal = bootstrap.Modal.getInstance(document.getElementById('verificationModal'));
-    if (modal) modal.hide();
-    
-    // Show loading state
-    showAlert('Memproses verifikasi...', true);
-    
-    // Send verification request
-    fetch(`${APP_URL}/acceptberkas`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'id=' + mahasiswaId + '&status=1'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showSuccessPopup('Berkas berhasil diverifikasi!');
-            // Reload page after 1.5 seconds
-            setTimeout(function() {
-                location.reload();
-            }, 1500);
-        } else {
-            showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('Error 2023: ' + error.message, false);
-    });
-}
-
-function showSuccessPopup(message) {
-    const successHTML = `
-        <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-sm">
-                <div class="modal-content border-0 text-center" style="border-radius: 20px; padding: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.2);">
-                    <div class="mb-3">
-                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 80px; height: 80px; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                            <i class="bi bi-check-lg text-white" style="font-size: 3rem;"></i>
-                        </div>
-                    </div>
-                    <h6 class="fw-bold mb-2" style="color: #1f2937;">Berhasil!</h6>
-                    <p class="text-muted mb-0" style="font-size: 0.9rem;">${message}</p>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', successHTML);
-    const modal = new bootstrap.Modal(document.getElementById('successModal'));
-    modal.show();
-    
-    setTimeout(function() {
-        modal.hide();
-        document.getElementById('successModal').addEventListener('hidden.bs.modal', function() {
-            this.remove();
-        });
-    }, 1500);
-}
-
 // ============================================
 // REMINDER BUTTON HANDLER
 // ============================================
@@ -836,41 +600,53 @@ document.addEventListener('DOMContentLoaded', function() {
             const nama = btn.getAttribute('data-nama');
             
             // Show confirmation
-            if (confirm(`Kirim reminder ke ${nama} untuk upload berkas?`)) {
-                // Show loading
-                showAlert('Mengirim reminder...', true);
-                
-                // Send reminder (you can customize the endpoint and message)
-                fetch('/Sistem-Pendaftaran-Calon-Asisten/public/sendNotification', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `user_id=${userId}&message=Mohon segera upload berkas pendaftaran Anda.&title=Reminder Upload Berkas`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        showSuccessPopup('Reminder berhasil dikirim!');
-                    } else {
-                        showAlert('Gagal mengirim reminder: ' + (data.message || 'Unknown error'), false);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showAlert('Terjadi kesalahan saat mengirim reminder', false);
-                });
-            }
+            showActionConfirmation({
+                title: 'Kirim Reminder',
+                message: `Kirim reminder ke <strong>${nama}</strong> untuk upload berkas?`,
+                btnText: 'Kirim',
+                type: 'primary', // Blue for neutral/info action
+                onConfirm: function() {
+                    // Show loading
+                    showAlert('Mengirim reminder...', true);
+                    
+                    // Send reminder
+                    fetch(`${APP_URL}/sendNotification`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `user_id=${userId}&message=Mohon segera upload berkas pendaftaran Anda.&title=Reminder Upload Berkas`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            showAlert('Reminder berhasil dikirim!', true);
+                        } else {
+                            showAlert('Gagal mengirim reminder: ' + (data.message || 'Unknown error'), false);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showAlert('Error saat mengirim reminder', false);
+                    });
+                }
+            });
         }
     });
 });
+// End of Reminder Handler
+// No extra code here
 
 // ============================================
 // ACCEPT/REJECT PARTICIPANT FUNCTIONS
 // ============================================
+// ============================================
+// ACCEPT/REJECT PARTICIPANT FUNCTIONS (LEGACY/ALTERNATIVE)
+// ============================================
+
 function acceptParticipant() {
-    var mahasiswaId = document.getElementById('modalMahasiswaId').value;
-    var nama = document.getElementById('modalNama').textContent;
+    const mahasiswaId = document.getElementById('modalMahasiswaId').value;
+    const nama = document.getElementById('modalNama').textContent;
     
     if (!mahasiswaId) {
         showAlert('ID Mahasiswa tidak ditemukan', false);
@@ -878,149 +654,38 @@ function acceptParticipant() {
     }
     
     // Close detail modal first
-    var detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
-    if (detailModal) {
-        detailModal.hide();
-    }
+    const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
+    if (detailModal) detailModal.hide();
     
-    // Wait for detail modal to fully close, then show confirmation
-    setTimeout(function() {
-        // Force cleanup any leftover backdrops before showing new modal
-        var existingBackdrops = document.querySelectorAll('.modal-backdrop');
-        existingBackdrops.forEach(function(backdrop) {
-            backdrop.remove();
-        });
-        document.body.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
-        
-        // Create custom confirmation popup (premium design)
-        var popupHTML = `
-            <div class="modal fade" id="confirmAcceptModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-                        <!-- Header with gradient -->
-                        <div class="modal-header border-0 text-white position-relative" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px;">
-                            <div class="position-absolute" style="top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
-                            <div class="w-100 text-center position-relative">
-                                <div class="mb-3">
-                                    <i class="bi bi-check-circle" style="font-size: 4rem; opacity: 0.9;"></i>
-                                </div>
-                                <h5 class="modal-title fw-bold mb-0">Konfirmasi Verifikasi Berkas</h5>
-                            </div>
-                            <button type="button" class="btn-close btn-close-white position-absolute" style="top: 15px; right: 15px;" data-bs-dismiss="modal"></button>
-                        </div>
-                        
-                        <!-- Body -->
-                        <div class="modal-body text-center px-4 py-4">
-                            <p class="text-muted mb-2" style="font-size: 0.9rem;">Anda akan memverifikasi berkas untuk:</p>
-                            <h6 class="fw-bold mb-4" style="color: #1f2937; font-size: 1.1rem;">${nama}</h6>
-                            <p class="text-muted" style="font-size: 0.85rem;">
-                                <i class="bi bi-info-circle me-1"></i>
-                                Pastikan semua dokumen telah sesuai sebelum melanjutkan
-                            </p>
-                        </div>
-                        
-                        <!-- Footer -->
-                        <div class="modal-footer border-0 justify-content-center px-4 pb-4 pt-0">
-                            <button type="button" class="btn px-4 py-2" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: none; border-radius: 10px; min-width: 120px;">
-                                <i class="bi bi-x-lg me-2"></i>Batal
-                            </button>
-                            <button type="button" class="btn px-4 py-2" onclick="confirmAccept(${mahasiswaId})" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); min-width: 120px;">
-                                <i class="bi bi-check-circle me-2"></i>Verifikasi
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        // Remove existing modal if any
-        var existingModal = document.getElementById('confirmAcceptModal');
-        if (existingModal) existingModal.remove();
-        
-        // Append to body
-        document.body.insertAdjacentHTML('beforeend', popupHTML);
-        
-        // Show modal
-        var modal = new bootstrap.Modal(document.getElementById('confirmAcceptModal'));
-        modal.show();
-        
-        // Cleanup BEFORE modal is hidden (prevents backdrop accumulation)
-        document.getElementById('confirmAcceptModal').addEventListener('hide.bs.modal', function() {
-            // Remove all backdrops immediately
-            var backdrops = document.querySelectorAll('.modal-backdrop');
-            backdrops.forEach(function(backdrop) {
-                backdrop.remove();
-            });
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = '';
-            document.body.style.paddingRight = '';
-        }, { once: true });
-        
-        // Cleanup when modal is hidden (including when Batal is clicked)
-        document.getElementById('confirmAcceptModal').addEventListener('hidden.bs.modal', function() {
-            this.remove();
-            
-            // IMMEDIATE cleanup (no delay)
-            var backdrops = document.querySelectorAll('.modal-backdrop');
-            backdrops.forEach(function(backdrop) {
-                backdrop.remove();
-            });
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = '';
-            document.body.style.paddingRight = '';
-            
-            // Double check with delay
-            setTimeout(function() {
-                var remainingBackdrops = document.querySelectorAll('.modal-backdrop');
-                remainingBackdrops.forEach(function(backdrop) {
-                    backdrop.remove();
-                });
-                document.body.classList.remove('modal-open');
-                document.body.style.overflow = '';
-                document.body.style.paddingRight = '';
-            }, 100);
-        }, { once: true });
-    }, 400);
-}
-
-function confirmAccept(mahasiswaId) {
-    // Close the modal first
-    var modal = bootstrap.Modal.getInstance(document.getElementById('confirmAcceptModal'));
-    if (modal) modal.hide();
-    
-    // Show loading
-    showAlert('Memproses verifikasi...', true);
-    
-    // Send accept request
-    fetch('/Sistem-Pendaftaran-Calon-Asisten/public/acceptberkas', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'id=' + mahasiswaId + '&status=1'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showSuccessPopup('Berkas berhasil diverifikasi!');
-            setTimeout(function() {
-                window.location.reload();
-            }, 1500);
-        } else {
-            showAlert('Gagal memverifikasi berkas: ' + (data.message || 'Unknown error'), false);
+    showActionConfirmation({
+        title: 'Verifikasi Berkas',
+        message: `Anda akan memverifikasi berkas untuk:<br><strong class="fs-4 text-dark d-block my-2">${nama}</strong><span class="text-secondary small"><i class="bi bi-info-circle me-1"></i>Pastikan semua dokumen telah sesuai</span>`,
+        btnText: 'Verifikasi',
+        type: 'success', // Green
+        onConfirm: function() {
+            showAlert('Memproses verifikasi...', true);
+            fetch(`${APP_URL}/acceptberkas`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'id=' + mahasiswaId + '&status=1'
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    showAlert('Berkas berhasil diverifikasi!', true);
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showAlert('Gagal: ' + (data.message || 'Unknown'), false);
+                }
+            })
+            .catch(err => showAlert('Error: ' + err.message, false));
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('Terjadi kesalahan saat memverifikasi berkas', false);
     });
 }
 
 function rejectParticipant() {
-    var mahasiswaId = document.getElementById('modalMahasiswaId').value;
-    var nama = document.getElementById('modalNama').textContent;
+    const mahasiswaId = document.getElementById('modalMahasiswaId').value;
+    const nama = document.getElementById('modalNama').textContent;
     
     if (!mahasiswaId) {
         showAlert('ID Mahasiswa tidak ditemukan', false);
@@ -1028,143 +693,32 @@ function rejectParticipant() {
     }
     
     // Close detail modal first
-    var detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
-    if (detailModal) {
-        detailModal.hide();
-    }
+    const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
+    if (detailModal) detailModal.hide();
     
-    // Wait for detail modal to fully close, then show confirmation
-    setTimeout(function() {
-        // Force cleanup any leftover backdrops before showing new modal
-        var existingBackdrops = document.querySelectorAll('.modal-backdrop');
-        existingBackdrops.forEach(function(backdrop) {
-            backdrop.remove();
-        });
-        document.body.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
-        
-        // Create custom confirmation popup (premium design)
-        var popupHTML = `
-            <div class="modal fade" id="confirmRejectModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-                        <!-- Header with gradient -->
-                        <div class="modal-header border-0 text-white position-relative" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 30px;">
-                            <div class="position-absolute" style="top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
-                            <div class="w-100 text-center position-relative">
-                                <div class="mb-3">
-                                    <i class="bi bi-x-circle" style="font-size: 4rem; opacity: 0.9;"></i>
-                                </div>
-                                <h5 class="modal-title fw-bold mb-0">Batalkan Verifikasi Berkas</h5>
-                            </div>
-                            <button type="button" class="btn-close btn-close-white position-absolute" style="top: 15px; right: 15px;" data-bs-dismiss="modal"></button>
-                        </div>
-                        
-                        <!-- Body -->
-                        <div class="modal-body text-center px-4 py-4">
-                            <p class="text-muted mb-2" style="font-size: 0.9rem;">Anda akan membatalkan verifikasi berkas untuk:</p>
-                            <h6 class="fw-bold mb-4" style="color: #1f2937; font-size: 1.1rem;">${nama}</h6>
-                            <p class="text-muted" style="font-size: 0.85rem;">
-                                <i class="bi bi-exclamation-triangle me-1"></i>
-                                Status akan kembali menjadi "Menunggu Verifikasi"
-                            </p>
-                        </div>
-                        
-                        <!-- Footer -->
-                        <div class="modal-footer border-0 justify-content-center px-4 pb-4 pt-0">
-                            <button type="button" class="btn px-4 py-2" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: none; border-radius: 10px; min-width: 120px;">
-                                <i class="bi bi-x-lg me-2"></i>Batal
-                            </button>
-                            <button type="button" class="btn px-4 py-2" onclick="confirmReject(${mahasiswaId})" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); min-width: 120px;">
-                                <i class="bi bi-x-circle me-2"></i>Batalkan
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        // Remove existing modal if any
-        var existingModal = document.getElementById('confirmRejectModal');
-        if (existingModal) existingModal.remove();
-        
-        // Append to body
-        document.body.insertAdjacentHTML('beforeend', popupHTML);
-        
-        // Show modal
-        var modal = new bootstrap.Modal(document.getElementById('confirmRejectModal'));
-        modal.show();
-        
-        // Cleanup BEFORE modal is hidden (prevents backdrop accumulation)
-        document.getElementById('confirmRejectModal').addEventListener('hide.bs.modal', function() {
-            // Remove all backdrops immediately
-            var backdrops = document.querySelectorAll('.modal-backdrop');
-            backdrops.forEach(function(backdrop) {
-                backdrop.remove();
-            });
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = '';
-            document.body.style.paddingRight = '';
-        }, { once: true });
-        
-        // Cleanup when modal is hidden (including when Batal is clicked)
-        document.getElementById('confirmRejectModal').addEventListener('hidden.bs.modal', function() {
-            this.remove();
-            
-            // IMMEDIATE cleanup (no delay)
-            var backdrops = document.querySelectorAll('.modal-backdrop');
-            backdrops.forEach(function(backdrop) {
-                backdrop.remove();
-            });
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = '';
-            document.body.style.paddingRight = '';
-            
-            // Double check with delay
-            setTimeout(function() {
-                var remainingBackdrops = document.querySelectorAll('.modal-backdrop');
-                remainingBackdrops.forEach(function(backdrop) {
-                    backdrop.remove();
-                });
-                document.body.classList.remove('modal-open');
-                document.body.style.overflow = '';
-                document.body.style.paddingRight = '';
-            }, 100);
-        }, { once: true });
-    }, 400);
-}
-
-function confirmReject(mahasiswaId) {
-    // Close the modal first
-    var modal = bootstrap.Modal.getInstance(document.getElementById('confirmRejectModal'));
-    if (modal) modal.hide();
-    
-    // Show loading
-    showAlert('Memproses pembatalan...', true);
-    
-    // Send reject request
-    fetch('/Sistem-Pendaftaran-Calon-Asisten/public/acceptberkas', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'id=' + mahasiswaId + '&status=2'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showSuccessPopup('Verifikasi berkas berhasil dibatalkan!');
-            setTimeout(function() {
-                window.location.reload();
-            }, 1500);
-        } else {
-            showAlert('Gagal membatalkan verifikasi: ' + (data.message || 'Unknown error'), false);
+    showActionConfirmation({
+        title: 'Tolak Verifikasi Berkas',
+        message: `Anda akan menolak verifikasi berkas untuk:<br><strong class="fs-4 text-dark d-block my-2">${nama}</strong><span class="text-danger small"><i class="bi bi-exclamation-triangle me-1"></i>Status akan diubah menjadi Ditolak</span>`,
+        btnText: 'Tolak Verifikasi',
+        type: 'danger', // Red
+        onConfirm: function() {
+            showAlert('Memproses penolakan...', true);
+            fetch(`${APP_URL}/acceptberkas`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'id=' + mahasiswaId + '&status=2'
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    showAlert('Verifikasi berkas ditolak!', true);
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showAlert('Gagal: ' + (data.message || 'Unknown'), false);
+                }
+            })
+            .catch(err => showAlert('Error: ' + err.message, false));
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('Terjadi kesalahan saat membatalkan verifikasi', false);
     });
 }
 

@@ -49,9 +49,29 @@ class DashboardUser extends Model {
     }
     
     public function getAbsensiTesTertulis() {
+        $id = $this->getMahasiswaId();
+        if (!$id) return false;
+
+        try {
+            // Check if score exists in nilai_akhir
+            // If no score, then the exam is NOT completed, regardless of absensi status
+            $queryNilai = "SELECT COUNT(*) FROM nilai_akhir WHERE id_mahasiswa = :id";
+            $stmtNilai = self::getDB()->prepare($queryNilai);
+            
+            if ($stmtNilai) {
+                $stmtNilai->bindParam(':id', $id);
+                $stmtNilai->execute();
+                if ($stmtNilai->fetchColumn() == 0) {
+                    return false;
+                }
+            }
+        } catch (\Throwable $e) {
+            // Fallback just in case table doesn't exist or other error
+            error_log("Error check nilai in DashboardUser: " . $e->getMessage());
+        }
+
         $query = "SELECT absensi_tes_tertulis FROM " . self::$tableAbsensi . " WHERE id_mahasiswa = :id";
         $stmt = self::getDB()->prepare($query);
-        $id = $this->getMahasiswaId();
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         $result = $stmt->fetch();

@@ -188,4 +188,16 @@ class Absensi extends Model {
         $stmt->bindValue(1, $id);
         return $stmt->execute();
     }
+    public function resetAbsensiTesTertulis($id_mahasiswa) {
+        try {
+            $sql = "UPDATE " . self::$table . " SET absensi_tes_tertulis = '-' WHERE id_mahasiswa = :id";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->bindValue(':id', $id_mahasiswa, \PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount();
+        } catch (\Exception $e) {
+            error_log("Error resetting absensi: " . $e->getMessage());
+            return false;
+        }
+    }
 }

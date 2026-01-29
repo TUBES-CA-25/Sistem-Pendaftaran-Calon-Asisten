@@ -160,6 +160,44 @@ class BankSoalController extends Controller
         exit;
     }
 
+    public function getBankQuestions()
+    {
+        // Clean any previous output
+        if (ob_get_level()) ob_end_clean();
+        
+        header('Content-Type: application/json');
+        try {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            if (!isset($_SESSION['user']['id'])) {
+                throw new \Exception('User tidak terautentikasi');
+            }
+
+            $bankId = $_POST['bank_id'] ?? null;
+            
+            if (!$bankId) {
+                throw new \Exception('Bank ID tidak ditemukan');
+            }
+
+            $soalExam = new SoalExam();
+            $questions = $soalExam->getSoalByBankId($bankId);
+            
+            echo json_encode([
+                'status' => 'success',
+                'data' => $questions
+            ]);
+            
+        } catch (\Exception $e) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+        exit;
+    }
+    
     public function getBankDetails()
     {
         // Clean any previous output
@@ -196,6 +234,123 @@ class BankSoalController extends Controller
                 'status' => 'error',
                 'message' => $e->getMessage()
             ]);
+        }
+    }
+    public function createBank()
+    {
+        ob_clean();
+        header('Content-Type: application/json');
+        
+        try {
+            if (empty($_SESSION['user'])) throw new \Exception('Unauthorized');
+            
+            $nama = $_POST['nama'] ?? '';
+            $deskripsi = $_POST['deskripsi'] ?? '';
+            $token = $_POST['token'] ?? '';
+            
+            if (empty($nama)) throw new \Exception('Nama bank soal wajib diisi');
+            
+            $bankSoal = new BankSoal();
+            if ($bankSoal->save($nama, $deskripsi, $token)) {
+                echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil dibuat']);
+            } else {
+                throw new \Exception('Gagal menyimpan bank soal');
+            }
+        } catch (\Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function updateBank()
+    {
+        ob_clean();
+        header('Content-Type: application/json');
+        
+        try {
+            if (empty($_SESSION['user'])) throw new \Exception('Unauthorized');
+            
+            $id = $_POST['id'] ?? null;
+            $nama = $_POST['nama'] ?? '';
+            $deskripsi = $_POST['deskripsi'] ?? '';
+            $token = $_POST['token'] ?? '';
+            
+            if (!$id) throw new \Exception('ID Bank tidak valid');
+            if (empty($nama)) throw new \Exception('Nama bank soal wajib diisi');
+            
+            $bankSoal = new BankSoal();
+            if ($bankSoal->updateBank($id, $nama, $deskripsi, $token)) {
+                echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil diperbarui']);
+            } else {
+                throw new \Exception('Gagal memperbarui bank soal');
+            }
+        } catch (\Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function deleteBank()
+    {
+        ob_clean();
+        header('Content-Type: application/json');
+        
+        try {
+            if (empty($_SESSION['user'])) throw new \Exception('Unauthorized');
+            
+            $id = $_POST['id'] ?? null;
+            if (!$id) throw new \Exception('ID Bank tidak valid');
+            
+            $bankSoal = new BankSoal();
+            if ($bankSoal->deleteBank($id)) {
+                echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil dihapus']);
+            } else {
+                throw new \Exception('Gagal menghapus bank soal');
+            }
+        } catch (\Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function activateBank()
+    {
+        ob_clean();
+        header('Content-Type: application/json');
+        
+        try {
+            if (empty($_SESSION['user'])) throw new \Exception('Unauthorized');
+            
+            $id = $_POST['id'] ?? $_POST['bank_id'] ?? null;
+            if (!$id) throw new \Exception('ID Bank tidak valid');
+            
+            $bankSoal = new BankSoal();
+            if ($bankSoal->setActiveBank($id)) {
+                echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil diaktifkan']);
+            } else {
+                throw new \Exception('Gagal mengaktifkan bank soal');
+            }
+        } catch (\Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function deactivateBank()
+    {
+        ob_clean();
+        header('Content-Type: application/json');
+        
+        try {
+            if (empty($_SESSION['user'])) throw new \Exception('Unauthorized');
+            
+            $id = $_POST['id'] ?? $_POST['bank_id'] ?? null;
+            if (!$id) throw new \Exception('ID Bank tidak valid');
+            
+            $bankSoal = new BankSoal();
+            if ($bankSoal->deactivateBank($id)) {
+                echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil dinonaktifkan']);
+            } else {
+                throw new \Exception('Gagal menonaktifkan bank soal');
+            }
+        } catch (\Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
 }

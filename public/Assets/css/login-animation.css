@@ -13,7 +13,8 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    min-height: 100vh;
+    padding: 20px 0;
 }
 
 h1 {
@@ -70,29 +71,201 @@ h1 {
     min-height: 520px;
 }
 
-@media screen and (max-width: 768px) {
-    .logo{
-        width: 60px; 
-        height: auto;
-    }
+/* Tablet: Show simplified layout */
+@media screen and (min-width: 769px) and (max-width: 991.98px) {
     .container {
         width: 90%;
+        max-width: 700px;
     }
-    .toggle {
-        transform: none;
+
+    .logo {
+        width: 120px;
+    }
+
+    .form-container,
+    .toggle-container {
+        width: 50%;
+    }
+
+    .toggle-panel {
+        padding: 0 20px;
+    }
+
+    .container button.hidden {
+        padding: 8px 35px;
+        font-size: 12px;
     }
 }
 
-@media screen and (max-width: 480px) {
-    .logo{
-        width: 40px; 
+/* Mobile devices: Stack forms */
+@media screen and (max-width: 768px) {
+    .logo {
+        width: 60px;
         height: auto;
     }
+
     .container {
-        width: 80%;
+        width: 95%;
+        max-width: 100%;
+        min-height: auto;
+        height: auto;
+        border-radius: 20px;
+        padding-bottom: 20px;
+        overflow-y: hidden; /* Prevent double scrollbar if body handles it, or auto if needed */
     }
-    .toggle {
+
+    /* Stack form containers */
+    .form-container {
+        width: 100% !important;
+        position: relative !important;
+        transform: none !important;
+    }
+
+    .sign-in {
+        width: 100%;
+        position: relative;
+        z-index: 2;
+    }
+
+    .sign-up {
+        width: 100%;
+        position: relative;
+        opacity: 1;
+        z-index: 1;
+    }
+
+    .container.active .sign-in {
         transform: none;
+        display: none;
+    }
+
+    .container.active .sign-up {
+        transform: none;
+        display: block;
+    }
+
+    /* Hide toggle panel on mobile */
+    .toggle-container {
+        display: none !important;
+    }
+
+    .container form {
+        padding: 0 25px;
+    }
+
+    .logo-container-register,
+    .logo-container-login {
+        height: auto;
+        padding: 15px 0;
+    }
+
+    .container p {
+        font-size: 13px;
+        margin: 15px 0;
+    }
+
+    .form-control {
+        margin-bottom: 12px;
+        padding: 9px;
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 9px;
+        font-size: 15px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+}
+
+/* Small phones */
+@media screen and (max-width: 480px) {
+    .logo {
+        width: 50px;
+        height: auto;
+    }
+
+    .container {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 0;
+        min-height: auto;
+        height: auto;
+    }
+
+    .container form {
+        padding: 0 20px;
+    }
+
+    .form-control {
+        margin-bottom: 10px;
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    .input-group .form-control {
+        padding-right: 35px;
+    }
+
+    .btn {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .container p {
+        font-size: 12px;
+        margin: 12px 0;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .logo-container-register,
+    .logo-container-login {
+        padding: 10px 0;
+    }
+
+    .container button.hidden {
+        padding: 8px 30px;
+        font-size: 11px;
+        margin-top: 10px;
+    }
+}
+
+/* Extra small devices */
+@media screen and (max-width: 374.98px) {
+    .logo {
+        width: 40px;
+    }
+
+    h1 {
+        font-size: 18px;
+    }
+
+    .container {
+        min-height: auto;
+        height: auto;
+    }
+
+    .container form {
+        padding: 0 15px;
+    }
+
+    .form-control {
+        padding: 7px;
+        font-size: 12px;
+    }
+
+    .btn {
+        padding: 7px;
+        font-size: 13px;
+    }
+
+    .container p {
+        font-size: 11px;
     }
 }
 
@@ -257,4 +430,307 @@ p {
 
 .container.active .toggle-right{
     transform: translateX(200%);
+}
+
+/* ==============================
+   RESPONSIVE AUTH PAGE IMPROVEMENTS
+   Additional responsive styles for auth page elements
+   ============================== */
+
+/* Tablet optimizations */
+@media screen and (min-width: 769px) and (max-width: 991.98px) {
+    .logo-section img {
+        width: 60px !important;
+    }
+
+    .input-wrapper {
+        height: 48px !important;
+        padding: 0 12px !important;
+    }
+
+    .input-wrapper input {
+        font-size: 14px !important;
+    }
+
+    .helper-links {
+        font-size: 13px !important;
+    }
+
+    .btn-submit {
+        padding: 11px !important;
+        font-size: 15px !important;
+    }
+}
+
+/* Mobile devices */
+@media screen and (max-width: 768px) {
+    .logo-section {
+        gap: 8px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .logo-section img {
+        width: 50px !important;
+    }
+
+    .input-wrapper {
+        height: 46px !important;
+        padding: 0 12px !important;
+        margin-bottom: 15px !important;
+    }
+
+    .input-wrapper .input-icon {
+        width: 20px !important;
+        height: 20px !important;
+        margin-right: 10px !important;
+    }
+
+    .input-wrapper input {
+        font-size: 14px !important;
+    }
+
+    .input-wrapper .toggle-password {
+        width: 28px !important;
+        height: 28px !important;
+    }
+
+    .helper-links {
+        font-size: 13px !important;
+        margin-bottom: 15px !important;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .helper-links .form-check {
+        font-size: 13px !important;
+    }
+
+    .btn-submit {
+        padding: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .error-msg {
+        font-size: 12px !important;
+    }
+
+    /* Modal responsive */
+    .modal-dialog {
+        margin: 1rem !important;
+    }
+
+    #modalGif {
+        width: 80px !important;
+    }
+
+    #modalMessage {
+        font-size: 1.1rem !important;
+    }
+}
+
+/* Small phones */
+@media screen and (max-width: 480px) {
+    .logo-section {
+        gap: 6px !important;
+        margin-bottom: 18px !important;
+    }
+
+    .logo-section img {
+        width: 42px !important;
+    }
+
+    .input-wrapper {
+        height: 44px !important;
+        padding: 0 10px !important;
+        margin-bottom: 12px !important;
+        border-radius: 10px !important;
+    }
+
+    .input-wrapper .input-icon {
+        width: 18px !important;
+        height: 18px !important;
+        margin-right: 8px !important;
+    }
+
+    .input-wrapper input {
+        font-size: 13px !important;
+    }
+
+    .input-wrapper input::placeholder {
+        font-size: 13px !important;
+    }
+
+    .input-wrapper .toggle-password {
+        width: 26px !important;
+        height: 26px !important;
+        margin-left: 6px !important;
+    }
+
+    .input-wrapper .toggle-password i {
+        font-size: 14px !important;
+    }
+
+    .helper-links {
+        font-size: 12px !important;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .helper-links .form-check {
+        font-size: 12px !important;
+    }
+
+    .helper-links a {
+        font-size: 12px !important;
+    }
+
+    .btn-submit {
+        padding: 9px !important;
+        font-size: 13px !important;
+        border-radius: 8px !important;
+    }
+
+    .btn-submit i {
+        font-size: 13px !important;
+    }
+
+    .error-msg {
+        font-size: 11px !important;
+        margin-top: 3px !important;
+    }
+
+    .modal-dialog {
+        margin: 0.5rem !important;
+    }
+
+    #modalGif {
+        width: 70px !important;
+    }
+
+    #modalMessage {
+        font-size: 1rem !important;
+    }
+
+    .modal-body {
+        padding: 1.5rem !important;
+    }
+}
+
+/* Extra small devices */
+@media screen and (max-width: 374.98px) {
+    .logo-section {
+        gap: 5px !important;
+        margin-bottom: 15px !important;
+    }
+
+    .logo-section img {
+        width: 36px !important;
+    }
+
+    h1 {
+        font-size: 18px !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .input-wrapper {
+        height: 42px !important;
+        padding: 0 8px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .input-wrapper .input-icon {
+        width: 16px !important;
+        height: 16px !important;
+        margin-right: 6px !important;
+    }
+
+    .input-wrapper input {
+        font-size: 12px !important;
+    }
+
+    .input-wrapper input::placeholder {
+        font-size: 12px !important;
+    }
+
+    .input-wrapper .toggle-password {
+        width: 24px !important;
+        height: 24px !important;
+    }
+
+    .input-wrapper .toggle-password i {
+        font-size: 13px !important;
+    }
+
+    .helper-links {
+        font-size: 11px !important;
+    }
+
+    .helper-links .form-check {
+        font-size: 11px !important;
+    }
+
+    .helper-links a {
+        font-size: 11px !important;
+    }
+
+    .btn-submit {
+        padding: 8px !important;
+        font-size: 12px !important;
+    }
+
+    .btn-submit i {
+        font-size: 12px !important;
+        margin-right: 4px !important;
+    }
+
+    .error-msg {
+        font-size: 10px !important;
+    }
+
+    #modalGif {
+        width: 60px !important;
+    }
+
+    #modalMessage {
+        font-size: 0.9rem !important;
+    }
+
+    .modal-content .btn {
+        font-size: 13px !important;
+        padding: 8px 16px !important;
+    }
+}
+
+/* Landscape optimization for mobile */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .logo-section {
+        margin-bottom: 10px !important;
+    }
+
+    .logo-section img {
+        width: 35px !important;
+    }
+
+    h1 {
+        font-size: 18px !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .input-wrapper {
+        height: 40px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .helper-links {
+        margin-bottom: 8px !important;
+    }
+
+    .btn-submit {
+        padding: 8px !important;
+    }
+
+    .container form {
+        padding: 1.5rem 25px !important;
+    }
 }

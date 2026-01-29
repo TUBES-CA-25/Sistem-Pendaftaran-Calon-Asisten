@@ -86,7 +86,7 @@ $result = $result ?? [];
                                 <td class="text-center py-2 px-2" style="color: #6b7280; font-weight: 500;"><?= $i ?></td>
                                 <td class="py-2 px-2">
                                     <div class="d-flex align-items-center gap-3">
-                                        <img src="<?= $row['photoPath'] ?>" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid #e5e7eb;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
+                                        <img src="<?= $row['photoPath'] ?>" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid #e5e7eb;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/profile/default.png'">
                                         <div class="d-flex flex-column">
                                             <span class="fw-semibold" style="color: #111827; font-size: 0.9rem;"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></span>
                                             <span class="" style="color: #6b7280; font-size: 0.75rem;">Mahasiswa</span>

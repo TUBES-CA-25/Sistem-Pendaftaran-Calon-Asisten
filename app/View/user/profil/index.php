@@ -12,7 +12,7 @@ $jenisKelamin = $jenisKelamin ?? 'Jenis Kelamin';
 $tempatLahir = $tempatLahir ?? 'Tempat Lahir';
 $tanggalLahir = $tanggalLahir ?? 'Tanggal Lahir';
 $noHp = $noHp ?? 'No Telephone';
-$photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
+$photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/profile/default.png';
 ?>
 
 <!-- Page Header -->

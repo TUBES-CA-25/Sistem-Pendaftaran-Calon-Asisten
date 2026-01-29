@@ -203,7 +203,7 @@ window.deleteBank = function(bankId) {
         .then(res => res.json())
         .then(data => {
             if (data.status === 'success') {
-                showAlert('Bank soal berhasil dihapus!');
+                showAlert('Bank soal berhasil dihapus!', true);
                 
                 try {
                     // Update stats
@@ -411,7 +411,7 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'success') {
-                    showAlert('Bank soal berhasil diupdate!');
+                    showAlert('Bank soal berhasil diperbarui!', true);
                     bootstrap.Modal.getInstance(document.getElementById('editBankModal')).hide();
                     
                     // Update local list
@@ -464,7 +464,7 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'success') {
-                    showAlert('Bank soal berhasil dibuat!');
+                    showAlert('Bank soal berhasil dibuat!', true);
                     bootstrap.Modal.getInstance(document.getElementById('createBankModal')).hide();
                     
                     // Remove empty state if exists
@@ -571,6 +571,26 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
         });
     }
 
+
+
+// Edit Bank Modal Helper
+window.editBankModal = function(id) {
+    // Find bank data
+    const bank = window.bankSoalList.find(b => b.id == id);
+    if (!bank) {
+        return;
+    }
+
+    // Populate Form
+    document.getElementById('editBankId').value = bank.id;
+    document.getElementById('editBankName').value = bank.nama;
+    document.getElementById('editBankDesc').value = bank.deskripsi;
+    document.getElementById('editBankToken').value = bank.token;
+
+    // Show Modal
+    const modal = new bootstrap.Modal(document.getElementById('editBankModal'));
+    modal.show();
+}
 
 // Activate/Deactivate Bank
 window.activateBank = function(bankId) {
