@@ -84,24 +84,16 @@ $(document).ready(function () {
         if (page === 'logout') {
             e.preventDefault();
             
-            showActionConfirmation({
-                title: 'Konfirmasi Keluar',
-                message: 'Apakah Anda yakin ingin keluar dari aplikasi?',
-                btnText: 'Keluar',
-                type: 'danger', // Red for leaving/destructive
-                onConfirm: function() {
-                    localStorage.removeItem('activePage');
-                    // Perform logout via AJAX
-                    $.ajax({
-                        url: `${APP_URL}/logout`,
-                        method: 'POST',
-                        success: function() {
-                            window.location.href = APP_URL;
-                        },
-                        error: function() {
-                            window.location.href = APP_URL;
-                        }
-                    });
+            localStorage.removeItem('activePage');
+            // Perform logout via AJAX
+            $.ajax({
+                url: `${APP_URL}/logout`,
+                method: 'POST',
+                success: function() {
+                    window.location.href = APP_URL;
+                },
+                error: function() {
+                    window.location.href = APP_URL;
                 }
             });
             return;

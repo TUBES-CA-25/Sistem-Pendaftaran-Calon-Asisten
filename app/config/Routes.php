@@ -127,3 +127,4 @@ Router::post("/getactivities", [new DashboardController, 'getActivities']);
 Router::post("/saveJadwalTes", [new JadwalTesController, 'save']);
 Router::post("/deleteJadwalTes", [new JadwalTesController, 'delete']);
 Router::post("/updateJadwalTes", [new JadwalTesController, 'update']);
+Router::post("/admin/reset-ujian", [new NilaiController, 'resetUjian']);

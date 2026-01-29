@@ -187,4 +187,57 @@ class NilaiController extends Controller
         }
     }
 
+    public function resetUjian()
+    {
+        header('Content-Type: application/json');
+        
+        try {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'Admin') {
+                echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
+                return;
+            }
+
+            $input = json_decode(file_get_contents('php://input'), true);
+            $idMahasiswa = $input['id'] ?? null;
+            
+            if (!$idMahasiswa) {
+                echo json_encode(['status' => 'error', 'message' => 'ID Mahasiswa tidak valid']);
+                return;
+            }
+
+            // 1. Reset Absensi (Set ke Alpha/Belum Hadir)
+            $absensiModel = new \App\Model\Absensi();
+            $absenReset = $absensiModel->resetAbsensiTesTertulis($idMahasiswa);
+            
+            // 2. Hapus Jawaban
+            $jawabanModel = new \App\Model\JawabanExam();
+            $jawabanReset = $jawabanModel->deleteJawabanByMahasiswa($idMahasiswa); // Ensure this method exists
+            
+            // 3. Hapus Nilai Akhir
+            $nilaiModel = new \App\Model\NilaiAkhir();
+            $nilaiReset = $nilaiModel->deleteNilaiByMahasiswa($idMahasiswa); // Ensure this method exists
+            
+            if ($absenReset || $jawabanReset || $nilaiReset) {
+                 echo json_encode([
+                    'status' => 'success', 
+                    'message' => "Berhasil mereset ujian. Absen: " . ($absenReset ? 'OK' : '-') . ", Jawaban: " . ($jawabanReset ? 'OK' : '-') . ", Nilai: " . ($nilaiReset ? 'OK' : '-')
+                ]);
+            } else {
+                 echo json_encode(['status' => 'warning', 'message' => 'Tidak ada data ujian yang perlu direset (Data mungkin sudah kosong).']);
+            }
+
+        } catch (\Throwable $e) {
+            error_log("Error reset ujian: " . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Server Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine()
+            ]);
+        }
+    }
+
 }

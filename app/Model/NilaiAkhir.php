@@ -20,44 +20,67 @@ class NilaiAkhir extends Model
     }
     public function saveNilai($id)
     {
-        $total_nilai = 0;
-        $poin_per_benar = 10;
+        try {
+            $total_nilai = 0;
+            $poin_per_benar = 10;
 
-        $query = "SELECT id_soal, jawaban FROM jawaban WHERE id_mahasiswa = :id_mahasiswa";
-        $stmt = self::getDB()->prepare($query);
-        $id_user = $this->getIdMahasiswa($id)['id'];
-        $stmt->bindParam(':id_mahasiswa', $id_user, PDO::PARAM_INT);
-        $stmt->execute();
-        $user_answers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $mahasiswa = $this->getIdMahasiswa($id);
+            if (!$mahasiswa) {
+                 throw new \Exception("Data mahasiswa tidak ditemukan untuk User ID: " . $id);
+            }
+            $id_user = $mahasiswa['id'];
 
-        foreach ($user_answers as $answer) {
-            $id_soal = $answer['id_soal'];
-            $jawaban_user = $answer['jawaban'];
+            $query = "SELECT id_soal, jawaban FROM jawaban WHERE id_mahasiswa = :id_mahasiswa";
+            $stmt = self::getDB()->prepare($query);
+            $stmt->bindParam(':id_mahasiswa', $id_user, PDO::PARAM_INT);
+            $stmt->execute();
+            $user_answers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $query_soal = "SELECT pilihan, jawaban FROM soal WHERE id = :id_soal";
-            $stmt_soal = self::getDB()->prepare($query_soal);
-            $stmt_soal->bindParam(':id_soal', $id_soal, PDO::PARAM_INT);
-            $stmt_soal->execute();
-            $soal_data = $stmt_soal->fetch(PDO::FETCH_ASSOC);
+            foreach ($user_answers as $answer) {
+                $id_soal = $answer['id_soal'];
+                $jawaban_user = $answer['jawaban'];
 
-            if ($soal_data) {
-                $pilihan = json_decode($soal_data['pilihan'], true);
-                $correct_answer = $soal_data['jawaban'];
-                if (isset($pilihan[$jawaban_user]) && $pilihan[$jawaban_user] === $correct_answer) {
-                    $total_nilai += $poin_per_benar;
+                $query_soal = "SELECT pilihan, jawaban FROM soal WHERE id = :id_soal";
+                $stmt_soal = self::getDB()->prepare($query_soal);
+                $stmt_soal->bindParam(':id_soal', $id_soal, PDO::PARAM_INT);
+                $stmt_soal->execute();
+                $soal_data = $stmt_soal->fetch(PDO::FETCH_ASSOC);
+
+                if ($soal_data) {
+                    $pilihan = json_decode($soal_data['pilihan'], true);
+                    $correct_answer = $soal_data['jawaban'];
+                    // Normalize answers for comparison
+                    if (isset($pilihan[$jawaban_user]) && trim($pilihan[$jawaban_user]) === trim($correct_answer)) {
+                        $total_nilai += $poin_per_benar;
+                    } elseif (trim($jawaban_user) === trim($correct_answer)) {
+                         // Fallback for essay or direct match
+                         $total_nilai += $poin_per_benar;
+                    }
                 }
             }
+
+            // Check if record exists first to avoid ON DUPLICATE KEY issues if keys are messy
+            $checkQ = "SELECT id FROM nilai_akhir WHERE id_mahasiswa = :id";
+            $checkStmt = self::getDB()->prepare($checkQ);
+            $checkStmt->bindParam(':id', $id_user);
+            $checkStmt->execute();
+            
+            if ($checkStmt->rowCount() > 0) {
+                 $query_update = "UPDATE nilai_akhir SET nilai = :nilai, modified = NOW() WHERE id_mahasiswa = :id_mahasiswa";
+            } else {
+                 $query_update = "INSERT INTO nilai_akhir (id_mahasiswa, nilai, created_at) VALUES (:id_mahasiswa, :nilai, NOW())";
+            }
+            
+            $stmt_update = self::getDB()->prepare($query_update);
+            $stmt_update->bindParam(':id_mahasiswa', $id_user, PDO::PARAM_INT);
+            $stmt_update->bindParam(':nilai', $total_nilai, PDO::PARAM_INT);
+            $stmt_update->execute();
+
+            return $total_nilai;
+        } catch (\Exception $e) {
+            error_log("Error saving nilai: " . $e->getMessage());
+            throw $e;
         }
-
-        $query_update = "INSERT INTO nilai_akhir (id_mahasiswa, nilai, created_at)
-                     VALUES (:id_mahasiswa, :nilai, NOW())
-                     ON DUPLICATE KEY UPDATE nilai = :nilai, modified = NOW()";
-        $stmt_update = self::getDB()->prepare($query_update);
-        $stmt_update->bindParam(':id_mahasiswa', $id_user, PDO::PARAM_INT);
-        $stmt_update->bindParam(':nilai', $total_nilai, PDO::PARAM_INT);
-        $stmt_update->execute();
-
-        return $total_nilai;
     }
 
     public function getNilai($id)
@@ -106,7 +129,14 @@ class NilaiAkhir extends Model
                   WHERE j.id_mahasiswa = :id_mahasiswa";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(':id_mahasiswa', $id);
-        $stmt->execute();
+          $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function deleteNilaiByMahasiswa($id_mahasiswa) {
+        $query = "DELETE FROM " . self::$table . " WHERE id_mahasiswa = :id";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(':id', $id_mahasiswa, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 }

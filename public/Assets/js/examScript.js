@@ -20,45 +20,14 @@ document.addEventListener("DOMContentLoaded", () => {
     remainingTime = initialDuration;
   }
 
-  async function submitAndFinish() {
-    const calculateEndpoint = "/Sistem-Pendaftaran-Calon-Asisten/public/calculate";
-
-    try {
-      const response = await fetch(calculateEndpoint, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
-      }
-
-      const textResponse = await response.text();
-      try {
-        const data = JSON.parse(textResponse);
-        console.log("Respons dari backend:", data);
-
-        if (data.status === "success") {
-          setTimeout(() => {
-            window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
-          }, 3000);
-        } else {
-          setTimeout(() => {
-            window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
-          }, 3000);
-        }
-      } catch (parseError) {
-        setTimeout(() => {
-          window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
-        }, 3000);
-      }
-    } catch (error) {
-      setTimeout(() => {
+  async function submitAndFinish(priorResponse) {
+    // Note: The score is already calculated in saveAnswer (/hasil)
+    // We just need to show success and redirect.
+    console.log("Submitting finish...", priorResponse);
+    
+    setTimeout(() => {
         window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
-      }, 3000);
-    }
+    }, 2000);
   }
 
   function updateTimerDisplay(seconds) {
@@ -143,7 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
         error: function (xhr, status, error) {
           console.error("Error saat menyimpan jawaban:", error);
           console.log("Respons backend:", xhr.responseText);
-          reject(new Error("Error saat menyimpan jawaban."));
+          alert("DEBUG ERROR BACKEND:\n" + xhr.responseText); // Force user to see error
+          reject(new Error("Error saat menyimpan jawaban: " + status));
         },
       });
     });
