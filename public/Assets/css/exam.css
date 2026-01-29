@@ -291,3 +291,311 @@ footer {
 .text-answer::placeholder {
     color: #aaa; /* Warna placeholder */
 }
+
+/* ==============================
+   RESPONSIVE EXAM INTERFACE
+   Media queries for all device sizes
+   ============================== */
+
+/* Tablet and below */
+@media (max-width: 991.98px) {
+    .container {
+        width: 95vw;
+        height: 85vh;
+    }
+
+    .sidebar {
+        width: 30%;
+    }
+
+    .main-content {
+        width: 70%;
+    }
+
+    .question {
+        font-size: 20px;
+    }
+
+    .text-answer {
+        width: 70%;
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 767.98px) {
+    body {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    header {
+        padding: 8px 15px;
+    }
+
+    .logo {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+    }
+
+    h1 {
+        font-size: 16px;
+    }
+
+    .container {
+        width: 100vw;
+        height: auto;
+        min-height: calc(100vh - 60px);
+        flex-direction: column;
+        border-radius: 0;
+        margin-top: 0;
+    }
+
+    /* Stack sidebar below content */
+    .sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 200px;
+        overflow-y: auto;
+        border-radius: 0;
+        border-right: none;
+        border-bottom: 2px solid #3dc2ec;
+        padding: 15px;
+    }
+
+    .profile-section {
+        margin-bottom: 15px;
+    }
+
+    .profile-picture {
+        width: 60px;
+        height: 60px;
+    }
+
+    .profile-section h3 {
+        font-size: 16px;
+    }
+
+    .profile-section p {
+        font-size: 12px;
+    }
+
+    .main-content {
+        width: 100%;
+        height: auto;
+        min-height: calc(100vh - 260px);
+        padding: 15px;
+    }
+
+    /* Timer positioning */
+    .timer {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        font-size: 16px;
+    }
+
+    .question {
+        font-size: 18px;
+        margin-bottom: 15px;
+        margin-top: 30px;
+    }
+
+    .options label {
+        font-size: 14px;
+    }
+
+    /* Question navigation buttons */
+    .nav {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .nav button {
+        width: 100%;
+        height: 35px;
+        font-size: 12px;
+    }
+
+    .nav-button {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+
+    .text-answer {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    .question-image {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 2rem;
+    }
+
+    .tes-tulis {
+        margin: 20px;
+        padding: 15px;
+    }
+
+    .tes-tulis h2 {
+        font-size: 18px;
+    }
+
+    .tes-tulis p {
+        font-size: 14px;
+    }
+
+    .tes-tulis button {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 575.98px) {
+    h1 {
+        font-size: 14px;
+    }
+
+    .logo {
+        width: 25px;
+        height: 25px;
+    }
+
+    .sidebar {
+        max-height: 150px;
+        padding: 10px;
+    }
+
+    .profile-picture {
+        width: 50px;
+        height: 50px;
+    }
+
+    .profile-section h3 {
+        font-size: 14px;
+    }
+
+    .profile-section p {
+        font-size: 11px;
+    }
+
+    .main-content {
+        padding: 10px;
+    }
+
+    .nav {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 3px;
+    }
+
+    .nav button {
+        width: 100%;
+        height: 30px;
+        font-size: 11px;
+        padding: 0;
+    }
+
+    .timer {
+        font-size: 14px;
+        padding: 0.4rem 0.6rem;
+        top: 8px;
+        right: 8px;
+    }
+
+    .question {
+        font-size: 16px;
+        margin-top: 35px;
+    }
+
+    .options label {
+        font-size: 13px;
+    }
+
+    .options input[type="radio"] {
+        margin-right: 8px;
+    }
+
+    .nav-button {
+        padding: 7px 12px;
+        font-size: 13px;
+    }
+
+    .text-answer {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .tes-tulis {
+        margin: 10px;
+        padding: 12px;
+    }
+
+    .tes-tulis h2 {
+        font-size: 16px;
+    }
+
+    .tes-tulis p,
+    .tes-tulis li {
+        font-size: 13px;
+    }
+
+    .tes-tulis button {
+        padding: 9px;
+        font-size: 13px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 374.98px) {
+    .nav {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .question {
+        font-size: 15px;
+    }
+
+    .timer {
+        font-size: 12px;
+        padding: 0.3rem 0.5rem;
+    }
+}
+
+/* Landscape phone optimization */
+@media (max-width: 767.98px) and (orientation: landscape) {
+    .container {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        width: 25%;
+        height: 100vh;
+        max-height: 100vh;
+        border-right: 2px solid #3dc2ec;
+        border-bottom: none;
+        overflow-y: auto;
+    }
+
+    .main-content {
+        width: 75%;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    .timer {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .question {
+        margin-top: 10px;
+    }
+}

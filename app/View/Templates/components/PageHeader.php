@@ -66,8 +66,15 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
     <div class="navbar-decoration"></div>
     
     <div class="container-fluid px-4">
-        <!-- Left: Icon + Title -->
+        <!-- Left: Burger Menu + Icon + Title -->
         <div class="navbar-brand d-flex align-items-center gap-3">
+            <!-- Burger Menu Button (visible on tablet/mobile) -->
+            <button class="burger-menu-btn" id="burgerMenuBtn" type="button" aria-label="Toggle Sidebar">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
             <?php if (!empty($icon)): ?>
                 <div class="navbar-icon">
                     <i class='<?= $icon ?>'></i>

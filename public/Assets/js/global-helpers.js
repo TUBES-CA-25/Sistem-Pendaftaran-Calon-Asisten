@@ -31,7 +31,8 @@ function showDeleteConfirmation(options) {
     // Show modal if it exists
     const modalEl = document.getElementById('deleteConfirmModal');
     if (modalEl) {
-        const modal = new bootstrap.Modal(modalEl);
+        // Use getOrCreateInstance to avoid multiple instances causing backdrop issues
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl); 
         modal.show();
     } else {
         console.warn('Delete confirmation modal element not found in DOM! Falling back to native confirm.');

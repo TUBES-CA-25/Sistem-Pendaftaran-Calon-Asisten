@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png">
+    <link rel="icon" href="<?= APP_URL ?>/Assets/Img/iclabs.png">
 
     <!-- Bootstrap 5.3.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,8 +16,8 @@
 
     <!-- Custom Variables & Bootstrap Overrides (includes Poppins font) -->
     <!-- Custom Variables & Bootstrap Overrides (includes Poppins font) -->
-    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/css/theme.css">
-    <link rel="stylesheet" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/css/style.css">
+    <link rel="stylesheet" href="<?= APP_URL ?>/Assets/css/theme.css">
+    <link rel="stylesheet" href="<?= APP_URL ?>/Assets/css/style.css">
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -89,9 +89,9 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/app.js"></script>
+    <script src="<?= APP_URL ?>/Assets/js/app.js?v=<?= time() ?>"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/ScriptSidebar.js"></script>
+    <script src="<?= APP_URL ?>/Assets/js/ScriptSidebar.js?v=<?= time() ?>"></script>
     
 </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - ICLABS</title>
-    <link rel="icon" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png">
+    <link rel="icon" href="<?= APP_URL ?>/Assets/Img/iclabs.png">
 
     <!-- Bootstrap 5.3.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,8 +21,8 @@
 
     <!-- Custom Variables & Bootstrap Overrides (includes Poppins font) -->
     <!-- Custom Variables & Bootstrap Overrides (includes Poppins font) -->
-    <link rel="stylesheet" href="Assets/css/theme.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="Assets/css/style.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= APP_URL ?>/Assets/css/theme.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= APP_URL ?>/Assets/css/style.css?v=<?= time() ?>">
 
     <!-- DataTables Bootstrap 5 CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
@@ -145,8 +145,8 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     <!-- App Scripts -->
-    <script src="Assets/js/global-helpers.js"></script>
-    <script src="Assets/js/app.js"></script>
-    <script src="Assets/js/ScriptSidebar.js"></script>
+    <script src="<?= APP_URL ?>/Assets/js/global-helpers.js?v=<?= time() ?>"></script>
+    <script src="<?= APP_URL ?>/Assets/js/app.js?v=<?= time() ?>"></script>
+    <script src="<?= APP_URL ?>/Assets/js/ScriptSidebar.js?v=<?= time() ?>"></script>
 </body>
 </html>

@@ -43,6 +43,9 @@ function loadPage(page, updateUrl = true) {
             if (typeof attachNotificationListeners === 'function') {
                 attachNotificationListeners();
             }
+            if (typeof window.initSidebar === 'function') {
+                window.initSidebar();
+            }
         },
         error: function(xhr, status, error) {
             console.error("Error loading page:", error);
@@ -64,8 +67,12 @@ $(document).ready(function () {
     // Handle click pada sidebar dan link dengan data-page
     $(document).on('click', '.sidebar a[data-page], .profile a[data-page], .dashboard a[data-page], [data-page]', function (e) {
         if (this.id === "startTestButton" || this.id === "logout-btn") return;
+        
+        e.preventDefault();
 
         var page = $(this).data('page');
+        console.log("Navigating to page:", page);
+
         if (!page) {
             console.error("Data page tidak ditemukan pada elemen ini:", this);
             return;
@@ -93,6 +100,12 @@ $(document).ready(function () {
         }
 
         e.preventDefault();
+        
+        // Close sidebar on mobile automatically
+        if (window.innerWidth <= 991.98 && typeof window.closeSidebar === 'function') {
+            setTimeout(() => window.closeSidebar(), 150);
+        }
+        
         loadPage(page);
     });
 

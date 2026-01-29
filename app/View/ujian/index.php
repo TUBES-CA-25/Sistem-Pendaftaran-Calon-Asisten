@@ -12,7 +12,7 @@
 $stambuk = $stambuk ?? '';
 $profile = $profile ?? [];
 $nama = $nama ?? 'Nama Lengkap';
-$photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
+$photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/profile/default.png';
 $results = $results ?? [];
 ?>
 

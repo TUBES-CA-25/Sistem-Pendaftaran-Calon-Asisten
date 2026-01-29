@@ -253,23 +253,7 @@ $ruanganList = $ruanganList ?? [];
 </div>
 
 <!-- Bootstrap Confirmation Modal -->
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4 shadow-lg">
-            <div class="modal-body text-center p-4">
-                <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-circle mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2.5rem;">
-                    <i class="bi bi-exclamation-lg"></i>
-                </div>
-                <h5 class="fw-bold mb-2">Konfirmasi Hapus</h5>
-                <p class="text-muted mb-4" id="deleteModalMessage">Apakah Anda yakin ingin menghapus data ini?<br>Tindakan ini tidak dapat dibatalkan.</p>
-                <div class="d-flex gap-3">
-                    <button type="button" class="btn btn-light flex-fill rounded-3 py-2 fw-medium" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" id="btnConfirmDelete" class="btn btn-danger flex-fill rounded-3 py-2 fw-medium">Ya, Hapus</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Custom Room Card Styles -->
 <style>
