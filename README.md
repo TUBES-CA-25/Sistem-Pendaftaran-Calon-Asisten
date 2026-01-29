@@ -1,6 +1,6 @@
 # IC-ASSIST - Sistem Pendaftaran Calon Asisten Laboratorium
 
-Sistem informasi berbasis web untuk mengelola proses pendaftaran dan seleksi calon asisten laboratorium ICLABS menggunakan arsitektur MVC (Model-View-Controller) dengan PHP.
+Sistem informasi berbasis web untuk mengelola proses pendaftaran dan seleksi calon asisten laboratorium menggunakan arsitektur MVC (Model-View-Controller) dengan PHP.
 
 ---
 
