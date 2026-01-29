@@ -188,17 +188,23 @@ document.addEventListener("DOMContentLoaded", () => {
         currentQuestion++;
         showQuestion(currentQuestion);
       } else {
-        showConfirm("Apakah Anda yakin ingin menyelesaikan ujian?", () => {
-          submitAllAnswers()
-            .then(() => {
-              return submitAndFinish();
-            })
-            .catch((error) => {
-              console.error(
-                "Error saat menyimpan jawaban atau menghitung nilai:",
-                error
-              );
-            });
+        showActionConfirmation({
+            title: 'Selesaikan Ujian',
+            message: 'Apakah Anda yakin ingin menyelesaikan ujian ini?<br><span class="text-muted small">Jawaban yang sudah dikirim tidak dapat diubah kembali.</span>',
+            btnText: 'Selesai',
+            type: 'success', // Green for positive submission
+            onConfirm: function() {
+              submitAllAnswers()
+                .then(() => {
+                  return submitAndFinish();
+                })
+                .catch((error) => {
+                  console.error(
+                    "Error saat menyimpan jawaban atau menghitung nilai:",
+                    error
+                  );
+                });
+            }
         });
       }
     };

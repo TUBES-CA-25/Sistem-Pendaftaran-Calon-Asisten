@@ -4,6 +4,7 @@
  */
 
 // 1. Core Delete Confirmation Logic
+// 1. Core Delete Confirmation Logic
 function showDeleteConfirmation(options) {
     const {
         message = 'Apakah Anda yakin ingin menghapus data ini?',
@@ -12,37 +13,18 @@ function showDeleteConfirmation(options) {
         onConfirm = null
     } = options;
     
-    // Set message and data with null checks
-    const msgEl = document.getElementById('deleteConfirmMessage');
-    const idEl = document.getElementById('deleteTargetId');
-    const typeEl = document.getElementById('deleteTargetType');
-
-    if (msgEl) msgEl.textContent = message;
-    if (idEl) idEl.value = id;
-    if (typeEl) typeEl.value = type;
-    
-    // Store callback on window to be accessed by the confirm button click handler
-    if (onConfirm && typeof onConfirm === 'function') {
-        window._deleteConfirmCallback = onConfirm;
-    } else {
-        window._deleteConfirmCallback = null;
-    }
-    
-    // Show modal if it exists
-    const modalEl = document.getElementById('deleteConfirmModal');
-    if (modalEl) {
-        // Use getOrCreateInstance to avoid multiple instances causing backdrop issues
-        const modal = bootstrap.Modal.getOrCreateInstance(modalEl); 
-        modal.show();
-    } else {
-        console.warn('Delete confirmation modal element not found in DOM! Falling back to native confirm.');
-        // Fallback to native confirm if modal is missing
-        if (confirm(message)) {
+    // Redirect to new Action Confirmation Modal
+    showActionConfirmation({
+        title: 'Hapus Data',
+        message: message,
+        btnText: 'Hapus',
+        type: 'danger', // Makes it Red
+        onConfirm: function() {
             if (onConfirm && typeof onConfirm === 'function') {
                 onConfirm(id, type);
             }
         }
-    }
+    });
 }
 
 // 2. Initialize Modal Event Handlers
@@ -87,6 +69,97 @@ function showConfirmDelete(callback, message) {
             }
         }
     });
+}
+
+// 5. Generic Action Confirmation Helper
+function showActionConfirmation(options) {
+    const {
+        title = 'Konfirmasi',
+        message = 'Apakah Anda yakin?',
+        btnText = 'Ya',
+        type = 'primary', // primary, success, danger, warning, info
+        onConfirm = null
+    } = options;
+
+    const modalEl = document.getElementById('actionConfirmModal');
+    if (!modalEl) {
+        if(confirm(message)) {
+            if(onConfirm) onConfirm();
+        }
+        return;
+    }
+
+    // Map types to styles (Premium Gradients)
+    const styles = {
+        primary: { 
+            bg: 'linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%)', 
+            icon: 'bi-question-lg', 
+            btnBg: '#0d6efd',
+            shadow: '0 4px 6px rgba(13, 110, 253, 0.3)'
+        },
+        success: { 
+            bg: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', 
+            icon: 'bi-check-lg', 
+            btnBg: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+            shadow: '0 4px 6px rgba(16, 185, 129, 0.3)'
+        },
+        danger: { 
+            bg: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', 
+            icon: 'bi-x-lg', 
+            btnBg: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+            shadow: '0 4px 6px rgba(239, 68, 68, 0.3)'
+        },
+        warning: { 
+            bg: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', 
+            icon: 'bi-exclamation-lg', 
+            btnBg: '#f59e0b',
+            shadow: '0 4px 6px rgba(245, 158, 11, 0.3)'
+        },
+        info: { 
+            bg: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', 
+            icon: 'bi-info-lg', 
+            btnBg: '#3b82f6',
+            shadow: '0 4px 6px rgba(59, 130, 246, 0.3)'
+        }
+    };
+
+    const style = styles[type] || styles.primary;
+
+    // Update Header Style
+    const header = document.getElementById('actionConfirmHeader');
+    header.style.background = style.bg;
+
+    // Update Icon
+    const icon = document.getElementById('actionConfirmIcon');
+    // Reset icon classes completely to ensure only the requested icon is present
+    icon.className = `bi ${style.icon}`; // e.g., bi bi-check-lg
+    // The parent circle is already styled in HTML
+    
+    // Update Content
+    document.getElementById('actionConfirmTitle').textContent = title;
+    document.getElementById('actionConfirmMessage').innerHTML = message;
+    
+    // Update Button
+    const btn = document.getElementById('actionConfirmButton');
+    btn.innerHTML = (type === 'success' || type === 'primary' ? '<i class="bi bi-check-circle me-2"></i>' : (type === 'danger' ? '<i class="bi bi-trash3 me-2"></i>' : '')) + btnText;
+    
+    // Apply button styling
+    btn.style.background = style.btnBg;
+    btn.style.boxShadow = style.shadow;
+
+    // Handle Click
+    // Clone to remove old listeners
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    
+    newBtn.addEventListener('click', function() {
+        if(onConfirm) onConfirm();
+        bootstrap.Modal.getInstance(modalEl).hide();
+    });
+
+    // Show Modal
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
 }
 
 // 4. Helper for showing alerts

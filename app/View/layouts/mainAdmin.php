@@ -47,6 +47,46 @@
         </div>
     </div>
 
+    <!-- Generic Action Confirmation Modal (Premium Design) -->
+    <div class="modal fade" id="actionConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                <!-- Header with Gradient & Decoration -->
+                <div id="actionConfirmHeader" class="modal-header border-0 text-white position-relative p-4" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+                    <!-- Decorative Circles -->
+                    <div class="position-absolute" style="top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                    <div class="position-absolute" style="bottom: 10px; left: 10px; width: 50px; height: 50px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                    
+                    <div class="w-100 text-center position-relative" style="z-index: 1;">
+                        <div class="mb-3">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 80px; height: 80px; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);">
+                                <i id="actionConfirmIcon" class="bi bi-question-lg" style="font-size: 3rem;"></i>
+                            </div>
+                        </div>
+                        <h5 id="actionConfirmTitle" class="modal-title fw-bold mb-0">Konfirmasi</h5>
+                    </div>
+                </div>
+                
+                <!-- Body -->
+                <div class="modal-body text-center px-4 py-4">
+                    <p id="actionConfirmMessage" class="text-secondary fs-6 mb-0">
+                        Apakah Anda yakin ingin melanjutkan tindakan ini?
+                    </p>
+                </div>
+                
+                <!-- Footer -->
+                <div class="modal-footer border-0 justify-content-center px-4 pb-4 pt-0">
+                    <button type="button" class="btn px-4 py-2" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: none; border-radius: 10px; min-width: 120px; font-weight: 500;">
+                        <i class="bi bi-x-lg me-2"></i>Batal
+                    </button>
+                    <button type="button" id="actionConfirmButton" class="btn px-4 py-2 text-white shadow-sm" style="background: #0d6efd; border: none; border-radius: 10px; min-width: 120px; font-weight: 500;">
+                        Ya, Lanjutkan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap Delete Confirmation Modal -->
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

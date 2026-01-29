@@ -215,27 +215,61 @@ $(document).ready(function() {
     });
 
     $('#btnModalAccept').click(function() {
-        if(confirm('Terima judul ini?')) {
-            $.post(APP_URL + '/updatestatus', { id: currentUserId, status: 1 }, function(res) {
-                if(res.status === 'success') { 
-                    showAlert('Judul diterima!'); 
-                    bootstrap.Modal.getInstance(document.getElementById('detailPengajuanModal')).hide();
-                    setTimeout(() => location.reload(), 1000); 
-                } else showAlert(res.message, false);
-            }, 'json');
-        }
+        const nama = $('#detailNama').text();
+        const detailModalEl = document.getElementById('detailPengajuanModal');
+        
+        // Hide detail modal FIRST
+        const detailModal = bootstrap.Modal.getInstance(detailModalEl);
+        if (detailModal) detailModal.hide();
+
+        // Wait for it to close then show confirmation
+        setTimeout(() => {
+            showActionConfirmation({
+                title: 'Terima Judul',
+                message: `Anda akan menerima judul untuk:<br><strong class="fs-4 text-dark d-block my-2">${nama}</strong><span class="text-success small"><i class="bi bi-check-circle me-1"></i>Judul memenuhi kriteria</span>`,
+                btnText: 'Terima Judul',
+                type: 'success', // Green
+                onConfirm: function() {
+                    $.post(APP_URL + '/updatestatus', { id: currentUserId, status: 1 }, function(res) {
+                        if(res.status === 'success') { 
+                            showAlert('Judul berhasil diterima!', true);
+                            setTimeout(() => location.reload(), 1000);
+                        } else {
+                            showAlert(res.message || 'Gagal menerima judul', false);
+                        }
+                    }, 'json');
+                }
+            });
+        }, 300); // Small delay to allow fade out
     });
 
     $('#btnModalReject').click(function() {
-        if(confirm('Tolak judul ini?')) {
-            $.post(APP_URL + '/updatestatus', { id: currentUserId, status: 2 }, function(res) {
-                if(res.status === 'success') { 
-                    showAlert('Judul ditolak!'); 
-                    bootstrap.Modal.getInstance(document.getElementById('detailPengajuanModal')).hide();
-                    setTimeout(() => location.reload(), 1000); 
-                } else showAlert(res.message, false);
-            }, 'json');
-        }
+        const nama = $('#detailNama').text();
+        const detailModalEl = document.getElementById('detailPengajuanModal');
+
+        // Hide detail modal FIRST
+        const detailModal = bootstrap.Modal.getInstance(detailModalEl);
+        if (detailModal) detailModal.hide();
+
+        // Wait for it to close then show confirmation
+        setTimeout(() => {
+            showActionConfirmation({
+                title: 'Tolak Judul',
+                message: `Anda akan menolak judul untuk:<br><strong class="fs-4 text-dark d-block my-2">${nama}</strong><span class="text-danger small"><i class="bi bi-exclamation-triangle me-1"></i>Mahasiswa akan diminta mengajukan ulang</span>`,
+                btnText: 'Tolak Judul',
+                type: 'danger', // Red
+                onConfirm: function() {
+                    $.post(APP_URL + '/updatestatus', { id: currentUserId, status: 2 }, function(res) {
+                        if(res.status === 'success') { 
+                            showAlert('Judul berhasil ditolak!', true);
+                            setTimeout(() => location.reload(), 1000);
+                        } else {
+                            showAlert(res.message || 'Gagal menolak judul', false);
+                        }
+                    }, 'json');
+                }
+            });
+        }, 300); // Small delay to allow fade out
     });
 
     $('.btn-send-message').click(function() {
@@ -249,8 +283,11 @@ $(document).ready(function() {
         e.preventDefault();
         $.post(APP_URL + '/updatepresentasi', { id: currentMessageId, userid: currentUserId, message: $('#messageContent').val() }, function(res) {
             bootstrap.Modal.getInstance(document.getElementById('sendMessageModal')).hide();
-            if(res.status === 'success') showAlert('Pesan terkirim!');
-            else showAlert(res.message, false);
+            if(res.status === 'success') {
+                showAlert('Pesan berhasil terkirim!', true);
+            } else {
+                showAlert(res.message || 'Gagal mengirim pesan', false);
+            }
         }, 'json');
     });
 });

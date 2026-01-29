@@ -61,13 +61,37 @@
             <div class="modal-content border-0 rounded-4 shadow-lg">
                 <div class="modal-body text-center p-4 p-lg-5">
                     <!-- GIF Animasi -->
-                    <img id="modalGif" src="" alt="Animation" class="mb-3" style="width: 100px; display: none;">
+                    <img id="modalGif" src="" alt="Animation" class="mb-3 mx-auto d-block" style="width: 100px; display: none;">
 
                     <!-- Pesan Custom -->
                     <p id="modalMessage" class="fs-5 fw-medium mb-4">Pesan akan ditampilkan di sini.</p>
 
                     <!-- Tombol Close -->
                     <button type="button" id="closeModal" class="btn btn-primary px-4 py-2 rounded-3" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generic Action Confirmation Modal -->
+    <div class="modal fade" id="actionConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+                <!-- Header with Icon & Title -->
+                <div id="actionConfirmHeader" class="text-center p-4 bg-primary text-white">
+                    <div class="mb-3">
+                        <i id="actionConfirmIcon" class="bi bi-check-circle-fill" style="font-size: 4rem;"></i>
+                    </div>
+                    <h4 id="actionConfirmTitle" class="fw-bold mb-0">Konfirmasi</h4>
+                </div>
+                
+                <!-- Body -->
+                <div class="modal-body text-center p-4 p-lg-5">
+                    <p class="text-muted fs-5 mb-4" id="actionConfirmMessage">Apakah Anda yakin ingin melanjutkan?</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-light btn-lg rounded-pill px-5" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-primary btn-lg rounded-pill px-5" id="actionConfirmButton">Ya</button>
+                    </div>
                 </div>
             </div>
         </div>
