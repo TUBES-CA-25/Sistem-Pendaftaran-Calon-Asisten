@@ -298,40 +298,43 @@
         var mhsId = row.attr('data-id');
         
         // Determine which ID to use
-        var bodyParams = '';
-        if (userId) {
-            bodyParams = 'id=' + userId; // Delete User (and linked Mahasiswa)
-        } else if (mhsId) {
-            bodyParams = 'mahasiswaId=' + mhsId; // Delete Mahasiswa only
-        } else {
-            showAlert('ID data tidak ditemukan', false);
+        if (!userId && !mhsId) {
+            alert('✗ ID data tidak ditemukan');
             return;
         }
         
-        showConfirmDelete(function() {
-            fetch(`${APP_URL}/deletemahasiswa`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: bodyParams
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showAlert('Data berhasil dihapus!', true);
-                    setTimeout(function() {
-                        location.reload();
-                    }, 1000);
-                } else {
-                    showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('Terjadi kesalahan saat menghapus data', false);
-            });
-        }, 'Apakah Anda yakin ingin menghapus data peserta ini?<br>Tindakan ini tidak dapat dibatalkan.');
+        // Show delete confirmation modal
+        showDeleteConfirmation({
+            message: 'Apakah Anda yakin ingin menghapus data peserta ini?',
+            id: userId || mhsId,
+            type: userId ? 'user' : 'mahasiswa',
+            onConfirm: function(id, type) {
+                var bodyParams = type === 'user' ? 'id=' + id : 'mahasiswaId=' + id;
+                
+                fetch(`${APP_URL}/deletemahasiswa`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: bodyParams
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('✓ Data berhasil dihapus!');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        alert('✗ Gagal: ' + (data.message || 'Terjadi kesalahan'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('✗ Terjadi kesalahan saat menghapus data');
+                });
+            }
+        });
     });
 
     // ============ NOTIFICATION FORM HANDLERS ============

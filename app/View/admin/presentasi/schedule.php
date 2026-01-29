@@ -351,10 +351,16 @@ $(document).ready(function() {
 
     $(document).on('click', '.btn-delete-jadwal', function() {
         const id = $(this).data('id');
-        showConfirmDelete(() => {
+        showConfirmDelete(function() {
             $.post(APP_URL + '/deletejadwalpresentasi', { id: id }, function(res) {
-                if(res.status === 'success') { showAlert('Jadwal terhapus!'); loadJadwal(); }
-                else showAlert(res.message, false);
+                if(res.status === 'success') { 
+                    showAlert('Jadwal berhasil dihapus!', true); 
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    showAlert(res.message, false);
+                }
             }, 'json');
         }, 'Apakah Anda yakin ingin menghapus jadwal presentasi ini?');
     });

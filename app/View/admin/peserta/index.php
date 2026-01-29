@@ -132,7 +132,9 @@ $result = $result ?? [];
                                         </button>
                                         <button class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center btn-delete" 
                                                 title="Hapus"
-                                                style="width: 36px; height: 36px; background-color: #fee2e2; border: none; color: #dc2626;">
+                                                style="width: 36px; height: 36px; background-color: #fee2e2; border: none; color: #dc2626;"
+                                                data-id="<?= $row['id'] ?>"
+                                                data-userid="<?= $row['idUser'] ?>">
                                             <i class="bi bi-trash3"></i>
                                         </button>
                                     </div>
@@ -699,8 +701,6 @@ $result = $result ?? [];
         </div>
     </div>
 </div>
-
-
 
 <!-- Bootstrap Bundle JS -->
 

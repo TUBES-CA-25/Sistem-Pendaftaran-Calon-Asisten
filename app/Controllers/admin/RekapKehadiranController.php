@@ -132,4 +132,30 @@ class RekapKehadiranController extends Controller
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
+    
+    /**
+     * Backfill absensi for existing mahasiswa (one-time operation)
+     */
+    public function backfillData() {
+        if (!isset($_SESSION['user']['id'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
+            return;
+        }
+        
+        try {
+            $absensi = new Absensi();
+            $count = $absensi->backfillAbsensi();
+            
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status' => 'success', 
+                'message' => "Berhasil menambahkan $count mahasiswa ke rekap",
+                'count' => $count
+            ]);
+        } catch (\Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
 }

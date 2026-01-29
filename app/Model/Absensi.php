@@ -98,6 +98,34 @@ class Absensi extends Model {
         $stmt->bindValue(6, $this->id);
         return $stmt->execute();
     }
+    
+    /**
+     * Create default absensi record for a new mahasiswa
+     * @param int $id_mahasiswa The mahasiswa ID
+     * @return bool Success status
+     */
+    public function createDefaultAbsensi($id_mahasiswa) {
+        // Check if absensi already exists
+        $checkSql = "SELECT COUNT(*) FROM " . self::$table . " WHERE id_mahasiswa = ?";
+        $checkStmt = self::getDB()->prepare($checkSql);
+        $checkStmt->bindValue(1, $id_mahasiswa);
+        $checkStmt->execute();
+        
+        if ($checkStmt->fetchColumn() > 0) {
+            return true; // Already exists, skip
+        }
+        
+        // Insert default absensi
+        $sql = "INSERT INTO " . self::$table . " 
+                (id_mahasiswa, absensi_wawancara_I, absensi_wawancara_II, 
+                 absensi_wawancara_III, absensi_tes_tertulis, absensi_presentasi) 
+                VALUES (?, '-', '-', '-', '-', '-')";
+        
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindValue(1, $id_mahasiswa);
+        return $stmt->execute();
+    }
+    
     public function addMahasiswa(Absensi $absensi, $id) {
         if (!is_array($id) || empty($id)) {
             throw new \InvalidArgumentException("Parameter 'id' harus berupa array dan tidak boleh kosong.");
@@ -129,6 +157,29 @@ class Absensi extends Model {
             $stmt->execute();
         }
         return true;
+    }
+    
+    /**
+     * Backfill absensi records for existing mahasiswa who don't have one
+     * This is a one-time operation to populate historical data
+     * @return int Number of records created
+     */
+    public function backfillAbsensi() {
+        $sql = "INSERT INTO " . self::$table . " 
+                (id_mahasiswa, absensi_wawancara_I, absensi_wawancara_II, 
+                 absensi_wawancara_III, absensi_tes_tertulis, absensi_presentasi)
+                SELECT m.id, '-', '-', '-', '-', '-'
+                FROM mahasiswa m
+                LEFT JOIN " . self::$table . " a ON m.id = a.id_mahasiswa
+                WHERE a.id IS NULL";
+        
+        try {
+            $affected = self::getDB()->exec($sql);
+            return $affected;
+        } catch (\PDOException $e) {
+            error_log("Error in backfillAbsensi: " . $e->getMessage());
+            return 0;
+        }
     }
 
     public function deleteAbsensi($id) {

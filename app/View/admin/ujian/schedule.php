@@ -455,7 +455,7 @@ $(document).ready(function() {
     // Delete Schedule
     $(document).on('click', '.delete-schedule', function() {
         const id = $(this).data('id');
-        showConfirmDelete(() => {
+        showConfirmDelete(function() {
             $.ajax({
                 url: APP_URL + '/deleteJadwalTes',
                 method: 'POST',
@@ -463,14 +463,19 @@ $(document).ready(function() {
                 data: JSON.stringify({ id: id }),
                 success: function(res) {
                     if (res.status === 'success') {
-                        showAlert(res.message);
-                        $(`tr[data-id="${id}"]`).fadeOut(300, function() { $(this).remove(); });
+                        showAlert(res.message || 'Jadwal berhasil dihapus!', true);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
                     } else {
                         showAlert(res.message, false);
                     }
+                },
+                error: function() {
+                    showAlert('Terjadi kesalahan jaringan', false);
                 }
             });
-        });
+        }, 'Apakah Anda yakin ingin menghapus jadwal tes ini?');
     });
 });
 </script>

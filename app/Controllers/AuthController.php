@@ -5,6 +5,7 @@ use App\Core\Controller;
 use App\Core\View;
 use App\Model\UserModel;
 use App\Model\Mahasiswa;
+use App\Model\Absensi;
 
 class AuthController extends Controller
 {
@@ -88,8 +89,14 @@ class AuthController extends Controller
                 $userId = $user->save();
 
                 if ($userId) {
-                    // Create Mahasiswa Record
-                    Mahasiswa::create($userId, $stambuk, $name);
+                    // Create Mahasiswa Record and get the new mahasiswa ID
+                    $mahasiswaId = Mahasiswa::create($userId, $stambuk, $name);
+                    
+                    // Auto-create default absensi record for the new mahasiswa
+                    if ($mahasiswaId) {
+                        $absensiModel = new Absensi();
+                        $absensiModel->createDefaultAbsensi($mahasiswaId);
+                    }
 
                     header('Content-Type: application/json');
                     echo json_encode(['status' => 'success', 'message' => 'Registration successful. Please log in.']);

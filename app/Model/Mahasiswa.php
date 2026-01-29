@@ -323,7 +323,10 @@ class Mahasiswa extends Model
         $stmt->bindValue(':id_user', $idUser);
         $stmt->bindValue(':stambuk', $stambuk);
         $stmt->bindValue(':nama', $nama);
-        return $stmt->execute();
+        $stmt->execute();
+        
+        // Return the newly created mahasiswa ID
+        return self::getDB()->lastInsertId();
     }
     public function updateProfilePhoto($idUser, $filename)
     {

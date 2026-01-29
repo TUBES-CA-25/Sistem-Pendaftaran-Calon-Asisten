@@ -843,13 +843,15 @@ $(document).ready(function() {
         showConfirmDelete(function() {
             $.post(APP_URL + '/deletejadwalpresentasi', { id: id }, function(res) {
                 if (res.status === 'success') {
-                    showAlert('Jadwal berhasil dihapus!');
-                    loadJadwalData();
+                    showAlert('Jadwal berhasil dihapus!', true);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
                 } else {
                     showAlert(res.message || 'Gagal hapus jadwal', false);
                 }
             }, 'json');
-        }, 'Yakin ingin menghapus jadwal ini?');
+        }, 'Apakah Anda yakin ingin menghapus jadwal presentasi ini?');
     });
 
     // Initial load

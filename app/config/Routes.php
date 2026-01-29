@@ -84,6 +84,7 @@ Router::post("/ruangan/getfilter",[new JadwalWawancaraController,'getAllFilterBy
 Router::post("/updatenilaiakhir",[new NilaiController, 'updateTotalNilai']);
 Router::post("/updateabsensi",[new RekapKehadiranController, 'updateData']);
 Router::post("/deleteabsensi",[new RekapKehadiranController, 'deleteData']);
+Router::post("/backfillabsensi",[new RekapKehadiranController, 'backfillData']);
 Router::post("/addallnotif",[new NotifikasiController, 'sendAllMessage']);
 Router::get("/getnotifications",[new NotifikasiController, 'fetchNotifications']);
 Router::post("/marknotificationsread",[new NotifikasiController, 'markRead']);

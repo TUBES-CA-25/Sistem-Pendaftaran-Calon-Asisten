@@ -50,8 +50,8 @@
     <!-- Bootstrap Delete Confirmation Modal -->
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 rounded-4 overflow-hidden">
-                <div class="modal-header modal-header-danger border-0 py-3">
+            <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
+                <div class="modal-header bg-danger bg-gradient text-white border-0 py-3">
                     <h5 class="modal-title d-flex align-items-center gap-2" id="deleteConfirmModalLabel">
                         <i class="bi bi-exclamation-triangle-fill"></i>
                         Konfirmasi Hapus
@@ -63,13 +63,15 @@
                         <i class="bi bi-trash3 text-danger fs-1"></i>
                     </div>
                     <h5 class="fw-bold mb-2">Apakah Anda yakin?</h5>
-                    <p class="text-muted mb-0" id="deleteModalMessage">Data yang dihapus tidak dapat dikembalikan.</p>
+                    <p class="text-muted mb-0 mx-auto px-3" id="deleteConfirmMessage">Data yang dihapus tidak dapat dikembalikan.</p>
+                    <input type="hidden" id="deleteTargetId" value="">
+                    <input type="hidden" id="deleteTargetType" value="">
                 </div>
                 <div class="modal-footer border-0 justify-content-center gap-2 pb-4">
                     <button type="button" class="btn btn-secondary px-4 rounded-3" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle me-1"></i> Batal
                     </button>
-                    <button type="button" class="btn btn-danger px-4 rounded-3" id="btnConfirmDelete">
+                    <button type="button" class="btn btn-danger bg-gradient px-4 rounded-3 fw-semibold" id="confirmDeleteButton">
                         <i class="bi bi-trash me-1"></i> Hapus
                     </button>
                 </div>
@@ -143,6 +145,7 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     <!-- App Scripts -->
+    <script src="Assets/js/global-helpers.js"></script>
     <script src="Assets/js/app.js"></script>
     <script src="Assets/js/ScriptSidebar.js"></script>
 </body>

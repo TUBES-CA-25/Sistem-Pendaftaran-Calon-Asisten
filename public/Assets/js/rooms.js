@@ -209,10 +209,16 @@
         $(document).on('click', '.btn-delete-room', function(e) {
             e.stopPropagation(); // Prevent card click
             const id = $(this).data('id');
+            const name = $(this).data('name') || 'ruangan ini';
             
-            showConfirmDelete(() => {
-                handleDeleteRoom(id);
-            }, 'Apakah Anda yakin ingin menghapus ruangan ini beserta seluruh datanya?');
+            showDeleteConfirmation({
+                message: `Apakah Anda yakin ingin menghapus "${name}" beserta seluruh datanya?`,
+                id: id,
+                type: 'room',
+                onConfirm: function(deleteId) {
+                    handleDeleteRoom(deleteId);
+                }
+            });
         });
         
         function handleDeleteRoom(id) {

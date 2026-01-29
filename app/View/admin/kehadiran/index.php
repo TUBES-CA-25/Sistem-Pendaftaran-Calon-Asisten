@@ -83,9 +83,6 @@ $mahasiswaList = $mahasiswaList ?? [];
                 <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
                 <input type="text" id="searchKehadiran" class="form-control ps-5 rounded-3" placeholder="Cari nama atau stambuk...">
             </div>
-            <button class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addMahasiswaModal">
-                <i class="bi bi-plus-circle"></i> Tambah Data
-            </button>
         </div>
 
         <?php if (empty($absensiList)): ?>
@@ -567,9 +564,11 @@ $(document).ready(function() {
         const id = btn.data('id');
         const nama = btn.data('nama');
 
-
-        if (typeof showConfirmDelete === 'function') {
-            showConfirmDelete(function() {
+        showDeleteConfirmation({
+            message: `Apakah Anda yakin ingin menghapus data kehadiran "${nama}"?`,
+            id: id,
+            type: 'attendance',
+            onConfirm: function(deleteId) {
                 $.ajax({
                     url: APP_URL + "/deleteabsensi",
                     method: "POST",
@@ -591,26 +590,8 @@ $(document).ready(function() {
                         showAlert('Gagal menghubungi server', false);
                     }
                 });
-            }, `Hapus data kehadiran untuk ${nama}?`);
-        } else {
-             if (confirm(`Hapus data kehadiran untuk ${nama}?`)) {
-                 // Fallback AJAX
-                 $.ajax({
-                    url: APP_URL + "/deleteabsensi",
-                    method: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({ id: id }),
-                    success: function(res) {
-                        if(res.status === 'success') {
-                            showAlert('Data kehadiran berhasil dihapus!', true);
-                            location.reload();
-                        } else {
-                            showAlert(res.message || 'Gagal menghapus data', false);
-                        }
-                    }
-                });
-             }
-        }
+            }
+        });
     });
 
     // --- EDIT LOGIC ---
