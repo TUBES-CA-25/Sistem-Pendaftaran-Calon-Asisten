@@ -44,6 +44,8 @@ Router::get('/download',[new BerkasController, 'downloadBerkas']);
 
 // Home routes - catch-all MUST be last
 Router::get('/',[new HomeController, 'index']);
+Router::get('/dashboard', function() { (new HomeController)->loadContent('dashboard'); });
+
 Router::get('/{page}', [new HomeController, 'loadContent']);
 
 
