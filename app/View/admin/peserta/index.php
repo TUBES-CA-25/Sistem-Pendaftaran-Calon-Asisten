@@ -70,12 +70,12 @@ $result = $result ?? [];
                 <table id="daftarPesertaTable" class="table table-hover align-middle mb-0" style="width:100%;">
                     <thead style="background-color: #ffffff;">
                         <tr>
-                            <th class="text-center fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase;">NO</th>
-                            <th class="fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase;">NAMA LENGKAP</th>
-                            <th class="text-center fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 140px;">STAMBUK</th>
-                            <th class="fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 180px;">JURUSAN</th>
-                            <th class="text-center fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 130px;">STATUS</th>
-                            <th class="text-center fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 120px;">AKSI</th>
+                            <th class="text-center fw-bold py-2 px-2" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase;">NO</th>
+                            <th class="fw-bold py-2 px-2" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase;">NAMA LENGKAP</th>
+                            <th class="text-center fw-bold py-2 px-2" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 140px;">STAMBUK</th>
+                            <th class="fw-bold py-2 px-2" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 180px;">JURUSAN</th>
+                            <th class="text-center fw-bold py-2 px-2" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 130px;">STATUS</th>
+                            <th class="text-center fw-bold py-2 px-2" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 120px;">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -83,8 +83,8 @@ $result = $result ?? [];
                         <?php foreach ($result as $row): ?>
                             <?php if (empty($row['id'])) continue; // Show ONLY Mahasiswa ?>
                             <tr class="border-bottom" data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>" style="background-color: <?= $i % 2 == 0 ? '#f9fafb' : '#ffffff' ?>;">
-                                <td class="text-center py-3 px-3" style="color: #6b7280; font-weight: 500;"><?= $i ?></td>
-                                <td class="py-3 px-3">
+                                <td class="text-center py-2 px-2" style="color: #6b7280; font-weight: 500;"><?= $i ?></td>
+                                <td class="py-2 px-2">
                                     <div class="d-flex align-items-center gap-3">
                                         <img src="<?= $row['photoPath'] ?>" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid #e5e7eb;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png'">
                                         <div class="d-flex flex-column">
@@ -93,18 +93,18 @@ $result = $result ?? [];
                                         </div>
                                     </div>
                                 </td>
-                                <td class="text-center py-3 px-3">
+                                <td class="text-center py-2 px-2">
                                     <span style="color: #4b5563; font-size: 0.875rem;"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></span>
                                 </td>
-                                <td class="py-3 px-3">
+                                <td class="py-2 px-2">
                                     <span style="color: #6b7280; font-size: 0.875rem;"><?= htmlspecialchars($row['jurusan'] ?? '-') ?></span>
                                 </td>
-                                <td class="text-center py-3 px-3">
+                                <td class="text-center py-2 px-2">
                                     <span class="badge rounded-pill px-3 py-2 <?= $row['statusBadge']['class'] ?>" style="font-size: 0.75rem; font-weight: 500;">
                                         <?= $row['statusBadge']['text'] ?>
                                     </span>
                                 </td>
-                                <td class="text-center py-3 px-3">
+                                <td class="text-center py-2 px-2">
                                     <div class="d-flex justify-content-center gap-2">
                                         <button class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center btn-view" 
                                                 title="Lihat Detail"

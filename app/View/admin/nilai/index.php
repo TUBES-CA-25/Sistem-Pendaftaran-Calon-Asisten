@@ -94,14 +94,14 @@ $nilai = $nilai ?? [];
             <!-- Clean Table -->
             <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle mb-0" id="tableNilai">
-                    <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <thead style="background-color: #ffffff;">
                         <tr>
-                            <th class="text-center py-3 px-3" style="width: 60px;">No</th>
-                            <th class="py-3 px-3">Mahasiswa</th>
-                            <th class="py-3 px-3">Stambuk</th>
-                            <th class="text-center py-3 px-3" style="width: 120px;">Nilai Akhir</th>
-                            <th class="text-center py-3 px-3" style="width: 140px;">Status</th>
-                            <th class="text-center py-3 px-3" style="width: 120px;">Aksi</th>
+                            <th class="text-center fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 60px;">No</th>
+                            <th class="fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase;">Mahasiswa</th>
+                            <th class="fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase;">Stambuk</th>
+                            <th class="text-center fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 120px;">Nilai Akhir</th>
+                            <th class="text-center fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 140px;">Status</th>
+                            <th class="text-center fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 120px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -132,11 +132,14 @@ $nilai = $nilai ?? [];
                             }
                             ?>
                             <tr>
-                                <td class="text-center py-3 px-3"><?= $i ?></td>
+                                <td class="text-center py-3 px-3" style="color: #6b7280; font-weight: 500;"><?= $i ?></td>
                                 <td class="py-3 px-3">
-                                    <strong><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></strong>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-bold text-dark"><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></span>
+                                        <span class="small text-muted">Mahasiswa</span>
+                                    </div>
                                 </td>
-                                <td class="py-3 px-3"><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>
+                                <td class="py-3 px-3" style="color: #4b5563;"><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>
                                 <td class="text-center py-3 px-3">
                                     <span class="badge bg-info text-dark rounded-pill px-3">
                                         <?= ($displayNilai !== null && $displayNilai !== '') ? $displayNilai : 'Belum ada' ?>
