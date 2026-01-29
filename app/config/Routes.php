@@ -26,7 +26,6 @@ use App\Controllers\Admin\JadwalWawancaraController;
 use App\Controllers\Admin\RuanganController;
 use App\Controllers\Admin\NilaiController;
 use App\Controllers\Admin\RekapKehadiranController;
-use App\Controllers\Admin\ProfilAdminController;
 
 use App\Core\Router;
 
@@ -122,8 +121,6 @@ Router::post("/deletekegiatan", [new DashboardAdminController, 'destroyKegiatan'
 Router::post("/updatedeadline", [new DashboardAdminController, 'saveDeadline']);
 Router::post("/dashboard/stats", [new DashboardAdminController, 'getStats']);
 Router::post("/getactivities", [new DashboardController, 'getActivities']);
-
-Router::post("/updateadminprofile", [new ProfilAdminController, 'updateProfile']);
 
 // Jadwal Tes Tertulis Individual
 Router::post("/saveJadwalTes", [new JadwalTesController, 'save']);

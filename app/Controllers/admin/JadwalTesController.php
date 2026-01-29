@@ -55,8 +55,8 @@ class JadwalTesController extends Controller
                  'initialPage' => 'jadwaltes'
              ];
              
-             if (class_exists('App\Controllers\Admin\ProfilAdminController')) {
-                 $photoPath = \App\Controllers\Admin\ProfilAdminController::getAdminPhoto($_SESSION['user']['id']);
+             if (class_exists('App\Controllers\HomeController')) {
+                 $photoPath = \App\Controllers\HomeController::getAdminPhoto($_SESSION['user']['id']);
                  $sidebarData['photo'] = $photoPath;
              }
              

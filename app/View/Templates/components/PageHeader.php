@@ -17,11 +17,8 @@ $userName = $_SESSION['user']['username'] ?? ($userName ?? 'User');
 
 // Dynamic Photo Logic
 if ($role === 'Admin') {
-    if (class_exists('App\Controllers\Admin\ProfilAdminController')) {
-        $photo = \App\Controllers\Admin\ProfilAdminController::getAdminPhoto($_SESSION['user']['id']);
-    } else {
-        $photo = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png';
-    }
+    $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/6971e2c5e60ce.png';
+    $userName = 'Admin';
 } else {
     // Student/User photo logic
     if (isset($photo)) {
@@ -141,26 +138,35 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
                 </div>
             <?php endif; ?>
 
-            <!-- Profile Dropdown -->
-            <div class="dropdown">
-                <button class="btn navbar-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <!-- Profile Section -->
+            <?php if ($role === 'Admin'): ?>
+                <!-- Admin: Simple static display without dropdown -->
+                <div class="d-flex align-items-center gap-2">
                     <img src="<?= $photo ?>" alt="Profile" class="navbar-profile-img">
                     <span class="navbar-profile-name d-none d-sm-inline"><?= htmlspecialchars($userName) ?></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end navbar-dropdown">
-                    <li>
-                        <a class="dropdown-item" href="#" data-page="profile">
-                            <i class='bx bx-user me-2'></i>Profile
-                        </a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        <a class="dropdown-item text-danger" href="#" data-page="logout">
-                            <i class='bx bx-log-out me-2'></i>Logout
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                </div>
+            <?php else: ?>
+                <!-- User: Dropdown with profile and logout -->
+                <div class="dropdown">
+                    <button class="btn navbar-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="<?= $photo ?>" alt="Profile" class="navbar-profile-img">
+                        <span class="navbar-profile-name d-none d-sm-inline"><?= htmlspecialchars($userName) ?></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end navbar-dropdown">
+                        <li>
+                            <a class="dropdown-item" href="#" data-page="profile">
+                                <i class='bx bx-user me-2'></i>Profile
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="#" data-page="logout">
+                                <i class='bx bx-log-out me-2'></i>Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </nav>

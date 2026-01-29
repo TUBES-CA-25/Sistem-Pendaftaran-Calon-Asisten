@@ -22,7 +22,6 @@ use App\Controllers\Admin\NilaiController;
 use App\Controllers\Admin\RekapKehadiranController;
 use App\Controllers\Admin\JadwalWawancaraController;
 use App\Controllers\Admin\BankSoalController;
-use App\Controllers\Admin\ProfilAdminController;
 use App\Controllers\Admin\JadwalPresentasiController;
 
 // Shared Controllers
@@ -266,7 +265,7 @@ class HomeController extends Controller
         $role = $_SESSION['user']['role'] ?? ($user['role'] ?? 'User');
         
         if ($role === 'Admin') {
-            $photoPath = ProfilAdminController::getAdminPhoto($_SESSION['user']['id']);
+            $photoPath = HomeController::getAdminPhoto($_SESSION['user']['id']);
             $notifikasi = [];
         } else {
             // Updated Logic: Fetch Profile Photo specifically
@@ -431,7 +430,7 @@ class HomeController extends Controller
         $role = $user['role'] ?? 'User';
         
         if ($role === 'Admin') {
-            $photoPath = ProfilAdminController::getAdminPhoto($_SESSION['user']['id']);
+            $photoPath = HomeController::getAdminPhoto($_SESSION['user']['id']);
         } else {
              $mahasiswaModel = new \App\Model\Mahasiswa();
              $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id']);
@@ -879,5 +878,27 @@ class HomeController extends Controller
         }
 
         return $formatted;
+    }
+
+    /**
+     * Get admin photo path
+     * Returns custom photo if exists, otherwise returns default iclabs logo
+     */
+    public static function getAdminPhoto($userId) {
+        $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
+        $webPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
+        
+        $extensions = ['png', 'jpg', 'jpeg'];
+        
+        clearstatcache();
+        
+        foreach ($extensions as $ext) {
+            $filename = "admin_{$userId}.{$ext}";
+            if (file_exists($baseDir . $filename)) {
+                return $webPath . $filename . '?v=' . time();
+            }
+        }
+        
+        return '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png';
     }
 }
