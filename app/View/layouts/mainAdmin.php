@@ -185,7 +185,6 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     <!-- App Scripts -->
-    <script src="<?= APP_URL ?>/Assets/js/global-helpers.js?v=<?= time() ?>"></script>
     <script src="<?= APP_URL ?>/Assets/js/app.js?v=<?= time() ?>"></script>
     <script src="<?= APP_URL ?>/Assets/js/ScriptSidebar.js?v=<?= time() ?>"></script>
 </body>

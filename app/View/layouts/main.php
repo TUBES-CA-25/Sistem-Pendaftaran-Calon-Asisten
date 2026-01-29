@@ -114,7 +114,6 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="<?= APP_URL ?>/Assets/js/global-helpers.js?v=<?= time() ?>"></script>
     <script src="<?= APP_URL ?>/Assets/js/app.js?v=<?= time() ?>"></script>
     <script src="<?= APP_URL ?>/Assets/js/ScriptSidebar.js?v=<?= time() ?>"></script>
     
