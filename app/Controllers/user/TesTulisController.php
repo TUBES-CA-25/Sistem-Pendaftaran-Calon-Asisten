@@ -1,10 +1,12 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\User;
 
 use App\Core\Controller;
 use App\Core\View;
 use App\Model\SoalExam;
-class ExamController extends Controller {
+use App\Model\JawabanExam;
+use App\Model\NilaiAkhir;
+class TesTulisController extends Controller {
     public function index() {
         try {
             if (!isset($_GET['nomorMeja'])) {
@@ -57,21 +59,21 @@ class ExamController extends Controller {
         header('Content-Type: application/json');
         try {
             $inputToken = $_POST['token'] ?? '';
-            
+
             $bankModel = new \App\Model\BankSoal();
             $activeBank = $bankModel->getActiveBank();
-            
+
             if (!$activeBank) {
                 echo json_encode(['status' => 'error', 'message' => 'Tidak ada ujian aktif']);
                 return;
             }
-            
+
             if ($inputToken === $activeBank['token']) {
                 // Set session to allow access
                 $_SESSION['exam_token_verified'] = $activeBank['token'];
-                
+
                 echo json_encode([
-                    'status' => 'success', 
+                    'status' => 'success',
                     'message' => 'Token valid',
                     'bank_id' => $activeBank['id']
                 ]);
@@ -80,6 +82,65 @@ class ExamController extends Controller {
             }
         } catch (\Exception $e) {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function saveAnswer() {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                throw new \Exception('Metode tidak diizinkan');
+            }
+
+            $data = json_decode(file_get_contents("php://input"), true);
+            if (empty($data)) {
+                throw new \Exception('Data jawaban kosong');
+            }
+
+            if (!isset($_SESSION['user']['id'])) {
+                throw new \Exception('User tidak terautentikasi');
+            }
+
+            $id_user = $_SESSION['user']['id'];
+            $jawabanExam = new JawabanExam();
+            $errors = [];
+
+            foreach ($data as $answer) {
+                if (!isset($answer['id_soal'], $answer['jawaban'])) {
+                    $errors[] = 'Data tidak lengkap untuk soal ID: ' . ($answer['id_soal'] ?? 'unknown');
+                    continue;
+                }
+
+                $id_soal = $answer['id_soal'];
+                $jawaban = $answer['jawaban'];
+
+                if (!$jawabanExam->saveJawaban($id_soal, $id_user, $jawaban)) {
+                    $errors[] = "Gagal menyimpan jawaban untuk soal ID: $id_soal";
+                }
+            }
+
+            $nilaiAkhir = new NilaiAkhir();
+            $score = $nilaiAkhir->saveNilai($id_user);
+
+            $response = [
+                'status' => empty($errors) ? 'success' : 'error',
+                'message' => empty($errors) ? 'Semua jawaban berhasil disimpan dan nilai telah dihitung' : 'Gagal menyimpan beberapa jawaban',
+                'errors' => $errors,
+                'score' => $score,
+            ];
+
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            error_log("Respons backend: " . json_encode($response));
+            http_response_code(200);
+
+        } catch (\Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+            error_log("Error di backend: " . $e->getMessage());
+            http_response_code(500);
         }
     }
     

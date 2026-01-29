@@ -1,12 +1,12 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 use App\Model\NilaiAkhir;
 use App\Model\NotificationUser;
 use App\Model\Mahasiswa;
 
-class NilaiAkhirController extends Controller
+class NilaiController extends Controller
 {
     public function saveNilai()
     {

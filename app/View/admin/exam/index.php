@@ -6,10 +6,10 @@
  * MVC Pattern: This View only displays data. 
  * Business logic is handled by Model, data prepared by Controller.
  */
-use App\Controllers\ExamController;
+use App\Controllers\User\TesTulisController;
 
 // Get all data from Controller (proper MVC pattern)
-$pageData = ExamController::getAdminExamPageData();
+$pageData = TesTulisController::getAdminExamPageData();
 $bankSoalList = $pageData['bankSoalList'];
 $allSoal = $pageData['allSoal'];
 $stats = $pageData['stats'];

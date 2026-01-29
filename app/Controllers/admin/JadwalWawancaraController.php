@@ -1,8 +1,8 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Admin;
 use App\Core\Controller;
 use App\Model\Wawancara;
-class WawancaraController extends Controller
+class JadwalWawancaraController extends Controller
 {
     public static function getAll()
     {

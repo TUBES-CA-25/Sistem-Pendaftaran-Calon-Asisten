@@ -1,11 +1,19 @@
 <?php
+namespace App\Controllers\Admin;
 
-namespace App\Controllers;
 use App\Core\Controller;
+use App\Model\Presentasi;
 use App\Model\JadwalPresentasi;
+
 class JadwalPresentasiController extends Controller
 {
+    public static function getAll()
+    {
+        $presentasiModel = new Presentasi();
+        return $presentasiModel->getAll();
+    }
 
+    // Methods dari PresentasiController (JadwalPresentasi)
     public function saveJadwal()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -41,15 +49,13 @@ class JadwalPresentasiController extends Controller
             echo json_encode(['status' => 'error', 'message' => 'Jadwal gagal disimpan']);
         }
     }
+
     public static function getJadwalPresentasi() {
         $jadwal = new JadwalPresentasi(0,0,0);
         $data = $jadwal->getJadwalPresentasi();
         return $data;
     }
 
-    /**
-     * Get all jadwal untuk admin (AJAX)
-     */
     public function getAllJadwal()
     {
         header('Content-Type: application/json');
@@ -70,9 +76,6 @@ class JadwalPresentasiController extends Controller
         }
     }
 
-    /**
-     * Get jadwal untuk user (berdasarkan session)
-     */
     public function getJadwalUser()
     {
         header('Content-Type: application/json');
@@ -116,27 +119,18 @@ class JadwalPresentasiController extends Controller
         }
     }
 
-    /**
-     * Get upcoming jadwal (untuk dashboard)
-     */
     public static function getUpcomingJadwal($limit = 5)
     {
         $jadwal = new JadwalPresentasi();
         return $jadwal->getUpcomingJadwal($limit);
     }
 
-    /**
-     * Get jadwal by mahasiswa id (static untuk dashboard user)
-     */
     public static function getJadwalByMahasiswaId($id_mahasiswa)
     {
         $jadwal = new JadwalPresentasi();
         return $jadwal->getJadwalByMahasiswaId($id_mahasiswa);
     }
 
-    /**
-     * Update jadwal (AJAX)
-     */
     public function updateJadwal()
     {
         header('Content-Type: application/json');
@@ -168,9 +162,6 @@ class JadwalPresentasiController extends Controller
         }
     }
 
-    /**
-     * Delete jadwal (AJAX)
-     */
     public function deleteJadwal()
     {
         header('Content-Type: application/json');
@@ -199,9 +190,6 @@ class JadwalPresentasiController extends Controller
         }
     }
 
-    /**
-     * Get mahasiswa yang available untuk dijadwalkan
-     */
     public function getAvailableMahasiswa()
     {
         header('Content-Type: application/json');
@@ -219,9 +207,6 @@ class JadwalPresentasiController extends Controller
         }
     }
 
-    /**
-     * Get all ruangan
-     */
     public function getAllRuangan()
     {
         header('Content-Type: application/json');
@@ -239,9 +224,6 @@ class JadwalPresentasiController extends Controller
         }
     }
 
-    /**
-     * Save single jadwal (AJAX)
-     */
     public function saveSingleJadwal()
     {
         header('Content-Type: application/json');

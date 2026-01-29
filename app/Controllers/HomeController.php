@@ -4,21 +4,29 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\View;
-use App\Controllers\DashboardUserController;
-use App\Controllers\NotificationControllers;
-use App\Controllers\ProfileController;
-use App\Controllers\BerkasUserController;
-use App\Controllers\BiodataUserController;
-use App\Controllers\WawancaraController;
-use App\Controllers\PresentasiUserController;
-use App\Controllers\DashboardAdminController;
-use App\Controllers\MahasiswaController;
-use App\Controllers\RuanganController;
-use App\Controllers\JadwalPresentasiController;
-use App\Controllers\AbsensiUserController;
-use App\Controllers\NilaiAkhirController;
-use App\Controllers\ExamController;
 use App\Core\Model;
+
+// User Controllers
+use App\Controllers\User\DashboardController;
+use App\Controllers\User\BiodataController;
+use App\Controllers\User\BerkasController;
+use App\Controllers\User\TesTulisController;
+use App\Controllers\User\ProfilController;
+use App\Controllers\User\PresentasiUserController;
+
+// Admin Controllers
+use App\Controllers\Admin\DashboardAdminController;
+use App\Controllers\Admin\PesertaController;
+use App\Controllers\Admin\RuanganController;
+use App\Controllers\Admin\NilaiController;
+use App\Controllers\Admin\RekapKehadiranController;
+use App\Controllers\Admin\JadwalWawancaraController;
+use App\Controllers\Admin\BankSoalController;
+use App\Controllers\Admin\ProfilAdminController;
+use App\Controllers\Admin\JadwalPresentasiController;
+
+// Shared Controllers
+use App\Controllers\NotifikasiController;
 
 
 class HomeController extends Controller
@@ -252,13 +260,13 @@ class HomeController extends Controller
      */
     private function getSidebarData(): array
     {
-        $user = ProfileController::viewUser();
+        $user = ProfilController::viewUser();
         
         // Use Session role as source of truth
         $role = $_SESSION['user']['role'] ?? ($user['role'] ?? 'User');
         
         if ($role === 'Admin') {
-            $photoPath = \App\Controllers\AdminProfileController::getAdminPhoto($_SESSION['user']['id']);
+            $photoPath = ProfilAdminController::getAdminPhoto($_SESSION['user']['id']);
             $notifikasi = [];
         } else {
             // Updated Logic: Fetch Profile Photo specifically
@@ -272,7 +280,7 @@ class HomeController extends Controller
             // Note: Relative path check requires document root knowledge, simplistically trusting url for now
             // or we could check file_exists($_SERVER['DOCUMENT_ROOT'] ... )
             
-            $notifikasi = NotificationControllers::getMessageById() ?? [];
+            $notifikasi = NotifikasiController::getMessageById() ?? [];
         }
 
         return [
@@ -314,8 +322,8 @@ class HomeController extends Controller
         }
 
         // Tambahkan data biodata, user, dan photo
-        $biodata = ProfileController::viewBiodata();
-        $user = ProfileController::viewUser();
+        $biodata = ProfilController::viewBiodata();
+        $user = ProfilController::viewUser();
 
         // Updated Logic: Fetch Profile Photo specifically
         $mahasiswaModel = new \App\Model\Mahasiswa();
@@ -327,15 +335,15 @@ class HomeController extends Controller
         $profileDisplay = $this->formatProfileDisplay($biodata, $user, $photoName);
 
         // Calculate progress
-        $tahapanSelesai = DashboardUserController::getMajorStagesSelesai();
+        $tahapanSelesai = DashboardController::getMajorStagesSelesai();
         $progress = $this->calculateProgress($tahapanSelesai);
 
         // Tambahkan data dokumen/berkas
-        $berkas = BerkasUserController::viewBerkas();
+        $berkas = BerkasController::viewBerkas();
         $dokumen = $this->getDokumenStatus($berkas);
 
         return [
-            'notifikasi' => NotificationControllers::getMessageById() ?? [],
+            'notifikasi' => NotifikasiController::getMessageById() ?? [],
             'tahapanSelesai' => $tahapanSelesai,
             'percentage' => $progress['percentage'],
             'stepProgress' => $progress['percentage'],
@@ -351,9 +359,9 @@ class HomeController extends Controller
             'photo' => $photoPath,
             'profileDisplay' => $profileDisplay,
             'dokumen' => $dokumen,
-            'graduationStatus' => DashboardUserController::getGraduationStatus(),
-            'isPengumumanOpen' => DashboardUserController::isPengumumanOpen(),
-            'currentActivities' => DashboardUserController::getKegiatanByMonth(),
+            'graduationStatus' => DashboardController::getGraduationStatus(),
+            'isPengumumanOpen' => DashboardController::isPengumumanOpen(),
+            'currentActivities' => DashboardController::getKegiatanByMonth(),
         ];
     }
 
@@ -396,8 +404,8 @@ class HomeController extends Controller
      */
     private function getBiodataData(): array
     {
-        $biodata = ProfileController::viewBiodata();
-        $user = ProfileController::viewUser();
+        $biodata = ProfilController::viewBiodata();
+        $user = ProfilController::viewUser();
         return [
             'nama' => $biodata['namaLengkap'] ?? 'Nama Lengkap',
             'stambuk' => $user['stambuk'] ?? '',
@@ -408,7 +416,7 @@ class HomeController extends Controller
             'tempatLahir' => $biodata['tempatLahir'] ?? 'Tempat Lahir',
             'tanggalLahir' => $biodata['tanggalLahir'] ?? 'Tanggal Lahir',
             'noHp' => $biodata['noHp'] ?? 'No Telephone',
-            'isBiodataEmpty' => BiodataUserController::isEmpty()
+            'isBiodataEmpty' => BiodataController::isEmpty()
         ];
     }
 
@@ -417,13 +425,13 @@ class HomeController extends Controller
      */
     private function getProfileData(): array
     {
-        $biodata = ProfileController::viewBiodata();
-        $user = ProfileController::viewUser();
+        $biodata = ProfilController::viewBiodata();
+        $user = ProfilController::viewUser();
         
         $role = $user['role'] ?? 'User';
         
         if ($role === 'Admin') {
-            $photoPath = \App\Controllers\AdminProfileController::getAdminPhoto($_SESSION['user']['id']);
+            $photoPath = ProfilAdminController::getAdminPhoto($_SESSION['user']['id']);
         } else {
              $mahasiswaModel = new \App\Model\Mahasiswa();
              $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id']);
@@ -451,12 +459,12 @@ class HomeController extends Controller
      */
     private function getUploadBerkasData(): array
     {
-        $biodata = ProfileController::viewBiodata();
+        $biodata = ProfilController::viewBiodata();
         return [
-            'res' => BerkasUserController::viewBerkas() ?? [],
+            'res' => BerkasController::viewBerkas() ?? [],
             'nama' => $biodata['namaLengkap'] ?? 'Nama Lengkap',
-            'biodataStatus' => DashboardUserController::getBiodataStatus(),
-            'isBerkasEmpty' => BerkasUserController::isEmptyBerkas()
+            'biodataStatus' => DashboardController::getBiodataStatus(),
+            'isBerkasEmpty' => BerkasController::isEmptyBerkas()
         ];
     }
 
@@ -465,9 +473,9 @@ class HomeController extends Controller
      */
     private function getTesTulisData(): array
     {
-        $absensiTesTertulis = DashboardUserController::getAbsensiTesTertulis();
-        $berkasStatus = DashboardUserController::getBerkasStatus();
-        $biodataStatus = DashboardUserController::getBiodataStatus();
+        $absensiTesTertulis = DashboardController::getAbsensiTesTertulis();
+        $berkasStatus = DashboardController::getBerkasStatus();
+        $biodataStatus = DashboardController::getBiodataStatus();
 
         // Check access
         $accessCheck = $this->canAccessExam(
@@ -483,7 +491,7 @@ class HomeController extends Controller
             'canAccess' => $accessCheck['allowed'],
             'accessReason' => $accessCheck['reason'],
             'accessMessage' => $accessCheck['message'],
-            'activeBank' => ExamController::getActiveBank()
+            'activeBank' => TesTulisController::getActiveBank()
         ];
     }
 
@@ -494,10 +502,10 @@ class HomeController extends Controller
     {
         return [
             'results' => PresentasiUserController::viewAll() ?? [],
-            'biodataStatus' => DashboardUserController::getBiodataStatus(),
-            'berkasStatus' => DashboardUserController::getBerkasStatus(),
-            'absensiTesTertulis' => DashboardUserController::getAbsensiTesTertulis(),
-            'pptStatus' => DashboardUserController::getPptStatus()
+            'biodataStatus' => DashboardController::getBiodataStatus(),
+            'berkasStatus' => DashboardController::getBerkasStatus(),
+            'absensiTesTertulis' => DashboardController::getAbsensiTesTertulis(),
+            'pptStatus' => DashboardController::getPptStatus()
         ];
     }
 
@@ -507,7 +515,7 @@ class HomeController extends Controller
     private function getWawancaraData(): array
     {
         return [
-            'wawancara' => WawancaraController::getAllById() ?? []
+            'wawancara' => JadwalWawancaraController::getAllById() ?? []
         ];
     }
 
@@ -547,7 +555,7 @@ class HomeController extends Controller
      */
     private function getDaftarPesertaData(): array
     {
-        $mahasiswa = MahasiswaController::viewAllMahasiswa() ?? [];
+        $mahasiswa = PesertaController::viewAllMahasiswa() ?? [];
 
         // Format each participant
         $formattedMahasiswa = [];
@@ -568,8 +576,8 @@ class HomeController extends Controller
     private function getDaftarHadirData(): array
     {
         return [
-            'absensiList' => AbsensiUserController::viewAbsensi() ?? [],
-            'mahasiswaList' => MahasiswaController::viewAllMahasiswa() ?? []
+            'absensiList' => RekapKehadiranController::viewAbsensi() ?? [],
+            'mahasiswaList' => PesertaController::viewAllMahasiswa() ?? []
         ];
     }
 
@@ -618,7 +626,7 @@ class HomeController extends Controller
      */
     private function getTesTulisAdminData(): array
     {
-        $examData = ExamController::getAdminExamPageData();
+        $examData = TesTulisController::getAdminExamPageData();
         return [
             'allSoal' => $examData['allSoal'] ?? [],
             'bankSoalList' => $examData['bankSoalList'] ?? [],
@@ -632,8 +640,8 @@ class HomeController extends Controller
     private function getWawancaraAdminData(): array
     {
         return [
-            'wawancara' => WawancaraController::getAll() ?? [],
-            'mahasiswaList' => MahasiswaController::viewAllMahasiswa() ?? [],
+            'wawancara' => JadwalWawancaraController::getAll() ?? [],
+            'mahasiswaList' => PesertaController::viewAllMahasiswa() ?? [],
             'ruanganList' => RuanganController::viewAllRuangan() ?? []
         ];
     }
@@ -644,7 +652,7 @@ class HomeController extends Controller
     private function getNilaiAdminData(): array
     {
         return [
-            'nilai' => NilaiAkhirController::getAllNilaiAkhirMahasiswa() ?? []
+            'nilai' => NilaiController::getAllNilaiAkhirMahasiswa() ?? []
         ];
     }
 

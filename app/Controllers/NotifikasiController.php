@@ -5,7 +5,7 @@ use App\Core\Controller;
 use App\Model\NotificationUser;
 
 
-class NotificationControllers extends Controller {
+class NotifikasiController extends Controller {
 
     public function sendMessage() {
         header('Content-Type: application/json');

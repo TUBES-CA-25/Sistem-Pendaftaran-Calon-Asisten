@@ -1,211 +1,18 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 use App\Model\SoalExam;
 use App\Model\BankSoal;
 
-class SoalController extends Controller
+class ImporSoalController extends Controller
 {
-    public function saveSoal()
-    {
-        // Clean any previous output
-        if (ob_get_level()) ob_end_clean();
-        
-        header('Content-Type: application/json');
-        try {
-
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
-
-            if (!isset($_SESSION['user']['id'])) {
-                throw new \Exception('User tidak terautentikasi');
-            }
-
-            $deskripsi = $_POST['deskripsi'] ?? '';
-            $tipeJawaban = $_POST['status_soal'] ?? $_POST['tipeJawaban'] ?? '';
-            $pilihan = $_POST['pilihan'] ?? 'bukan soal pilihan';
-            $jawaban = $_POST['jawaban'] ?? null;
-            $bankId = $_POST['bank_id'] ?? null;
-
-            // Handle Image Upload
-            if (isset($_FILES['soal_image']) && $_FILES['soal_image']['error'] === 0) {
-                $uploadDir = __DIR__ . '/../../../../res/uploads/soal/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
-                
-                $fileInfo = pathinfo($_FILES['soal_image']['name']);
-                $ext = strtolower($fileInfo['extension']);
-                $allowed = ['jpg', 'jpeg', 'png', 'gif'];
-                
-                if (in_array($ext, $allowed)) {
-                    $newFilename = uniqid('soal_') . '.' . $ext;
-                    $destPath = $uploadDir . $newFilename;
-                    
-                    if (move_uploaded_file($_FILES['soal_image']['tmp_name'], $destPath)) {
-                        $webPath = '/Sistem-Pendaftaran-Calon-Asisten/res/uploads/soal/' . $newFilename;
-                        // Append image to description
-                        $deskripsi .= '<br><br><img src="' . $webPath . '" class="img-fluid rounded shadow-sm border" style="max-height: 300px;">';
-                    }
-                }
-            }
-
-            if (empty($deskripsi)) {
-                throw new \Exception('Deskripsi soal harus diisi');
-            }
-
-            $soalExam = new SoalExam(
-                $deskripsi,
-                $pilihan,
-                $jawaban,
-                $tipeJawaban
-            );
-
-            if ($soalExam->getJawaban() === null) {
-                $soalExam->saveWithoutAnswer($soalExam, $bankId);
-                echo json_encode([
-                    'success' => true,
-                    'status' => 'success',
-                    'message' => 'Soal berhasil disimpan'
-                ]);
-            } else {
-                $soalExam->save($soalExam, $bankId);
-                echo json_encode([
-                    'success' => true,
-                    'status' => 'success',
-                    'message' => 'Soal berhasil disimpan'
-                ]);
-            }
-
-            http_response_code(200);
-            exit();
-
-        } catch (\Exception $e) {
-            error_log("Error in saveSoal: " . $e->getMessage());
-
-            echo json_encode([
-                'success' => false,
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ]);
-            http_response_code(500);
-        }
-    }
-
-    public function uploadImage()
-    {
-        // Clean any previous output
-        if (ob_get_level()) ob_end_clean();
-        
-        header('Content-Type: application/json');
-        
-        try {
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
-
-            if (!isset($_SESSION['user']['id'])) {
-                throw new \Exception('User tidak terautentikasi');
-            }
-
-            if (!isset($_FILES['image'])) {
-                throw new \Exception('No image uploaded');
-            }
-
-            $file = $_FILES['image'];
-            if ($file['error'] !== UPLOAD_ERR_OK) {
-                throw new \Exception('Upload error: ' . $file['error']);
-            }
-
-            // Validate type
-            $allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            $finfo = new \finfo(FILEINFO_MIME_TYPE);
-            $mime = $finfo->file($file['tmp_name']);
-            
-            if (!in_array($mime, $allowed)) {
-                throw new \Exception('Invalid file type. Only JPG, PNG, GIF, WEBP allowed.');
-            }
-
-            // Create directory if not exists
-            $uploadDir = __DIR__ . '/../../../res/uploads/soal_content/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-
-            // Generate filename
-            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-            $newFilename = 'img_' . time() . '_' . uniqid() . '.' . $ext;
-            $destPath = $uploadDir . $newFilename;
-
-            if (move_uploaded_file($file['tmp_name'], $destPath)) {
-                $webPath = '/Sistem-Pendaftaran-Calon-Asisten/res/uploads/soal_content/' . $newFilename;
-                
-                echo json_encode([
-                    'data' => [
-                        'filePath' => $webPath
-                    ]
-                ]);
-            } else {
-                throw new \Exception('Failed to move uploaded file');
-            }
-
-        } catch (\Exception $e) {
-            http_response_code(400);
-            echo json_encode([
-                'error' => $e->getMessage()
-            ]);
-        }
-        exit;
-    }
-
-    public function getBankDetails()
-    {
-        // Clean any previous output
-        if (ob_get_level()) ob_end_clean();
-        
-        header('Content-Type: application/json');
-        try {
-            $bankId = $_GET['id'] ?? null;
-            
-            if (!$bankId) {
-                throw new \Exception('Bank ID tidak ditemukan');
-            }
-            
-            $bankSoal = new BankSoal();
-            $bank = $bankSoal->getBankById($bankId);
-            
-            if (!$bank) {
-                throw new \Exception('Bank soal tidak ditemukan');
-            }
-            
-            echo json_encode([
-                'status' => 'success',
-                'bank' => [
-                    'id' => $bank['id'],
-                    'nama' => $bank['nama'],
-                    'jumlah_soal' => $bank['jumlah_soal'] ?? 0,
-                    'jumlah_pg' => $bank['jumlah_pg'] ?? 0,
-                    'jumlah_essay' => $bank['jumlah_essay'] ?? 0
-                ]
-            ]);
-            
-        } catch (\Exception $e) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ]);
-        }
-    }
-
-
     public function downloadTemplate()
     {
         // Try to serve physical file if exists
         $rootPath = dirname(__DIR__, 3);
         $physicalFilePath = $rootPath . '/public/Assets/Downloads/template_soal.csv';
-        
+
         if (file_exists($physicalFilePath)) {
             // Clean ALL output buffers
             while (ob_get_level()) {
@@ -219,7 +26,7 @@ class SoalController extends Controller
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
             header('Content-Length: ' . filesize($physicalFilePath));
-            
+
             readfile($physicalFilePath);
             exit;
         }
@@ -249,12 +56,12 @@ class SoalController extends Controller
         header('Pragma: public');
 
         $output = fopen('php://output', 'w');
-        
+
         // Add BOM for Excel compatibility
         fputs($output, "\xEF\xBB\xBF");
-        
+
         fputcsv($output, $headers);
-        
+
         // Add example rows (pilihan ganda and essay)
         $examplePG = [
             'Contoh Soal Pilihan Ganda: Berapa hasil dari 2 + 2?',
@@ -267,7 +74,7 @@ class SoalController extends Controller
             'C'
         ];
         fputcsv($output, $examplePG);
-        
+
         $exampleEssay = [
             'Contoh Soal Essay: Jelaskan pengertian MVC (Model-View-Controller)',
             'essay',
@@ -279,218 +86,11 @@ class SoalController extends Controller
             'MVC adalah pola arsitektur software yang memisahkan aplikasi menjadi tiga komponen utama: Model (data), View (tampilan), dan Controller (logika)'
         ];
         fputcsv($output, $exampleEssay);
-        
+
         fclose($output);
         exit;
     }
 
-    public function deleteSoal()
-    {
-        header('Content-Type: application/json');
-        try {
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
-
-            if (!isset($_SESSION['user']['id'])) {
-                throw new \Exception('User tidak terautentikasi');
-            }
-            $id = $_POST['id'] ?? '';
-            $soal = new SoalExam(
-                null,
-                null,
-                null,
-                null
-            );
-            $soal->deleteSoal($id);
-            echo json_encode([
-                'success' => true,
-                'status' => 'success',
-                'message' => 'Soal berhasil dihapus'
-            ]);
-            http_response_code(200);
-        } catch (\Exception $e) {
-            error_log("Error in deleteSoal: " . $e->getMessage());
-
-            echo json_encode([
-                'success' => false,
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ]);
-            http_response_code(500);
-        }
-    }
-
-    public function updateSoal()
-    {
-        header('Content-Type: application/json');
-        try {
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
-
-            if (!isset($_SESSION['user']['id'])) {
-                throw new \Exception('User tidak terautentikasi');
-            }
-
-            $id = $_POST['id'] ?? '';
-            $deskripsi = $_POST['deskripsi'] ?? '';
-            $tipeJawaban = $_POST['status_soal'] ?? $_POST['tipeJawaban'] ?? '';
-            $pilihan = $_POST['pilihan'] ?? 'bukan soal pilihan';
-            $jawaban = $_POST['jawaban'] ?? 'soal tidak mempunyai jawaban';
-
-            $soalExam = new SoalExam(
-                $deskripsi,
-                $pilihan,
-                $jawaban,
-                $tipeJawaban
-            );
-
-            $soalExam->updateSoal($id, $soalExam);
-
-            echo json_encode([
-                'success' => true,
-                'status' => 'success',
-                'message' => 'Soal berhasil diupdate'
-            ]);
-            http_response_code(200);
-
-        } catch (\Exception $e) {
-            error_log("Error in updateSoal: " . $e->getMessage());
-
-            echo json_encode([
-                'success' => false,
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ]);
-            http_response_code(500);
-        }
-    }
-
-    // Bank Soal Methods
-    public function createBank() {
-        header('Content-Type: application/json');
-        try {
-            $nama = $_POST['nama'] ?? '';
-            $deskripsi = $_POST['deskripsi'] ?? '';
-            $token = $_POST['token'] ?? '';
-            
-            if (empty($nama)) {
-                echo json_encode(['status' => 'error', 'message' => 'Nama bank soal harus diisi']);
-                return;
-            }
-            
-            $bankModel = new \App\Model\Exam\BankSoal();
-            if ($bankModel->save($nama, $deskripsi, $token)) {
-                $newId = $bankModel->getLastInsertId();
-                echo json_encode([
-                    'status' => 'success', 
-                    'message' => 'Bank soal berhasil dibuat',
-                    'data' => [
-                        'id' => $newId,
-                        'nama' => $nama,
-                        'deskripsi' => $deskripsi
-                    ]
-                ]);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Gagal membuat bank soal']);
-            }
-        } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-    }
-
-    public function updateBank() {
-        header('Content-Type: application/json');
-        try {
-            $id = $_POST['id'] ?? 0;
-            $nama = $_POST['nama'] ?? '';
-            $deskripsi = $_POST['deskripsi'] ?? '';
-            $token = $_POST['token'] ?? '';
-            
-            $bankModel = new \App\Model\Exam\BankSoal();
-            if ($bankModel->updateBank($id, $nama, $deskripsi, $token)) {
-                echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil diupdate']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate bank soal']);
-            }
-        } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-    }
-
-    public function deleteBank() {
-        // Clean any previous output (warnings, notices, whitespace)
-        if (ob_get_level()) ob_end_clean();
-        
-        header('Content-Type: application/json');
-        try {
-            $id = $_POST['id'] ?? 0;
-            $bankModel = new \App\Model\Exam\BankSoal();
-            
-            if ($bankModel->deleteBank($id)) {
-                echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil dihapus']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus bank soal']);
-            }
-        } catch (\Throwable $e) {
-            // Log the actual error for admin debugging
-            error_log("Delete Bank Error: " . $e->getMessage());
-            echo json_encode(['status' => 'error', 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()]);
-        }
-        exit;
-    }
-
-    public function getBankQuestions() {
-        // Clean any previous output (warnings, notices, whitespace)
-        if (ob_get_level()) ob_end_clean();
-        
-        header('Content-Type: application/json');
-        try {
-            $bankId = $_POST['bank_id'] ?? 0;
-            $soalModel = new SoalExam();
-            $questions = $soalModel->getSoalByBankId($bankId);
-            
-            echo json_encode(['status' => 'success', 'data' => $questions]);
-        } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-    }
-    public function activateBank() {
-        header('Content-Type: application/json');
-        try {
-            $id = $_POST['id'] ?? 0;
-            $bankModel = new \App\Model\Exam\BankSoal();
-            
-            if ($bankModel->setActiveBank($id)) {
-                echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil diaktifkan']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Gagal mengaktifkan bank soal']);
-            }
-        } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-    }
-
-    public function deactivateBank() {
-        header('Content-Type: application/json');
-        try {
-            $id = $_POST['id'] ?? 0;
-            $bankModel = new \App\Model\Exam\BankSoal();
-            
-            if ($bankModel->deactivateBank($id)) {
-                echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil dinonaktifkan']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Gagal menonaktifkan bank soal']);
-            }
-        } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-    }
-
-
-
-    
     /**
      * Validate file type - only accept CSV and Excel formats
      */
@@ -504,19 +104,19 @@ class SoalController extends Controller
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'application/octet-stream' // Some browsers send this for Excel files
         ];
-        
+
         $fileExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-        
+
         if (!in_array($fileExtension, $allowedExtensions)) {
             return [
                 'valid' => false,
                 'error' => "Format file tidak didukung. Hanya menerima file CSV (.csv) atau Excel (.xls, .xlsx). File Anda: .{$fileExtension}"
             ];
         }
-        
+
         return ['valid' => true];
     }
-    
+
     /**
      * Validate template headers match expected format
      */
@@ -531,15 +131,15 @@ class SoalController extends Controller
             'Pilihan E (Opsional)',
             'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
         ];
-        
+
         $errors = [];
-        
+
         // Check column count
         if (count($headers) < 8) {
             $errors[] = "Template harus memiliki 8 kolom. File Anda memiliki " . count($headers) . " kolom.";
             return ['valid' => false, 'errors' => $errors];
         }
-        
+
         // Helper function to clean and normalize text to ASCII only
         $cleanText = function($text) {
             // Remove BOM
@@ -552,23 +152,23 @@ class SoalController extends Controller
             $text = trim(preg_replace('/\s+/', ' ', $text));
             return strtolower($text);
         };
-        
+
         // Check each header name with flexible matching
         for ($i = 0; $i < 8; $i++) {
             $expected = $expectedHeaders[$i];
             $actual = $headers[$i] ?? '';
-            
+
             // Clean both expected and actual
             $expectedClean = $cleanText($expected);
             $actualClean = $cleanText($actual);
-            
+
             // Log for debugging
             error_log("Header validation [{$i}]: Expected='{$expectedClean}' (len=" . strlen($expectedClean) . "), Actual='{$actualClean}' (len=" . strlen($actualClean) . ")");
             error_log("  Raw bytes - Expected: " . bin2hex($expected) . ", Actual: " . bin2hex($actual));
-            
+
             // More flexible matching - check if actual contains expected keywords
             $isValid = false;
-            
+
             if ($i === 0) {
                 // Column 1: "Deskripsi Soal"
                 $isValid = (strpos($actualClean, 'deskripsi') !== false && strpos($actualClean, 'soal') !== false);
@@ -586,49 +186,49 @@ class SoalController extends Controller
                 // Column 8: "Jawaban Benar" or "Jawaban"
                 $isValid = (strpos($actualClean, 'jawaban') !== false);
             }
-            
+
             if (!$isValid) {
                 $errors[] = "Kolom ke-" . ($i + 1) . " tidak sesuai. Diharapkan: '{$expected}', Ditemukan: '{$actual}'";
             }
         }
-        
+
         if (!empty($errors)) {
             error_log("Header validation failed: " . implode('; ', $errors));
             return ['valid' => false, 'errors' => $errors];
         }
-        
+
         error_log("Header validation passed!");
         return ['valid' => true];
     }
-    
+
     /**
      * Validate individual row data
      */
     private function validateRowData($row, $rowNumber) {
         $errors = [];
-        
+
         // Check minimum column count
         if (count($row) < 8) {
             $errors[] = "Baris {$rowNumber}: Jumlah kolom tidak lengkap (minimal 8 kolom diperlukan)";
             return ['valid' => false, 'errors' => $errors];
         }
-        
+
         // Validate Deskripsi (column 0)
         $deskripsi = trim($row[0] ?? '');
         if (empty($deskripsi)) {
             $errors[] = "Baris {$rowNumber}: Deskripsi soal harus diisi";
         }
-        
+
         // Validate Tipe Soal (column 1)
         $tipeRaw = strtolower(trim($row[1] ?? ''));
         $validTypes = ['pilihan_ganda', 'essay', 'pilihan ganda', 'pg'];
         $isPG = (strpos($tipeRaw, 'ganda') !== false || $tipeRaw === 'pg');
         $isEssay = (strpos($tipeRaw, 'essay') !== false);
-        
+
         if (!$isPG && !$isEssay) {
             $errors[] = "Baris {$rowNumber}: Tipe soal tidak valid. Gunakan 'pilihan_ganda' atau 'essay'. Ditemukan: '{$row[1]}'";
         }
-        
+
         // Validate Pilihan Ganda options (columns 2-5)
         if ($isPG) {
             $requiredOptions = ['A', 'B', 'C', 'D'];
@@ -639,24 +239,24 @@ class SoalController extends Controller
                     $errors[] = "Baris {$rowNumber}: Pilihan {$optionLabel} harus diisi untuk soal pilihan ganda";
                 }
             }
-            
+
             // Validate jawaban for PG (should be A/B/C/D/E)
             $jawaban = strtoupper(trim($row[7] ?? ''));
             if (!in_array($jawaban, ['A', 'B', 'C', 'D', 'E'])) {
                 $errors[] = "Baris {$rowNumber}: Jawaban untuk pilihan ganda harus berupa huruf A, B, C, D, atau E. Ditemukan: '{$row[7]}'";
             }
         }
-        
+
         // Validate Jawaban (column 7)
         $jawaban = trim($row[7] ?? '');
         if (empty($jawaban)) {
             $errors[] = "Baris {$rowNumber}: Jawaban harus diisi";
         }
-        
+
         if (!empty($errors)) {
             return ['valid' => false, 'errors' => $errors];
         }
-        
+
         return ['valid' => true];
     }
 
@@ -665,9 +265,9 @@ class SoalController extends Controller
         while (ob_get_level()) {
             ob_end_clean();
         }
-        
+
         header('Content-Type: application/json');
-        
+
         try {
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
@@ -699,7 +299,7 @@ class SoalController extends Controller
             // Validate that bank_id exists in database
             $bankSoalModel = new BankSoal();
             $bank = $bankSoalModel->getBankById($bankId);
-            
+
             if (!$bank) {
                 error_log("Import failed: Bank ID {$bankId} not found in database");
                 echo json_encode([
@@ -710,7 +310,7 @@ class SoalController extends Controller
                 http_response_code(404);
                 exit;
             }
-            
+
             error_log("Import: Bank validated - ID: {$bankId}, Name: {$bank['nama']}");
 
 
@@ -732,9 +332,9 @@ class SoalController extends Controller
             $fileTmpPath = $_FILES['file']['tmp_name'];
             $fileName = $_FILES['file']['name'];
             $fileType = mime_content_type($fileTmpPath);
-            
+
             error_log("Import attempt: file={$fileName}, type={$fileType}, bank_id={$bankId}");
-            
+
             // Validate file type
             $fileValidation = $this->validateFileType($fileName, $fileType);
             if (!$fileValidation['valid']) {
@@ -747,14 +347,14 @@ class SoalController extends Controller
                 http_response_code(400);
                 exit;
             }
-            
+
             // Determine file extension
             $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-            
+
             // Parse file based on extension
             $data = [];
             $headers = [];
-            
+
             if ($fileExtension === 'csv') {
                 // Parse CSV file with better encoding handling
                 if (($handle = fopen($fileTmpPath, "r")) !== FALSE) {
@@ -771,15 +371,15 @@ class SoalController extends Controller
                         }
                         rewind($handle);
                     }
-                    
+
                     while (($row = fgetcsv($handle, 10000, $delimiter)) !== FALSE) {
                         $rowCount++;
-                        
+
                         // Skip empty rows
                         if (empty(array_filter($row))) {
                             continue;
                         }
-                        
+
                         if ($isHeader) {
                             // Remove BOM if present
                             if (!empty($row[0])) {
@@ -802,37 +402,37 @@ class SoalController extends Controller
             } elseif ($fileExtension === 'xls' || $fileExtension === 'xlsx') {
                 // Try to parse as HTML-based Excel first
                 $content = file_get_contents($fileTmpPath);
-                
+
                 // Check if it's HTML-based Excel
                 if (strpos($content, '<html') !== false || strpos($content, '<table') !== false) {
                     $dom = new \DOMDocument();
                     libxml_use_internal_errors(true);
                     $dom->loadHTML($content);
                     libxml_clear_errors();
-                    
+
                     $rows = $dom->getElementsByTagName('tr');
                     $isHeader = true;
-                    
+
                     foreach ($rows as $row) {
                         $cols = $row->getElementsByTagName('td');
                         if ($cols->length === 0) {
                             $cols = $row->getElementsByTagName('th');
                         }
-                        
+
                         if ($cols->length === 0) continue;
-                        
+
                         $rowData = [];
                         foreach ($cols as $col) {
                             $rowData[] = trim($col->textContent);
                         }
-                        
+
                         if ($isHeader) {
                             $headers = $rowData;
                             $isHeader = false;
                             error_log("Excel Headers: " . implode(', ', $headers));
                             continue;
                         }
-                        
+
                         if (count($rowData) >= 8) {
                             $data[] = $rowData;
                         }
@@ -850,7 +450,7 @@ class SoalController extends Controller
                     exit;
                 }
             }
-            
+
             // Validate headers
             $headerValidation = $this->validateTemplateHeaders($headers);
             if (!$headerValidation['valid']) {
@@ -875,18 +475,18 @@ class SoalController extends Controller
                 http_response_code(400);
                 exit;
             }
-            
+
             // Validate all rows first
             $validationErrors = [];
             foreach ($data as $index => $row) {
                 $rowNumber = $index + 2; // +2 because: +1 for 1-based indexing, +1 for header row
                 $rowValidation = $this->validateRowData($row, $rowNumber);
-                
+
                 if (!$rowValidation['valid']) {
                     $validationErrors = array_merge($validationErrors, $rowValidation['errors']);
                 }
             }
-            
+
             // If any validation errors, return them all
             if (!empty($validationErrors)) {
                 error_log("Import failed: Validation errors - " . implode('; ', $validationErrors));
@@ -909,13 +509,13 @@ class SoalController extends Controller
 
                 $deskripsi = trim($row[0]);
                 $tipeRaw = strtolower(trim($row[1]));
-                
+
                 // Normalize type
                 $tipe = 'essay';
                 if (strpos($tipeRaw, 'ganda') !== false || $tipeRaw === 'pg' || strpos($tipeRaw, 'pilihan') !== false) {
                     $tipe = 'pilihan_ganda';
                 }
-                
+
                 $pilihan = '';
                 if ($tipe === 'pilihan_ganda') {
                     $pilihan = "A. {$row[2]}, B. {$row[3]}, C. {$row[4]}, D. {$row[5]}";
@@ -925,7 +525,7 @@ class SoalController extends Controller
                 }
 
                 $jawaban = trim($row[7]);
-                
+
                 // Create Soal Object
                 $soal = new SoalExam(
                     $deskripsi,
@@ -948,7 +548,7 @@ class SoalController extends Controller
             ]);
             http_response_code(200);
             exit;
-            
+
         } catch (\Exception $e) {
             error_log("Import exception: " . $e->getMessage());
             error_log("Import trace: " . $e->getTraceAsString());
@@ -968,7 +568,7 @@ class SoalController extends Controller
             while (ob_get_level()) {
                 ob_end_clean();
             }
-            
+
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
             }
@@ -987,7 +587,7 @@ class SoalController extends Controller
             }
 
             // Get Bank Info
-            $bankModel = new \App\Model\Exam\BankSoal();
+            $bankModel = new BankSoal();
             $bank = $bankModel->getBankById($bankId);
             if (!$bank) {
                 error_log("Export failed: Bank not found for ID: " . $bankId);
@@ -1003,10 +603,10 @@ class SoalController extends Controller
                 error_log("Export warning: Bank {$bankId} has no questions");
                 // Still allow export of empty bank with just headers
             }
-            
+
             // Use CSV extension
             $filename = "Export_Bank_" . preg_replace('/[^a-zA-Z0-9]/', '_', $bank['nama']) . "_" . date('Ymd') . ".csv";
-            
+
             // Set headers for CSV download
             header('Content-Type: text/csv; charset=utf-8');
             header("Content-Disposition: attachment; filename=\"$filename\"");
@@ -1016,15 +616,15 @@ class SoalController extends Controller
 
             // Open output stream
             $output = fopen('php://output', 'w');
-            
+
             if ($output === false) {
                 error_log("Export failed: Could not open output stream");
                 die('Gagal membuat file export');
             }
-            
+
             // Add BOM for Excel UTF-8 compatibility
             fputs($output, "\xEF\xBB\xBF");
-            
+
             // Headers
             $headers = [
                 'Deskripsi Soal',
@@ -1036,27 +636,27 @@ class SoalController extends Controller
                 'Pilihan E (Opsional)',
                 'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
             ];
-            
+
             fputcsv($output, $headers);
 
             foreach ($soalList as $soal) {
-                
+
                 // 1. Deskripsi - strip HTML tags for CSV
                 $deskripsi = strip_tags($soal['deskripsi']);
-                
+
                 // 2. Tipe
                 $isPG = ($soal['status_soal'] ?? '') === 'pilihan_ganda';
                 $tipe = ($isPG ? 'pilihan_ganda' : 'essay');
-                
+
                 // Prepare options
                 $opts = ['A' => '', 'B' => '', 'C' => '', 'D' => '', 'E' => ''];
-                
+
                 if ($isPG && !empty($soal['pilihan'])) {
                     $pilihanRaw = html_entity_decode($soal['pilihan']);
-                    
+
                     // Regex to match "A. content" patterns
                     preg_match_all('/([A-E])\.\s*(.*?)(?=(?:,\s*[A-E]\.)|$)/s', $pilihanRaw, $matches, PREG_SET_ORDER);
-                    
+
                     if (!empty($matches)) {
                         foreach ($matches as $match) {
                             $opts[$match[1]] = trim($match[2]);
@@ -1073,7 +673,7 @@ class SoalController extends Controller
                         }
                     }
                 }
-                
+
                 // Write row to CSV
                 $row = [
                     $deskripsi,
@@ -1085,7 +685,7 @@ class SoalController extends Controller
                     $opts['E'],
                     $soal['jawaban']
                 ];
-                
+
                 fputcsv($output, $row);
             }
 

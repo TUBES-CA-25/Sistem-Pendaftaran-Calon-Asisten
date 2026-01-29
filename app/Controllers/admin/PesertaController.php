@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Admin;
 
 use App\Model\UserModel;
 use App\Core\Controller;
 use App\Core\View;
 use App\Model\Mahasiswa;
 
-class MahasiswaController extends Controller {
+class PesertaController extends Controller {
     
     public static function viewAllMahasiswa() {
         $mahasiswa = new Mahasiswa();

@@ -1,11 +1,11 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\User;
 
 use App\Core\Controller;
 use App\Model\BerkasUser;
 use App\Model\Mahasiswa;
 
-class BerkasUserController extends Controller
+class BerkasController extends Controller
 {
     public static function isEmptyBerkas()
     {

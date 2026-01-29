@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\User;
 
 use App\Core\Controller;
 use App\Model\DashboardUser;
-class DashboardUserController extends Controller {
+class DashboardController extends Controller {
     public static function getBiodataStatus() {
         $dashboardUser = new DashboardUser();
         return $dashboardUser->getBiodataStatus();

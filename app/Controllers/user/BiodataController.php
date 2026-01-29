@@ -1,9 +1,9 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\User;
 use App\Core\Controller;
 use App\Model\BiodataUser;
 
-class BiodataUserController extends Controller
+class BiodataController extends Controller
 {
     public static function isEmpty()
     {

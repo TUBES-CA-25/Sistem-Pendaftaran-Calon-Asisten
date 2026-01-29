@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\User;
 use App\Core\Controller;
 use App\Model\BiodataUser;
 use App\Model\UserModel;
 
-class ProfileController extends Controller {
+class ProfilController extends Controller {
 
     public static function viewBiodata() : array  {
         $user = new BiodataUser();

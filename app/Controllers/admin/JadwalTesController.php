@@ -1,5 +1,5 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 use App\Model\BankSoal;
@@ -33,8 +33,8 @@ class JadwalTesController extends Controller
         $stmt->execute();
         $jadwalTesList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        $mahasiswaList = \App\Controllers\MahasiswaController::viewAllMahasiswa() ?? [];
-        $ruanganList = \App\Controllers\RuanganController::viewAllRuangan() ?? [];
+        $mahasiswaList = \App\Controllers\Admin\PesertaController::viewAllMahasiswa() ?? [];
+        $ruanganList = \App\Controllers\Admin\RuanganController::viewAllRuangan() ?? [];
 
         $data = [
             'jadwalTesList' => $jadwalTesList,
@@ -55,8 +55,8 @@ class JadwalTesController extends Controller
                  'initialPage' => 'jadwaltes'
              ];
              
-             if (class_exists('App\Controllers\AdminProfileController')) {
-                 $photoPath = \App\Controllers\AdminProfileController::getAdminPhoto($_SESSION['user']['id']);
+             if (class_exists('App\Controllers\Admin\ProfilAdminController')) {
+                 $photoPath = \App\Controllers\Admin\ProfilAdminController::getAdminPhoto($_SESSION['user']['id']);
                  $sidebarData['photo'] = $photoPath;
              }
              

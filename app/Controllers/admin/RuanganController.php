@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Admin;
 use App\Core\Controller;
 use App\Model\Ruangan;
 class RuanganController extends Controller {

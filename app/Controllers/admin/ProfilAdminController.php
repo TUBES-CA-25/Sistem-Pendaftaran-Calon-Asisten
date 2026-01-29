@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 use App\Model\UserModel;
 
-class AdminProfileController extends Controller {
+class ProfilAdminController extends Controller {
 
     public function updateProfile() {
         if (session_status() === PHP_SESSION_NONE) {

@@ -1,8 +1,8 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Admin;
 use App\Model\Absensi;
 use App\Core\Controller;
-class AbsensiUserController extends Controller
+class RekapKehadiranController extends Controller
 {
     public static function viewAbsensi()
     {
