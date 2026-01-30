@@ -13,7 +13,7 @@
  * @var string $photo - Nama file foto user
  * @var array $dokumen - Status dokumen/berkas
  */
-
+$userName = $userName ?? 'Guest';
 $notifikasi = $notifikasi ?? [];
 $tahapanSelesai = $tahapanSelesai ?? 0;
 $percentage = $percentage ?? 0;
@@ -90,7 +90,6 @@ $dokumen = $dokumen ?? [];
         <h1 class="display-6 fw-bold text-dark mb-1">
             Hello <?= htmlspecialchars($biodata['namaLengkap'] ?? $user['username'] ?? 'User') ?> 👋
         </h1>
-        <p class="text-muted mb-0">Let's learn something new today!</p>
     </div>
 
     <div class="row g-4">
@@ -261,7 +260,7 @@ $dokumen = $dokumen ?? [];
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="fw-semibold mb-0">Biodata Diri</h5>
                         <button class="btn btn-sm btn-outline-primary" onclick="navigateTo('biodata')">
-                            <i class="bi bi-pencil me-1"></i>Edit
+                            <i class="bi bi-pencil me-1"></i>Lihat Biodata
                         </button>
                     </div>
                 </div>
@@ -301,7 +300,7 @@ $dokumen = $dokumen ?? [];
                                 </div>
                                 <div class="flex-grow-1">
                                     <small class="text-muted d-block mb-1">Email</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['email'] ?? '-') ?></p>
+                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($userName ?? '-') ?></p>
                                 </div>
                             </div>
                         </div>
@@ -349,7 +348,7 @@ $dokumen = $dokumen ?? [];
                         </div>
 
                         <!-- IPK -->
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="rounded-3 bg-primary bg-opacity-10 p-2 flex-shrink-0">
                                     <i class="bi bi-star-fill text-primary fs-5"></i>
@@ -359,7 +358,7 @@ $dokumen = $dokumen ?? [];
                                     <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['ipk'] ?? '-') ?></p>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Program Studi -->
                         <div class="col-md-6">
@@ -399,7 +398,7 @@ $dokumen = $dokumen ?? [];
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body p-4 text-center">
                     <!-- Profile Photo -->
-                    <div class="mb-3">
+                     <div class="mb-3 d-flex justify-content-center">
                         <?php if ($profileDisplay['hasValidPhoto']): ?>
                             <img src="<?= htmlspecialchars($profileDisplay['photoPath']) ?>"
                                  alt="Profile"
@@ -415,13 +414,14 @@ $dokumen = $dokumen ?? [];
                         <?php endif; ?>
                     </div>
 
+
                     <!-- Name & Title -->
                     <h5 class="fw-bold mb-1"><?= htmlspecialchars($biodata['namaLengkap'] ?? $user['username'] ?? 'User') ?></h5>
                     <p class="text-muted mb-3 small">Calon Asisten Lab</p>
 
                     <!-- Edit Button -->
                     <button class="btn btn-sm btn-outline-primary w-100" onclick="loadPage('profile')">
-                        <i class="bi bi-pencil me-2"></i>Edit Profile
+                        <i class="bi bi-pencil me-2"></i>Lihat Profil
                     </button>
                 </div>
             </div>
