@@ -224,10 +224,10 @@ class NilaiController extends Controller
             if ($absenReset || $jawabanReset || $nilaiReset) {
                  echo json_encode([
                     'status' => 'success', 
-                    'message' => "Berhasil mereset ujian. Absen: " . ($absenReset ? 'OK' : '-') . ", Jawaban: " . ($jawabanReset ? 'OK' : '-') . ", Nilai: " . ($nilaiReset ? 'OK' : '-')
+                    'message' => "Berhasil mereset pengerjaan tes mahasiswa."
                 ]);
             } else {
-                 echo json_encode(['status' => 'warning', 'message' => 'Tidak ada data ujian yang perlu direset (Data mungkin sudah kosong).']);
+                 echo json_encode(['status' => 'warning', 'message' => 'Tidak ada data pengerjaan yang aktif (Sudah kosong).']);
             }
 
         } catch (\Throwable $e) {

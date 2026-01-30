@@ -31,6 +31,8 @@ use App\Core\Router;
 
 Router::get('/jadwaltes', [new JadwalTesController, 'index']); // Lowercase route
 Router::get('/soal', [new TesTulisController, 'index']);
+Router::get('/tes-tulis', fn() => (new \App\Controllers\HomeController)->loadContent('tesTulis')); 
+Router::get('/tesTulis', fn() => (new \App\Controllers\HomeController)->loadContent('tesTulis')); 
 Router::get('/login', [new AuthController, 'index']);
 
 // IMPORTANT: Specific routes MUST come before catch-all route /{page}

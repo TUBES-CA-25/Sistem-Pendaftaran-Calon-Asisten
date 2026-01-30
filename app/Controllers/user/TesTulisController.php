@@ -9,16 +9,6 @@ use App\Model\NilaiAkhir;
 class TesTulisController extends Controller {
     public function index() {
         try {
-            if (!isset($_GET['nomorMeja'])) {
-                throw new \Exception('Nomor meja tidak disediakan');
-            }
-
-            $nomorMeja = intval($_GET['nomorMeja']);
-            if ($nomorMeja <= 0) {
-                throw new \Exception('Nomor meja tidak valid');
-            }
-
-            $isGanjil = $nomorMeja % 2 !== 0;
 
             $soalExam = new SoalExam();
             
@@ -30,6 +20,11 @@ class TesTulisController extends Controller {
                  throw new \Exception('Belum ada ujian yang aktif saat ini.');
             }
             
+            // Check if user has already completed the exam
+            if (\App\Controllers\User\DashboardController::getAbsensiTesTertulis()) {
+                throw new \Exception('Anda sudah mengikuti tes tertulis dan tidak dapat mengakses soal lagi.');
+            }
+
             // Check if user has verified token for this session
             // Note: In a real app we might want to tie this to the specific bank ID
             if (!isset($_SESSION['exam_token_verified']) || $_SESSION['exam_token_verified'] !== $activeBank['token']) {
@@ -65,6 +60,12 @@ class TesTulisController extends Controller {
 
             if (!$activeBank) {
                 echo json_encode(['status' => 'error', 'message' => 'Tidak ada ujian aktif']);
+                return;
+            }
+
+            // Check if user has already completed the exam
+            if (\App\Controllers\User\DashboardController::getAbsensiTesTertulis()) {
+                echo json_encode(['status' => 'error', 'message' => 'Anda sudah mengikuti tes tertulis.']);
                 return;
             }
 
@@ -122,7 +123,13 @@ class TesTulisController extends Controller {
             }
 
             $nilaiAkhir = new NilaiAkhir();
-            $score = $nilaiAkhir->saveNilai($id_user);
+        $score = $nilaiAkhir->saveNilai($id_user);
+
+        // Update Absensi status to 'Hadir'
+        $mhs = (new \App\Model\Mahasiswa())->getMahasiswaId($id_user);
+        if ($mhs) {
+            (new \App\Model\Absensi())->updateTesTertulisAbsensi($mhs['id']);
+        }
 
             $response = [
                 'status' => empty($errors) ? 'success' : 'error',

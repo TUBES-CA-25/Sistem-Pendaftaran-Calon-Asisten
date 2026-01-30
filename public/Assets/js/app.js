@@ -150,20 +150,6 @@ $(document).ready(function () {
         }, 100);
     });
 
-    // Start test button handler
-    $('#startTestButton').on('click', function () {
-        const nomorMejaInput = $('#nomorMeja').val().trim();
-
-        if (!nomorMejaInput || isNaN(nomorMejaInput) || parseInt(nomorMejaInput) <= 0) {
-            $('#errorMessage').text('Nomor meja tidak valid!');
-            return;
-        }
-
-        $('#errorMessage').text('');
-
-        const targetURL = `${APP_URL}/soal?nomorMeja=${encodeURIComponent(nomorMejaInput)}`;
-        window.location.href = targetURL;
-    });
 });
 
 // Global showModal function

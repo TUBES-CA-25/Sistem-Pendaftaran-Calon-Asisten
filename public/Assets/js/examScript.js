@@ -7,15 +7,22 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const navButtons = document.querySelectorAll(".nav button");
   const timerElement = document.getElementById("timer");
-  const endpoint = "/Sistem-Pendaftaran-Calon-Asisten/public/hasil";
+  const endpoint = APP_URL + "/hasil";
   let currentQuestion = 0;
   const initialDuration = 30 * 60;
   let remainingTime;
 
+  const storage = window.storage || {
+    get: (k) => { try { return localStorage.getItem(k); } catch(e) { return null; } },
+    set: (k, v) => { try { localStorage.setItem(k, v); } catch(e) {} },
+    remove: (k) => { try { localStorage.removeItem(k); } catch(e) {} }
+  };
+
   const answers = {};
 
-  if (localStorage.getItem("remainingTime")) {
-    remainingTime = parseInt(localStorage.getItem("remainingTime"), 10);
+  if (storage.get("remainingTime")) {
+    remainingTime = parseInt(storage.get("remainingTime"), 10);
+
   } else {
     remainingTime = initialDuration;
   }
@@ -26,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Submitting finish...", priorResponse);
     
     setTimeout(() => {
-        window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
+        window.location.href = APP_URL + "/tes-tulis";
     }, 2000);
   }
 
@@ -55,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         remainingTime--;
         updateTimerDisplay(remainingTime);
-        localStorage.setItem("remainingTime", remainingTime);
+        storage.set("remainingTime", remainingTime);
       }
     }, 1000);
   }
@@ -235,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("beforeunload", () => {
     if (remainingTime <= 0) {
-      localStorage.removeItem("remainingTime");
+      storage.remove("remainingTime");
     }
   });
 });

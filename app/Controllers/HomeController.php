@@ -60,7 +60,7 @@ class HomeController extends Controller
         }
 
         if (is_array($page)) {
-            $page = $page['page'];
+            $page = $page['page'] ?? 'dashboard';
         }
 
         // Detect if AJAX request

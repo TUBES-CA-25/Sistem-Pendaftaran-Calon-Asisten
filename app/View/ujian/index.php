@@ -23,8 +23,22 @@ $results = $results ?? [];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<?=APP_URL?>/Assets/css/exam.css" />
-    <link rel="stylesheet" href="<?=APP_URL?>/Assets/css/alertstyle.css">
-    <link rel="icon" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png">
+    <link rel="icon" href="<?=APP_URL?>/Assets/Img/iclabs.png">
+    <script>
+        const APP_URL = <?= json_encode(APP_URL) ?>;
+        // Helper untuk akses storage yang aman
+        window.storage = {
+            get: function(key) {
+                try { return localStorage.getItem(key); } catch(e) { return null; }
+            },
+            set: function(key, val) {
+                try { localStorage.setItem(key, val); } catch(e) {}
+            },
+            remove: function(key) {
+                try { localStorage.removeItem(key); } catch(e) {}
+            }
+        };
+    </script>
 </head>
 
 <body>
@@ -180,7 +194,7 @@ foreach ($results as $index => $result): ?>
             }
         };
     </script>
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/examScript.js"></script>
+    <script src="<?=APP_URL?>/Assets/js/examScript.js"></script>
 </body>
 
 </html>
