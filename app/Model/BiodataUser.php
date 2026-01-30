@@ -72,7 +72,7 @@ class BiodataUser extends Model
             $idJurusanData = $this->getIdJurusan($biodata->jurusan);
             if (!$idJurusanData) {
                 error_log("Error: Jurusan tidak ditemukan - " . $biodata->jurusan);
-                return false;
+                throw new \Exception("Jurusan tidak valid: " . $biodata->jurusan);
             }
             $biodata->idJurusan = $idJurusanData['id'];
 
@@ -81,9 +81,9 @@ class BiodataUser extends Model
             $idKelasData = $this->getIdKelas($biodata->kelas);
             if (!$idKelasData) {
                 error_log("Error: Kelas tidak ditemukan - " . $biodata->kelas);
-                return false;
+                throw new \Exception("Kelas tidak valid: " . $biodata->kelas);
             }
-            $biodata->idKelas = $idKelasData['id']; // Pastikan variabel ini konsisten
+            $biodata->idKelas = $idKelasData['id'];
 
             // Binding Parameter
             $stmt->bindParam(1, $biodata->idUser);
@@ -99,14 +99,18 @@ class BiodataUser extends Model
 
             // Eksekusi Query
             if ($stmt->execute()) {
-                return true; // Berhasil
+                error_log("Biodata saved successfully for user: " . $biodata->idUser);
+                return true;
             } else {
-                error_log("Error: Gagal menyimpan biodata");
-                return false; // Gagal
+                error_log("Error: Failed to execute statement - " . json_encode($stmt->errorInfo()));
+                throw new \Exception("Query execution failed: " . json_encode($stmt->errorInfo()));
             }
         } catch (\PDOException $e) {
-            error_log("SQL Error: " . $e->getMessage());
-            return false;
+            error_log("PDO Error: " . $e->getMessage() . " | Code: " . $e->getCode());
+            throw new \Exception("Database error: " . $e->getMessage());
+        } catch (\Exception $e) {
+            error_log("General Error: " . $e->getMessage());
+            throw $e;
         }
     }
     private function getIdJurusan($namaJurusan)

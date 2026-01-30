@@ -139,7 +139,7 @@ class ProfilController extends Controller {
                     }
                     
                     if (move_uploaded_file($image['tmp_name'], $targetDir . $newName)) {
-                        $mahasiswaModel = new \App\Model\User\Mahasiswa();
+                        $mahasiswaModel = new \App\Model\Mahasiswa();
                         $mahasiswaModel->updateProfilePhoto($userId, $newName);
                         $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $newName;
                     }

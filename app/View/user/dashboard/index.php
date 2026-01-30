@@ -93,13 +93,13 @@ $dokumen = $dokumen ?? [];
         <p class="text-muted mb-0">Let's learn something new today!</p>
     </div>
 
-    <div class="row g-4">
+    <div class="row g-2">
 
         <!-- Main Content (Left Column) - 8 col -->
-        <div class="col-lg-8">
+        <div class="col-lg-8 d-flex flex-column">
 
-            <?php if ($graduationStatus !== 'Pending' || $isPengumumanOpen): ?>
-                <!-- Graduation Announcement Card (Visible when finalized or announcement open) -->
+            <?php if (($graduationStatus === 'Lulus' || $graduationStatus === 'Gagal') && $isPengumumanOpen): ?>
+                <!-- Graduation Announcement Card (Visible when pengumuman open and result finalized) -->
                 <div class="card border-0 shadow rounded-4 mb-4 overflow-hidden position-relative" 
                      style="background: <?= $graduationStatus === 'Lulus' ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #dc2626)' ?>; color: white;">
                     <div class="card-body p-4 text-center position-relative" style="z-index: 2;">
@@ -125,7 +125,7 @@ $dokumen = $dokumen ?? [];
                     <div class="position-absolute rounded-circle bg-white opacity-10" style="width: 80px; height: 80px; bottom: -15px; left: 5%;"></div>
                 </div>
             <?php else: ?>
-                <!-- Announcement Coming Soon Card (Visible when closed and pending) -->
+                <!-- Announcement Coming Soon Card (Visible when closed or pending) -->
                 <div class="card border-0 shadow-sm rounded-4 mb-4 bg-primary bg-opacity-10 border border-primary border-opacity-25">
                     <div class="card-body p-4 d-flex align-items-center gap-3">
                         <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 45px; height: 45px;">
@@ -144,12 +144,12 @@ $dokumen = $dokumen ?? [];
                 <!-- Progress Circular Card -->
                 <div class="col-md-5">
                     <div class="card border-0 shadow-sm rounded-4 h-100">
-                        <div class="card-body p-4 d-flex flex-column justify-content-center">
-                            <h6 class="fw-semibold mb-3 text-center">Progress Pendaftaran</h6>
+                        <div class="card-body p-5 d-flex flex-column justify-content-center">
+                            <h6 class="fw-semibold mb-4 text-center" style="font-size: 1.1rem;">Progress Pendaftaran</h6>
 
-                            <div class="d-flex align-items-center justify-content-center position-relative mb-3" style="height: 160px;">
+                            <div class="d-flex align-items-center justify-content-center position-relative mb-4" style="height: 180px;">
                                 <!-- SVG Circular Progress (Scaled down for tighter layout) -->
-                                <svg width="150" height="150" class="progress-ring">
+                                <svg width="170" height="170" class="progress-ring">
                                     <defs>
                                         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                             <stop offset="0%" stop-color="#3dc2ec" />
@@ -160,23 +160,23 @@ $dokumen = $dokumen ?? [];
                                         stroke="#e5e7eb"
                                         stroke-width="10"
                                         fill="transparent"
-                                        r="65"
-                                        cx="75"
-                                        cy="75"/>
+                                        r="75"
+                                        cx="85"
+                                        cy="85"/>
                                     <circle class="progress-ring-circle"
                                         stroke="url(#gradient)"
                                         stroke-width="10"
                                         fill="transparent"
-                                        r="65"
-                                        cx="75"
-                                        cy="75"
-                                        style="stroke-dasharray: 408.41; stroke-dashoffset: <?= 408.41 * (1 - $percentage/100) ?>; transform: rotate(-90deg); transform-origin: center;"/>
+                                        r="75"
+                                        cx="85"
+                                        cy="85"
+                                        style="stroke-dasharray: 471.24; stroke-dashoffset: <?= 471.24 * (1 - $percentage/100) ?>; transform: rotate(-90deg); transform-origin: center;"/>
                                 </svg>
 
                                 <!-- Text di tengah -->
                                 <div class="position-absolute text-center">
-                                    <div class="h3 fw-bold text-primary mb-0"><?= $percentage ?>%</div>
-                                    <small class="text-muted" style="font-size: 0.65rem;">Complete</small>
+                                    <div class="h2 fw-bold text-primary mb-0" style="font-size: 3rem;"><?= $percentage ?>%</div>
+                                    <small class="text-muted" style="font-size: 0.9rem;">Complete</small>
                                 </div>
                             </div>
 
@@ -198,11 +198,11 @@ $dokumen = $dokumen ?? [];
                 <!-- Status Stepper Card -->
                 <div class="col-md-7">
                     <div class="card border-0 shadow-sm rounded-4 h-100">
-                        <div class="card-body p-4">
-                            <h6 class="fw-semibold mb-4">Status Pendaftaran</h6>
+                        <div class="card-body p-5">
+                            <h6 class="fw-semibold mb-4 text-center" style="font-size: 1.1rem;">Status Pendaftaran</h6>
                             
-                            <p class="small text-muted mb-4 lh-sm">
-                                Anda telah menyelesaikan <strong><?= $tahapanSelesai ?></strong> dari 4 tahapan pendaftaran.
+                            <p class="text-muted mb-4 lh-sm" style="font-size: 0.95rem;">
+                                Anda telah menyelesaikan <strong><?= $tahapanSelesai ?></strong> dari 5 tahapan pendaftaran.
                             </p>
 
                             <!-- Stepper Vertical layout or cramped horizontal? 
@@ -211,15 +211,16 @@ $dokumen = $dokumen ?? [];
                                 <!-- Progress Line Background -->
                                 <div class="position-absolute w-100 bg-light" style="height:3px; top:10px; left:0; z-index:0"></div>
                                 <!-- Progress Line Active -->
-                                <?php $stepProgress = min(($tahapanSelesai / 4) * 100, 100); ?>
+                                <?php $stepProgress = min(($tahapanSelesai / 5) * 100, 100); ?>
                                 <div class="position-absolute bg-primary stepper-line" style="height:3px; top:10px; left:0; width:<?= $stepProgress ?>%; z-index:1; transition: width 1s ease;"></div>
 
                                 <?php
                                 $stepperStages = [
                                     ['number' => 1, 'color' => 'danger', 'label' => 'Berkas', 'threshold' => 1],
-                                    ['number' => 2, 'color' => 'warning', 'label' => 'Tes', 'threshold' => 2],
-                                    ['number' => 3, 'color' => 'success', 'label' => 'Wawancara', 'threshold' => 3],
-                                    ['number' => 4, 'color' => 'primary', 'label' => 'Final', 'threshold' => 4]
+                                    ['number' => 2, 'color' => 'warning', 'label' => 'Tes Tulis', 'threshold' => 2],
+                                    ['number' => 3, 'color' => 'info', 'label' => 'Presentasi', 'threshold' => 3],
+                                    ['number' => 4, 'color' => 'success', 'label' => 'Wawancara', 'threshold' => 4],
+                                    ['number' => 5, 'color' => 'primary', 'label' => 'Pengumuman', 'threshold' => 5]
                                 ];
 
                                 foreach ($stepperStages as $step):
@@ -227,24 +228,24 @@ $dokumen = $dokumen ?? [];
                                 ?>
                                     <div class="text-center position-relative" style="z-index:2">
                                         <div class="rounded-circle bg-<?= $isActive ? $step['color'] : 'light' ?> <?= $isActive ? '' : 'border' ?> d-flex align-items-center justify-content-center mx-auto mb-2 shadow-sm"
-                                             style="width:22px; height:22px">
+                                             style="width:28px; height:28px">
                                             <?php if ($isActive): ?>
-                                                <i class="bi bi-check text-white fw-bold" style="font-size: 0.7rem;"></i>
+                                                <i class="bi bi-check text-white fw-bold" style="font-size: 0.9rem;"></i>
                                             <?php else: ?>
-                                                <span class="text-muted fw-bold" style="font-size: 0.6rem;"><?= $step['number'] ?></span>
+                                                <span class="text-muted fw-bold" style="font-size: 0.8rem;"><?= $step['number'] ?></span>
                                             <?php endif; ?>
                                         </div>
-                                        <small class="fw-bold d-block text-<?= $isActive ? $step['color'] : 'muted' ?>" style="font-size: 0.6rem;"><?= $step['label'] ?></small>
+                                        <small class="fw-bold d-block text-<?= $isActive ? $step['color'] : 'muted' ?>" style="font-size: 0.8rem;"><?= $step['label'] ?></small>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
 
                             <!-- New Legend/Info section -->
-                            <div class="mt-4 pt-2 border-top">
-                                <small class="text-muted d-block mb-1" style="font-size: 0.65rem;">Sistem Seleksi:</small>
+                            <div class="mt-4 pt-3 border-top">
+                                <small class="text-muted d-block mb-2" style="font-size: 0.85rem;">Sistem Seleksi:</small>
                                 <div class="d-flex flex-wrap gap-2">
                                     <?php foreach ($stepperStages as $step): ?>
-                                        <div class="badge bg-<?= $step['color'] ?> bg-opacity-10 text-<?= $step['color'] ?> border border-<?= $step['color'] ?> border-opacity-25" style="font-size: 0.55rem;">
+                                        <div class="badge bg-<?= $step['color'] ?> bg-opacity-10 text-<?= $step['color'] ?> border border-<?= $step['color'] ?> border-opacity-25" style="font-size: 0.75rem; padding: 0.4rem 0.6rem;">
                                             <?= $step['label'] ?>
                                         </div>
                                     <?php endforeach; ?>
@@ -256,26 +257,25 @@ $dokumen = $dokumen ?? [];
             </div>
 
             <!-- Biodata Diri Card -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
                 <div class="card-header bg-white border-0 p-4">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="fw-semibold mb-0">Biodata Diri</h5>
+                        <h5 class="fw-semibold mb-0" style="font-size: 1.15rem;">Biodata Diri</h5>
                         <button class="btn btn-sm btn-outline-primary" onclick="navigateTo('biodata')">
                             <i class="bi bi-pencil me-1"></i>Edit
                         </button>
                     </div>
                 </div>
                 <div class="card-body p-4">
-                    <div class="row g-3">
-                        <!-- Nama Lengkap -->
+                    <div class="row g-4">
                         <div class="col-md-6">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="rounded-3 bg-primary bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-person-fill text-primary fs-5"></i>
+                                    <i class="bi bi-person-fill text-primary" style="font-size: 1.1rem;"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Nama Lengkap</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['namaLengkap'] ?? '-') ?></p>
+                                    <small class="text-muted d-block mb-2" style="font-size: 0.85rem;">Nama Lengkap</small>
+                                    <p class="mb-0 fw-semibold" style="font-size: 0.95rem;"><?= htmlspecialchars($biodata['namaLengkap'] ?? '-') ?></p>
                                 </div>
                             </div>
                         </div>
@@ -284,11 +284,11 @@ $dokumen = $dokumen ?? [];
                         <div class="col-md-6">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="rounded-3 bg-success bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-123 text-success fs-5"></i>
+                                    <i class="bi bi-123 text-success" style="font-size: 1.1rem;"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">NIM</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($user['stambuk'] ?? '-') ?></p>
+                                    <small class="text-muted d-block mb-2" style="font-size: 0.85rem;">NIM</small>
+                                    <p class="mb-0 fw-semibold" style="font-size: 0.95rem;"><?= htmlspecialchars($user['stambuk'] ?? '-') ?></p>
                                 </div>
                             </div>
                         </div>
@@ -297,11 +297,11 @@ $dokumen = $dokumen ?? [];
                         <div class="col-md-6">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="rounded-3 bg-info bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-envelope-fill text-info fs-5"></i>
+                                    <i class="bi bi-envelope-fill text-info" style="font-size: 1.1rem;"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Email</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['email'] ?? '-') ?></p>
+                                    <small class="text-muted d-block mb-2" style="font-size: 0.85rem;">Email</small>
+                                    <p class="mb-0 fw-semibold" style="font-size: 0.95rem;"><?= htmlspecialchars($user['username'] ?? '-') ?></p>
                                 </div>
                             </div>
                         </div>
@@ -310,11 +310,11 @@ $dokumen = $dokumen ?? [];
                         <div class="col-md-6">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="rounded-3 bg-warning bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-calendar-event text-warning fs-5"></i>
+                                    <i class="bi bi-calendar-event text-warning" style="font-size: 1.1rem;"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Tempat, Tanggal Lahir</small>
-                                    <p class="mb-0 fw-semibold">
+                                    <small class="text-muted d-block mb-2" style="font-size: 0.85rem;">Tempat, Tanggal Lahir</small>
+                                    <p class="mb-0 fw-semibold" style="font-size: 0.95rem;">
                                         <?= htmlspecialchars($biodata['tempatLahir'] ?? '-') ?>,
                                         <?= htmlspecialchars($biodata['tanggalLahir'] ?? '-') ?>
                                     </p>
@@ -326,11 +326,11 @@ $dokumen = $dokumen ?? [];
                         <div class="col-md-6">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="rounded-3 bg-secondary bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-gender-ambiguous text-secondary fs-5"></i>
+                                    <i class="bi bi-gender-ambiguous text-secondary" style="font-size: 1.1rem;"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Jenis Kelamin</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['jenisKelamin'] ?? '-') ?></p>
+                                    <small class="text-muted d-block mb-2" style="font-size: 0.85rem;">Jenis Kelamin</small>
+                                    <p class="mb-0 fw-semibold" style="font-size: 0.95rem;"><?= htmlspecialchars($biodata['jenisKelamin'] ?? '-') ?></p>
                                 </div>
                             </div>
                         </div>
@@ -339,24 +339,11 @@ $dokumen = $dokumen ?? [];
                         <div class="col-md-6">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="rounded-3 bg-danger bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-telephone-fill text-danger fs-5"></i>
+                                    <i class="bi bi-telephone-fill text-danger" style="font-size: 1.1rem;"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Nomor HP</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['noHp'] ?? '-') ?></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- IPK -->
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="rounded-3 bg-primary bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-star-fill text-primary fs-5"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">IPK</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['ipk'] ?? '-') ?></p>
+                                    <small class="text-muted d-block mb-2" style="font-size: 0.85rem;">Nomor HP</small>
+                                    <p class="mb-0 fw-semibold" style="font-size: 0.95rem;"><?= htmlspecialchars($biodata['noHp'] ?? '-') ?></p>
                                 </div>
                             </div>
                         </div>
@@ -365,11 +352,11 @@ $dokumen = $dokumen ?? [];
                         <div class="col-md-6">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="rounded-3 bg-success bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-book-fill text-success fs-5"></i>
+                                    <i class="bi bi-book-fill text-success" style="font-size: 1.1rem;"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Program Studi</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['jurusan'] ?? '-') ?></p>
+                                    <small class="text-muted d-block mb-2" style="font-size: 0.85rem;">Program Studi</small>
+                                    <p class="mb-0 fw-semibold" style="font-size: 0.95rem;"><?= htmlspecialchars($biodata['jurusan'] ?? '-') ?></p>
                                 </div>
                             </div>
                         </div>
@@ -378,16 +365,48 @@ $dokumen = $dokumen ?? [];
                         <div class="col-12">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="rounded-3 bg-info bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-geo-alt-fill text-info fs-5"></i>
+                                    <i class="bi bi-geo-alt-fill text-info" style="font-size: 1.1rem;"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Alamat</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['alamat'] ?? '-') ?></p>
+                                    <small class="text-muted d-block mb-2" style="font-size: 0.85rem;">Alamat</small>
+                                    <p class="mb-0 fw-semibold" style="font-size: 0.95rem;"><?= htmlspecialchars($biodata['alamat'] ?? '-') ?></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Biodata Status Section -->
+                <?php 
+                    $isBiodataComplete = !empty($biodata['namaLengkap']) && $biodata['namaLengkap'] !== '-' &&
+                                        !empty($user['username']) && $user['username'] !== '-' &&
+                                        !empty($biodata['tempatLahir']) && $biodata['tempatLahir'] !== '-' &&
+                                        !empty($biodata['jenisKelamin']) && $biodata['jenisKelamin'] !== '-' &&
+                                        !empty($biodata['noHp']) && $biodata['noHp'] !== '-' &&
+                                        !empty($biodata['jurusan']) && $biodata['jurusan'] !== '-';
+                ?>
+                <?php if (!$isBiodataComplete): ?>
+                    <div class="card-footer bg-light border-top p-3">
+                        <div class="text-center">
+                            <p class="text-muted mb-3" style="font-size: 0.9rem;">
+                                <i class="bi bi-exclamation-circle text-warning me-2"></i>
+                                Silahkan lengkapi biodata Anda terlebih dahulu
+                            </p>
+                            <button class="btn btn-primary btn-sm rounded-pill" onclick="navigateTo('biodata')">
+                                <i class="bi bi-arrow-right me-2"></i>Lengkapi Biodata
+                            </button>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="card-footer bg-light border-top p-3">
+                        <div class="text-center">
+                            <p class="text-success mb-0" style="font-size: 0.9rem;">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                <strong>Biodata Anda sudah lengkap!</strong> Lanjutkan ke tahapan selanjutnya.
+                            </p>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
 
         </div>
@@ -399,7 +418,7 @@ $dokumen = $dokumen ?? [];
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body p-4 text-center">
                     <!-- Profile Photo -->
-                    <div class="mb-3">
+                    <div class="mb-3 d-flex justify-content-center">
                         <?php if ($profileDisplay['hasValidPhoto']): ?>
                             <img src="<?= htmlspecialchars($profileDisplay['photoPath']) ?>"
                                  alt="Profile"

@@ -136,9 +136,23 @@ const namaInput = document.getElementById("nama");
         }
       },
       error: function (xhr, status, error) {
-        console.log("Error:", xhr.responseText);
+        console.error("AJAX Error Details:");
+        console.error("Status:", xhr.status);
+        console.error("Response Text:", xhr.responseText);
+        console.error("Error:", error);
+        
+        let errorMessage = "Terjadi kesalahan: " + error;
+        if (xhr.responseText) {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            errorMessage = response.message || errorMessage;
+          } catch(e) {
+            errorMessage = "Server error: " + xhr.responseText;
+          }
+        }
+        
         showModal(
-          "Terjadi kesalahan: " + error,
+          errorMessage,
           `${APP_URL}/Assets/gif/failed.gif`
         );
       },
