@@ -90,7 +90,7 @@ $dokumen = $dokumen ?? [];
         <h1 class="display-6 fw-bold text-dark mb-1">
             Hello <?= htmlspecialchars($biodata['namaLengkap'] ?? $user['username'] ?? 'User') ?> 👋
         </h1>
-        <p class="text-muted mb-0">Let's learn something new today!</p>
+        
     </div>
 
     <div class="row g-4">
@@ -217,7 +217,7 @@ $dokumen = $dokumen ?? [];
                                 <?php
                                 $stepperStages = [
                                     ['number' => 1, 'color' => 'danger', 'label' => 'Berkas', 'threshold' => 1],
-                                    ['number' => 2, 'color' => 'warning', 'label' => 'Tes', 'threshold' => 2],
+                                    ['number' => 2, 'color' => 'warning', 'label' => 'Tes Tertulis', 'threshold' => 2],
                                     ['number' => 3, 'color' => 'success', 'label' => 'Wawancara', 'threshold' => 3],
                                     ['number' => 4, 'color' => 'primary', 'label' => 'Final', 'threshold' => 4]
                                 ];

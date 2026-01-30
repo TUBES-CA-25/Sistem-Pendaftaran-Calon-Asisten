@@ -126,7 +126,7 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                         <table class="table table-hover align-middle mb-0">
                             <thead>
                                 <tr>
-                                    <th class="ps-4">ID</th>
+                                    <!-- <th class="ps-4">ID</th> -->
                                     <th>Tanggal</th>
                                     <th>Nama</th>
                                     <th>Status</th>
@@ -136,9 +136,7 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                 <?php if (!$isBerkasEmpty && !empty($res)): ?>
                                     <?php foreach ($res as $result): ?>
                                         <tr>
-                                            <td class="ps-4">
-                                                <span class="badge bg-light text-dark">CCA00<?= $result['id_mahasiswa'] ?></span>
-                                            </td>
+                                            
                                             <td class="small text-muted"><?= $result['created_at'] ?></td>
                                             <td><?= htmlspecialchars($nama) ?></td>
                                             <td>

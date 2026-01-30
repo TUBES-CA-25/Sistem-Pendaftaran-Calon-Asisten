@@ -24,6 +24,7 @@ $tempatLahir = $tempatLahir ?? 'Tempat Lahir';
 $tanggalLahir = $tanggalLahir ?? 'Tanggal Lahir';
 $noHp = $noHp ?? 'No Telephone';
 $isBiodataEmpty = $isBiodataEmpty ?? true;
+$photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
 ?>
 
 <!-- Page Header -->
@@ -35,6 +36,31 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
 ?>
 
 <main class="container-fluid px-4 pb-4">
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4 p-md-5">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <img src="<?= $photo ?>" alt="Profile Picture" class="rounded-4 object-fit-cover" style="width: 120px; height: 120px;">
+                </div>
+                <div class="col">
+                    <h4 class="fw-bold text-primary mb-1"><?= $nama ?></h4>
+                    <p class="text-muted mb-0"><?= $userName ?></p>
+                    <p class="text-muted mb-0"><small><i class="bx bx-id-card me-1"></i><?= $stambuk ?></small></p>
+                </div>
+                <div class="col-auto mt-3 mt-md-0">
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-primary px-4 rounded-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                            <i class="bx bx-edit"></i> Edit Profile
+                        </button>
+                        <button type="button" id="logoutButton" class="btn btn-danger px-4 rounded-3 d-flex align-items-center gap-2">
+                            <i class="bx bx-log-out"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Form Card -->
     <div class="card border-0 shadow-sm rounded-4">
@@ -178,3 +204,4 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
 </main>
 
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/user/biodata.js"></script>
+<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Script/user/profil.js"></script> 
