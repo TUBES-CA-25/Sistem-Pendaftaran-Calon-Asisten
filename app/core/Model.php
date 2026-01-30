@@ -13,11 +13,7 @@ abstract class Model {
     
     protected static $db;
     public static function getDB() {
-        if (!self::$db) {
-            self::$db = new PDO('mysql:host=localhost; dbname=DB_TUBES', 'root', '');
-            self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        }
-        return self::$db;
+        return Database::getInstance();
     }
     
     public static function all() {
@@ -129,8 +125,6 @@ abstract class Model {
 
         if(!empty(static::$limit)) {
             $query .= " LIMIT " . static::$limit[0];
-            print_r($query);
-
         }
 
         if(!empty(static::$offset)) {
@@ -138,7 +132,6 @@ abstract class Model {
         }
 
         $stmt = Database::query($query, $this->getWhereParameters());
-        var_dump($stmt);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
      

@@ -3,35 +3,33 @@
 namespace App\Core;
 use \PDO;
 class Database {
-    private static $pdo;
-    private static $DB_CONNECTION = "mysql";
-    private static $DB_HOST = "localhost";
-    private static $DB_USER = "root";
-    private static $DB_PORT = 3306;
-    private static $DB_NAME = "DB_TUBES";
-    private static $DB_PASS = "";
+    private static $instance = null;
+
+    private function __construct() {
+        // Private constructor to prevent direct instantiation
+    }
 
     private static function con() {
-        $DB = self::$DB_CONNECTION . ':host=' . 
-        self::$DB_HOST . ';port=' . 
-        self::$DB_PORT . ';dbname=' . 
-        self::$DB_NAME;
-        
-        self::$pdo = new \PDO($DB,self::$DB_USER,self::$DB_PASS);
+        if (self::$instance === null) {
+            try {
+                $dsn = DB_CONNECTION . ':host=' . DB_HOST . ';port=' . PORT . ';dbname=' . DB_NAME;
+                self::$instance = new \PDO($dsn, DB_USER, DB_PASS);
+                self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (\PDOException $e) {
+                die("Connection failed: " . $e->getMessage());
+            }
+        }
     }
 
     public static function getInstance() {
         self::con();
-        return self::$pdo;
+        return self::$instance;
     }
-    public static function query($query,$data = []) {
+
+    public static function query($query, $data = []) {
         self::con();
-
-        $stmt = self::$pdo->prepare($query);
+        $stmt = self::$instance->prepare($query);
         $stmt->execute($data);
-
-        self::$pdo = null;
-
         return $stmt;
     }
 }

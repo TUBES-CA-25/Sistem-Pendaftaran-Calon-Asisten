@@ -2,8 +2,9 @@
 namespace App\Controllers\User;
 
 use App\Core\Controller;
-use App\Model\User\PresentasiUser;
-use App\Model\presentasi\Presentasi;
+use App\Model\PresentasiUser;
+use App\Model\Presentasi;
+use App\Model\NotificationUser;
 class PresentasiUserController extends Controller
 {
     public function saveJudul()
@@ -145,16 +146,23 @@ class PresentasiUserController extends Controller
     }
     public function updateStatusJudul()
     {
+        header('Content-Type: application/json');
         $presentasi = new Presentasi();
         $id = $_POST['id'] ?? '';
+        $status = $_POST['status'] ?? 1; // Default: 1 = accepted, 2 = rejected
 
         if (!empty($id)) {
             try {
-                $presentasi->updateJudulStatus($id);
+                $presentasi->updateJudulStatus($id, $status);
 
+                $messageText = $status == 1 ? 'Judul presentasi Anda telah DITERIMA.' : 'Judul presentasi Anda DITOLAK. Silakan cek revisi.';
+                $notification = new NotificationUser($id, $messageText); // $id here is id_mahasiswa
+                $notification->insert($notification);
+
+                $message = $status == 1 ? 'Judul berhasil diterima.' : 'Judul ditolak. Mahasiswa akan diminta revisi.';
                 echo json_encode([
                     'status' => 'success',
-                    'message' => 'Status judul berhasil diperbarui.'
+                    'message' => $message
                 ]);
             } catch (\Exception $e) {
                 echo json_encode([
@@ -195,6 +203,19 @@ class PresentasiUserController extends Controller
         try {
             $presentasi = new Presentasi();
             $presentasi->updateIsRevisiAndKeterangan($id, $keterangan);
+            
+            // Send Notification
+            $mahasiswaId = $_POST['userid'] ?? null;
+            if ($mahasiswaId) {
+                // The NotificationUser model expects `id_mahasiswa` in constructor.
+                // However, `NotificationUser::insert` uses the property `id_mahasiswa`.
+                // Note: The `NotificationUser` model logic seems to rely on its own `getIdMahasiswaByIdUser` if we pass a user ID, or we pass the direct ID.
+                // In `NotificationControllers`, it passes `$idMahasiswa` directly.
+                // Let's assume `$mahasiswaId` passed from JS is the correct ID to use (id_mahasiswa from table).
+                $notification = new NotificationUser($mahasiswaId, "Pesan Revisi/Keterangan: " . $keterangan);
+                $notification->insert($notification);
+            }
+
             header('Content-Type: application/json');
             echo json_encode(['status' => 'success', 'message' => 'Keterangan berhasil disimpan']);
         } catch (\Exception $e) {
