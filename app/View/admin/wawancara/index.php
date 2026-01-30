@@ -36,6 +36,20 @@ $colors = ['#2f66f6'];
         font-size: 1rem;
         line-height: 1;
     }
+
+    /* Unified Table Style */
+    .table-custom { --bs-table-border-color: #e0e0e0; }
+    .table-custom thead th {
+        color: #2f66f6; font-weight: 700; font-size: 0.75rem;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        background-color: #fff; border-top: 1px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1rem 0.75rem;
+    }
+    .table-custom tbody td {
+        padding: 1rem 0.75rem; color: #333; font-size: 0.875rem;
+        border-color: #e0e0e0;
+    }
 </style>
 
 <div class="container-fluid px-4 mt-3">
@@ -46,31 +60,46 @@ $colors = ['#2f66f6'];
                     <i class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"></i>
                     <input type="text" id="searchInput" class="form-control rounded-3 ps-5" placeholder="Cari nama atau stambuk...">
                 </div>
-                <div class="d-flex gap-3">
-                    <button class="btn btn-primary btn-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
-                        <i class="bi bi-plus-circle"></i> Tambah Jadwal
+            <div class="d-flex gap-3">
+                <div class="dropdown">
+                    <button class="btn btn-primary btn-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-plus-circle"></i> Tambah Data
                     </button>
-                    <button class="btn btn-success btn-gradient-success border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2" data-bs-toggle="modal" data-bs-target="#bulkScheduleModal">
-                        <i class="bi bi-calendar-plus"></i> Bulk Schedule
-                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 mt-2">
+                        <li>
+                            <a class="dropdown-item px-3 py-2 d-flex align-items-center gap-2" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
+                                <i class="bi bi-person-plus text-primary"></i>
+                                <span>Tambah Satuan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item px-3 py-2 d-flex align-items-center gap-2" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#bulkScheduleModal">
+                                <i class="bi bi-people text-success"></i>
+                                <span>Bulk Schedule</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+            </div>
             </div>
 
             <!-- Data Table -->
-            <div class="table-responsive">
-                <table id="wawancaraMahasiswa" class="table table-hover table-bordered align-middle mb-0">
-                    <thead class="bg-primary text-white">
-                        <tr>
-                            <th class="py-3 px-3 text-center" width="5%">NO</th>
-                            <th class="py-3 px-3" width="25%">NAMA LENGKAP</th>
-                            <th class="py-3 px-3" width="15%">STAMBUK</th>
-                            <th class="py-3 px-3" width="20%">KEGIATAN</th>
-                            <th class="py-3 px-3" width="10%">RUANGAN</th>
-                            <th class="py-3 px-3" width="10%">TANGGAL</th>
-                            <th class="py-3 px-3" width="10%">WAKTU</th>
-                            <th class="py-3 px-3 text-center" width="5%">AKSI</th>
-                        </tr>
-                    </thead>
+            <div class="card mb-3 rounded-0 border-0 shadow-none">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table id="wawancaraMahasiswa" class="table table-hover table-bordered align-middle mb-0 table-custom">
+                            <thead>
+                                <tr>
+                                    <th class="py-3 px-3 text-center" width="5%">NO</th>
+                                    <th class="py-3 px-3" width="25%">NAMA LENGKAP</th>
+                                    <th class="py-3 px-3" width="15%">STAMBUK</th>
+                                    <th class="py-3 px-3" width="20%">KEGIATAN</th>
+                                    <th class="py-3 px-3" width="10%">RUANGAN</th>
+                                    <th class="py-3 px-3" width="10%">TANGGAL</th>
+                                    <th class="py-3 px-3" width="10%">WAKTU</th>
+                                    <th class="py-3 px-3 text-center" width="5%">AKSI</th>
+                                </tr>
+                            </thead>
                 <tbody id="table-body" class="bg-white">
                     <?php if (empty($wawancara)): ?>
                         <tr>
@@ -120,6 +149,8 @@ $colors = ['#2f66f6'];
                     <?php endif; ?>
                 </tbody>
                 </table>
+                    </div>
+                </div>
             </div>
 
 </div>
@@ -133,7 +164,7 @@ $colors = ['#2f66f6'];
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="bulkInterviewForm">
+                <form id="bulkInterviewForm" method="POST" action="javascript:void(0);">
                     <div class="row g-4">
                         <div class="col-md-7">
                             <label class="form-label fw-bold">Pilih Mahasiswa</label>
@@ -208,7 +239,7 @@ $colors = ['#2f66f6'];
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="addJadwalForm">
+                <form id="addJadwalForm" method="POST" action="javascript:void(0);">
                     <div class="mb-3">
                         <label for="mahasiswa" class="form-label fw-bold">Pilih Mahasiswa</label>
                         <div class="d-flex gap-2 mb-2">
@@ -276,7 +307,7 @@ $colors = ['#2f66f6'];
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="updateWawancaraForm">
+                <form id="updateWawancaraForm" method="POST" action="javascript:void(0);">
                     <input type="hidden" id="updateWawancaraId">
                     <div class="mb-3">
                         <label for="updateRuangan" class="form-label">Ruangan</label>

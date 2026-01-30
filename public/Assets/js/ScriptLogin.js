@@ -128,6 +128,24 @@ loginBtn.addEventListener("click", () => {
   container.classList.remove("active");
 });
 
+// Mobile Toggles
+const mobileRegisterBtn = document.getElementById('mobile-register-btn');
+const mobileLoginBtn = document.getElementById('mobile-login-btn');
+
+if (mobileRegisterBtn) {
+    mobileRegisterBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        container.classList.add("active");
+    });
+}
+
+if (mobileLoginBtn) {
+    mobileLoginBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        container.classList.remove("active");
+    });
+}
+
 togglePassword.addEventListener("click", function () {
   const type =
     password.getAttribute("type") === "password" ? "text" : "password";

@@ -35,32 +35,24 @@ const namaInput = document.getElementById("nama");
   // Logout Button
   $("#logoutButton").click(function (e) {
     e.preventDefault();
-    $.ajax({
-      url: "/Sistem-Pendaftaran-Calon-Asisten/public/logout",
-      type: "POST",
-      success: function (response) {
-        if (response.status === "success") {
-          showModal(
-            response.message || "Logout berhasil",
-            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif",
-            () => {
-              window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
-            }
-          );
-        } else {
-          showModal(
-            response.message || "Logout gagal",
-            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
-          );
+    
+    showActionConfirmation({
+        title: 'Konfirmasi Keluar',
+        message: 'Apakah Anda yakin ingin keluar dari aplikasi?',
+        btnText: 'Keluar',
+        type: 'danger',
+        onConfirm: function() {
+            $.ajax({
+              url: `${APP_URL}/logout`,
+              type: "POST",
+              success: function (response) {
+                 window.location.href = APP_URL;
+              },
+              error: function (xhr, status, error) {
+                 window.location.href = APP_URL;
+              },
+            });
         }
-      },
-      error: function (xhr, status, error) {
-        console.log("Error:", xhr.responseText);
-        showModal(
-          "Terjadi kesalahan: " + error,
-          "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
-        );
-      },
     });
   });
 
@@ -96,51 +88,58 @@ const namaInput = document.getElementById("nama");
     let isValid = true;
 
     if (!validatePhoneNumber(phoneNumber).success) {
-      telephoneInput.setCustomValidity(
-        validatePhoneNumber(phoneNumber).message
+      showModal(
+        validatePhoneNumber(phoneNumber).message,
+        `${APP_URL}/Assets/gif/failed.gif`
       );
-      telephoneInput.reportValidity();
       isValid = false;
-    }
-
-    if (!validateNoNumber(tempatLahir).success) {
-      tempatLahirInput.setCustomValidity(validateNoNumber(tempatLahir).message);
-      tempatLahirInput.reportValidity();
+    } else if (!validateNoNumber(tempatLahir).success) {
+      showModal(
+        validateNoNumber(tempatLahir).message,
+        `${APP_URL}/Assets/gif/failed.gif`
+      );
       isValid = false;
-    }
-
-    if (!validateNoNumber(nama).success) {
-      namaInput.setCustomValidity(validateNoNumber(nama).message);
-      namaInput.reportValidity();
+    } else if (!validateNoNumber(nama).success) {
+      showModal(
+        validateNoNumber(nama).message,
+        `${APP_URL}/Assets/gif/failed.gif`
+      );
       isValid = false;
     }
 
     if(!isValid) return;
     $.ajax({
-      url: "Sistem-Pendaftaran-Calon-Asisten/public/store",
+      url: `${APP_URL}/store`,
       type: "post",
       data: $("#biodataForm").serialize(),
       dataType: "json",
       success: function (response) {
         if (response.status === "success") {
-          showModal(
-            "Biodata berhasil disimpan",
-            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/success.gif"
-          );
-          document.querySelector('a[data-page="biodata"]').click();
+          // Changed to standard Toast Alert for success
+          if (typeof showAlert === 'function') {
+             showAlert('Biodata berhasil disimpan!', true);
+          } else {
+             alert('Biodata berhasil disimpan!');
+          }
+          
+          // Reload page to reflect changes
+          if (typeof loadPage === 'function') {
+               loadPage('biodata');
+          } else {
+             document.querySelector('a[data-page="biodata"]').click();
+          }
         } else {
           showModal(
             response.message || "Biodata gagal disimpan",
-            "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
+            `${APP_URL}/Assets/gif/failed.gif`
           );
-          console.log(response.message);
         }
       },
       error: function (xhr, status, error) {
         console.log("Error:", xhr.responseText);
         showModal(
           "Terjadi kesalahan: " + error,
-          "/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif"
+          `${APP_URL}/Assets/gif/failed.gif`
         );
       },
     });

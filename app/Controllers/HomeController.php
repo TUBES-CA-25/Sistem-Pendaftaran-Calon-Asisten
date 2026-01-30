@@ -686,18 +686,37 @@ class HomeController extends Controller
      */
     private function getUserPhotoPath($filename)
     {
-        $baseImagePath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
         $defaultPhoto = 'default.png';
+        $webBasePath = '/Sistem-Pendaftaran-Calon-Asisten/res/';
+        $docRoot = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/';
 
         if (empty($filename) || $filename === $defaultPhoto) {
-            return $baseImagePath . $defaultPhoto;
+            // Check where default.png exists (prefer profile)
+            if (file_exists($docRoot . 'profile/default.png')) {
+                 return $webBasePath . 'profile/default.png';
+            }
+            return $webBasePath . 'imageUser/default.png';
         }
 
         if (strpos($filename, '/') !== false) {
             return $filename;
         }
 
-        return $baseImagePath . $filename;
+        // Check profile directory first (preferred for user photos)
+        if (file_exists($docRoot . 'profile/' . $filename)) {
+            return $webBasePath . 'profile/' . $filename . '?v=' . time(); // Add cache busting
+        }
+
+        // Check imageUser directory (legacy/berkas uploads)
+        if (file_exists($docRoot . 'imageUser/' . $filename)) {
+            return $webBasePath . 'imageUser/' . $filename . '?v=' . time();
+        }
+
+        // Fallback to default if not found in either
+        if (file_exists($docRoot . 'profile/default.png')) {
+             return $webBasePath . 'profile/default.png';
+        }
+        return $webBasePath . 'imageUser/default.png';
     }
 
     /**

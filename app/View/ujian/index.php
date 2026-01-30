@@ -12,7 +12,7 @@
 $stambuk = $stambuk ?? '';
 $profile = $profile ?? [];
 $nama = $nama ?? 'Nama Lengkap';
-$photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/default.png';
+$photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/profile/default.png';
 $results = $results ?? [];
 ?>
 
@@ -113,6 +113,73 @@ foreach ($results as $index => $result): ?>
         <p>&copy; 2024 by ICLabs</p>
     </footer>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Shim for showActionConfirmation using existing #confirmModal
+        window.showActionConfirmation = function(options) {
+            const modal = document.getElementById('confirmModal');
+            const msg = document.getElementById('confirmModalMessage');
+            const btnConfirm = document.getElementById('confirmModalConfirm');
+            const btnCancel = document.getElementById('confirmModalCancel');
+            
+            if (modal && msg && btnConfirm && btnCancel) {
+                msg.innerHTML = options.message || 'Are you sure?';
+                modal.style.display = 'block';
+                
+                // Remove old listeners
+                const newBtnConfirm = btnConfirm.cloneNode(true);
+                btnConfirm.parentNode.replaceChild(newBtnConfirm, btnConfirm);
+                
+                const newBtnCancel = btnCancel.cloneNode(true);
+                btnCancel.parentNode.replaceChild(newBtnCancel, btnCancel);
+                
+                newBtnConfirm.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                    if (options.onConfirm) options.onConfirm();
+                });
+                
+                newBtnCancel.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+            } else {
+                if (confirm(options.message || 'Are you sure?')) {
+                    if (options.onConfirm) options.onConfirm();
+                }
+            }
+        };
+
+        // Shim for showModal using existing #customModal
+        window.showModal = function(message, gifUrl) {
+            const modal = document.getElementById('customModal');
+            const msgEl = document.getElementById('modalMessage');
+            const gifEl = document.getElementById('modalGif');
+            const closeBtn = document.getElementById('closeModal');
+            
+            if (modal && msgEl) {
+                msgEl.innerText = message;
+                
+                if (gifEl) {
+                    if (gifUrl) {
+                        gifEl.src = gifUrl;
+                        gifEl.style.display = 'block';
+                    } else {
+                        gifEl.style.display = 'none';
+                    }
+                }
+                
+                modal.style.display = 'block';
+                modal.classList.add('show'); // For alertstyle.css if used
+                
+                if (closeBtn) {
+                    closeBtn.onclick = function() {
+                        modal.style.display = 'none';
+                        modal.classList.remove('show');
+                    };
+                }
+            } else {
+                alert(message);
+            }
+        };
+    </script>
     <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/examScript.js"></script>
 </body>
 

@@ -24,6 +24,17 @@ body {
   overflow-x: hidden;
 }
 
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Prevent text overflow */
+* {
+  word-wrap: break-word;
+}
+
 /* ==============================
    BOOTSTRAP OVERRIDES
    ============================== */
@@ -102,6 +113,25 @@ body {
   display: flex;
   flex-direction: column;
   padding: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 /* Sidebar Logo Section */
@@ -385,8 +415,8 @@ body {
   margin-left: var(--sidebar-width);
   width: calc(100% - var(--sidebar-width));
   min-height: 100vh;
-  padding: 0 var(--section-padding) var(--section-padding) var(--section-padding);
-  padding-top: calc(80px + var(--section-padding)); /* Add padding for fixed navbar overlap */
+  padding: var(--section-padding); /* Removed 80px calculation, just use section padding */
+  padding-top: var(--section-padding); 
   background-color: var(--bs-body-bg);
 }
 
@@ -397,6 +427,8 @@ body {
   border: none;
   border-radius: var(--border-radius-card);
   box-shadow: var(--shadow-card);
+  overflow: hidden;
+  word-wrap: break-word;
 }
 
 .card-gradient-header {
@@ -453,18 +485,16 @@ body {
    PAGE NAVBAR COMPONENT
    ============================== */
 .page-navbar {
-  /* margin: 0 calc(var(--section-padding) * -1) 1.5rem calc(var(--section-padding) * -1); */
-  margin: 0; 
-  /* width: calc(100% + (var(--section-padding) * 2)); NO, fixed needs direct width */
-  width: calc(100% - var(--sidebar-width));
-  padding: 0.75rem var(--section-padding); /* Restore horizontal padding internally */
-  position: fixed;
+  /* Use negative margins to pull navbar to edges of main-content which has padding */
+  margin: calc(var(--section-padding) * -1) calc(var(--section-padding) * -1) 1.5rem calc(var(--section-padding) * -1);
+  width: calc(100% + (var(--section-padding) * 2)); /* Full width including the negative margins */
+  padding: 0.75rem var(--section-padding);
+  position: sticky; /* Sticky ensures it takes space in flow (no overlap) */
   top: 0;
-  left: var(--sidebar-width);
+  left: 0;
   right: 0;
-  /* overflow: hidden; -- REMOVED to allow dropdowns */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  z-index: 1000; /* Ensure dropdowns appear above page content */
+  z-index: 1000;
 }
 
 /* Decoration Container handles the clipping */
@@ -572,6 +602,10 @@ body {
   color: white;
   margin: 0;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
 }
 
 .page-navbar-user .navbar-title {
@@ -1452,4 +1486,543 @@ body {
 
 .sidebar .dropdown-toggle.show::after {
     transform: rotate(180deg);
+}
+
+/* ==============================
+   BURGER MENU & SIDEBAR OVERLAY
+   ============================== */
+
+/* Burger Menu Button */
+.burger-menu-btn {
+  display: none;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  z-index: 1001;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.burger-menu-btn span {
+  display: block;
+  width: 24px;
+  height: 2.5px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.page-navbar-user .burger-menu-btn span {
+  background: #1f2937;
+}
+
+/* Burger animation when active */
+.sidebar-open .burger-menu-btn span:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+}
+
+.sidebar-open .burger-menu-btn span:nth-child(2) {
+  opacity: 0;
+}
+
+.sidebar-open .burger-menu-btn span:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Prevent body scroll when sidebar is open */
+body.sidebar-open {
+  overflow: hidden;
+}
+
+/* ==============================
+   ENHANCED RESPONSIVE BREAKPOINTS
+   Comprehensive media queries for all device sizes
+   ============================== */
+
+/* Tablet and below: Hide sidebar, make navbar full width */
+@media (max-width: 991.98px) {
+  /* Show burger menu */
+  .burger-menu-btn {
+    display: flex !important;
+  }
+
+  .page-navbar {
+    /* Maintain the calculation logic even on mobile because parent (main-content) still has padding */
+    width: calc(100% + (var(--section-padding) * 2)) !important;
+    left: 0 !important;
+  }
+
+  .sidebar {
+    z-index: 1050;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  /* Table ensure scrollable */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dataTables_wrapper table {
+    min-width: 600px;
+  }
+
+  /* Progress ring adjustment */
+  .progress-ring {
+    width: 180px !important;
+    height: 180px !important;
+  }
+
+  .calendar-container {
+    max-width: 100%;
+  }
+}
+
+/* Mobile landscape and below */
+@media (max-width: 767.98px) {
+  /* Navbar adjustments */
+  .page-navbar {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .page-navbar .container-fluid {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .navbar-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+
+  .navbar-profile-btn .navbar-profile-name {
+    display: none;
+  }
+
+  .burger-menu-btn {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .burger-menu-btn span {
+    width: 20px;
+  }
+
+  /* Sidebar with box shadow when visible */
+  .sidebar.show {
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Ensure sidebar is above overlay */
+  .sidebar {
+    z-index: 1050 !important;
+  }
+
+  /* Hide navbar subtitle on very small screens */
+  .navbar-subtitle {
+    display: none;
+  }
+
+  /* Adjust navbar brand spacing */
+  .navbar-brand {
+    gap: 0.5rem !important;
+  }
+
+  /* DataTables controls stack */
+  .dataTables_wrapper .dataTables_length,
+  .dataTables_wrapper .dataTables_filter {
+    text-align: left;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_paginate {
+    text-align: center;
+    width: 100%;
+  }
+
+  /* Reduce padding in table cells */
+  table.dataTable td,
+  table.dataTable th {
+    padding: 0.5rem 0.3rem;
+    font-size: 0.8rem;
+  }
+
+  /* Stat cards adjustments */
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-card .stat-icon {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 1.5rem !important;
+  }
+
+  .stat-card .stat-value {
+    font-size: 1.5rem;
+  }
+
+  /* Form adjustments */
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-control,
+  .form-select {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  /* Button adjustments */
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .btn-sm {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+  }
+
+  /* Action buttons in tables */
+  .action-buttons .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  /* Dashboard specific */
+  .progress-percentage {
+    font-size: 1.5rem;
+  }
+
+  .stepper-item {
+    font-size: 0.75rem;
+  }
+
+  /* Modal adjustments */
+  .modal-dialog {
+    margin: 0.5rem;
+    max-width: calc(100% - 1rem);
+  }
+
+  .modal-content {
+    border-radius: 0.75rem;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 1rem;
+  }
+}
+
+/* Small phones and below */
+@media (max-width: 575.98px) {
+  /* Navbar compact */
+  .page-navbar {
+    padding: 0.4rem 0.5rem;
+  }
+
+  .page-navbar .container-fluid {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  .navbar-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .navbar-title {
+    font-size: 0.9rem;
+    line-height: 1.2;
+    max-width: 180px;
+  }
+
+  /* Adjust right section spacing */
+  .page-navbar .d-flex.align-items-center.gap-2 {
+    gap: 0.4rem !important;
+  }
+
+  .navbar-subtitle {
+    font-size: 0.7rem;
+    display: none;
+  }
+
+  .burger-menu-btn {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .burger-menu-btn span {
+    width: 18px;
+    height: 2px;
+  }
+
+  /* Adjust navbar brand spacing */
+  .navbar-brand {
+    gap: 0.4rem !important;
+  }
+
+  /* Make profile image smaller */
+  .navbar-profile-img {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Adjust notification button */
+  .navbar-action-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .navbar-action-btn i {
+    font-size: 1.1rem;
+  }
+
+  /* Main content tighter padding */
+  .main-content {
+    padding: 0.5rem;
+  }
+
+  /* Tables even more compact */
+  .dataTables_wrapper table {
+    min-width: 500px;
+  }
+
+  table.dataTable td,
+  table.dataTable th {
+    padding: 0.4rem 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  /* Hide less important columns on mobile */
+  .mobile-hide {
+    display: none;
+  }
+
+  /* Stat cards compact */
+  .stat-card {
+    padding: 0.75rem;
+  }
+
+  .stat-card .stat-icon {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 1.25rem !important;
+  }
+
+  .stat-card .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .stat-card .stat-label {
+    font-size: 0.7rem;
+  }
+
+  /* Form compact */
+  .form-control,
+  .form-select {
+    font-size: 0.85rem;
+    padding: 0.45rem 0.65rem;
+  }
+
+  label {
+    font-size: 0.8rem;
+  }
+
+  /* Buttons compact */
+  .btn {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8rem;
+  }
+
+  .btn-lg {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  /* Search input responsive */
+  .position-relative[style*="width: 280px"],
+  .position-relative[style*="width:280px"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Dashboard compact */
+  .progress-ring {
+    width: 120px !important;
+    height: 120px !important;
+  }
+
+  .progress-percentage {
+    font-size: 1.25rem;
+  }
+
+  .calendar-date {
+    font-size: 0.65rem;
+    padding: 0.2rem;
+  }
+
+  /* Modal compact */
+  .modal-dialog {
+    margin: 0.25rem;
+    max-width: calc(100% - 0.5rem);
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 0.75rem;
+  }
+
+  .modal-title {
+    font-size: 1rem;
+  }
+
+  /* Greeting text smaller */
+  .display-6 {
+    font-size: 1.5rem !important;
+  }
+
+  .display-5 {
+    font-size: 1.75rem !important;
+  }
+}
+
+/* Extra small devices (very small phones) */
+@media (max-width: 374.98px) {
+  .navbar-title {
+    font-size: 0.8rem;
+    line-height: 1.1;
+    max-width: 120px;
+  }
+
+  /* Further reduce gap on extra small */
+  .page-navbar .d-flex.align-items-center.gap-2 {
+    gap: 0.3rem !important;
+  }
+
+  .navbar-brand {
+    gap: 0.3rem !important;
+  }
+
+  .burger-menu-btn {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .burger-menu-btn span {
+    width: 16px;
+    height: 2px;
+  }
+
+  .navbar-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+
+  .navbar-profile-img {
+    width: 26px;
+    height: 26px;
+  }
+
+  .navbar-action-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .navbar-action-btn i {
+    font-size: 1rem;
+  }
+
+  .stat-card .stat-value {
+    font-size: 1.1rem;
+  }
+
+  .btn {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.75rem;
+  }
+
+  .progress-ring {
+    width: 100px !important;
+    height: 100px !important;
+  }
+
+  .progress-percentage {
+    font-size: 1.1rem;
+  }
+
+  /* Extra compact sidebar on very small screens */
+  .sidebar .top {
+    padding: 20px 15px;
+  }
+
+  .sidebar .top .logo .icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .sidebar .top .logo span {
+    font-size: 1.1rem;
+  }
+
+  .sidebar ul li a {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Landscape phone optimization */
+@media (max-width: 767.98px) and (orientation: landscape) {
+  .main-content {
+    padding: 0.5rem 1rem;
+  }
+
+  .modal-dialog {
+    max-width: 90%;
+  }
 }

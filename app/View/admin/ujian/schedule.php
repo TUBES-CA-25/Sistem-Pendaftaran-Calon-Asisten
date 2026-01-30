@@ -15,14 +15,19 @@ $bankSoalList = $data['bankSoalList'] ?? [];
         display: inline-flex; align-items: center; justify-content: center;
         border-radius: 8px; transition: all 0.2s;
     }
+    .table-custom {
+        --bs-table-border-color: #e0e0e0; /* Matches reference image crispness */
+    }
     .table-custom thead th {
         color: #2f66f6; font-weight: 700; font-size: 0.75rem;
         text-transform: uppercase; letter-spacing: 0.5px;
-        background-color: #fff; border-top: 1px solid #dee2e6;
+        background-color: #fff; border-top: 1px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0; 
         padding: 1rem 0.75rem;
     }
     .table-custom tbody td {
         padding: 1rem 0.75rem; color: #333; font-size: 0.875rem;
+        border-color: #e0e0e0;
     }
     .modal-header-gradient {
         background: var(--gradient-header); color: #fff;
@@ -45,20 +50,33 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                 <input type="text" id="searchInput" class="form-control rounded-3 ps-5" placeholder="Cari nama atau stambuk...">
             </div>
             <div class="d-flex gap-3">
-                <button class="btn btn-primary btn-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
-                    <i class="bi bi-plus-circle"></i> Tambah Jadwal
-                </button>
-                <button class="btn btn-success btn-gradient-success border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2" data-bs-toggle="modal" data-bs-target="#bulkScheduleModal">
-                    <i class="bi bi-calendar-plus"></i> Bulk Schedule
-                </button>
+                <div class="dropdown">
+                    <button class="btn btn-primary btn-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-plus-circle"></i> Tambah Data
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 mt-2">
+                        <li>
+                            <a class="dropdown-item px-3 py-2 d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
+                                <i class="bi bi-person-plus text-primary"></i>
+                                <span>Tambah Satuan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item px-3 py-2 d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#bulkScheduleModal">
+                                <i class="bi bi-people text-success"></i>
+                                <span>Bulk Schedule</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
         <!-- Student Schedule Table -->
-        <div class="card border shadow-sm mb-3">
+        <div class="card mb-3 rounded-0 border-0 shadow-none">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered align-middle mb-0" id="jadwalTable">
+                    <table class="table table-hover table-bordered align-middle mb-0 table-custom" id="jadwalTable">
                         <thead>
                             <tr>
                                 <th class="text-center py-3 px-3" width="5%">NO</th>
@@ -101,6 +119,12 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                                                 </button>
                                                 <button class="btn-action bg-danger-subtle text-danger border-0 delete-schedule" data-id="<?= $row['id'] ?>" title="Hapus">
                                                     <i class="bi bi-trash"></i>
+                                                </button>
+                                                <button class="btn-action bg-info-subtle text-info border-0 reset-exam" 
+                                                        data-id="<?= $row['id_mahasiswa'] ?>" 
+                                                        data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
+                                                        title="Reset Pengerjaan">
+                                                    <i class="bi bi-arrow-counterclockwise"></i>
                                                 </button>
                                             </div>
                                         </td>
@@ -477,6 +501,41 @@ $(document).ready(function() {
             });
         }, 'Apakah Anda yakin ingin menghapus jadwal tes ini?');
     });
-});
+        // Reset Exam Handler
+        $(document).on('click', '.reset-exam', function() {
+            const idMahasiswa = $(this).data('id');
+            const nama = $(this).data('nama');
+            
+            showActionConfirmation({
+                title: 'Reset Pengerjaan Tes?',
+                message: `Apakah Anda yakin ingin mereset pengerjaan tes untuk <strong>${nama}</strong>? <br><small class="text-danger">Seluruh jawaban dan nilai akan dihapus permanen.</small>`,
+                btnText: 'Reset Sekarang',
+                type: 'danger',
+                onConfirm: function() {
+                    $.ajax({
+                        url: '<?= APP_URL ?>/admin/reset-ujian',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ id: idMahasiswa }),
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                showAlert(response.message, true);
+                            } else {
+                                showAlert(response.message || 'Gagal mereset ujian', false);
+                            }
+                        },
+                        error: function(xhr) {
+                            let msg = 'Terjadi kesalahan server';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                msg = xhr.responseJSON.message;
+                            } else if (xhr.responseText) {
+                                msg = 'Error: ' + xhr.responseText.substring(0, 100);
+                            }
+                            showAlert(msg, false);
+                        }
+                    });
+                }
+            });
+        });
+    });
 </script>
-

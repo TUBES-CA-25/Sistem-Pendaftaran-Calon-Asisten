@@ -1,0 +1,184 @@
+/* ==============================
+   AUTH PAGE CUSTOM STYLES
+   Custom styles for authentication page (login & register)
+   ============================== */
+
+/* Input Wrapper */
+.input-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px !important;
+    padding: 0 15px;
+    height: 52px;
+    transition: all 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+    border-color: #3dc2ec;
+    box-shadow: 0 0 0 4px rgba(61, 194, 236, 0.1);
+}
+
+.input-wrapper .input-icon {
+    width: 22px;
+    height: 22px;
+    opacity: 0.5;
+    flex-shrink: 0;
+    margin-right: 12px;
+    display: block;
+}
+
+.input-wrapper input {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100% !important;
+    font-size: 15px !important;
+    flex: 1;
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    color: #333;
+}
+
+.input-wrapper input::placeholder {
+    color: #999;
+}
+
+.input-wrapper .toggle-password {
+    margin-left: 10px;
+    cursor: pointer;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    transition: color 0.2s;
+}
+
+.input-wrapper .toggle-password:hover {
+    color: #3dc2ec;
+}
+
+/* Error Message */
+.error-msg {
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+/* Logo Section */
+.logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.logo-section img {
+    width: 70px;
+    height: auto;
+}
+
+/* Submit Button */
+.btn-submit {
+    background: linear-gradient(135deg, #3dc2ec 0%, #4B70F5 100%) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(61, 194, 236, 0.4);
+}
+
+/* Helper Links */
+.helper-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.helper-links a {
+    color: #666;
+    text-decoration: none;
+}
+
+.helper-links a:hover {
+    color: #3dc2ec;
+}
+
+/* ==============================
+   RESPONSIVE STYLES FOR AUTH PAGE
+   ============================== */
+
+/* Tablet */
+@media (max-width: 768px) {
+    .logo-section {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .helper-links {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    .input-wrapper {
+        height: 44px;
+        padding: 0 10px;
+    }
+
+    .input-wrapper .input-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    .btn-submit {
+        padding: 10px !important;
+    }
+
+    .logo-section img {
+        width: 45px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 374px) {
+    .input-wrapper {
+        height: 42px;
+    }
+
+    .logo-section img {
+        width: 38px;
+    }
+
+    h1 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Prevent horizontal scroll */
+body {
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 100%;
+}
