@@ -48,6 +48,11 @@ $nilai = $nilai ?? [];
         border-left: 5px solid #ef4444 !important;
     }
 
+    .soal-card.unanswered {
+        border-left: 5px solid #94a3b8 !important;
+        background-color: #f8fafc;
+    }
+
     .soal-number {
         background: var(--gradient-header);
         color: #fff;
@@ -60,6 +65,41 @@ $nilai = $nilai ?? [];
         font-size: 0.9rem;
         font-weight: 700;
         box-shadow: 0 4px 10px rgba(47, 102, 246, 0.3);
+    }
+
+    /* Filter Button Styles */
+    .filter-btn-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        border: 2px solid #e2e8f0;
+        background: #fff;
+        color: #64748b;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .filter-btn:hover {
+        border-color: #2563eb;
+        color: #2563eb;
+        background: #eff6ff;
+    }
+
+    .filter-btn.active {
+        border-color: #2563eb;
+        background: #2563eb;
+        color: #fff;
+    }
+
+    .filter-btn i {
+        margin-right: 4px;
     }
 </style>
 
@@ -209,11 +249,52 @@ $nilai = $nilai ?? [];
                         </div>
                     </div>
 
+                    <!-- Statistik Jawaban -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-value" id="statTotal">0</div>
+                                <div class="stat-label">Total Soal</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card success">
+                                <div class="stat-value text-success" id="statBenar">0</div>
+                                <div class="stat-label">Benar</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card warning">
+                                <div class="stat-value text-danger" id="statSalah">0</div>
+                                <div class="stat-label">Salah</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-value text-muted" id="statTidakDijawab">0</div>
+                                <div class="stat-label">Tidak Dijawab</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Soal Jawaban Section -->
                     <div class="mt-4">
-                        <h5 class="fw-semibold text-dark pb-2 border-bottom mb-3">
-                            <i class="bi bi-list-check"></i> Soal dan Jawaban
-                        </h5>
+                        <div class="d-flex justify-content-between align-items-center pb-2 border-bottom mb-3 flex-wrap gap-2">
+                            <h5 class="fw-semibold text-dark mb-0">
+                                <i class="bi bi-list-check"></i> Soal dan Jawaban
+                            </h5>
+                            <div class="filter-btn-group">
+                                <button class="filter-btn active" data-filter="semua">
+                                    <i class="bi bi-grid-3x3-gap"></i> Semua
+                                </button>
+                                <button class="filter-btn" data-filter="pilihan_ganda">
+                                    <i class="bi bi-ui-checks"></i> Pilihan Ganda
+                                </button>
+                                <button class="filter-btn" data-filter="essay">
+                                    <i class="bi bi-pencil-square"></i> Essay
+                                </button>
+                            </div>
+                        </div>
                         <div id="soalJawabanList" class="row g-3">
                             <p class="text-muted">Memuat data...</p>
                         </div>
@@ -331,39 +412,89 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.status === 'success' && response.data.length > 0) {
                     let html = '';
+                    let totalSoal = response.data.length;
+                    let benarCount = 0;
+                    let salahCount = 0;
+                    let tidakDijawabCount = 0;
+
                     response.data.forEach((item, index) => {
-                        const isCorrect = item.jawaban === item.jawaban_user;
-                        const cardClass = isCorrect ? 'correct' : 'wrong';
-                        const borderClass = isCorrect ? 'border-success' : 'border-danger';
-                        const icon = isCorrect
-                            ? '<i class="bi bi-check-circle-fill text-success"></i>'
-                            : '<i class="bi bi-x-circle-fill text-danger"></i>';
+                        const isAnswered = item.jawaban_user !== null && item.jawaban_user !== '';
+                        const isCorrect = isAnswered && (item.jawaban === item.jawaban_user);
+                        const tipeSoal = item.status_soal || 'essay';
+                        const isPilihanGanda = tipeSoal === 'pilihan_ganda';
+
+                        let cardClass, borderClass, icon, statusBadge;
+
+                        if (!isAnswered) {
+                            // Tidak dijawab
+                            tidakDijawabCount++;
+                            cardClass = 'unanswered';
+                            borderClass = 'border-secondary';
+                            icon = '<i class="bi bi-question-circle-fill text-muted"></i>';
+                            statusBadge = 'bg-secondary';
+                        } else if (isCorrect) {
+                            // Benar
+                            benarCount++;
+                            cardClass = 'correct';
+                            borderClass = 'border-success';
+                            icon = '<i class="bi bi-check-circle-fill text-success"></i>';
+                            statusBadge = 'bg-success';
+                        } else {
+                            // Salah
+                            salahCount++;
+                            cardClass = 'wrong';
+                            borderClass = 'border-danger';
+                            icon = '<i class="bi bi-x-circle-fill text-danger"></i>';
+                            statusBadge = 'bg-danger';
+                        }
+
+                        // Format pilihan untuk ditampilkan
+                        let pilihanText = '';
+                        try {
+                            const pilihanObj = JSON.parse(item.pilihan);
+                            pilihanText = Object.entries(pilihanObj)
+                                .map(([key, value]) => `${key}. ${value}`)
+                                .join('<br>');
+                        } catch (e) {
+                            pilihanText = item.pilihan;
+                        }
+
+                        // Badge tipe soal
+                        const tipeBadge = isPilihanGanda
+                            ? '<span class="badge bg-primary bg-opacity-10 text-primary border border-primary ms-2"><i class="bi bi-ui-checks"></i> PG</span>'
+                            : '<span class="badge bg-warning bg-opacity-10 text-warning border border-warning ms-2"><i class="bi bi-pencil-square"></i> Essay</span>';
 
                         html += `
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 soal-item" data-tipe="${tipeSoal}">
                                 <div class="card soal-card ${cardClass} border-start border-4 ${borderClass} h-100 shadow-sm">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-start mb-3">
-                                            <div class="soal-number">${index + 1}</div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="soal-number">${index + 1}</div>
+                                                ${tipeBadge}
+                                            </div>
                                             <div style="font-size: 1.2rem;">${icon}</div>
                                         </div>
                                         <div class="mb-3">
                                             <strong class="text-dark">${item.deskripsi}</strong>
                                         </div>
                                         <div class="small">
+                                            ${isPilihanGanda ? `
                                             <div class="mb-2">
                                                 <span class="text-muted">Pilihan:</span>
-                                                <span class="ms-1">${item.pilihan}</span>
+                                                <div class="ms-1 mt-1">${pilihanText}</div>
                                             </div>
+                                            ` : ''}
                                             <div class="mb-2">
                                                 <span class="text-muted">Jawaban Benar:</span>
                                                 <span class="badge bg-success ms-1">${item.jawaban}</span>
                                             </div>
                                             <div>
                                                 <span class="text-muted">Jawaban Mahasiswa:</span>
-                                                <span class="badge ${isCorrect ? 'bg-success' : 'bg-danger'} ms-1">
-                                                    ${item.jawaban_user || '<span class="text-muted fst-italic">Tidak menjawab</span>'}
-                                                </span>
+                                                ${isAnswered
+                                                    ? `<span class="badge ${statusBadge} ms-1">${item.jawaban_user}</span>`
+                                                    : '<span class="badge bg-secondary ms-1">Tidak menjawab</span>'
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -371,9 +502,21 @@ $(document).ready(function() {
                             </div>
                         `;
                     });
+
+                    // Update statistik
+                    $('#statTotal').text(totalSoal);
+                    $('#statBenar').text(benarCount);
+                    $('#statSalah').text(salahCount);
+                    $('#statTidakDijawab').text(tidakDijawabCount);
+
                     $('#soalJawabanList').html(html);
                 } else {
                     $('#soalJawabanList').html('<div class="col-12"><p class="text-muted">Tidak ada data soal dan jawaban.</p></div>');
+                    // Reset statistik
+                    $('#statTotal').text(0);
+                    $('#statBenar').text(0);
+                    $('#statSalah').text(0);
+                    $('#statTidakDijawab').text(0);
                 }
             },
             error: function() {
@@ -392,6 +535,23 @@ $(document).ready(function() {
         $('#view-detail').addClass('d-none');
         $('#view-list').removeClass('d-none');
         currentMahasiswaId = null;
+    });
+
+    // Filter Button Logic
+    $(document).on('click', '.filter-btn', function() {
+        const filter = $(this).data('filter');
+
+        // Update active state
+        $('.filter-btn').removeClass('active');
+        $(this).addClass('active');
+
+        // Filter soal items
+        if (filter === 'semua') {
+            $('.soal-item').show();
+        } else {
+            $('.soal-item').hide();
+            $(`.soal-item[data-tipe="${filter}"]`).show();
+        }
     });
 
     // Submit nilai form

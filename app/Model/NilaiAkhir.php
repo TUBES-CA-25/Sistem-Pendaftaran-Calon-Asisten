@@ -123,13 +123,15 @@ class NilaiAkhir extends Model
     }
     public function getSoalAndJawaban($id)
     {
-        $query = "SELECT s.deskripsi, s.pilihan, s.jawaban, j.jawaban as jawaban_user
-                  FROM jawaban j
-                  LEFT JOIN soal s ON j.id_soal = s.id
-                  WHERE j.id_mahasiswa = :id_mahasiswa";
+        // Get all soal with LEFT JOIN to jawaban to show all questions
+        // This will return all questions, with jawaban_user as NULL for unanswered questions
+        $query = "SELECT s.id, s.deskripsi, s.pilihan, s.jawaban, s.status_soal, j.jawaban as jawaban_user
+                  FROM soal s
+                  LEFT JOIN jawaban j ON s.id = j.id_soal AND j.id_mahasiswa = :id_mahasiswa
+                  ORDER BY s.id ASC";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(':id_mahasiswa', $id);
-          $stmt->execute();
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
