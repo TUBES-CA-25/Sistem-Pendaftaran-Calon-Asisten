@@ -27,23 +27,30 @@ class Absensi extends Model {
     }
     public function getAbsensi() {
         $sql = "SELECT
-        a.id, 
+        a.id,
         a.id_mahasiswa,
-                    m.nama_lengkap, 
-                    m.stambuk, 
-                    a.absensi_wawancara_I, 
-                    a.absensi_wawancara_II, 
-                    a.absensi_wawancara_III, 
-                    a.absensi_tes_tertulis, 
+                    m.nama_lengkap,
+                    m.stambuk,
+                    m.foto_profil,
+                    a.absensi_wawancara_I,
+                    a.absensi_wawancara_II,
+                    a.absensi_wawancara_III,
+                    a.absensi_tes_tertulis,
                     a.absensi_presentasi,
                     COALESCE(na.total_nilai, na.nilai) as nilai_akhir,
-                    bm.accepted as berkas_status
-                FROM " . self::$table . " a 
+                    bm.accepted as berkas_status,
+                    bm.foto as berkas_foto
+                FROM " . self::$table . " a
                 JOIN mahasiswa m ON a.id_mahasiswa = m.id
                 LEFT JOIN nilai_akhir na ON m.id = na.id_mahasiswa
                 LEFT JOIN berkas_mahasiswa bm ON m.id = bm.id_mahasiswa
+                    AND bm.id = (
+                        SELECT MAX(id)
+                        FROM berkas_mahasiswa
+                        WHERE id_mahasiswa = m.id
+                    )
                 GROUP BY a.id";
-    
+
         try {
             $stmt = self::getDB()->prepare($sql);
             $stmt->execute();

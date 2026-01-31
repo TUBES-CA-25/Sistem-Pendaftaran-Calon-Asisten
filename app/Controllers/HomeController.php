@@ -702,14 +702,14 @@ class HomeController extends Controller
             return $filename;
         }
 
-        // Check profile directory first (preferred for user photos)
-        if (file_exists($docRoot . 'profile/' . $filename)) {
-            return $webBasePath . 'profile/' . $filename . '?v=' . time(); // Add cache busting
-        }
-
-        // Check imageUser directory (legacy/berkas uploads)
+        // Check imageUser directory first (berkas uploads - priority)
         if (file_exists($docRoot . 'imageUser/' . $filename)) {
             return $webBasePath . 'imageUser/' . $filename . '?v=' . time();
+        }
+
+        // Check profile directory as fallback
+        if (file_exists($docRoot . 'profile/' . $filename)) {
+            return $webBasePath . 'profile/' . $filename . '?v=' . time(); // Add cache busting
         }
 
         // Fallback to default if not found in either
