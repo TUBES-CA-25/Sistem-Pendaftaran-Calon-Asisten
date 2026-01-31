@@ -159,6 +159,15 @@ class BankSoalController extends Controller
                     $destPath = $uploadDir . $newFilename;
 
                     if (move_uploaded_file($_FILES['soal_image_edit']['tmp_name'], $destPath)) {
+                        // Delete old image if exists
+                        if (!empty($existingImage)) {
+                            $oldImagePath = $projectRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $existingImage);
+                            if (file_exists($oldImagePath)) {
+                                @unlink($oldImagePath);
+                                error_log("Deleted old image file: " . $oldImagePath);
+                            }
+                        }
+
                         // Use relative path from web root
                         $imageUrl = 'res/uploads/soal/' . $newFilename;
                         error_log("Image uploaded successfully to: " . $destPath);

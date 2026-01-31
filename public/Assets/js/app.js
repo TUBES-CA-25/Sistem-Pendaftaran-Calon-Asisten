@@ -165,7 +165,7 @@ window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
     const modalGif = document.getElementById("modalGif");
 
     if (modalMessage) modalMessage.textContent = message;
-    
+
     if (modalGif) {
         if (gifUrl) {
             modalGif.src = gifUrl;
@@ -175,7 +175,19 @@ window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
         }
     }
 
-    const modal = new bootstrap.Modal(modalEl);
+    // Check if bootstrap is available
+    if (typeof bootstrap === 'undefined' || typeof bootstrap.Modal === 'undefined') {
+        console.error('Bootstrap Modal is not available');
+        alert(message);
+        if (onCloseCallback) onCloseCallback();
+        return;
+    }
+
+    // Get or create modal instance
+    let modal = bootstrap.Modal.getInstance(modalEl);
+    if (!modal) {
+        modal = new bootstrap.Modal(modalEl);
+    }
     modal.show();
 
     // Handle close callback
@@ -186,7 +198,7 @@ window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
         closeBtn.parentNode.replaceChild(newBtn, closeBtn);
         newBtn.addEventListener('click', onCloseCallback);
     }
-    
+
     // Also handle modal hidden event
     if (onCloseCallback) {
         modalEl.addEventListener('hidden.bs.modal', function handler() {

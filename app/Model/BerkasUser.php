@@ -50,55 +50,58 @@ class BerkasUser extends Model {
     }
 
     public function save(BerkasUser $berkas) {
-        // Check if record already exists for this student
+        // Get id_mahasiswa from id_user first
+        $idMahasiswaData = $this->getIdMahasiswa($berkas->id_mahasiswa);
+        if (!$idMahasiswaData || !isset($idMahasiswaData['id'])) {
+            throw new Exception("Mahasiswa tidak ditemukan");
+        }
+        $idMahasiswa = $idMahasiswaData['id'];
+
+        // Check if record already exists for this student (using correct id_mahasiswa)
         $checkQuery = "SELECT id FROM " . static::$table . " WHERE id_mahasiswa = ?";
         $stmtCheck = self::getDB()->prepare($checkQuery);
-        $stmtCheck->bindParam(1, $berkas->id_mahasiswa);
+        $stmtCheck->bindParam(1, $idMahasiswa);
         $stmtCheck->execute();
 
+        // If berkas already exists, call update instead (which will delete old files)
         if ($stmtCheck->rowCount() > 0) {
             return $this->update($berkas);
         }
 
-        $query = "INSERT INTO " . static::$table . " 
-            (id_mahasiswa, foto, cv, transkrip_nilai, surat_pernyataan) 
-            VALUES 
+        // If new berkas, proceed with insert
+        $query = "INSERT INTO " . static::$table . "
+            (id_mahasiswa, foto, cv, transkrip_nilai, surat_pernyataan)
+            VALUES
             (?, ?, ?, ?, ?)";
-    
+
         $stmt = self::getDB()->prepare($query);
-    
+
         $gambar = $this->getImageName($berkas->foto, $berkas->fotoSize);
         if (!$gambar) {
             throw new Exception("Gagal memproses foto");
         }
-    
+
         $fileCv = $this->getFileCv($berkas->cv, $berkas->cvSize);
         if (!$fileCv) {
             throw new Exception("Gagal memproses CV");
         }
-    
+
         $fileNilai = $this->getFileTranskrip($berkas->transkripNilai, $berkas->transkripNilaiSize);
         if (!$fileNilai) {
             throw new Exception("Gagal memproses transkrip nilai");
         }
-    
+
         $filePernyataan = $this->getFileSuratPernyataan($berkas->suratPernyataan, $berkas->suratPernyataanSize);
         if (!$filePernyataan) {
             throw new Exception("Gagal memproses surat pernyataan");
         }
-    
-        $idMahasiswaData = $this->getIdMahasiswa($berkas->id_mahasiswa);
-        if (!$idMahasiswaData || !isset($idMahasiswaData['id'])) {
-            throw new Exception("Mahasiswa tidak ditemukan"); 
-        }
-        $idMahasiswa = $idMahasiswaData['id']; 
-        
+
         $stmt->bindParam(1, $idMahasiswa);
         $stmt->bindParam(2, $gambar);
         $stmt->bindParam(3, $fileCv);
         $stmt->bindParam(4, $fileNilai);
         $stmt->bindParam(5, $filePernyataan);
-    
+
         return $stmt->execute();
     }
 
@@ -272,8 +275,18 @@ class BerkasUser extends Model {
     }
 
     public function update(BerkasUser $berkasUser) {
+        $idMahasiswaData = $this->getIdMahasiswa($berkasUser->id_mahasiswa);
+        if(!$idMahasiswaData || !isset($idMahasiswaData['id'])) {
+            throw new Exception("Mahasiswa tidak ditemukan");
+        }
+        $idMahasiswa = $idMahasiswaData['id'];
+
+        // Get old files to delete them after successful update
+        $oldFiles = $this->getOldBerkasFiles($idMahasiswa);
+
         $query = "UPDATE " . static::$table . " SET foto = ?, cv = ?, transkrip_nilai = ?, surat_pernyataan = ?, accepted = 0 WHERE id_mahasiswa = ?";
         $stmt = self::getDB()->prepare($query);
+
         $gambar = $this->getImageName($berkasUser->foto, $berkasUser->fotoSize);
         if (!$gambar) {
             throw new Exception("Gagal memproses foto");
@@ -291,17 +304,21 @@ class BerkasUser extends Model {
         if(!$filePernyataan) {
             throw new Exception("Gagal memproses surat pernyataan");
         }
-        $idMahasiswaData = $this->getIdMahasiswa($berkasUser->id_mahasiswa);
-        if(!$idMahasiswaData || !isset($idMahasiswaData['id'])) {
-            throw new Exception("Mahasiswa tidak ditemukan");
-        }
-        $idMahasiswa = $idMahasiswaData['id'];
+
         $stmt->bindParam(1,$gambar);
         $stmt->bindParam(2,$fileCv);
         $stmt->bindParam(3,$fileNilai);
         $stmt->bindParam(4,$filePernyataan);
         $stmt->bindParam(5,$idMahasiswa);
-        return $stmt->execute();
+
+        $result = $stmt->execute();
+
+        // Delete old files after successful update
+        if ($result && $oldFiles) {
+            $this->deleteOldFiles($oldFiles);
+        }
+
+        return $result;
     }
 
     public function updatePhoto($idUser, $foto, $fotoSize) {
@@ -311,6 +328,9 @@ class BerkasUser extends Model {
             return false;
         }
         $idMahasiswa = $idMahasiswaData['id'];
+
+        // Get old photo to delete after successful update
+        $oldFiles = $this->getOldBerkasFiles($idMahasiswa);
 
         $gambar = $this->getImageName($foto, $fotoSize, 'image');
         if (!$gambar) {
@@ -335,7 +355,18 @@ class BerkasUser extends Model {
             $stmt->bindParam(2, $gambar);
         }
 
-        return $stmt->execute();
+        $result = $stmt->execute();
+
+        // Delete old photo after successful update
+        if ($result && $oldFiles && !empty($oldFiles['foto'])) {
+            $basePathImage = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
+            $fotoPath = $basePathImage . $oldFiles['foto'];
+            if (file_exists($fotoPath)) {
+                @unlink($fotoPath);
+            }
+        }
+
+        return $result;
     }
     public function getBerkasAdmin() {
         $query = "SELECT * FROM " . static::$table;
@@ -371,5 +402,83 @@ class BerkasUser extends Model {
         }
         return false;
     }
-    
-} 
+
+    /**
+     * Get old berkas files before update/delete
+     * @param int $idMahasiswa
+     * @return array|null Array containing old file names
+     */
+    private function getOldBerkasFiles($idMahasiswa) {
+        $query = "SELECT foto, cv, transkrip_nilai, surat_pernyataan FROM " . static::$table . " WHERE id_mahasiswa = ?";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(1, $idMahasiswa);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Delete old files from filesystem
+     * @param array $files Array containing file names to delete
+     */
+    private function deleteOldFiles($files) {
+        $basePathImage = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
+        $basePathBerkas = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser/';
+
+        // Delete foto (from imageUser directory)
+        if (!empty($files['foto'])) {
+            $fotoPath = $basePathImage . $files['foto'];
+            if (file_exists($fotoPath)) {
+                if (@unlink($fotoPath)) {
+                    error_log("File berhasil dihapus: " . $fotoPath);
+                } else {
+                    error_log("Gagal menghapus file: " . $fotoPath);
+                }
+            } else {
+                error_log("File tidak ditemukan untuk dihapus: " . $fotoPath);
+            }
+        }
+
+        // Delete cv (from berkasUser directory)
+        if (!empty($files['cv'])) {
+            $cvPath = $basePathBerkas . $files['cv'];
+            if (file_exists($cvPath)) {
+                if (@unlink($cvPath)) {
+                    error_log("File berhasil dihapus: " . $cvPath);
+                } else {
+                    error_log("Gagal menghapus file: " . $cvPath);
+                }
+            } else {
+                error_log("File tidak ditemukan untuk dihapus: " . $cvPath);
+            }
+        }
+
+        // Delete transkrip_nilai (from berkasUser directory)
+        if (!empty($files['transkrip_nilai'])) {
+            $transkripPath = $basePathBerkas . $files['transkrip_nilai'];
+            if (file_exists($transkripPath)) {
+                if (@unlink($transkripPath)) {
+                    error_log("File berhasil dihapus: " . $transkripPath);
+                } else {
+                    error_log("Gagal menghapus file: " . $transkripPath);
+                }
+            } else {
+                error_log("File tidak ditemukan untuk dihapus: " . $transkripPath);
+            }
+        }
+
+        // Delete surat_pernyataan (from berkasUser directory)
+        if (!empty($files['surat_pernyataan'])) {
+            $suratPath = $basePathBerkas . $files['surat_pernyataan'];
+            if (file_exists($suratPath)) {
+                if (@unlink($suratPath)) {
+                    error_log("File berhasil dihapus: " . $suratPath);
+                } else {
+                    error_log("Gagal menghapus file: " . $suratPath);
+                }
+            } else {
+                error_log("File tidak ditemukan untuk dihapus: " . $suratPath);
+            }
+        }
+    }
+
+}

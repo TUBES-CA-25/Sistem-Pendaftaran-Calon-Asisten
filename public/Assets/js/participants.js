@@ -132,7 +132,7 @@
             // RESET Image immediately to default to avoid showing previous user's image
             // This prevents the "glitch" where the old image persists while the new one loads
             if (modalFoto) {
-                modalFoto.src = `${PROJECT_ROOT}/res/imageUser/default.png`; 
+                modalFoto.src = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
             }
 
             // Populate header
@@ -140,12 +140,12 @@
             document.getElementById('modalStambukHeader').textContent = data.stambuk || '-';
             
             // Set photo
-            var fotoPath = data.foto ? `${PROJECT_ROOT}/res/imageUser/${data.foto}` : `${PROJECT_ROOT}/res/imageUser/default.png`;
-            
+            var fotoPath = data.foto ? `${PROJECT_ROOT}/res/imageUser/${data.foto}` : '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
+
             if (modalFoto) {
                 modalFoto.src = fotoPath;
                 modalFoto.onerror = function() {
-                    this.src = `${PROJECT_ROOT}/res/imageUser/default.png`;
+                    this.src = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
                 };
             }
             

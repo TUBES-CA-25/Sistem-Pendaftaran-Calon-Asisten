@@ -92,14 +92,18 @@ class PresentasiUser extends Model {
     }
     
     public function updateMakalahAndPpt(PresentasiUser $presentasiUser) {
-        $query = "UPDATE " . static::$table . " 
-            SET makalah = ?, ppt = ? WHERE id_mahasiswa = ?";
-        $stmt = self::getDB()->prepare($query);
-
         $idMahasiswa = $this->getIdMahasiswa($presentasiUser->id_mahasiswa);
         if (!$idMahasiswa || !isset($idMahasiswa['id'])) {
             throw new Exception("Mahasiswa tidak ditemukan" );
         }
+        $idMahasiswa = $idMahasiswa['id'];
+
+        // Get old files to delete after successful update
+        $oldFiles = $this->getOldPresentasiFiles($idMahasiswa);
+
+        $query = "UPDATE " . static::$table . "
+            SET makalah = ?, ppt = ? WHERE id_mahasiswa = ?";
+        $stmt = self::getDB()->prepare($query);
 
         $filePpt = $this->getFilePpt($presentasiUser->ppt, $presentasiUser->pptSize);
         if (!$filePpt) {
@@ -110,15 +114,18 @@ class PresentasiUser extends Model {
             throw new Exception("Gagal memproses makalah");
         }
 
-        $idMahasiswa = $idMahasiswa['id'];
         $stmt->bindParam(1, $fileMakalah, PDO::PARAM_STR);
         $stmt->bindParam(2, $filePpt, PDO::PARAM_STR);
         $stmt->bindParam(3, $idMahasiswa, PDO::PARAM_STR);
 
-       if($stmt->execute()) {
-           return true;
-       }
-       return false;
+        $result = $stmt->execute();
+
+        // Delete old files after successful update
+        if($result && $oldFiles) {
+            $this->deleteOldPresentasiFiles($oldFiles);
+        }
+
+        return $result;
     }
     
     private function getFilePpt($berkas, $berkasSize) {
@@ -220,6 +227,56 @@ class PresentasiUser extends Model {
             return null;
         }
         return $result['is_accepted'];
+    }
+
+    /**
+     * Get old presentasi files before update/delete
+     * @param int $idMahasiswa
+     * @return array|null Array containing old file names
+     */
+    private function getOldPresentasiFiles($idMahasiswa) {
+        $query = "SELECT makalah, ppt FROM " . static::$table . " WHERE id_mahasiswa = ?";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(1, $idMahasiswa);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Delete old presentasi files from filesystem
+     * @param array $files Array containing file names to delete
+     */
+    private function deleteOldPresentasiFiles($files) {
+        $basePathMakalah = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/makalahUser/';
+        $basePathPpt = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/pptUser/';
+
+        // Delete makalah
+        if (!empty($files['makalah'])) {
+            $makalahPath = $basePathMakalah . $files['makalah'];
+            if (file_exists($makalahPath)) {
+                if (@unlink($makalahPath)) {
+                    error_log("File makalah berhasil dihapus: " . $makalahPath);
+                } else {
+                    error_log("Gagal menghapus file makalah: " . $makalahPath);
+                }
+            } else {
+                error_log("File makalah tidak ditemukan untuk dihapus: " . $makalahPath);
+            }
+        }
+
+        // Delete ppt
+        if (!empty($files['ppt'])) {
+            $pptPath = $basePathPpt . $files['ppt'];
+            if (file_exists($pptPath)) {
+                if (@unlink($pptPath)) {
+                    error_log("File PPT berhasil dihapus: " . $pptPath);
+                } else {
+                    error_log("Gagal menghapus file PPT: " . $pptPath);
+                }
+            } else {
+                error_log("File PPT tidak ditemukan untuk dihapus: " . $pptPath);
+            }
+        }
     }
 
 }

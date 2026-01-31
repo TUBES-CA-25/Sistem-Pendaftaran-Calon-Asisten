@@ -32,7 +32,7 @@ if ($role === 'Admin') {
         }
     } else {
         // Fallback for Users if nothing provided
-        $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/default.png';
+        $photo = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
     }
 }
 

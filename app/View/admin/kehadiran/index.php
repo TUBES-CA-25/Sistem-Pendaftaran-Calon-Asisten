@@ -131,12 +131,12 @@ $mahasiswaList = $mahasiswaList ?? [];
                                 <div class="d-flex align-items-center gap-3">
                                     <?php
                                         // Use only foto from berkas_mahasiswa upload (res/imageUser)
-                                        $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/default.png';
+                                        $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
                                         if (!empty($row['berkas_foto'])) {
                                             $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . htmlspecialchars($row['berkas_foto']) . '?v=' . time();
                                         }
                                     ?>
-                                    <img src="<?= $photoUrl ?>" alt="Foto" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid #e5e7eb;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/res/profile/default.png'">
+                                    <img src="<?= $photoUrl ?>" alt="Foto" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid #e5e7eb;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
                                     <div>
                                         <div class="fw-semibold text-dark"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
                                         <div class="small text-muted">Mahasiswa</div>
@@ -347,7 +347,7 @@ function renderStatusBadge($val) {
             </div>
             <div class="modal-body p-0">
                 <div class="p-4 text-center bg-light border-bottom">
-                    <img id="rekapFoto" src="/Sistem-Pendaftaran-Calon-Asisten/res/profile/default.png" alt="Foto Profil" class="rounded-circle mx-auto mb-3" style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #e5e7eb; display: none;" onerror="this.style.display='none'; document.getElementById('rekapAvatar').parentElement.style.display='flex';">
+                    <img id="rekapFoto" src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png" alt="Foto Profil" class="rounded-circle mx-auto mb-3" style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #e5e7eb; display: none;" onerror="this.style.display='none'; document.getElementById('rekapAvatar').parentElement.style.display='flex';">
                     <div class="avatar-placeholder-large mx-auto mb-3" id="rekapAvatarContainer" style="width:70px; height:70px; font-size:1.75rem; display: flex;">
                         <span id="rekapAvatar">U</span>
                     </div>

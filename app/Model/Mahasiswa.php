@@ -119,6 +119,27 @@ class Mahasiswa extends Model
         try {
             $pdo->beginTransaction();
 
+            // Get berkas files before deletion
+            $berkasQuery = "SELECT foto, cv, transkrip_nilai, surat_pernyataan FROM berkas_mahasiswa WHERE id_mahasiswa = :id";
+            $berkasStmt = $pdo->prepare($berkasQuery);
+            $berkasStmt->bindParam(':id', $mahasiswaId);
+            $berkasStmt->execute();
+            $berkasFiles = $berkasStmt->fetch(\PDO::FETCH_ASSOC);
+
+            // Get presentasi files before deletion
+            $presentasiQuery = "SELECT makalah, ppt FROM presentasi WHERE id_mahasiswa = :id";
+            $presentasiStmt = $pdo->prepare($presentasiQuery);
+            $presentasiStmt->bindParam(':id', $mahasiswaId);
+            $presentasiStmt->execute();
+            $presentasiFiles = $presentasiStmt->fetch(\PDO::FETCH_ASSOC);
+
+            // Get foto_profil from mahasiswa before deletion
+            $fotoQuery = "SELECT foto_profil FROM " . static::$table . " WHERE id = :id";
+            $fotoStmt = $pdo->prepare($fotoQuery);
+            $fotoStmt->bindParam(':id', $mahasiswaId);
+            $fotoStmt->execute();
+            $mahasiswaData = $fotoStmt->fetch(\PDO::FETCH_ASSOC);
+
             // 1. Delete Berkas
             $query = "DELETE FROM berkas_mahasiswa WHERE id_mahasiswa = :id";
             $stmt = $pdo->prepare($query);
@@ -162,9 +183,107 @@ class Mahasiswa extends Model
             $stmt->execute();
 
             $pdo->commit();
+
+            // After successful commit, delete all physical files
+            $this->deleteAllMahasiswaFiles($berkasFiles, $presentasiFiles, $mahasiswaData);
+
         } catch (\Exception $e) {
             $pdo->rollBack();
             throw $e;
+        }
+    }
+
+    /**
+     * Delete all files related to a mahasiswa
+     * @param array|null $berkasFiles Berkas files (foto, cv, transkrip, surat)
+     * @param array|null $presentasiFiles Presentasi files (makalah, ppt)
+     * @param array|null $mahasiswaData Mahasiswa data (foto_profil)
+     */
+    private function deleteAllMahasiswaFiles($berkasFiles, $presentasiFiles, $mahasiswaData) {
+        $basePathImage = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
+        $basePathBerkas = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser/';
+        $basePathMakalah = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/makalahUser/';
+        $basePathPpt = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/pptUser/';
+        $basePathProfile = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/profile/';
+
+        // Delete berkas files
+        if ($berkasFiles) {
+            if (!empty($berkasFiles['foto'])) {
+                $fotoPath = $basePathImage . $berkasFiles['foto'];
+                if (file_exists($fotoPath)) {
+                    if (@unlink($fotoPath)) {
+                        error_log("Foto berkas berhasil dihapus saat delete mahasiswa: " . $fotoPath);
+                    } else {
+                        error_log("Gagal menghapus foto berkas saat delete mahasiswa: " . $fotoPath);
+                    }
+                }
+            }
+            if (!empty($berkasFiles['cv'])) {
+                $cvPath = $basePathBerkas . $berkasFiles['cv'];
+                if (file_exists($cvPath)) {
+                    if (@unlink($cvPath)) {
+                        error_log("CV berhasil dihapus saat delete mahasiswa: " . $cvPath);
+                    } else {
+                        error_log("Gagal menghapus CV saat delete mahasiswa: " . $cvPath);
+                    }
+                }
+            }
+            if (!empty($berkasFiles['transkrip_nilai'])) {
+                $transkripPath = $basePathBerkas . $berkasFiles['transkrip_nilai'];
+                if (file_exists($transkripPath)) {
+                    if (@unlink($transkripPath)) {
+                        error_log("Transkrip berhasil dihapus saat delete mahasiswa: " . $transkripPath);
+                    } else {
+                        error_log("Gagal menghapus transkrip saat delete mahasiswa: " . $transkripPath);
+                    }
+                }
+            }
+            if (!empty($berkasFiles['surat_pernyataan'])) {
+                $suratPath = $basePathBerkas . $berkasFiles['surat_pernyataan'];
+                if (file_exists($suratPath)) {
+                    if (@unlink($suratPath)) {
+                        error_log("Surat pernyataan berhasil dihapus saat delete mahasiswa: " . $suratPath);
+                    } else {
+                        error_log("Gagal menghapus surat pernyataan saat delete mahasiswa: " . $suratPath);
+                    }
+                }
+            }
+        }
+
+        // Delete presentasi files
+        if ($presentasiFiles) {
+            if (!empty($presentasiFiles['makalah'])) {
+                $makalahPath = $basePathMakalah . $presentasiFiles['makalah'];
+                if (file_exists($makalahPath)) {
+                    if (@unlink($makalahPath)) {
+                        error_log("Makalah berhasil dihapus saat delete mahasiswa: " . $makalahPath);
+                    } else {
+                        error_log("Gagal menghapus makalah saat delete mahasiswa: " . $makalahPath);
+                    }
+                }
+            }
+            if (!empty($presentasiFiles['ppt'])) {
+                $pptPath = $basePathPpt . $presentasiFiles['ppt'];
+                if (file_exists($pptPath)) {
+                    if (@unlink($pptPath)) {
+                        error_log("PPT berhasil dihapus saat delete mahasiswa: " . $pptPath);
+                    } else {
+                        error_log("Gagal menghapus PPT saat delete mahasiswa: " . $pptPath);
+                    }
+                }
+            }
+        }
+
+        // Delete profile photo
+        if ($mahasiswaData && !empty($mahasiswaData['foto_profil'])) {
+            $profilePath = $basePathProfile . $mahasiswaData['foto_profil'];
+            if (file_exists($profilePath)) {
+                if (@unlink($profilePath)) {
+                    error_log("Foto profil berhasil dihapus saat delete mahasiswa: " . $profilePath);
+                } else {
+                    error_log("Gagal menghapus foto profil saat delete mahasiswa: " . $profilePath);
+                }
+            }
         }
     }
 
@@ -330,11 +449,35 @@ class Mahasiswa extends Model
     }
     public function updateProfilePhoto($idUser, $filename)
     {
+        // Get old photo to delete after successful update
+        $oldPhotoQuery = "SELECT foto_profil FROM " . static::$table . " WHERE id_user = :id";
+        $stmtOld = self::getDB()->prepare($oldPhotoQuery);
+        $stmtOld->bindParam(':id', $idUser);
+        $stmtOld->execute();
+        $oldData = $stmtOld->fetch(\PDO::FETCH_ASSOC);
+
         $query = "UPDATE " . static::$table . " SET foto_profil = :foto WHERE id_user = :id";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(':foto', $filename);
         $stmt->bindParam(':id', $idUser);
-        return $stmt->execute();
+        $result = $stmt->execute();
+
+        // Delete old photo after successful update
+        if ($result && $oldData && !empty($oldData['foto_profil'])) {
+            $basePath = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/profile/';
+            $oldPhotoPath = $basePath . $oldData['foto_profil'];
+            if (file_exists($oldPhotoPath)) {
+                if (@unlink($oldPhotoPath)) {
+                    error_log("Foto profil berhasil dihapus: " . $oldPhotoPath);
+                } else {
+                    error_log("Gagal menghapus foto profil: " . $oldPhotoPath);
+                }
+            } else {
+                error_log("Foto profil tidak ditemukan untuk dihapus: " . $oldPhotoPath);
+            }
+        }
+
+        return $result;
     }
 
     /**
