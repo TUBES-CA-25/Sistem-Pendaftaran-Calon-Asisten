@@ -27,6 +27,20 @@ function validateNoNumber(input) {
   return { success: true, message: "Input valid: Tidak ada angka." };
 }
 
+function validateTempatLahir(input) {
+  // Tempat lahir boleh mengandung huruf, angka, dan spasi
+  const tempatLahirRegex = /^[A-Za-z0-9\s,.-]*$/;
+
+  if (!tempatLahirRegex.test(input)) {
+    return {
+      success: false,
+      message: "Tempat lahir tidak valid.",
+    };
+  }
+
+  return { success: true, message: "Tempat lahir valid." };
+}
+
 $(document).ready(function () {
   const telephoneInput = document.getElementById("telephone");
 const tempatLahirInput = document.getElementById("tempatlahir");
@@ -93,9 +107,9 @@ const namaInput = document.getElementById("nama");
         `${APP_URL}/Assets/gif/failed.gif`
       );
       isValid = false;
-    } else if (!validateNoNumber(tempatLahir).success) {
+    } else if (!validateTempatLahir(tempatLahir).success) {
       showModal(
-        validateNoNumber(tempatLahir).message,
+        validateTempatLahir(tempatLahir).message,
         `${APP_URL}/Assets/gif/failed.gif`
       );
       isValid = false;

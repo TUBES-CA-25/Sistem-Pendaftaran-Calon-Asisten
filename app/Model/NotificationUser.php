@@ -54,11 +54,33 @@ class NotificationUser extends Model {
     }
 
     public function insert(NotificationUser $notification) {
+        // Validate that mahasiswa exists
+        if (!$notification->id_mahasiswa) {
+            throw new \Exception('ID mahasiswa tidak valid');
+        }
+
+        // Check if mahasiswa exists in database
+        $checkQuery = "SELECT id FROM mahasiswa WHERE id = :id";
+        $checkStmt = self::getDB()->prepare($checkQuery);
+        $checkStmt->bindParam(':id', $notification->id_mahasiswa);
+        $checkStmt->execute();
+        
+        if (!$checkStmt->fetch()) {
+            throw new \Exception('Mahasiswa dengan ID ' . $notification->id_mahasiswa . ' tidak ditemukan');
+        }
+
         $query = "INSERT INTO " . static::$table . " (id_mahasiswa, pesan) VALUES (:id_mahasiswa, :pesan)";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(':id_mahasiswa', $notification->id_mahasiswa);
         $stmt->bindParam(':pesan', $notification->pesan);
-        return $stmt->execute();
+        
+        $result = $stmt->execute();
+        
+        if (!$result) {
+            throw new \Exception('Gagal menyimpan pesan ke database: ' . implode(', ', $stmt->errorInfo()));
+        }
+        
+        return $result;
     }
 
     public function getUnreadCount(NotificationUser $notification) {

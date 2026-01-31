@@ -212,6 +212,15 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/profile/default.png';
         return { success: true, message: "Input valid: Tidak ada angka." };
     }
 
+    function validateTempatLahir(input) {
+        // Tempat lahir boleh mengandung huruf, angka, dan spasi
+        const tempatLahirRegex = /^[A-Za-z0-9\s,.-]*$/;
+        if (!tempatLahirRegex.test(input)) {
+            return { success: false, message: "Tempat lahir tidak valid." };
+        }
+        return { success: true, message: "Tempat lahir valid." };
+    }
+
     $(document).ready(function () {
         const phoneInput = document.getElementById("noHp");
         const namaInput = document.getElementById("nama");
@@ -289,8 +298,8 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/res/profile/default.png';
                 namaInput.reportValidity();
                 isValid = false;
             }
-            if (tempatLahirInput && !validateNoNumber(tempatLahirInput.value).success) {
-                tempatLahirInput.setCustomValidity(validateNoNumber(tempatLahirInput.value).message);
+            if (tempatLahirInput && !validateTempatLahir(tempatLahirInput.value).success) {
+                tempatLahirInput.setCustomValidity(validateTempatLahir(tempatLahirInput.value).message);
                 tempatLahirInput.reportValidity();
                 isValid = false;
             }

@@ -29,8 +29,12 @@ class NotifikasiController extends Controller {
     
         $idMahasiswa = $_POST['id'] ?? '';
         $message = $_POST['message'] ?? '';
+        
+        // Debug logging
+        error_log("sendMessage called - idMahasiswa: $idMahasiswa, message: $message");
     
         if (!$idMahasiswa || !$message) {
+            ob_end_clean();
             header('Content-Type: application/json');
             echo json_encode(['status' => 'error', 'message' => 'Semua field wajib diisi']);
             return;
@@ -39,20 +43,25 @@ class NotifikasiController extends Controller {
         $notification = new NotificationUser($idMahasiswa, $message);
     
         try {
-            if ($notification->insert($notification)) {
+            $result = $notification->insert($notification);
+            if ($result) {
+                ob_end_clean();
                 header('Content-Type: application/json');
-                ob_clean(); 
                 echo json_encode(['status' => 'success', 'message' => 'Pesan berhasil dikirim']);
+                return;
+            } else {
+                ob_end_clean();
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan pesan ke database']);
                 return;
             }
         } catch (\Exception $e) {
+            ob_end_clean();
+            error_log("sendMessage Exception: " . $e->getMessage());
             header('Content-Type: application/json');
-            ob_clean(); 
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            echo json_encode(['status' => 'error', 'message' => 'Error: ' . $e->getMessage()]);
             return;
         }
-    
-        ob_end_clean();
     }
     public function sendAllMessage() {
         header('Content-Type: application/json');

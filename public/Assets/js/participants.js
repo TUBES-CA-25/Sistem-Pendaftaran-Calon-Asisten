@@ -74,8 +74,15 @@
         var mahasiswaId = document.getElementById('messageMahasiswaId').value;
         var message = document.getElementById('individualMessage').value;
 
+        console.log('Send message - mahasiswaId:', mahasiswaId, 'message:', message);
+
         if (!message || message.trim() === '') {
             showAlert('Pesan tidak boleh kosong.', false);
+            return;
+        }
+
+        if (!mahasiswaId) {
+            showAlert('ID Peserta tidak valid.', false);
             return;
         }
 
@@ -88,8 +95,12 @@
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `id=${mahasiswaId}&message=${encodeURIComponent(message)}`
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json();
+        })
         .then(data => {
+            console.log('Response data:', data);
             if (data.status === 'success') {
                 var msgModal = bootstrap.Modal.getInstance(document.getElementById('sendMessageModal'));
                 if (msgModal) msgModal.hide();
@@ -99,8 +110,8 @@
             }
         })
         .catch(err => {
-            console.error(err);
-            showAlert('Gagal mengirim pesan.', false);
+            console.error('Fetch error:', err);
+            showAlert('Gagal mengirim pesan: ' + err.message, false);
         })
         .finally(() => {
             btn.prop('disabled', false).html(originalText);

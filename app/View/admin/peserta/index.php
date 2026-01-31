@@ -670,31 +670,25 @@ $result = $result ?? [];
 
 <!-- Modal Kirim Pesan Individual -->
 <!-- Modal Kirim Pesan Individual (Styled like Presentation) -->
-<div class="modal fade" id="sendMessageModal" tabindex="-1" aria-labelledby="sendMessageModalLabel" aria-hidden="true">
+<!-- ================= MODAL KIRIM PESAN ================= -->
+<div class="modal fade" id="sendMessageModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow rounded-4">
-            <div class="modal-header bg-gradient-header text-white border-0 rounded-top-4">
-                <h5 class="modal-title fw-semibold" id="sendMessageModalLabel">
-                    <i class="bi bi-chat-dots me-2"></i>Kirim Pesan
+        <div class="modal-content rounded-4">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-chat-dots"></i> Kirim Pesan
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-4">
-                 <div class="mb-3">
-                    <label class="form-label fw-semibold text-secondary">Kepada:</label>
-                    <p class="mb-0 text-dark fw-medium" id="messageRecipient">-</p>
-                </div>
-                <div class="mb-3">
-                    <label for="individualMessage" class="form-label fw-semibold text-secondary">Pesan untuk Mahasiswa:</label>
-                    <textarea class="form-control rounded-3 border-2" id="individualMessage" rows="4" required
-                              placeholder="Tuliskan pesan..."></textarea>
-                </div>
+            <div class="modal-body">
+                <p><strong>Kepada:</strong> <span id="messageRecipient">-</span></p>
+                <textarea id="individualMessage" class="form-control" rows="4"
+                          placeholder="Tulis pesan..." required></textarea>
             </div>
-            <div class="modal-footer border-top border-light">
-                <input type="hidden" id="messageUserId" value="">
-                <input type="hidden" id="messageMahasiswaId" value="">
-                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" id="sendIndividualMessage">
+            <div class="modal-footer">
+                <input type="hidden" id="messageMahasiswaId">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button class="btn btn-primary" id="sendIndividualMessage">
                     <i class="bi bi-send"></i> Kirim
                 </button>
             </div>
@@ -702,10 +696,26 @@ $result = $result ?? [];
     </div>
 </div>
 
-<!-- Bootstrap Bundle JS -->
+<!-- ================= FIX UTAMA ADA DI SINI ================= -->
 
+<script>
+/**
+ * Popup sukses (GLOBAL)
+ * FIX: mencegah error showSuccessPopup is not defined
+ */
+window.showSuccessPopup = function (message) {
+    alert(message);
+};
 
-<!-- Load Custom JavaScript -->
+/**
+ * Popup error (GLOBAL)
+ */
+window.showErrorPopup = function (message) {
+    alert(message);
+};
+</script>
+
+<!-- Load Custom JavaScript (SETELAH popup didefinisikan) -->
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/participants.js"></script>
 
 

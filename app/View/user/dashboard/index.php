@@ -217,7 +217,7 @@ $dokumen = $dokumen ?? [];
                                 <?php
                                 $stepperStages = [
                                     ['number' => 1, 'color' => 'danger', 'label' => 'Berkas', 'threshold' => 1],
-                                    ['number' => 2, 'color' => 'warning', 'label' => 'Tes Tulis', 'threshold' => 2],
+                                    ['number' => 2, 'color' => 'warning', 'label' => 'Tes Tetulis', 'threshold' => 2],
                                     ['number' => 3, 'color' => 'info', 'label' => 'Presentasi', 'threshold' => 3],
                                     ['number' => 4, 'color' => 'success', 'label' => 'Wawancara', 'threshold' => 4],
                                     ['number' => 5, 'color' => 'primary', 'label' => 'Pengumuman', 'threshold' => 5]
@@ -230,7 +230,7 @@ $dokumen = $dokumen ?? [];
                                         <div class="rounded-circle bg-<?= $isActive ? $step['color'] : 'light' ?> <?= $isActive ? '' : 'border' ?> d-flex align-items-center justify-content-center mx-auto mb-2 shadow-sm"
                                              style="width:28px; height:28px">
                                             <?php if ($isActive): ?>
-                                                <i class="bi bi-check text-white fw-bold" style="font-size: 0.9rem;"></i>
+                                                <i class="bi bi-check text-white fw-bold" style  ="font-size: 0.9rem;"></i>
                                             <?php else: ?>
                                                 <span class="text-muted fw-bold" style="font-size: 0.8rem;"><?= $step['number'] ?></span>
                                             <?php endif; ?>
