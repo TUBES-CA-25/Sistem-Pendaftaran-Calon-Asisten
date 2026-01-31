@@ -64,7 +64,9 @@
             <div class="modal-content border-0 rounded-4 shadow-lg">
                 <div class="modal-body text-center p-4 p-lg-5">
                     <!-- GIF Animasi -->
-                    <img id="modalGif" src="" alt="Animation" class="mb-3 mx-auto d-block" style="width: 100px; display: none;">
+                    <div class="d-flex justify-content-center align-items-center mb-3">
+                        <img id="modalGif" src="" alt="Animation" style="width: 100px; display: none;">
+                    </div>
 
                     <!-- Pesan Custom -->
                     <p id="modalMessage" class="fs-5 fw-medium mb-4">Pesan akan ditampilkan di sini.</p>

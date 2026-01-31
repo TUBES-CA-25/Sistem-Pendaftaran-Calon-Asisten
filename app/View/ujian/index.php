@@ -24,26 +24,70 @@ $results = $results ?? [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ICLabs - Tes Tertulis</title>
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" crossorigin="anonymous">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?=APP_URL?>/Assets/css/exam.css" />
     <link rel="icon" href="<?=APP_URL?>/Assets/Img/iclabs.png">
     <script>
+        // Suppress tracking prevention warnings in console
+        (function() {
+            const originalError = console.error;
+            console.error = function() {
+                const args = Array.from(arguments);
+                const message = args.join(' ');
+                // Filter out tracking prevention warnings
+                if (message && (
+                    message.includes('Tracking Prevention') ||
+                    message.includes('blocked access to storage') ||
+                    message.includes('cdn.jsdelivr.net')
+                )) {
+                    return; // Suppress this error
+                }
+                originalError.apply(console, arguments);
+            };
+        })();
+
         const APP_URL = <?= json_encode(APP_URL) ?>;
-        // Helper untuk akses storage yang aman
-        window.storage = {
-            get: function(key) {
-                try { return localStorage.getItem(key); } catch(e) { return null; }
-            },
-            set: function(key, val) {
-                try { localStorage.setItem(key, val); } catch(e) {}
-            },
-            remove: function(key) {
-                try { localStorage.removeItem(key); } catch(e) {}
+
+        // Enhanced storage helper with fallback to memory
+        window.storage = (function() {
+            let memoryStorage = {};
+            let useMemory = false;
+
+            // Test if localStorage is available
+            try {
+                localStorage.setItem('__test__', '1');
+                localStorage.removeItem('__test__');
+            } catch(e) {
+                useMemory = true;
             }
-        };
+
+            return {
+                get: function(key) {
+                    if (useMemory) return memoryStorage[key] || null;
+                    try { return localStorage.getItem(key); } catch(e) {
+                        useMemory = true;
+                        return memoryStorage[key] || null;
+                    }
+                },
+                set: function(key, val) {
+                    if (useMemory) { memoryStorage[key] = val; return; }
+                    try { localStorage.setItem(key, val); } catch(e) {
+                        useMemory = true;
+                        memoryStorage[key] = val;
+                    }
+                },
+                remove: function(key) {
+                    if (useMemory) { delete memoryStorage[key]; return; }
+                    try { localStorage.removeItem(key); } catch(e) {
+                        useMemory = true;
+                        delete memoryStorage[key];
+                    }
+                }
+            };
+        })();
     </script>
 </head>
 
@@ -88,8 +132,8 @@ $results = $results ?? [];
             </div>
 
             <!-- Main Content -->
-            <div class="col-lg-9 col-md-8 overflow-auto">
-                <div class="p-4">
+            <div class="col-lg-9 col-md-8 d-flex flex-column" style="height: 100%;">
+                <div class="p-4 flex-shrink-0">
                     <!-- Timer Header -->
                     <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
                         <h5 class="mb-0 fw-bold">Soal <span id="current-question-number">1</span></h5>
@@ -98,8 +142,10 @@ $results = $results ?? [];
                             <span id="timer">30:00</span>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Questions Container -->
+                <!-- Questions Container with Scroll -->
+                <div class="flex-grow-1 overflow-auto px-4 pb-4" style="max-height: calc(100vh - 200px);">
                     <div class="questions-container">
                         <?php foreach ($results as $index => $result): ?>
                             <div class="question card border-0 shadow-sm"
@@ -108,10 +154,24 @@ $results = $results ?? [];
                                 <div class="card-body p-4">
                                     <!-- Question Text -->
                                     <div class="mb-4">
-                                        <?php if (!empty($result['img_soal'])): ?>
-                                            <img src="<?= htmlspecialchars($result['img_soal']) ?>"
-                                                 class="img-fluid rounded mb-3 question-image"
-                                                 alt="Question Image">
+                                        <?php if (!empty($result['image_url'])): ?>
+                                            <?php
+                                            // Build full image URL
+                                            $imageUrl = $result['image_url'];
+                                            // If path doesn't start with http or /, prepend base URL
+                                            if (!preg_match('/^(http|\/)/i', $imageUrl)) {
+                                                $imageUrl = str_replace('/public', '', APP_URL) . '/' . $imageUrl;
+                                            }
+                                            ?>
+                                            <div class="mb-3">
+                                                <img src="<?= htmlspecialchars($imageUrl) ?>"
+                                                     class="img-thumbnail question-image-thumb"
+                                                     alt="Gambar Soal"
+                                                     onclick="showImageModal('<?= htmlspecialchars($imageUrl) ?>')"
+                                                     style="max-height: 200px; cursor: pointer; border: 2px solid #dee2e6; transition: all 0.3s ease;"
+                                                     onmouseover="this.style.borderColor='#0d6efd'; this.style.transform='scale(1.02)'"
+                                                     onmouseout="this.style.borderColor='#dee2e6'; this.style.transform='scale(1)'">
+                                            </div>
                                         <?php endif; ?>
                                         <p class="lead"><?= nl2br(htmlspecialchars($result['deskripsi'])) ?></p>
                                     </div>
@@ -197,7 +257,6 @@ $results = $results ?? [];
                                 </div>
                             </div>
                         <?php endforeach; ?>
-
                     </div>
                 </div>
             </div>
@@ -209,7 +268,10 @@ $results = $results ?? [];
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body text-center py-4">
-                    <img id="modalGif" src="" alt="Animation" class="mb-3" style="width: 100px; display: none;">
+                    <!-- GIF Container with Flexbox for centering -->
+                    <div class="d-flex justify-content-center align-items-center mb-3">
+                        <img id="modalGif" src="" alt="Animation" style="width: 100px; display: none;">
+                    </div>
                     <p id="modalMessage" class="mb-0">Pesan akan ditampilkan di sini.</p>
                 </div>
                 <div class="modal-footer border-0 justify-content-center">
@@ -327,6 +389,57 @@ $results = $results ?? [];
                 alert(message);
             }
         };
+
+        // Image Modal Function
+        window.showImageModal = function(imageUrl) {
+            const modalHtml = `
+                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" style="max-height: 95vh;">
+                        <div class="modal-content" style="max-height: 95vh;">
+                            <div class="modal-header border-0 pb-2 flex-shrink-0">
+                                <h5 class="modal-title" id="imageModalLabel">
+                                    <i class="bi bi-image me-2"></i>Gambar Soal
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center p-4" style="overflow-y: auto; max-height: calc(95vh - 120px);">
+                                <img src="${imageUrl}"
+                                     class="img-fluid rounded"
+                                     alt="Gambar Soal"
+                                     style="width: 100%; height: auto; object-fit: contain;">
+                            </div>
+                            <div class="modal-footer border-0 pt-2 flex-shrink-0">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <i class="bi bi-x-circle me-2"></i>Tutup
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Remove existing modal if any
+            const existingModal = document.getElementById('imageModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Add modal to body
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // Show modal
+            const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+            imageModal.show();
+
+            // Clean up after modal is hidden
+            document.getElementById('imageModal').addEventListener('hidden.bs.modal', function() {
+                this.remove();
+            });
+        };
+
+        // Set exam session ID for timer management
+        // This ensures timer resets when admin resets the exam or user starts new attempt
+        window.examSessionId = 'exam_<?= $bank['id'] ?? 'default' ?>_<?= $_SESSION['user']['id'] ?? 'guest' ?>_<?= $_SESSION['exam_session_timestamp'] ?? time() ?>';
     </script>
     <script src="<?=APP_URL?>/Assets/js/examScript.js"></script>
 </body>

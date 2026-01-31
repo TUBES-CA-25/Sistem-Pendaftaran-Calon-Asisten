@@ -828,7 +828,7 @@ $(document).ready(function() {
             const modal = bootstrap.Modal.getInstance(document.getElementById('editJadwalModal'));
             if (modal) modal.hide();
             if (res.status === 'success') {
-                showAlert('Jadwal berhasil diupdate!');
+                showAlert('Jadwal berhasil diupdate!', true);
                 loadJadwalData();
             } else {
                 showAlert(res.message || 'Gagal update jadwal', false);

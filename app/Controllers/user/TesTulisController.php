@@ -101,6 +101,9 @@ class TesTulisController extends Controller {
                 // Set session to allow access
                 $_SESSION['exam_token_verified'] = $activeBank['token'];
 
+                // Create unique session ID with timestamp to ensure timer resets on each new attempt
+                $_SESSION['exam_session_timestamp'] = time();
+
                 echo json_encode([
                     'status' => 'success',
                     'message' => 'Token valid',

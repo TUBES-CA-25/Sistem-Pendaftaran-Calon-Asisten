@@ -21,9 +21,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const answers = {};
 
-  if (storage.get("remainingTime")) {
-    remainingTime = parseInt(storage.get("remainingTime"), 10);
+  // Get current exam session ID from the page (set by server)
+  const currentExamSession = window.examSessionId || Date.now().toString();
+  const storedExamSession = storage.get("examSessionId");
 
+  // If this is a new exam session (different ID = reset by admin or first time), reset timer
+  if (storedExamSession !== currentExamSession) {
+    storage.remove("remainingTime");
+    storage.set("examSessionId", currentExamSession);
+    remainingTime = initialDuration;
+  } else if (storage.get("remainingTime")) {
+    remainingTime = parseInt(storage.get("remainingTime"), 10);
   } else {
     remainingTime = initialDuration;
   }
@@ -32,7 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Note: The score is already calculated in saveAnswer (/hasil)
     // We just need to show success and redirect.
     console.log("Submitting finish...", priorResponse);
-    
+
+    // Clear timer from storage since exam is completed
+    storage.remove("remainingTime");
+    storage.remove("examSessionId");
+
     setTimeout(() => {
         window.location.href = APP_URL + "/tes-tulis";
     }, 2000);

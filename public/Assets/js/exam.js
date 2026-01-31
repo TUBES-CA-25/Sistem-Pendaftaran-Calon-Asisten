@@ -107,6 +107,10 @@ window.renderSoalList = function(soalArray) {
                         </button>
                     </div>
                 </div>
+                ${soal.image_url ? `
+                <div class="mb-3">
+                    <img src="${window.getImageUrl(soal.image_url)}" alt="Gambar Soal" style="max-width: 100%; max-height: 400px; border-radius: 8px; border: 2px solid #e2e8f0;" onerror="this.style.display='none'">
+                </div>` : ''}
                 <div class="mb-3 text-dark condition-render-markdown">${soal.deskripsi ? marked.parse(soal.deskripsi) : ''}</div>
                 ${optionsHtml}
                 ${soal.jawaban ? `
@@ -126,28 +130,76 @@ window.renderSoalList = function(soalArray) {
 
 window.renderOptions = function(pilihan) {
     if (!pilihan) return '';
-    
+
     // Handle HTML entities in the string
     const decodedPilihan = new DOMParser().parseFromString(pilihan, "text/html").documentElement.textContent;
-    
+
     let options = [];
     const pattern = /([A-E])\.\s*(.*?)(?=(?:,\s*[A-E]\.)|$)/g;
     let match;
-    
+
     // Try to parse structured options A. xxx, B. xxx
     while ((match = pattern.exec(decodedPilihan)) !== null) {
-        options.push(match[1] + '. ' + match[2].trim());
+        options.push({
+            key: match[1],
+            value: match[2].trim()
+        });
     }
-    
+
     // Fallback: simple split if no pattern match
     if (options.length === 0) {
-        options = decodedPilihan.split(',').map(p => p.trim());
+        const parts = decodedPilihan.split(',').map(p => p.trim());
+        options = parts.map((part, idx) => ({
+            key: String.fromCharCode(65 + idx), // A, B, C, ...
+            value: part
+        }));
     }
-    
-    let html = '<div class="p-3 bg-light bg-opacity-50 rounded-3 mb-3"><div class="small fw-bold text-secondary text-uppercase mb-2">Pilihan Jawaban</div>';
+
+    // Check if any option contains image URL
+    const hasImages = options.some(opt =>
+        opt.value && (
+            opt.value.includes('.jpg') ||
+            opt.value.includes('.jpeg') ||
+            opt.value.includes('.png') ||
+            opt.value.includes('.gif') ||
+            opt.value.includes('.webp')
+        )
+    );
+
+    let html = '<div class="p-3 bg-light bg-opacity-50 rounded-3 mb-3">';
+
+    // Only show "Pilihan Jawaban" header if not images
+    if (!hasImages) {
+        html += '<div class="small fw-bold text-secondary text-uppercase mb-2">Pilihan Jawaban</div>';
+    }
+
     options.forEach(opt => {
-        html += `<div class="py-1 text-dark">${escapeHtml(opt)}</div>`;
+        // Check if this specific option is an image URL
+        const isImage = opt.value && (
+            opt.value.includes('.jpg') ||
+            opt.value.includes('.jpeg') ||
+            opt.value.includes('.png') ||
+            opt.value.includes('.gif') ||
+            opt.value.includes('.webp')
+        );
+
+        if (isImage) {
+            html += `
+                <div class="mb-3">
+                    <strong class="text-dark">${opt.key}.</strong>
+                    <div class="mt-2">
+                        <img src="${window.getImageUrl(escapeHtml(opt.value))}"
+                             alt="Pilihan ${opt.key}"
+                             style="max-width: 100%; height: auto; max-height: 200px; border-radius: 8px; border: 2px solid #e2e8f0; display: block;"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x200?text=Gambar+Tidak+Ditemukan'; this.style.border='2px dashed #ff0000';">
+                    </div>
+                </div>
+            `;
+        } else {
+            html += `<div class="py-1 text-dark">${escapeHtml(opt.key + '. ' + opt.value)}</div>`;
+        }
     });
+
     html += '</div>';
     return html;
 }
@@ -156,6 +208,18 @@ window.escapeHtml = function(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// Helper function to get full image URL
+window.getImageUrl = function(path) {
+    if (!path) return '';
+    // If path already starts with http or /, return as is
+    if (path.startsWith('http') || path.startsWith('/')) {
+        return path;
+    }
+    // Get base URL from baseUrl variable (defined in PHP)
+    const base = typeof baseUrl !== 'undefined' ? baseUrl.replace('/public', '') : '';
+    return base + '/' + path;
 }
 
 // Refresh Bank Dropdowns in Import/Export Tab
@@ -366,17 +430,14 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
                 formData.set('jawaban', jawEssay);
             }
             
-            const dataToSend = new URLSearchParams();
-            dataToSend.append('id', id);
-            dataToSend.append('deskripsi', formData.get('deskripsi'));
-            dataToSend.append('status_soal', type);
-            dataToSend.append('pilihan', pilihanStr);
-            dataToSend.append('jawaban', formData.get('jawaban'));
-            
+            // Set additional fields to formData
+            formData.set('id', id);
+            formData.set('pilihan', pilihanStr);
+
+            // Send FormData directly to support file upload
             fetch(baseUrl + '/updatesoal', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: dataToSend
+                body: formData // Send as FormData, not URLSearchParams
             })
             .then(res => res.json())
             .then(data => {
@@ -683,11 +744,30 @@ window.editSoal = function(id) {
         document.getElementById('editDeskripsi').value = soalData.deskripsi || '';
     }
     
+    // Set existing image if available
+    const existingImageUrl = soalData.image_url || null;
+    document.getElementById('existingImageUrl').value = existingImageUrl || '';
+
+    // Show existing image preview
+    const editImagePreview = document.getElementById('editImagePreview');
+    const editPreviewImg = document.getElementById('editPreviewImg');
+
+    if (existingImageUrl && existingImageUrl.trim() !== '') {
+        editPreviewImg.src = existingImageUrl;
+        editImagePreview.style.display = 'block';
+    } else {
+        editImagePreview.style.display = 'none';
+        editPreviewImg.src = '';
+    }
+
+    // Reset file input
+    document.getElementById('soalImageEditInput').value = '';
+
     // Set answers
     if (type === 'pilihan_ganda') {
         const pilihanContainer = document.getElementById('editPilihanContainer');
         const pilihanStr = soalData.pilihan || '';
-        
+
         // Parse "A. xxx, B. xxx" format
         const pattern = /([A-E])\.\s*(.*?)(?=(?:,\s*[A-E]\.)|$)/g;
         let match;
@@ -695,19 +775,19 @@ window.editSoal = function(id) {
         ['A','B','C','D','E'].forEach(opt => {
             document.getElementById('editPilihan'+opt).value = '';
         });
-        
+
         while ((match = pattern.exec(pilihanStr)) !== null) {
             const opt = match[1];
             const val = match[2].trim();
             const input = document.getElementById('editPilihan' + opt);
             if(input) input.value = val;
         }
-        
+
         // Check correct answer
         const jawab = soalData.jawaban;
         const radio = document.querySelector(`input[name="jawaban"][value="${jawab}"]`);
         if(radio) radio.checked = true;
-        
+
     } else {
         document.getElementById('editJawabanEssay').value = soalData.jawaban || '';
     }

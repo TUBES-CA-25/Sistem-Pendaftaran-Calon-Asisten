@@ -346,6 +346,18 @@ $(document).ready(function() {
     const alertModalEl = document.getElementById('alertModal');
     const alertModalBS = new bootstrap.Modal(alertModalEl);
 
+    // Helper function to get full image URL
+    function getImageUrl(path) {
+        if (!path) return '';
+        // If path already starts with http or /, return as is
+        if (path.startsWith('http') || path.startsWith('/')) {
+            return path;
+        }
+        // Otherwise prepend base URL
+        const baseUrl = '<?= APP_URL ?>'.replace('/public', '');
+        return baseUrl + '/' + path;
+    }
+
     // Helper function to show alert using Bootstrap Modal
     function showAlert(message, isSuccess) {
         $('#alertMessage').text(message);
@@ -449,20 +461,38 @@ $(document).ready(function() {
                         }
 
                         // Format pilihan untuk ditampilkan
-                        let pilihanText = '';
+                        let pilihanHTML = '';
                         try {
                             const pilihanObj = JSON.parse(item.pilihan);
-                            pilihanText = Object.entries(pilihanObj)
-                                .map(([key, value]) => `${key}. ${value}`)
-                                .join('<br>');
+                            // Check if pilihan contains image URLs
+                            pilihanHTML = Object.entries(pilihanObj)
+                                .map(([key, value]) => {
+                                    // Check if value is an image URL
+                                    if (value && (value.includes('.jpg') || value.includes('.jpeg') || value.includes('.png') || value.includes('.gif') || value.includes('.webp'))) {
+                                        return `
+                                            <div class="mb-2">
+                                                <strong>${key}.</strong>
+                                                <div class="mt-1">
+                                                    <img src="${getImageUrl(value)}" alt="Pilihan ${key}" style="max-width: 100%; height: auto; max-height: 200px; border-radius: 8px; border: 2px solid #e2e8f0;">
+                                                </div>
+                                            </div>
+                                        `;
+                                    } else {
+                                        return `<div class="mb-1"><strong>${key}.</strong> ${value}</div>`;
+                                    }
+                                })
+                                .join('');
                         } catch (e) {
-                            pilihanText = item.pilihan;
+                            pilihanHTML = item.pilihan;
                         }
 
                         // Badge tipe soal
                         const tipeBadge = isPilihanGanda
                             ? '<span class="badge bg-primary bg-opacity-10 text-primary border border-primary ms-2"><i class="bi bi-ui-checks"></i> PG</span>'
                             : '<span class="badge bg-warning bg-opacity-10 text-warning border border-warning ms-2"><i class="bi bi-pencil-square"></i> Essay</span>';
+
+                        // Check if item has image
+                        const hasImage = item.image_url && item.image_url.trim() !== '';
 
                         html += `
                             <div class="col-lg-6 soal-item" data-tipe="${tipeSoal}">
@@ -475,14 +505,18 @@ $(document).ready(function() {
                                             </div>
                                             <div style="font-size: 1.2rem;">${icon}</div>
                                         </div>
+                                        ${hasImage ? `
+                                        <div class="mb-3">
+                                            <img src="${getImageUrl(item.image_url)}" alt="Gambar Soal ${index + 1}" style="max-width: 100%; height: auto; max-height: 300px; border-radius: 8px; border: 2px solid #e2e8f0;">
+                                        </div>
+                                        ` : ''}
                                         <div class="mb-3">
                                             <strong class="text-dark">${item.deskripsi}</strong>
                                         </div>
                                         <div class="small">
                                             ${isPilihanGanda ? `
-                                            <div class="mb-2">
-                                                <span class="text-muted">Pilihan:</span>
-                                                <div class="ms-1 mt-1">${pilihanText}</div>
+                                            <div class="mb-3">
+                                                ${pilihanHTML}
                                             </div>
                                             ` : ''}
                                             <div class="mb-2">

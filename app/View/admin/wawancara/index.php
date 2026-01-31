@@ -574,17 +574,17 @@ $colors = ['#2f66f6'];
                 data: JSON.stringify(updateData),
                 success: function (response) {
                     if (response.status === "success") {
-                        showModal("Jadwal berhasil diupdate");
+                        showAlert("Jadwal berhasil diupdate", true);
                         $("#updateWawancaraModal").modal("hide");
                         // Refresh content via existing sidebar trigger
                         document.querySelector('a[data-page="wawancara"]').click();
                     } else {
-                        showModal("Gagal mengupdate jadwal wawancara: " + (response.message || "Unknown error"));
+                        showAlert("Gagal mengupdate jadwal wawancara: " + (response.message || "Unknown error"), false);
                     }
                 },
                 error: function (xhr) {
                     console.error("Error:", xhr.responseText);
-                    showModal("Gagal menghubungi server");
+                    showAlert("Gagal menghubungi server", false);
                 },
             });
         });

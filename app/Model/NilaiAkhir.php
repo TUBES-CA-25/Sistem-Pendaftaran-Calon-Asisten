@@ -125,7 +125,7 @@ class NilaiAkhir extends Model
     {
         // Get all soal with LEFT JOIN to jawaban to show all questions
         // This will return all questions, with jawaban_user as NULL for unanswered questions
-        $query = "SELECT s.id, s.deskripsi, s.pilihan, s.jawaban, s.status_soal, j.jawaban as jawaban_user
+        $query = "SELECT s.id, s.deskripsi, s.pilihan, s.jawaban, s.status_soal, s.image_url, j.jawaban as jawaban_user
                   FROM soal s
                   LEFT JOIN jawaban j ON s.id = j.id_soal AND j.id_mahasiswa = :id_mahasiswa
                   ORDER BY s.id ASC";

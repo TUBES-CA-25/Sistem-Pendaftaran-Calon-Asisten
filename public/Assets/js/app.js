@@ -542,8 +542,26 @@ function showActionConfirmation(options) {
     btn.parentNode.replaceChild(newBtn, btn);
     
     newBtn.addEventListener('click', function() {
-        if(onConfirm) onConfirm();
-        bootstrap.Modal.getInstance(modalEl).hide();
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) {
+            modalInstance.hide();
+        }
+
+        // Execute callback after modal starts hiding
+        if(onConfirm) {
+            setTimeout(function() {
+                onConfirm();
+            }, 150); // Small delay to ensure modal backdrop is being removed
+        }
+
+        // Ensure backdrop is removed (failsafe)
+        setTimeout(function() {
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => backdrop.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }, 300);
     });
 
     // Show Modal
