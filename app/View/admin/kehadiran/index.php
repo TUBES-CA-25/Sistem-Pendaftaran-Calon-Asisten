@@ -6,7 +6,23 @@ $absensiList = $absensiList ?? [];
 $mahasiswaList = $mahasiswaList ?? [];
 ?>
 <!-- Bootstrap Icons CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" crossorigin="anonymous">
+
+<script>
+    // Suppress tracking prevention warnings in console
+    (function() {
+        const originalError = console.error;
+        console.error = function(...args) {
+            const message = args[0]?.toString() || '';
+            if (message.includes('Tracking Prevention') ||
+                message.includes('storage') ||
+                message.includes('blocked access')) {
+                return; // Suppress tracking warnings
+            }
+            originalError.apply(console, args);
+        };
+    })();
+</script>
 
 <style>
     /* Minimal styles for specific components */
@@ -113,9 +129,14 @@ $mahasiswaList = $mahasiswaList ?? [];
                             <td class="text-center"><?= $no++ ?></td>
                             <td>
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px;">
-                                        <?= strtoupper(substr($row['nama_lengkap'], 0, 1)) ?>
-                                    </div>
+                                    <?php
+                                        // Use only foto from berkas_mahasiswa upload (res/imageUser)
+                                        $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
+                                        if (!empty($row['berkas_foto'])) {
+                                            $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . htmlspecialchars($row['berkas_foto']) . '?v=' . time();
+                                        }
+                                    ?>
+                                    <img src="<?= $photoUrl ?>" alt="Foto" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid #e5e7eb;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
                                     <div>
                                         <div class="fw-semibold text-dark"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
                                         <div class="small text-muted">Mahasiswa</div>
@@ -155,6 +176,7 @@ $mahasiswaList = $mahasiswaList ?? [];
                                             title="Detail Rekap"
                                             data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
                                             data-stambuk="<?= $row['stambuk'] ?>"
+                                            data-foto="<?= !empty($row['berkas_foto']) ? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . htmlspecialchars($row['berkas_foto']) : '' ?>"
                                             data-berkas="<?= $row['berkas_status'] ?? '0' ?>"
                                             data-tes="<?= $row['absensi_tes_tertulis'] ?>"
                                             data-nilai="<?= $row['nilai_akhir'] ?? '' ?>"
@@ -325,7 +347,8 @@ function renderStatusBadge($val) {
             </div>
             <div class="modal-body p-0">
                 <div class="p-4 text-center bg-light border-bottom">
-                    <div class="avatar-placeholder-large mx-auto mb-3" style="width:70px; height:70px; font-size:1.75rem;">
+                    <img id="rekapFoto" src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png" alt="Foto Profil" class="rounded-circle mx-auto mb-3" style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #e5e7eb; display: none;" onerror="this.style.display='none'; document.getElementById('rekapAvatar').parentElement.style.display='flex';">
+                    <div class="avatar-placeholder-large mx-auto mb-3" id="rekapAvatarContainer" style="width:70px; height:70px; font-size:1.75rem; display: flex;">
                         <span id="rekapAvatar">U</span>
                     </div>
                     <h5 class="fw-bold mb-1" id="rekapNama">Nama Peserta</h5>
@@ -690,6 +713,22 @@ $(document).ready(function() {
         $('#rekapNama').text(btn.data('nama'));
         $('#rekapStambuk').text(btn.data('stambuk'));
         $('#rekapAvatar').text(btn.data('nama').charAt(0).toUpperCase());
+
+        // Handle Photo Display
+        const fotoUrl = btn.data('foto');
+        const fotoImg = $('#rekapFoto');
+        const avatarContainer = $('#rekapAvatarContainer');
+
+        if (fotoUrl && fotoUrl.trim() !== '') {
+            // Show photo with cache busting
+            fotoImg.attr('src', fotoUrl + '?v=' + new Date().getTime());
+            fotoImg.show();
+            avatarContainer.hide();
+        } else {
+            // Show avatar placeholder
+            fotoImg.hide();
+            avatarContainer.show();
+        }
 
         // Helper to create badge
         const createBadge = (status, type = 'attendance') => {

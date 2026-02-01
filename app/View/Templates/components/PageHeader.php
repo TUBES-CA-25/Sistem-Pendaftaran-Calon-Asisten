@@ -17,22 +17,16 @@ $userName = $_SESSION['user']['username'] ?? ($userName ?? 'User');
 
 // Dynamic Photo Logic
 if ($role === 'Admin') {
-    $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/6971e2c5e60ce.png';
+    // Use admin photo or fallback to Rectangle.png
+    if (!isset($photo) || empty($photo)) {
+        $photo = \App\Controllers\HomeController::getAdminPhoto($_SESSION['user']['id'] ?? 1);
+    }
     $userName = 'Admin';
 } else {
-    // Student/User photo logic
-    if (isset($photo)) {
-        if (is_array($photo) && !empty($photo)) {
-            $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $photo[0];
-        } elseif (is_string($photo) && !empty($photo)) {
-            // If it's already a full path or data URL, leave it
-            if (strpos($photo, '/Sistem-Pendaftaran-Calon-Asisten') === false && strpos($photo, 'data:image') === false) {
-                 $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $photo;
-            }
-        }
-    } else {
+    // Student/User photo logic - trust the photo from controller if provided
+    if (!isset($photo) || empty($photo)) {
         // Fallback for Users if nothing provided
-        $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/default.png';
+        $photo = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
     }
 }
 
@@ -149,14 +143,14 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
             <?php if ($role === 'Admin'): ?>
                 <!-- Admin: Simple static display without dropdown -->
                 <div class="d-flex align-items-center gap-2">
-                    <img src="<?= $photo ?>" alt="Profile" class="navbar-profile-img">
+                    <img src="<?= $photo ?>" alt="Profile" class="navbar-profile-img" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/Rectangle.png'">
                     <span class="navbar-profile-name d-none d-sm-inline"><?= htmlspecialchars($userName) ?></span>
                 </div>
             <?php else: ?>
                 <!-- User: Dropdown with profile and logout -->
                 <div class="dropdown">
                     <button class="btn navbar-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?= $photo ?>" alt="Profile" class="navbar-profile-img">
+                        <img src="<?= $photo ?>" alt="Profile" class="navbar-profile-img" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
                         <span class="navbar-profile-name d-none d-sm-inline"><?= htmlspecialchars($userName) ?></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end navbar-dropdown">

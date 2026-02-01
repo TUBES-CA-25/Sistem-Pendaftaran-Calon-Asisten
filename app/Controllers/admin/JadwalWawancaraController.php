@@ -101,18 +101,23 @@ class JadwalWawancaraController extends Controller
             echo json_encode(['status' => 'error', 'message' => 'All fields are required']);
             return;
         }
-        $wawancara = new Wawancara(
-            $id_ruangan,
-            $jenis_wawancara,
-            $waktu,
-            $tanggal
-        );
-        if ($wawancara->save($wawancara, $selectedMahasiswa)) {
+        try {
+            $wawancara = new Wawancara(
+                $id_ruangan,
+                $jenis_wawancara,
+                $waktu,
+                $tanggal
+            );
+            if ($wawancara->save($wawancara, $selectedMahasiswa)) {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'success', 'message' => 'Jadwal wawancara berhasil disimpan']);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'error', 'message' => 'Jadwal gagal disimpan']);
+            }
+        } catch (\Exception $e) {
             header('Content-Type: application/json');
-            echo json_encode(['status' => 'success', 'message' => 'Jadwal wawancara berhasil disimpan']);
-        } else {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Jadwal gagal disimpan']);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
     public function update()

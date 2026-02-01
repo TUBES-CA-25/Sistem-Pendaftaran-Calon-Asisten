@@ -99,13 +99,7 @@ $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
                     <div>Durasi ujian: <strong>80 Menit</strong>. Baca doa terlebih dahulu sebelum memulai.</div>
                 </div>
 
-                <div class="mb-4">
-                    <label for="nomorMeja" class="form-label fw-semibold">
-                        <i class="bi bi-geo-alt me-1"></i>Nomor Meja
-                    </label>
-                    <input type="text" id="nomorMeja" class="form-control form-control-lg rounded-3" placeholder="Masukkan nomor meja Anda" required <?php if ($isDisabled) echo 'disabled'; ?>>
-                    <div id="errorMessage" class="text-danger small mt-2" style="display: none;">Silahkan masukkan nomor meja.</div>
-                </div>
+                <!-- Mulai Ujian Button -->
 
                 <button id="startTestButton" class="btn btn-primary btn-lg w-100 rounded-3" <?php if ($isDisabled) echo 'disabled'; ?>>
                     <i class="bi bi-play-circle me-2"></i>Mulai Ujian
@@ -142,49 +136,51 @@ $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function () {
-    const APP_URL = '<?= APP_URL ?>';
-
-    $('#startTestButton').on('click', function () {
-        const nomorMejaInput = $('#nomorMeja').val().trim();
-
-        if (!nomorMejaInput || isNaN(nomorMejaInput) || parseInt(nomorMejaInput) <= 0) {
-            $('#errorMessage').text('Nomor meja tidak valid!').show();
-            return;
-        }
-
-        $('#errorMessage').hide();
-        new bootstrap.Modal(document.getElementById('tokenModal')).show();
-    });
+    const startBtn = document.getElementById('startTestButton');
+    if (startBtn) {
+        startBtn.addEventListener('click', function () {
+            const modalEl = document.getElementById('tokenModal');
+            if (modalEl) {
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            }
+        });
+    }
 
     $('#btnSubmitToken').on('click', function() {
-        const token = $('#inputToken').val().trim();
+        const tokenInput = $('#inputToken');
+        const token = tokenInput.val().trim();
+        const errorEl = $('#tokenError');
+        
         if (!token) {
-            $('#tokenError').text('Masukkan token!').show();
+            errorEl.text('Masukkan token!').show();
             return;
         }
 
         const btn = $(this);
+        const originalHtml = btn.html();
         btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Memverifikasi...');
+        errorEl.hide();
 
         $.ajax({
             url: APP_URL + '/exam/verifyToken',
             method: 'POST',
             data: { token: token },
+            dataType: 'json',
             success: function(res) {
-                if (res.status === 'success') {
-                    const nomorMeja = $('#nomorMeja').val().trim();
-                    window.location.href = `${APP_URL}/soal?nomorMeja=${encodeURIComponent(nomorMeja)}`;
+                if (res && res.status === 'success') {
+                    window.location.href = APP_URL + '/soal';
                 } else {
-                    $('#tokenError').text(res.message || 'Token salah!').show();
-                    btn.prop('disabled', false).html('<i class="bi bi-box-arrow-in-right me-2"></i>Masuk Ujian');
+                    errorEl.text(res.message || 'Token salah!').show();
+                    btn.prop('disabled', false).html(originalHtml);
                 }
             },
-            error: function() {
-                $('#tokenError').text('Terjadi kesalahan server').show();
-                btn.prop('disabled', false).html('<i class="bi bi-box-arrow-in-right me-2"></i>Masuk Ujian');
+            error: function(xhr) {
+                console.error("Token verification failed:", xhr.responseText);
+                errorEl.text('Terjadi kesalahan server').show();
+                btn.prop('disabled', false).html(originalHtml);
             }
         });
     });

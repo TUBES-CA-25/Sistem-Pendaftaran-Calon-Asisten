@@ -11,23 +11,22 @@ class SoalExam extends Model {
     protected $pilihan;
     protected $jawaban;
     protected $status;
+    protected $image_url;
 
     public function __construct(
         $deskripsi = null,
         $pilihan = null,
         $jawaban = null,
-        $status = null
+        $status = null,
+        $image_url = null
     ) {
-        if($jawaban == null) {
-            $this->deskripsi = $deskripsi;
-            $this->pilihan = $pilihan;
-            $this->status = $status;
-        } 
-         else {
-            $this->deskripsi = $deskripsi;
-            $this->pilihan = $pilihan;
+        $this->deskripsi = $deskripsi;
+        $this->pilihan = $pilihan;
+        $this->status = $status;
+        $this->image_url = $image_url;
+
+        if($jawaban != null) {
             $this->jawaban = $jawaban;
-            $this->status = $status;
         }
     }
     
@@ -52,23 +51,25 @@ class SoalExam extends Model {
     }
     
     public function save(SoalExam  $soal, $bankSoalId = null) {
-        $sql = "INSERT INTO " . static::$table . " (bank_soal_id,deskripsi,pilihan,jawaban,status_soal) VALUES (?,?,?,?,?)";
+        $sql = "INSERT INTO " . static::$table . " (bank_soal_id,deskripsi,image_url,pilihan,jawaban,status_soal) VALUES (?,?,?,?,?,?)";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(1, $bankSoalId, PDO::PARAM_INT);
         $stmt->bindParam(2, $soal->deskripsi);
-        $stmt->bindParam(3, $soal->pilihan);
-        $stmt->bindParam(4, $soal->jawaban);
-        $stmt->bindParam(5, $soal->status);
+        $stmt->bindParam(3, $soal->image_url);
+        $stmt->bindParam(4, $soal->pilihan);
+        $stmt->bindParam(5, $soal->jawaban);
+        $stmt->bindParam(6, $soal->status);
         return $stmt->execute();
     }
 
     public function saveWithoutAnswer(SoalExam $soal, $bankSoalId = null) {
-        $sql = "INSERT INTO " . static::$table . " (bank_soal_id, deskripsi,pilihan,status_soal) VALUES (?,?,?,?)";
+        $sql = "INSERT INTO " . static::$table . " (bank_soal_id, deskripsi,image_url,pilihan,status_soal) VALUES (?,?,?,?,?)";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(1, $bankSoalId, PDO::PARAM_INT);
         $stmt->bindParam(2, $soal->deskripsi);
-        $stmt->bindParam(3, $soal->pilihan);
-        $stmt->bindParam(4, $soal->status);
+        $stmt->bindParam(3, $soal->image_url);
+        $stmt->bindParam(4, $soal->pilihan);
+        $stmt->bindParam(5, $soal->status);
         return $stmt->execute();
     }
     

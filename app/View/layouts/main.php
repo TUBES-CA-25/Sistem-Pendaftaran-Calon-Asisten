@@ -22,11 +22,14 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     
-    <script>
-        const APP_URL = '<?php echo APP_URL; ?>';
-        window.INITIAL_PAGE = '<?= $initialPage ?? 'dashboard' ?>';
-    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 5.3.3 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const APP_URL = <?= json_encode(APP_URL) ?>;
+        window.INITIAL_PAGE = <?= json_encode($initialPage ?? 'dashboard') ?>;
+    </script>
 
     <title>IC-ASSIST</title>
 </head>
@@ -61,7 +64,9 @@
             <div class="modal-content border-0 rounded-4 shadow-lg">
                 <div class="modal-body text-center p-4 p-lg-5">
                     <!-- GIF Animasi -->
-                    <img id="modalGif" src="" alt="Animation" class="mb-3 mx-auto d-block" style="width: 100px; display: none;">
+                    <div class="d-flex justify-content-center align-items-center mb-3">
+                        <img id="modalGif" src="" alt="Animation" style="width: 100px; display: none;">
+                    </div>
 
                     <!-- Pesan Custom -->
                     <p id="modalMessage" class="fs-5 fw-medium mb-4">Pesan akan ditampilkan di sini.</p>
@@ -110,10 +115,6 @@
         </div>
     </div>
    
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= APP_URL ?>/Assets/js/app.js?v=<?= time() ?>"></script>
     <script src="<?= APP_URL ?>/Assets/js/ScriptSidebar.js?v=<?= time() ?>"></script>
     

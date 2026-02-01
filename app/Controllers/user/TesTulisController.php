@@ -10,16 +10,6 @@ use App\Model\NilaiAkhir;
 class TesTulisController extends Controller {
     public function index() {
         try {
-            if (!isset($_GET['nomorMeja'])) {
-                throw new \Exception('Nomor meja tidak disediakan');
-            }
-
-            $nomorMeja = intval($_GET['nomorMeja']);
-            if ($nomorMeja <= 0) {
-                throw new \Exception('Nomor meja tidak valid');
-            }
-
-            $isGanjil = $nomorMeja % 2 !== 0;
 
             $soalExam = new SoalExam();
             
@@ -31,6 +21,11 @@ class TesTulisController extends Controller {
                  throw new \Exception('Belum ada ujian yang aktif saat ini.');
             }
             
+            // Check if user has already completed the exam
+            if (\App\Controllers\User\DashboardController::getAbsensiTesTertulis()) {
+                throw new \Exception('Anda sudah mengikuti tes tertulis dan tidak dapat mengakses soal lagi.');
+            }
+
             // Check if user has verified token for this session
             // Note: In a real app we might want to tie this to the specific bank ID
             if (!isset($_SESSION['exam_token_verified']) || $_SESSION['exam_token_verified'] !== $activeBank['token']) {
@@ -49,7 +44,35 @@ class TesTulisController extends Controller {
             shuffle($tesSoal);
             $soal = $tesSoal;
 
-            View::render('index', 'ujian', ['results' => $soal, 'bank' => $activeBank]);
+            // Get user data from session
+            $userId = $_SESSION['user']['id'] ?? null;
+            $stambuk = $_SESSION['user']['stambuk'] ?? '';
+
+            // Get user profile data (nama dan foto)
+            $mahasiswaModel = new \App\Model\Mahasiswa();
+            $mahasiswa = $mahasiswaModel->getMahasiswaId($userId);
+
+            $nama = $mahasiswa['nama_lengkap'] ?? 'Nama Lengkap';
+
+            // Get berkas to retrieve foto
+            $berkas = $mahasiswa ? $mahasiswaModel->getBerkasMahasiswa($mahasiswa['id']) : null;
+
+            // Priority: foto from berkas_mahasiswa (res/imageUser), then foto_profil (res/profile), then default
+            if (!empty($berkas['foto'])) {
+                $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . $berkas['foto'];
+            } elseif (!empty($mahasiswa['foto_profil'])) {
+                $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $mahasiswa['foto_profil'];
+            } else {
+                $photo = APP_URL . '/Assets/Img/default-avatar.png';
+            }
+
+            View::render('index', 'ujian', [
+                'results' => $soal,
+                'bank' => $activeBank,
+                'stambuk' => $stambuk,
+                'nama' => $nama,
+                'photo' => $photo
+            ]);
 
         } catch (\Exception $e) {
             View::render('error', 'ujian', ['message' => $e->getMessage()]);
@@ -69,9 +92,18 @@ class TesTulisController extends Controller {
                 return;
             }
 
+            // Check if user has already completed the exam
+            if (\App\Controllers\User\DashboardController::getAbsensiTesTertulis()) {
+                echo json_encode(['status' => 'error', 'message' => 'Anda sudah mengikuti tes tertulis.']);
+                return;
+            }
+
             if ($inputToken === $activeBank['token']) {
                 // Set session to allow access
                 $_SESSION['exam_token_verified'] = $activeBank['token'];
+
+                // Create unique session ID with timestamp to ensure timer resets on each new attempt
+                $_SESSION['exam_session_timestamp'] = time();
 
                 echo json_encode([
                     'status' => 'success',
@@ -123,7 +155,13 @@ class TesTulisController extends Controller {
             }
 
             $nilaiAkhir = new NilaiAkhir();
-            $score = $nilaiAkhir->saveNilai($id_user);
+        $score = $nilaiAkhir->saveNilai($id_user);
+
+        // Update Absensi status to 'Hadir'
+        $mhs = (new \App\Model\Mahasiswa())->getMahasiswaId($id_user);
+        if ($mhs) {
+            (new \App\Model\Absensi())->updateTesTertulisAbsensi($mhs['id']);
+        }
 
             $response = [
                 'status' => empty($errors) ? 'success' : 'error',

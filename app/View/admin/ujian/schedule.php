@@ -445,7 +445,7 @@ $(document).ready(function() {
             success: function(res) {
                 if (res.status === 'success') {
                     $('#updateJadwalModal').modal('hide');
-                    showAlert(res.message);
+                    showAlert(res.message, true);
                     document.querySelector('a[data-page="jadwaltes"]').click();
                 } else {
                     showAlert(res.message, false);
@@ -463,7 +463,7 @@ $(document).ready(function() {
             success: function(res) {
                 if (res.status === 'success') {
                     $(modalId).modal('hide');
-                    showAlert(res.message);
+                    showAlert(res.message, true);
                     // Reload the page content
                     document.querySelector('a[data-page="jadwaltes"]').click();
                 } else {
@@ -518,6 +518,13 @@ $(document).ready(function() {
                         contentType: 'application/json',
                         data: JSON.stringify({ id: idMahasiswa }),
                         success: function(response) {
+                            // Clean up any lingering modal backdrops
+                            $('.modal-backdrop').remove();
+                            $('body').removeClass('modal-open').css({
+                                'overflow': '',
+                                'padding-right': ''
+                            });
+
                             if (response.status === 'success') {
                                 showAlert(response.message, true);
                             } else {
@@ -525,6 +532,13 @@ $(document).ready(function() {
                             }
                         },
                         error: function(xhr) {
+                            // Clean up any lingering modal backdrops
+                            $('.modal-backdrop').remove();
+                            $('body').removeClass('modal-open').css({
+                                'overflow': '',
+                                'padding-right': ''
+                            });
+
                             let msg = 'Terjadi kesalahan server';
                             if (xhr.responseJSON && xhr.responseJSON.message) {
                                 msg = xhr.responseJSON.message;
