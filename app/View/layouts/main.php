@@ -109,11 +109,29 @@
             </div>
         </div>
     </div>
-   
+    
+    <style>
+        /* Custom green gradient for success toast */
+        #liveToast.bg-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+        }
+        
+        /* Keep danger red */
+        #liveToast.bg-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.3);
+        }
+    </style>
+    
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Notification System -->
+    <script src="<?= APP_URL ?>/Assets/js/notifications.js?v=<?= time() ?>"></script>
+    
     <script src="<?= APP_URL ?>/Assets/js/app.js?v=<?= time() ?>"></script>
     <script src="<?= APP_URL ?>/Assets/js/ScriptSidebar.js?v=<?= time() ?>"></script>
     

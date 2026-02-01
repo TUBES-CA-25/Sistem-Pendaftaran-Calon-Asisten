@@ -4,6 +4,7 @@
 use App\Controllers\HomeController;
 use App\Controllers\AuthController;
 use App\Controllers\NotifikasiController;
+use App\Controllers\ForgotPasswordController;
 
 // Controllers User
 use App\Controllers\User\DashboardController;
@@ -32,6 +33,12 @@ use App\Core\Router;
 Router::get('/jadwaltes', [new JadwalTesController, 'index']); // Lowercase route
 Router::get('/soal', [new TesTulisController, 'index']);
 Router::get('/login', [new AuthController, 'index']);
+
+// Forgot Password
+Router::get('/forgotPassword', [new ForgotPasswordController, 'index']);
+Router::post('/forgotPasswordProcess', [new ForgotPasswordController, 'process']);
+Router::get('/resetPassword', [new ForgotPasswordController, 'resetIndex']);
+Router::post('/resetPasswordProcess', [new ForgotPasswordController, 'resetProcess']);
 
 // IMPORTANT: Specific routes MUST come before catch-all route /{page}
 // Export and download routes

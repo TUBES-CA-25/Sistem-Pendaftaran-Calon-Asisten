@@ -430,13 +430,18 @@
             btnText.textContent = 'Memproses...';
             submitBtn.disabled = true;
 
+            // Get token and email from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const email = urlParams.get('email');
+
             try {
                 const response = await fetch('<?php echo APP_URL; ?>/resetPasswordProcess', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: `newPassword=${encodeURIComponent(newPassword)}&confirmPassword=${encodeURIComponent(confirmPassword)}`
+                    body: `newPassword=${encodeURIComponent(newPassword)}&confirmPassword=${encodeURIComponent(confirmPassword)}&token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}`
                 });
 
                 const data = await response.json();

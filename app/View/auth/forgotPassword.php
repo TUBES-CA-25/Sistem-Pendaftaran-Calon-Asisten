@@ -179,11 +179,13 @@
         }
 
         .alert-success {
+            display: block;
             background: #d4edda;
             color: #155724;
         }
 
         .alert-error {
+            display: block;
             background: #f8d7da;
             color: #721c24;
         }
@@ -253,7 +255,7 @@
         <div class="forgot-password-card">
             <div class="card-header-section">
                 <h1><i class="bi bi-lock"></i> Lupa Password</h1>
-                <p>Masukkan stambuk Anda untuk melanjutkan</p>
+                <p>Masukkan email yang anda gunakan saat mendaftar untuk melanjutkan</p>
             </div>
 
             <div id="alertMessage" class="alert"></div>
@@ -316,18 +318,34 @@
 
                 if (data.status === 'success') {
                     alertDiv.className = 'alert alert-success';
+                    // Show message
                     alertDiv.textContent = data.message;
+                    
+                    // FOR LOCALHOST TESTING ONLY: Show link if provided
+                    if (data.debug_link) {
+                        alertDiv.innerHTML = data.message + `<br><br><strong>Note (Localhost):</strong> Karena email tidak dapat terkirim di localhost tanpa konfigurasi SMTP, silahkan <a href="${data.debug_link}" class="alert-link">Klik Disini</a> untuk reset password.`;
+                    }
 
                     // Clear form
                     document.getElementById('forgotPasswordForm').reset();
                 } else {
                     alertDiv.className = 'alert alert-error';
-                    alertDiv.textContent = data.message || 'Terjadi kesalahan. Silahkan coba lagi.';
+                    let errorMessage = data.message || 'Terjadi kesalahan. Silahkan coba lagi.';
+                    
+                    if (data.debug_error) errorMessage += `<br><small>Error: ${data.debug_error}</small>`;
+                    if (data.smtp_log) errorMessage += `<div style='margin-top:10px;padding:10px;background:#fff;max-height:100px;overflow:auto;font-size:10px;color:black;'><pre>${data.smtp_log}</pre></div>`;
+                    
+                    // Always show debug link on localhost if provided, even on error
+                    if (data.debug_link) {
+                         errorMessage += `<br><br><strong>Note (Localhost):</strong> Gagal kirim email, tapi token berhasil dibuat. <a href="${data.debug_link}" class="alert-link">Klik Disini untuk Reset Password</a>`;
+                    }
+
+                    alertDiv.innerHTML = errorMessage;
                 }
             } catch (error) {
                 console.error('Error:', error);
                 alertDiv.className = 'alert alert-error';
-                alertDiv.textContent = 'Terjadi kesalahan. Silahkan coba lagi.';
+                alertDiv.textContent = 'Terjadi kesalahan jaringan atau server. Cek console untuk detail.';
             } finally {
                 loading.classList.remove('active');
                 btnText.textContent = 'Kirim Reset Link ke Email';

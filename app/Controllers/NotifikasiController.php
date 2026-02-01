@@ -72,46 +72,82 @@ class NotifikasiController extends Controller {
         }
     
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
+            ob_clean();
             echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
             return;
         }
     
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
+            ob_clean();
             echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
             return;
         }
+
         $input = json_decode(file_get_contents('php://input'), true);
-        $idMahasiswa = $input['mahasiswaIds'] ?? '';
+        $idMahasiswaList = $input['mahasiswaIds'] ?? [];
         $message = $input['message'] ?? '';
-       
     
-        if (!$idMahasiswa || !$message) {
-            header('Content-Type: application/json');
+        if (empty($idMahasiswaList) || !$message) {
+            ob_clean();
             echo json_encode(['status' => 'error', 'message' => 'Semua field wajib diisi']);
             return;
         }
-        foreach($idMahasiswa as $id) {
-            $notification = new NotificationUser($id, $message);
+
+        if (!is_array($idMahasiswaList)) {
+            $idMahasiswaList = [$idMahasiswaList];
+        }
+
+        $successCount = 0;
+        $failCount = 0;
+        $errors = [];
+
+        foreach($idMahasiswaList as $id) {
             try {
-                if ($notification->insert($notification)) {
-                    continue;
+                // NotifikasiUser model expects id_mahasiswa and message in constructor
+                // But insert method uses properties
+                $notification = new NotificationUser($id, $message);
+                
+                // We assume insert throws exception on failure or returns true/false
+                $result = $notification->insert($notification);
+                
+                if ($result) {
+                    $successCount++;
+                } else {
+                    $failCount++;
+                    $errors[] = "Gagal kirim ke ID $id: Unknown error";
                 }
             } catch (\Exception $e) {
-                header('Content-Type: application/json');
-                ob_clean(); 
-                echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-                return;
+                $failCount++;
+                $errors[] = "Gagal kirim ke ID $id: " . $e->getMessage();
             }
         }
         
         ob_end_clean();
-        header('Content-Type: application/json');
-        echo json_encode(['status' => 'success', 'message' => 'Pesan berhasil dikirim']);
-        return;
-    
-        ob_end_clean();
+        
+        if ($successCount > 0 && $failCount === 0) {
+            echo json_encode([
+                'status' => 'success', 
+                'message' => "Berhasil mengirim notifikasi ke $successCount peserta.",
+                'sent' => $successCount,
+                'failed' => $failCount
+            ]);
+        } else if ($successCount > 0 && $failCount > 0) {
+            echo json_encode([
+                'status' => 'partial', 
+                'message' => "Terkirim ke $successCount peserta. Gagal ke $failCount peserta.",
+                'sent' => $successCount,
+                'failed' => $failCount,
+                'errors' => $errors
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error', 
+                'message' => "Gagal mengirim ke semua peserta ($failCount gagal).",
+                'sent' => $successCount,
+                'failed' => $failCount,
+                'errors' => $errors
+            ]);
+        }
     }
     public static function getMessageById() {
         if(session_status() == PHP_SESSION_NONE) {

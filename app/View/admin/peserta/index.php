@@ -472,10 +472,6 @@ $result = $result ?? [];
                         <i class="bi bi-x-lg me-2"></i>Tutup
                     </button>
                     <div class="d-flex gap-2">
-                        <button type="button" class="btn px-4 py-2 btn-send-message" id="btnSendMessageToUser">
-                            <i class="bi bi-envelope-fill me-2"></i>Kirim Pesan
-                        </button>
-                        
                         <!-- ACCEPT BUTTON FOR BELUM UPLOAD STATUS -->
                         <button type="button" class="btn px-4 py-2" id="btnTerimaModal" onclick="acceptParticipant()" style="background: linear-gradient(135deg, #10b981 0%, #059b70 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3); display: none;">
                             <i class="bi bi-check-circle me-2"></i>Verifikasi Berkas
@@ -518,51 +514,6 @@ $result = $result ?? [];
     
     #detailModal #btnBatalkanModal:hover {
         box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4) !important;
-    }
-    
-    /* Send Message Button Styling */
-    .btn-send-message {
-        background: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(61, 194, 236, 0.2);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .btn-send-message::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-        transition: left 0.5s ease;
-    }
-
-    .btn-send-message:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(61, 194, 236, 0.4) !important;
-        background: linear-gradient(135deg, #2ab5d9 0%, #1e4fd4 100%);
-    }
-
-    .btn-send-message:hover::before {
-        left: 100%;
-    }
-
-    .btn-send-message:active {
-        transform: translateY(0);
-    }
-
-    .btn-send-message i {
-        transition: transform 0.3s ease;
-    }
-
-    .btn-send-message:hover i {
-        transform: scale(1.1);
     }
     
     /* Ensure modal body is scrollable */
@@ -668,54 +619,10 @@ $result = $result ?? [];
     }
 </style>
 
-<!-- Modal Kirim Pesan Individual -->
-<!-- Modal Kirim Pesan Individual (Styled like Presentation) -->
-<!-- ================= MODAL KIRIM PESAN ================= -->
-<div class="modal fade" id="sendMessageModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">
-                    <i class="bi bi-chat-dots"></i> Kirim Pesan
-                </h5>
-                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p><strong>Kepada:</strong> <span id="messageRecipient">-</span></p>
-                <textarea id="individualMessage" class="form-control" rows="4"
-                          placeholder="Tulis pesan..." required></textarea>
-            </div>
-            <div class="modal-footer">
-                <input type="hidden" id="messageMahasiswaId">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button class="btn btn-primary" id="sendIndividualMessage">
-                    <i class="bi bi-send"></i> Kirim
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- ================= CUSTOM NOTIFICATION SYSTEM ================= -->
+<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/notifications.js"></script>
 
-<!-- ================= FIX UTAMA ADA DI SINI ================= -->
-
-<script>
-/**
- * Popup sukses (GLOBAL)
- * FIX: mencegah error showSuccessPopup is not defined
- */
-window.showSuccessPopup = function (message) {
-    alert(message);
-};
-
-/**
- * Popup error (GLOBAL)
- */
-window.showErrorPopup = function (message) {
-    alert(message);
-};
-</script>
-
-<!-- Load Custom JavaScript (SETELAH popup didefinisikan) -->
+<!-- Load Custom JavaScript (SETELAH notification system didefinisikan) -->
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/participants.js"></script>
 
 

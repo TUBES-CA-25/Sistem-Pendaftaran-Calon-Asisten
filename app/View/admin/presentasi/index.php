@@ -540,7 +540,7 @@ $(document).ready(function() {
         if (confirm('Terima judul presentasi mahasiswa ini?')) {
             $.post(APP_URL + '/updatestatus', { id: userid, status: 1 }, function(res) {
                 if (res.status === 'success') {
-                    showAlert('Judul berhasil diterima!');
+                    showAlert('Judul berhasil diterima!', true);
                     setTimeout(() => { location.reload(); }, 1000);
                 } else {
                     showAlert(res.message || 'Gagal menerima judul', false);
@@ -555,7 +555,7 @@ $(document).ready(function() {
         if (confirm('Tolak judul presentasi mahasiswa ini? Mahasiswa akan diminta merevisi judulnya.')) {
             $.post(APP_URL + '/updatestatus', { id: userid, status: 2 }, function(res) {
                 if (res.status === 'success') {
-                    showAlert('Judul ditolak. Mahasiswa akan diminta revisi.');
+                    showAlert('Judul ditolak. Mahasiswa akan diminta revisi.', true);
                     setTimeout(() => { location.reload(); }, 1000);
                 } else {
                     showAlert(res.message || 'Gagal menolak judul', false);
@@ -582,7 +582,7 @@ $(document).ready(function() {
         }, function(res) {
             const modal = bootstrap.Modal.getInstance(document.getElementById('sendMessageModal'));
             if (modal) modal.hide();
-            if (res.status === 'success') showAlert('Pesan berhasil dikirim!');
+            if (res.status === 'success') showAlert('Pesan berhasil dikirim!', true);
             else showAlert(res.message || 'Gagal mengirim pesan', false);
         }, 'json');
     });
@@ -715,7 +715,7 @@ $(document).ready(function() {
             const modal = bootstrap.Modal.getInstance(document.getElementById('addJadwalModal'));
             if (modal) modal.hide();
             if (res.status === 'success') {
-                showAlert('Jadwal berhasil disimpan!');
+                showAlert('Jadwal berhasil disimpan!', true);
                 loadJadwalData();
             } else {
                 showAlert(res.message || 'Gagal menyimpan jadwal', false);
@@ -792,7 +792,7 @@ $(document).ready(function() {
                 if (modal) modal.hide();
 
                 if (errorCount === 0) {
-                    showAlert(`${successCount} jadwal berhasil disimpan!`);
+                    showAlert(`${successCount} jadwal berhasil disimpan!`, true);
                     loadJadwalData();
                 } else if (successCount > 0) {
                     showAlert(`${successCount} jadwal berhasil, ${errorCount} gagal`, false);
@@ -828,7 +828,7 @@ $(document).ready(function() {
             const modal = bootstrap.Modal.getInstance(document.getElementById('editJadwalModal'));
             if (modal) modal.hide();
             if (res.status === 'success') {
-                showAlert('Jadwal berhasil diupdate!');
+                showAlert('Jadwal berhasil diupdate!', true);
                 loadJadwalData();
             } else {
                 showAlert(res.message || 'Gagal update jadwal', false);
