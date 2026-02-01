@@ -43,13 +43,11 @@
         $('#backToListBtn').click(showListView);
 
         // --- CLICKS ---
-        // Use event delegation for room cards
-        $(document).on('click', '.room-card', function(e) {
-            // If clicked on a button/action inside the card, ignore
-            if($(e.target).closest('button').length || $(e.target).closest('a').length) return;
-            
-            showDetailView($(this).data('id'), $(this).data('name'));
-        });
+        // Disabled: Admin cannot click on room cards to view participants
+        // $(document).on('click', '.room-card', function(e) {
+        //     if($(e.target).closest('button').length || $(e.target).closest('a').length) return;
+        //     showDetailView($(this).data('id'), $(this).data('name'));
+        // });
 
         // --- TABS & DATA ---
         // Determine type based on clicked tab

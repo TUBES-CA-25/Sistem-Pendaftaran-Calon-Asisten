@@ -13,8 +13,8 @@ $ruanganList = $ruanganList ?? [];
     <!-- SECTION: LIST VIEW -->
     <div id="ruanganListSection">
         <?php
-            $title = 'Ruangan Praktikum';
-            $subtitle = 'Kelola data ruangan, peserta, dan aktivitas praktikum';
+            $title = 'Ruangan Seleksi';
+            $subtitle = 'Kelola data ruangan untuk kegiatan seleksi calon asisten';
             $icon = 'bi bi-buildings-fill';
             require_once __DIR__ . '/../../templates/components/PageHeader.php';
         ?>
@@ -43,7 +43,7 @@ $ruanganList = $ruanganList ?? [];
                                 <i class="bi bi-buildings fs-1"></i>
                              </div>
                              <h4 class="fw-bold text-dark">Belum ada Ruangan</h4>
-                             <p class="text-muted mb-4">Mulai dengan menambahkan ruangan baru untuk praktikum.</p>
+                             <p class="text-muted mb-4">Mulai dengan menambahkan ruangan baru untuk seleksi.</p>
                              <div>
                                  <button class="btn btn-add-room rounded-pill px-5 py-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#tambahRuanganModal">
                                     <i class="bi bi-plus-circle-fill me-2"></i> Tambah Sekarang
@@ -54,7 +54,7 @@ $ruanganList = $ruanganList ?? [];
                 <?php } else { ?>
                     <?php foreach ($ruanganList as $ruangan) { ?>
                         <div class="col-md-6 col-lg-4 col-xl-3 room-item">
-                            <div class="card h-100 border-0 shadow room-card cursor-pointer position-relative"
+                            <div class="card h-100 border-0 shadow room-card position-relative"
                                 data-id="<?= $ruangan['id'] ?>"
                                 data-name="<?= htmlspecialchars($ruangan['nama']) ?>"
                                 style="border-radius: 16px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden;">
@@ -64,7 +64,7 @@ $ruanganList = $ruanganList ?? [];
                                      style="height: 5px; background: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%);"></div>
 
                                 <!-- Card Body -->
-                                <div class="card-body p-4 d-flex flex-column" style="min-height: 280px;">
+                                <div class="card-body p-4 d-flex flex-column">
                                     <!-- Icon -->
                                     <div class="d-flex justify-content-center mb-3 mt-2">
                                         <div class="rounded-circle d-flex align-items-center justify-content-center room-icon-container"
@@ -81,7 +81,7 @@ $ruanganList = $ruanganList ?? [];
                                         <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill"
                                              style="background-color: rgba(61, 194, 236, 0.08);">
                                             <i class="bi bi-geo-alt-fill text-primary" style="font-size: 0.75rem;"></i>
-                                            <span class="text-muted small fw-medium">Ruangan Praktikum</span>
+                                            <span class="text-muted small fw-medium">Ruangan Seleksi</span>
                                         </div>
                                     </div>
 
@@ -104,17 +104,6 @@ $ruanganList = $ruanganList ?? [];
                                         </button>
                                     </div>
                                 </div>
-
-                                <!-- Footer Hint -->
-                                <div class="card-footer border-0 py-3 text-center"
-                                     style="background: linear-gradient(to bottom, transparent, rgba(61, 194, 236, 0.03));">
-                                    <small class="text-primary fw-semibold d-flex align-items-center justify-content-center gap-2"
-                                           style="font-size: 0.75rem;">
-                                        <i class="bi bi-cursor-fill"></i>
-                                        <span>Klik untuk lihat peserta</span>
-                                        <i class="bi bi-arrow-right"></i>
-                                    </small>
-                                </div>
                             </div>
                         </div>
                     <?php } ?>
@@ -124,91 +113,6 @@ $ruanganList = $ruanganList ?? [];
     </div>
 
 </main>
-
-<!-- SECTION: DETAIL VIEW (Outside main to avoid padding) -->
-<div id="ruanganDetailSection" class="d-none" style="position: fixed; top: 0; left: var(--sidebar-width); right: 0; bottom: 0; background: white; z-index: 1000; overflow-y: auto;">
-    
-    <!-- Simple Clean Header -->
-    <div class="bg-white border-bottom shadow-sm">
-        <div class="container-fluid p-0">
-            <!-- Back Button & Title -->
-            <div class="d-flex justify-content-between align-items-center px-4 py-4">
-                <div class="d-flex align-items-center gap-3">
-                    <button class="btn btn-light rounded-circle" id="backToListBtn" style="width: 40px; height: 40px;">
-                        <i class="bi bi-arrow-left"></i>
-                    </button>
-                    <div>
-                        <h3 class="fw-bold text-dark mb-1" id="detailRoomTitle">Nama Ruangan</h3>
-                        <p class="text-muted small mb-0">Daftar peserta di ruangan ini</p>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center gap-3">
-                    <div class="bg-primary bg-opacity-10 rounded-3 px-4 py-2">
-                        <span class="text-muted small fw-medium">Total Peserta:</span>
-                        <span class="text-primary fw-bold fs-5 ms-2" id="participantCount">0</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container-fluid px-4 py-4">
-        
-        <!-- Simple Table Card -->
-        <div class="card border-0 shadow-sm">
-            
-            <!-- Tabs -->
-            <div class="card-header bg-white border-bottom">
-                <ul class="nav nav-tabs border-0 card-header-tabs" id="roomTabs" role="tablist">
-                    <li class="nav-item">
-                        <button class="nav-link active" id="pills-testulis-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab" type="button">
-                            <i class="bi bi-file-text me-2"></i>Tes Tulis
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="pills-presentasi-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab" type="button">
-                            <i class="bi bi-easel me-2"></i>Presentasi
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="pills-wawancara-tab" data-bs-toggle="pill" data-bs-target="#pills-content" role="tab" type="button">
-                            <i class="bi bi-chat-text me-2"></i>Wawancara
-                        </button>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Toolbar -->
-            <div class="card-body border-bottom bg-light">
-                <div class="row g-3">
-                    <div class="col-md-12">
-                        <div class="position-relative">
-                             <i class="bi bi-search position-absolute text-muted" style="left: 15px; top: 50%; transform: translateY(-50%);"></i>
-                             <input type="text" id="searchParticipants" class="form-control ps-5" placeholder="Cari mahasiswa di ruangan ini...">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Table -->
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="text-center py-3 px-3" style="width: 8%;">No</th>
-                            <th class="py-3 px-3" style="width: 45%;">Nama Mahasiswa</th>
-                            <th class="py-3 px-3" style="width: 25%;">Stambuk</th>
-                            <th class="text-center py-3 px-3" style="width: 22%;">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="participantsTableBody">
-                        <tr><td colspan="4" class="text-center py-4 text-muted">Memuat data...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modals -->
 <div class="modal fade" id="tambahRuanganModal" tabindex="-1" aria-hidden="true">
@@ -302,29 +206,28 @@ $ruanganList = $ruanganList ?? [];
     transform: rotate(90deg);
 }
 
-/* Room Card Hover Effects */
+/* Room Card Hover Effects - Disabled click functionality */
 .room-card {
-    cursor: pointer;
+    cursor: default;
     transform-origin: center;
 }
 
 .room-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 32px rgba(61, 194, 236, 0.2) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(61, 194, 236, 0.15) !important;
 }
 
 .room-card:hover .room-icon-container {
-    background: linear-gradient(135deg, rgba(61, 194, 236, 0.2) 0%, rgba(37, 99, 235, 0.25) 100%) !important;
-    transform: scale(1.05);
+    background: linear-gradient(135deg, rgba(61, 194, 236, 0.15) 0%, rgba(37, 99, 235, 0.2) 100%) !important;
+    transform: scale(1.02);
 }
 
 .room-card:hover .room-icon-container i {
-    transform: scale(1.1);
-    color: #2563eb !important;
+    transform: scale(1.05);
 }
 
 .room-card:hover .room-name {
-    color: #2563eb !important;
+    color: #1e40af !important;
 }
 
 /* Button Hover Effects */

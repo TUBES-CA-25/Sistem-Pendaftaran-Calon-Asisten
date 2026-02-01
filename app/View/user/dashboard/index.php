@@ -397,9 +397,9 @@ $dokumen = $dokumen ?? [];
 
             <!-- Profile Card -->
             <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4 text-center">
+                <div class="card-body p-4 text-center d-flex flex-column align-items-center justify-content-center">
                     <!-- Profile Photo -->
-                    <div class="mb-3">
+                    <div class="mb-3 d-flex justify-content-center">
                         <?php if ($profileDisplay['hasValidPhoto']): ?>
                             <img src="<?= htmlspecialchars($profileDisplay['photoPath']) ?>"
                                  alt="Profile"
@@ -408,8 +408,8 @@ $dokumen = $dokumen ?? [];
                                  onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/dummy.jpeg'">
                         <?php else: ?>
                             <!-- Default Avatar with Initials -->
-                            <div class="rounded-circle border border-3 border-primary d-flex align-items-center justify-content-center text-white fw-bold"
-                                 style="width: 100px; height: 100px; background: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%); font-size: 2.5rem;">
+                            <div class="rounded-circle border border-3 border-primary d-flex align-items-center justify-content-center text-white fw-bold mx-auto"
+                                 style="width: 100px; height: 100px; background: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%); font-size: 2.5rem; line-height: 1;">
                                 <?= $profileDisplay['initials'] ?>
                             </div>
                         <?php endif; ?>
