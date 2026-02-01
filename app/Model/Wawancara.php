@@ -172,16 +172,57 @@ class Wawancara extends Model
     
 
     public function save(Wawancara $wawancara, $id) {
+        // Determine if this is Tes Tertulis or Wawancara
+        $isTertulis = (stripos($wawancara->jenis_wawancara, 'Tes Tertulis') !== false);
+
+        if ($isTertulis) {
+            // For Tes Tertulis: Check if mahasiswa already has ANY Tes Tertulis schedule
+            $checkSql = "SELECT COUNT(*) as count FROM " . self::$table . "
+                         WHERE id_mahasiswa = ? AND jenis_wawancara LIKE 'Tes Tertulis%'";
+        } else {
+            // For Wawancara: Check if mahasiswa already has ANY wawancara (not Tes Tertulis)
+            $checkSql = "SELECT COUNT(*) as count FROM " . self::$table . "
+                         WHERE id_mahasiswa = ? AND jenis_wawancara NOT LIKE 'Tes Tertulis%'";
+        }
+        $checkStmt = self::getDB()->prepare($checkSql);
+
         $sql = "INSERT INTO " . self::$table . " (id_mahasiswa, id_ruangan, jenis_wawancara, waktu, tanggal) VALUES (?, ?, ?, ?, ?)";
         $stmt = self::getDB()->prepare($sql);
+
+        $skippedCount = 0;
+        $insertedCount = 0;
+
         foreach ($id as $idmahasiswa) {
+            // Check if this mahasiswa already has schedule
+            $checkStmt->bindValue(1, $idmahasiswa);
+            $checkStmt->execute();
+            $result = $checkStmt->fetch(\PDO::FETCH_ASSOC);
+
+            if ($result['count'] > 0) {
+                // Skip this mahasiswa, already scheduled
+                $skippedCount++;
+                continue;
+            }
+
+            // Insert new schedule
             $stmt->bindValue(1, $idmahasiswa);
             $stmt->bindValue(2, $wawancara->id_ruangan);
             $stmt->bindValue(3, $wawancara->jenis_wawancara);
             $stmt->bindValue(4, $wawancara->waktu);
             $stmt->bindValue(5, $wawancara->tanggal);
             $stmt->execute();
+            $insertedCount++;
         }
+
+        // Return info about skipped items
+        if ($skippedCount > 0 && $insertedCount === 0) {
+            if ($isTertulis) {
+                throw new \Exception("Semua mahasiswa yang dipilih sudah memiliki jadwal Tes Tertulis");
+            } else {
+                throw new \Exception("Semua mahasiswa yang dipilih sudah memiliki jadwal wawancara");
+            }
+        }
+
         return true;
     }
     public function updateWawancara($id, Wawancara $wawancara) {

@@ -6,6 +6,9 @@ use App\Core\Controller;
 use App\Core\View;
 use App\Core\Model;
 
+// Models
+use App\Model\Mahasiswa;
+
 // User Controllers
 use App\Controllers\User\DashboardController;
 use App\Controllers\User\BiodataController;
@@ -631,12 +634,13 @@ class HomeController extends Controller
 
     /**
      * Data untuk wawancara admin view
+     * Only show mahasiswa who have completed Presentasi
      */
     private function getWawancaraAdminData(): array
     {
         return [
             'wawancara' => JadwalWawancaraController::getAll() ?? [],
-            'mahasiswaList' => PesertaController::viewAllMahasiswa() ?? [],
+            'mahasiswaList' => \App\Model\Mahasiswa::getAvailableForWawancara() ?? [],
             'ruanganList' => RuanganController::viewAllRuangan() ?? []
         ];
     }
@@ -901,14 +905,14 @@ class HomeController extends Controller
         $extensions = ['png', 'jpg', 'jpeg'];
         
         clearstatcache();
-        
+
         foreach ($extensions as $ext) {
             $filename = "admin_{$userId}.{$ext}";
             if (file_exists($baseDir . $filename)) {
                 return $webPath . $filename . '?v=' . time();
             }
         }
-        
-        return '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png';
+
+        return '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/Rectangle.png';
     }
 }

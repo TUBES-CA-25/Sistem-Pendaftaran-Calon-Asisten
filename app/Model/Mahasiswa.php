@@ -52,11 +52,11 @@ class Mahasiswa extends Model
     public function getAll()
     {
         // Select ALL users (excluding Admins) and join their biodata (if any)
-        $query = "SELECT u.id as id_user_real, u.username, u.stambuk as stambuk_user, m.* 
-                  FROM user u 
-                  LEFT JOIN " . static::$table . " m ON u.id = m.id_user 
+        $query = "SELECT u.id as id_user_real, u.username, u.stambuk as stambuk_user, m.*
+                  FROM user u
+                  LEFT JOIN " . static::$table . " m ON u.id = m.id_user
                   WHERE (u.role != 'Admin' OR u.role IS NULL)";
-        
+
         $stmt = self::getDB()->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -65,6 +65,11 @@ class Mahasiswa extends Model
         foreach ($result as $stmt) {
             // Only fetch relations if Mahasiswa record exists (id is not null)
             $mahasiswaId = $stmt['id'] ?? null;
+
+            // Skip users who haven't registered as mahasiswa (no biodata filled)
+            if (!$mahasiswaId) {
+                continue;
+            }
             
             $berkas = $mahasiswaId ? $this->getBerkasMahasiswa($mahasiswaId) : [
                 'foto' => null, 'cv' => null, 'transkrip_nilai' => null, 'surat_pernyataan' => null, 'accepted' => null
@@ -495,13 +500,27 @@ class Mahasiswa extends Model
     }
 
     /**
-     * Get students with biodata who are NOT scheduled for Wawancara
+     * Get students who have completed Tes Tertulis (for Presentasi scheduling)
+     */
+    public static function getAvailableForPresentasi() {
+        $sql = "SELECT m.id, m.nama_lengkap, m.stambuk
+                FROM mahasiswa m
+                INNER JOIN absensi a ON m.id = a.id_mahasiswa
+                WHERE a.absensi_tes_tertulis != 'Alpha'
+                ORDER BY m.nama_lengkap ASC";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get students who have completed Presentasi (for Wawancara scheduling)
      */
     public static function getAvailableForWawancara() {
-        $sql = "SELECT m.id, m.nama_lengkap, m.stambuk 
+        $sql = "SELECT m.id, m.nama_lengkap, m.stambuk
                 FROM mahasiswa m
-                LEFT JOIN wawancara w ON m.id = w.id_mahasiswa AND w.jenis_wawancara NOT LIKE 'Tes Tertulis%'
-                WHERE w.id IS NULL
+                INNER JOIN absensi a ON m.id = a.id_mahasiswa
+                WHERE a.absensi_presentasi != 'Alpha'
                 ORDER BY m.nama_lengkap ASC";
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute();
