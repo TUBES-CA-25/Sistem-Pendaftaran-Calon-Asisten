@@ -6,27 +6,32 @@
  * @var array $wawancara - Data jadwal wawancara
  */
 $wawancara = $wawancara ?? [];
+
+// --- LOGIKA BARU: FILTER KHUSUS MILIK SAYA ---
+// Kita buat array baru ($mySchedule) yang isinya cuma data yang punya 'is_mine' = true
+$mySchedule = array_filter($wawancara, function($item) {
+    return isset($item['is_mine']) && $item['is_mine'] == true;
+});
+// ---------------------------------------------
 ?>
 
-<!-- Page Header -->
 <?php
     $title = 'Jadwal Kegiatan';
-    $subtitle = 'Informasi jadwal wawancara dan kegiatan';
+    $subtitle = 'Informasi jadwal wawancara dan kegiatan Anda';
     $icon = 'bx bx-user-voice';
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
 <main class="container-fluid px-4 pb-4">
 
-    <!-- Schedule Table Card -->
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-header bg-transparent border-0 p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
             <h5 class="fw-bold mb-0">
-                <i class="bi bi-calendar-event me-2 text-primary"></i>Jadwal Kegiatan
+                <i class="bi bi-calendar-event me-2 text-primary"></i>Jadwal Kegiatan Saya
             </h5>
             <div class="position-relative" style="width: 250px; max-width: 100%;">
                 <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-                <input type="text" id="searchSchedule" class="form-control ps-5 rounded-3 bg-light border-0" placeholder="Cari nama peserta...">
+                <input type="text" id="searchSchedule" class="form-control ps-5 rounded-3 bg-light border-0" placeholder="Cari jadwal...">
             </div>
         </div>
         <div class="card-body p-0">
@@ -42,16 +47,16 @@ $wawancara = $wawancara ?? [];
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($wawancara)): ?>
+                        <?php if (empty($mySchedule)): ?>
                             <tr>
                                 <td colspan="5" class="text-center py-5">
                                     <i class="bi bi-calendar-x fs-1 text-muted d-block mb-2"></i>
-                                    <span class="text-muted">Belum ada jadwal kegiatan</span>
+                                    <span class="text-muted">Anda belum memiliki jadwal kegiatan apapun.</span>
                                 </td>
                             </tr>
                         <?php else: ?>
                             <?php $i = 1; ?>
-                            <?php foreach ($wawancara as $value): ?>
+                            <?php foreach ($mySchedule as $value): ?>
                                 <tr>
                                     <td class="ps-4">
                                         <span class="badge bg-light text-dark"><?= $i ?></span>
@@ -80,21 +85,16 @@ $wawancara = $wawancara ?? [];
                                                 <span class="badge bg-secondary bg-opacity-10 text-secondary small ms-1" style="font-size: 0.65rem;">
                                                     <?= htmlspecialchars($value['jenis'] ?? 'Kegiatan') ?>
                                                 </span>
-                                                <?php if (isset($value['is_mine']) && $value['is_mine']): ?>
-                                                    <span class="badge bg-primary rounded-pill px-2 py-1 ms-2" style="font-size: 0.65rem;">
-                                                        <i class="bi bi-person-check-fill me-1"></i>Milik Anda
-                                                    </span>
 
-                                                    <?php if (isset($value['status_kehadiran'])): ?>
-                                                        <?php if ($value['status_kehadiran'] === 'Hadir'): ?>
-                                                            <span class="badge bg-success rounded-pill px-2 py-1 ms-1" style="font-size: 0.65rem;">
-                                                                <i class="bi bi-check-circle-fill me-1"></i>Selesai
-                                                            </span>
-                                                        <?php elseif ($value['status_kehadiran'] === 'Alpha'): ?>
-                                                            <span class="badge bg-danger rounded-pill px-2 py-1 ms-1" style="font-size: 0.65rem;">
-                                                                <i class="bi bi-x-circle-fill me-1"></i>Alpha
-                                                            </span>
-                                                        <?php endif; ?>
+                                                <?php if (isset($value['status_kehadiran'])): ?>
+                                                    <?php if ($value['status_kehadiran'] === 'Hadir'): ?>
+                                                        <span class="badge bg-success rounded-pill px-2 py-1 ms-1" style="font-size: 0.65rem;">
+                                                            <i class="bi bi-check-circle-fill me-1"></i>Selesai
+                                                        </span>
+                                                    <?php elseif ($value['status_kehadiran'] === 'Alpha'): ?>
+                                                        <span class="badge bg-danger rounded-pill px-2 py-1 ms-1" style="font-size: 0.65rem;">
+                                                            <i class="bi bi-x-circle-fill me-1"></i>Alpha
+                                                        </span>
                                                     <?php endif; ?>
                                                 <?php endif; ?>
                                             </div>
@@ -149,7 +149,7 @@ $(document).ready(function() {
                     <tr id="noResultsRow">
                         <td colspan="5" class="text-center py-5">
                             <i class="bi bi-search fs-1 text-muted d-block mb-2"></i>
-                            <span class="text-muted">Data yang Anda cari tidak ditemukan</span>
+                            <span class="text-muted">Jadwal yang Anda cari tidak ditemukan</span>
                         </td>
                     </tr>
                 `);

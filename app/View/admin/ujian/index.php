@@ -351,7 +351,7 @@ $essayCount = $stats['essay_count'];
                 <h5 class="modal-title fw-bold"><i class='bx bx-plus-circle me-2'></i>Tambah Soal Baru</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form id="addSoalForm">
+            <form id="addSoalForm" enctype="multipart/form-data">
                 <div class="modal-body p-4" style="max-height: 65vh; overflow-y: auto;">
                     <!-- Tipe Soal Selection -->
                     <div class="mb-4 text-center">
@@ -375,14 +375,20 @@ $essayCount = $stats['essay_count'];
                         <input type="hidden" name="status_soal" id="soalType" value="pilihan_ganda">
                     </div>
 
+                    <!-- Gambar Soal -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-dark">Gambar Soal (Opsional)</label>
+                        <input type="file" class="form-control" name="soal_image" id="soalImageInput" accept="image/*">
+                        <div class="form-text small">Format: JPG, PNG, GIF. Maksimal 2MB.</div>
+                        <div id="imagePreview" class="mt-3" style="display: none;">
+                            <img id="previewImg" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid #e2e8f0;">
+                        </div>
+                    </div>
+
                     <!-- Pertanyaan -->
                     <div class="mb-4">
                         <label class="form-label fw-bold text-dark">Pertanyaan</label>
-                        <textarea class="form-control p-3 mb-3" name="deskripsi" rows="4" placeholder="Tulis pertanyaan disini..." style="resize: vertical;"></textarea>
-                        
-                        <label class="form-label fw-bold text-dark small">Gambar Soal (Opsional)</label>
-                        <input type="file" class="form-control" name="soal_image" accept="image/*">
-                        <div class="form-text small">Format: JPG, PNG, GIF. Maksimal 2MB.</div>
+                        <textarea class="form-control p-3" name="deskripsi" rows="4" placeholder="Tulis pertanyaan disini..." style="resize: vertical;"></textarea>
                     </div>
 
                     <!-- Pilihan Ganda Container -->
@@ -433,7 +439,7 @@ $essayCount = $stats['essay_count'];
                 <h5 class="modal-title fw-bold"><i class='bx bx-edit me-2'></i>Edit Soal</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form id="editSoalForm">
+            <form id="editSoalForm" enctype="multipart/form-data">
                 <input type="hidden" name="id" id="editSoalId">
                 <div class="modal-body p-4">
                     <!-- Tipe Soal Selection -->
@@ -456,6 +462,17 @@ $essayCount = $stats['essay_count'];
                             </div>
                         </div>
                         <input type="hidden" name="status_soal" id="editSoalType">
+                    </div>
+
+                    <!-- Gambar Soal -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-dark">Gambar Soal (Opsional)</label>
+                        <input type="file" class="form-control" name="soal_image_edit" id="soalImageEditInput" accept="image/*">
+                        <div class="form-text small">Format: JPG, PNG, GIF. Maksimal 2MB. Kosongkan jika tidak ingin mengubah gambar.</div>
+                        <div id="editImagePreview" class="mt-3" style="display: none;">
+                            <img id="editPreviewImg" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid #e2e8f0;">
+                        </div>
+                        <input type="hidden" name="existing_image" id="existingImageUrl">
                     </div>
 
                     <!-- Pertanyaan -->
@@ -558,7 +575,8 @@ $essayCount = $stats['essay_count'];
                 'deskripsi' => $soal['deskripsi'] ?? '',
                 'status_soal' => $soal['status_soal'] ?? 'essay',
                 'pilihan' => $soal['pilihan'] ?? '',
-                'jawaban' => $soal['jawaban'] ?? ''
+                'jawaban' => $soal['jawaban'] ?? '',
+                'image_url' => $soal['image_url'] ?? null
             ];
         }, $allSoal)) ?>,
         bankSoalList: <?= json_encode($bankSoalList) ?>
@@ -604,11 +622,8 @@ $essayCount = $stats['essay_count'];
                  importError: 'Something went wrong during image upload.'
              },
              toolbar: [
-                 "bold", "italic", "heading", "|", 
-                 "quote", "unordered-list", "ordered-list", "|",
-                 "link", "image", "upload-image", "|",
-                 "preview", "side-by-side", "fullscreen", "|",
-                 "guide"
+                 "bold", "italic", "heading",
+                 "quote", "unordered-list", "ordered-list"
              ]
         };
 
@@ -652,6 +667,49 @@ $essayCount = $stats['essay_count'];
                  alert('Pertanyaan tidak boleh kosong');
                  return;
              }
+        });
+
+        // Image Preview untuk Add Soal
+        document.getElementById('soalImageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Check file size (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                    e.target.value = '';
+                    document.getElementById('imagePreview').style.display = 'none';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('previewImg').src = event.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('imagePreview').style.display = 'none';
+            }
+        });
+
+        // Image Preview untuk Edit Soal
+        document.getElementById('soalImageEditInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Check file size (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                    e.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('editPreviewImg').src = event.target.result;
+                    document.getElementById('editImagePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
         });
     });
 </script>

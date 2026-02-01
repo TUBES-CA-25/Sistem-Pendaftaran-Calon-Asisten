@@ -150,20 +150,6 @@ $(document).ready(function () {
         }, 100);
     });
 
-    // Start test button handler
-    $('#startTestButton').on('click', function () {
-        const nomorMejaInput = $('#nomorMeja').val().trim();
-
-        if (!nomorMejaInput || isNaN(nomorMejaInput) || parseInt(nomorMejaInput) <= 0) {
-            $('#errorMessage').text('Nomor meja tidak valid!');
-            return;
-        }
-
-        $('#errorMessage').text('');
-
-        const targetURL = `${APP_URL}/soal?nomorMeja=${encodeURIComponent(nomorMejaInput)}`;
-        window.location.href = targetURL;
-    });
 });
 
 // Global showModal function
@@ -179,7 +165,7 @@ window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
     const modalGif = document.getElementById("modalGif");
 
     if (modalMessage) modalMessage.textContent = message;
-    
+
     if (modalGif) {
         if (gifUrl) {
             modalGif.src = gifUrl;
@@ -189,7 +175,19 @@ window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
         }
     }
 
-    const modal = new bootstrap.Modal(modalEl);
+    // Check if bootstrap is available
+    if (typeof bootstrap === 'undefined' || typeof bootstrap.Modal === 'undefined') {
+        console.error('Bootstrap Modal is not available');
+        alert(message);
+        if (onCloseCallback) onCloseCallback();
+        return;
+    }
+
+    // Get or create modal instance
+    let modal = bootstrap.Modal.getInstance(modalEl);
+    if (!modal) {
+        modal = new bootstrap.Modal(modalEl);
+    }
     modal.show();
 
     // Handle close callback
@@ -200,7 +198,7 @@ window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
         closeBtn.parentNode.replaceChild(newBtn, closeBtn);
         newBtn.addEventListener('click', onCloseCallback);
     }
-    
+
     // Also handle modal hidden event
     if (onCloseCallback) {
         modalEl.addEventListener('hidden.bs.modal', function handler() {
@@ -556,8 +554,26 @@ function showActionConfirmation(options) {
     btn.parentNode.replaceChild(newBtn, btn);
     
     newBtn.addEventListener('click', function() {
-        if(onConfirm) onConfirm();
-        bootstrap.Modal.getInstance(modalEl).hide();
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) {
+            modalInstance.hide();
+        }
+
+        // Execute callback after modal starts hiding
+        if(onConfirm) {
+            setTimeout(function() {
+                onConfirm();
+            }, 150); // Small delay to ensure modal backdrop is being removed
+        }
+
+        // Ensure backdrop is removed (failsafe)
+        setTimeout(function() {
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => backdrop.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }, 300);
     });
 
     // Show Modal

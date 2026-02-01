@@ -6,6 +6,9 @@ use App\Core\Controller;
 use App\Core\View;
 use App\Core\Model;
 
+// Models
+use App\Model\Mahasiswa;
+
 // User Controllers
 use App\Controllers\User\DashboardController;
 use App\Controllers\User\BiodataController;
@@ -60,7 +63,7 @@ class HomeController extends Controller
         }
 
         if (is_array($page)) {
-            $page = $page['page'];
+            $page = $page['page'] ?? 'dashboard';
         }
 
         // Detect if AJAX request
@@ -271,14 +274,10 @@ class HomeController extends Controller
             // Updated Logic: Fetch Profile Photo specifically
             $mahasiswaModel = new \App\Model\Mahasiswa();
             $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id']);
-            
+
             $photoName = $mahasiswa['foto_profil'] ?? 'default.png';
-            $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $photoName;
-            
-            // Fallback check if file doesn't exist (optional, but good for UX)
-            // Note: Relative path check requires document root knowledge, simplistically trusting url for now
-            // or we could check file_exists($_SERVER['DOCUMENT_ROOT'] ... )
-            
+            $photoPath = $this->getUserPhotoPath($photoName);
+
             $notifikasi = NotifikasiController::getMessageById() ?? [];
         }
 
@@ -328,7 +327,7 @@ class HomeController extends Controller
         $mahasiswaModel = new \App\Model\Mahasiswa();
         $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id']);
         $photoName = $mahasiswa['foto_profil'] ?? 'default.png';
-        $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $photoName;
+        $photoPath = $this->getUserPhotoPath($photoName);
 
         // Format profile display
         $profileDisplay = $this->formatProfileDisplay($biodata, $user, $photoName);
@@ -435,7 +434,7 @@ class HomeController extends Controller
              $mahasiswaModel = new \App\Model\Mahasiswa();
              $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id']);
              $photoName = $mahasiswa['foto_profil'] ?? 'default.png';
-             $photoPath = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $photoName;
+             $photoPath = $this->getUserPhotoPath($photoName);
         }
 
         return [
@@ -635,12 +634,13 @@ class HomeController extends Controller
 
     /**
      * Data untuk wawancara admin view
+     * Only show mahasiswa who have completed Presentasi
      */
     private function getWawancaraAdminData(): array
     {
         return [
             'wawancara' => JadwalWawancaraController::getAll() ?? [],
-            'mahasiswaList' => PesertaController::viewAllMahasiswa() ?? [],
+            'mahasiswaList' => \App\Model\Mahasiswa::getAvailableForWawancara() ?? [],
             'ruanganList' => RuanganController::viewAllRuangan() ?? []
         ];
     }
@@ -689,34 +689,29 @@ class HomeController extends Controller
         $defaultPhoto = 'default.png';
         $webBasePath = '/Sistem-Pendaftaran-Calon-Asisten/res/';
         $docRoot = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/';
+        $defaultPhotoUrl = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
 
         if (empty($filename) || $filename === $defaultPhoto) {
-            // Check where default.png exists (prefer profile)
-            if (file_exists($docRoot . 'profile/default.png')) {
-                 return $webBasePath . 'profile/default.png';
-            }
-            return $webBasePath . 'imageUser/default.png';
+            // Return new default photo location
+            return $defaultPhotoUrl;
         }
 
         if (strpos($filename, '/') !== false) {
             return $filename;
         }
 
-        // Check profile directory first (preferred for user photos)
-        if (file_exists($docRoot . 'profile/' . $filename)) {
-            return $webBasePath . 'profile/' . $filename . '?v=' . time(); // Add cache busting
-        }
-
-        // Check imageUser directory (legacy/berkas uploads)
+        // Check imageUser directory first (berkas uploads - priority)
         if (file_exists($docRoot . 'imageUser/' . $filename)) {
             return $webBasePath . 'imageUser/' . $filename . '?v=' . time();
         }
 
-        // Fallback to default if not found in either
-        if (file_exists($docRoot . 'profile/default.png')) {
-             return $webBasePath . 'profile/default.png';
+        // Check profile directory as fallback
+        if (file_exists($docRoot . 'profile/' . $filename)) {
+            return $webBasePath . 'profile/' . $filename . '?v=' . time(); // Add cache busting
         }
-        return $webBasePath . 'imageUser/default.png';
+
+        // Fallback to default if not found in either
+        return $defaultPhotoUrl;
     }
 
     /**
@@ -910,14 +905,14 @@ class HomeController extends Controller
         $extensions = ['png', 'jpg', 'jpeg'];
         
         clearstatcache();
-        
+
         foreach ($extensions as $ext) {
             $filename = "admin_{$userId}.{$ext}";
             if (file_exists($baseDir . $filename)) {
                 return $webPath . $filename . '?v=' . time();
             }
         }
-        
-        return '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png';
+
+        return '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/Rectangle.png';
     }
 }

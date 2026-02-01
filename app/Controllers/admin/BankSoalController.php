@@ -28,39 +28,58 @@ class BankSoalController extends Controller
             $pilihan = $_POST['pilihan'] ?? 'bukan soal pilihan';
             $jawaban = $_POST['jawaban'] ?? null;
             $bankId = $_POST['bank_id'] ?? null;
+            $imageUrl = null;
+
+            // Debug logging
+            error_log("POST data: " . print_r($_POST, true));
+            error_log("FILES data: " . print_r($_FILES, true));
 
             // Handle Image Upload
             if (isset($_FILES['soal_image']) && $_FILES['soal_image']['error'] === 0) {
-                $uploadDir = __DIR__ . '/../../../../res/uploads/soal/';
+                // Get absolute path to project root
+                $projectRoot = dirname(dirname(dirname(__DIR__)));
+                $uploadDir = $projectRoot . DIRECTORY_SEPARATOR . 'res' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'soal' . DIRECTORY_SEPARATOR;
+
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
-                
+
                 $fileInfo = pathinfo($_FILES['soal_image']['name']);
                 $ext = strtolower($fileInfo['extension']);
-                $allowed = ['jpg', 'jpeg', 'png', 'gif'];
-                
+                $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
                 if (in_array($ext, $allowed)) {
                     $newFilename = uniqid('soal_') . '.' . $ext;
                     $destPath = $uploadDir . $newFilename;
-                    
+
                     if (move_uploaded_file($_FILES['soal_image']['tmp_name'], $destPath)) {
-                        $webPath = '/Sistem-Pendaftaran-Calon-Asisten/res/uploads/soal/' . $newFilename;
-                        // Append image to description
-                        $deskripsi .= '<br><br><img src="' . $webPath . '" class="img-fluid rounded shadow-sm border" style="max-height: 300px;">';
+                        // Use relative path from web root
+                        $imageUrl = 'res/uploads/soal/' . $newFilename;
+                        error_log("Image uploaded successfully to: " . $destPath);
+                    } else {
+                        error_log("Failed to move uploaded file. Tmp: " . $_FILES['soal_image']['tmp_name'] . ", Dest: " . $destPath);
                     }
+                } else {
+                    error_log("File extension not allowed: " . $ext);
                 }
+            } elseif (isset($_FILES['soal_image'])) {
+                error_log("Image upload error code: " . $_FILES['soal_image']['error']);
             }
 
             if (empty($deskripsi)) {
                 throw new \Exception('Deskripsi soal harus diisi');
             }
 
+            if (empty($bankId)) {
+                throw new \Exception('Bank soal tidak ditemukan');
+            }
+
             $soalExam = new SoalExam(
                 $deskripsi,
                 $pilihan,
                 $jawaban,
-                $tipeJawaban
+                $tipeJawaban,
+                $imageUrl
             );
 
             if ($soalExam->getJawaban() === null) {
@@ -85,6 +104,106 @@ class BankSoalController extends Controller
         } catch (\Exception $e) {
             error_log("Error in saveSoal: " . $e->getMessage());
 
+            echo json_encode([
+                'success' => false,
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+            http_response_code(500);
+        }
+    }
+
+    public function updateSoal()
+    {
+        // Clean any previous output
+        if (ob_get_level()) ob_end_clean();
+
+        header('Content-Type: application/json');
+        try {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            if (!isset($_SESSION['user']['id'])) {
+                throw new \Exception('User tidak terautentikasi');
+            }
+
+            $id = $_POST['id'] ?? null;
+            $deskripsi = $_POST['deskripsi'] ?? '';
+            $tipeJawaban = $_POST['status_soal'] ?? '';
+            $pilihan = $_POST['pilihan'] ?? 'bukan soal pilihan';
+            $jawaban = $_POST['jawaban'] ?? null;
+            $existingImage = $_POST['existing_image'] ?? null;
+            $imageUrl = $existingImage; // Keep existing image by default
+
+            if (!$id) {
+                throw new \Exception('ID soal tidak ditemukan');
+            }
+
+            // Handle Image Upload - only if new file uploaded
+            if (isset($_FILES['soal_image_edit']) && $_FILES['soal_image_edit']['error'] === 0) {
+                // Get absolute path to project root
+                $projectRoot = dirname(dirname(dirname(__DIR__)));
+                $uploadDir = $projectRoot . DIRECTORY_SEPARATOR . 'res' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'soal' . DIRECTORY_SEPARATOR;
+
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                $fileInfo = pathinfo($_FILES['soal_image_edit']['name']);
+                $ext = strtolower($fileInfo['extension']);
+                $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                if (in_array($ext, $allowed)) {
+                    $newFilename = uniqid('soal_') . '.' . $ext;
+                    $destPath = $uploadDir . $newFilename;
+
+                    if (move_uploaded_file($_FILES['soal_image_edit']['tmp_name'], $destPath)) {
+                        // Delete old image if exists
+                        if (!empty($existingImage)) {
+                            $oldImagePath = $projectRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $existingImage);
+                            if (file_exists($oldImagePath)) {
+                                @unlink($oldImagePath);
+                                error_log("Deleted old image file: " . $oldImagePath);
+                            }
+                        }
+
+                        // Use relative path from web root
+                        $imageUrl = 'res/uploads/soal/' . $newFilename;
+                        error_log("Image uploaded successfully to: " . $destPath);
+                    }
+                }
+            }
+
+            if (empty($deskripsi)) {
+                throw new \Exception('Deskripsi soal harus diisi');
+            }
+
+            // Update query
+            $sql = "UPDATE soal SET deskripsi = :deskripsi, image_url = :image_url, pilihan = :pilihan, jawaban = :jawaban, status_soal = :status_soal, modified = NOW() WHERE id = :id";
+            $stmt = \App\Core\Model::getDB()->prepare($sql);
+            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+            $stmt->bindParam(':deskripsi', $deskripsi);
+            $stmt->bindParam(':image_url', $imageUrl);
+            $stmt->bindParam(':pilihan', $pilihan);
+            $stmt->bindParam(':jawaban', $jawaban);
+            $stmt->bindParam(':status_soal', $tipeJawaban);
+
+            if ($stmt->execute()) {
+                echo json_encode([
+                    'success' => true,
+                    'status' => 'success',
+                    'message' => 'Soal berhasil diupdate'
+                ]);
+            } else {
+                throw new \Exception('Gagal mengupdate soal');
+            }
+
+            http_response_code(200);
+            exit();
+
+        } catch (\Exception $e) {
+            error_log("Error in updateSoal: " . $e->getMessage());
             echo json_encode([
                 'success' => false,
                 'status' => 'error',
@@ -140,8 +259,9 @@ class BankSoalController extends Controller
             $destPath = $uploadDir . $newFilename;
 
             if (move_uploaded_file($file['tmp_name'], $destPath)) {
-                $webPath = '/Sistem-Pendaftaran-Calon-Asisten/res/uploads/soal_content/' . $newFilename;
-                
+                // Use relative path from web root
+                $webPath = 'res/uploads/soal_content/' . $newFilename;
+
                 echo json_encode([
                     'data' => [
                         'filePath' => $webPath
@@ -197,7 +317,73 @@ class BankSoalController extends Controller
         }
         exit;
     }
-    
+
+    public function deleteSoal()
+    {
+        // Clean any previous output
+        if (ob_get_level()) ob_end_clean();
+
+        header('Content-Type: application/json');
+        try {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            if (!isset($_SESSION['user']['id'])) {
+                throw new \Exception('User tidak terautentikasi');
+            }
+
+            $soalId = $_POST['id'] ?? null;
+
+            if (!$soalId) {
+                throw new \Exception('ID soal tidak ditemukan');
+            }
+
+            // Get soal data first to retrieve image path
+            $db = \App\Core\Model::getDB();
+            $stmt = $db->prepare("SELECT image_url FROM soal WHERE id = :id");
+            $stmt->bindParam(':id', $soalId, \PDO::PARAM_INT);
+            $stmt->execute();
+            $soal = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$soal) {
+                throw new \Exception('Soal tidak ditemukan');
+            }
+
+            // Delete image file if exists
+            if (!empty($soal['image_url'])) {
+                $projectRoot = dirname(dirname(dirname(__DIR__)));
+                $imagePath = $projectRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $soal['image_url']);
+
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                    error_log("Deleted image file: " . $imagePath);
+                }
+            }
+
+            // Delete soal from database
+            $deleteStmt = $db->prepare("DELETE FROM soal WHERE id = :id");
+            $deleteStmt->bindParam(':id', $soalId, \PDO::PARAM_INT);
+
+            if ($deleteStmt->execute()) {
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Soal berhasil dihapus'
+                ]);
+            } else {
+                throw new \Exception('Gagal menghapus soal');
+            }
+
+        } catch (\Exception $e) {
+            error_log("Error in deleteSoal: " . $e->getMessage());
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+        exit;
+    }
+
     public function getBankDetails()
     {
         // Clean any previous output
@@ -252,7 +438,12 @@ class BankSoalController extends Controller
             
             $bankSoal = new BankSoal();
             if ($bankSoal->save($nama, $deskripsi, $token)) {
-                echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil dibuat']);
+                $newId = $bankSoal->getLastInsertId();
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Bank soal berhasil dibuat',
+                    'id' => $newId
+                ]);
             } else {
                 throw new \Exception('Gagal menyimpan bank soal');
             }

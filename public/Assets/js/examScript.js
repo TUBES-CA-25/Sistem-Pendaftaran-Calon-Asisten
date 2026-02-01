@@ -5,17 +5,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const questions = document.querySelectorAll(
     ".questions-container > .question"
   );
-  const navButtons = document.querySelectorAll(".nav button");
+  const navButtons = document.querySelectorAll(".nav-btn-soal");
+  const questionNumberEl = document.getElementById("current-question-number");
   const timerElement = document.getElementById("timer");
-  const endpoint = "/Sistem-Pendaftaran-Calon-Asisten/public/hasil";
+  const endpoint = APP_URL + "/hasil";
   let currentQuestion = 0;
   const initialDuration = 30 * 60;
   let remainingTime;
 
+  const storage = window.storage || {
+    get: (k) => { try { return localStorage.getItem(k); } catch(e) { return null; } },
+    set: (k, v) => { try { localStorage.setItem(k, v); } catch(e) {} },
+    remove: (k) => { try { localStorage.removeItem(k); } catch(e) {} }
+  };
+
   const answers = {};
 
-  if (localStorage.getItem("remainingTime")) {
-    remainingTime = parseInt(localStorage.getItem("remainingTime"), 10);
+  // Get current exam session ID from the page (set by server)
+  const currentExamSession = window.examSessionId || Date.now().toString();
+  const storedExamSession = storage.get("examSessionId");
+
+  // If this is a new exam session (different ID = reset by admin or first time), reset timer
+  if (storedExamSession !== currentExamSession) {
+    storage.remove("remainingTime");
+    storage.set("examSessionId", currentExamSession);
+    remainingTime = initialDuration;
+  } else if (storage.get("remainingTime")) {
+    remainingTime = parseInt(storage.get("remainingTime"), 10);
   } else {
     remainingTime = initialDuration;
   }
@@ -24,9 +40,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Note: The score is already calculated in saveAnswer (/hasil)
     // We just need to show success and redirect.
     console.log("Submitting finish...", priorResponse);
-    
+
+    // Clear timer from storage since exam is completed
+    storage.remove("remainingTime");
+    storage.remove("examSessionId");
+
     setTimeout(() => {
-        window.location.href = "/Sistem-Pendaftaran-Calon-Asisten/public";
+        window.location.href = APP_URL + "/tes-tulis";
     }, 2000);
   }
 
@@ -55,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         remainingTime--;
         updateTimerDisplay(remainingTime);
-        localStorage.setItem("remainingTime", remainingTime);
+        storage.set("remainingTime", remainingTime);
       }
     }, 1000);
   }
@@ -64,6 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
     questions.forEach((question, i) => {
       question.style.display = i === index ? "block" : "none";
     });
+    // Update question number indicator
+    if (questionNumberEl) {
+      questionNumberEl.textContent = index + 1;
+    }
     updateNavigationButtons();
     updateActiveNavButton();
   }
@@ -121,31 +145,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateNavigationButtons() {
     let backButton =
-      questions[currentQuestion].querySelector(".nav-button.back");
+      questions[currentQuestion].querySelector(".back-btn");
     let nextButton =
-      questions[currentQuestion].querySelector(".nav-button.next");
+      questions[currentQuestion].querySelector(".next-btn");
+    let finishButton =
+      questions[currentQuestion].querySelector(".finish-btn");
 
     if (!backButton) {
-      backButton = document.createElement("button");
-      backButton.classList.add("nav-button", "back");
-      backButton.textContent = "Back";
-      backButton.style.float = "left";
-      questions[currentQuestion].appendChild(backButton);
+      console.error("Back button not found");
+      return;
     }
 
     if (!nextButton) {
-      nextButton = document.createElement("button");
-      nextButton.classList.add("nav-button", "next");
-      nextButton.textContent =
-        currentQuestion === questions.length - 1 ? "Finish" : "Next";
-      nextButton.style.float = "right";
-      questions[currentQuestion].appendChild(nextButton);
+      console.error("Next button not found");
+      return;
     }
 
-    backButton.style.display = currentQuestion === 0 ? "none" : "inline-block";
-    nextButton.textContent =
-      currentQuestion === questions.length - 1 ? "Finish" : "Next";
+    if (!finishButton) {
+      console.error("Finish button not found");
+      return;
+    }
 
+    // Show/hide buttons based on current question
+    backButton.style.display = currentQuestion === 0 ? "none" : "inline-block";
+
+    if (currentQuestion === questions.length - 1) {
+      nextButton.style.display = "none";
+      finishButton.style.display = "inline-block";
+    } else {
+      nextButton.style.display = "inline-block";
+      finishButton.style.display = "none";
+    }
+
+    // Back button handler
     backButton.onclick = () => {
       if (currentQuestion > 0) {
         currentQuestion--;
@@ -153,30 +185,31 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     };
 
+    // Next button handler
     nextButton.onclick = () => {
       if (currentQuestion < questions.length - 1) {
         currentQuestion++;
         showQuestion(currentQuestion);
-      } else {
-        showActionConfirmation({
-            title: 'Selesaikan Ujian',
-            message: 'Apakah Anda yakin ingin menyelesaikan ujian ini?<br><span class="text-muted small">Jawaban yang sudah dikirim tidak dapat diubah kembali.</span>',
-            btnText: 'Selesai',
-            type: 'success', // Green for positive submission
-            onConfirm: function() {
-              submitAllAnswers()
-                .then(() => {
-                  return submitAndFinish();
-                })
-                .catch((error) => {
-                  console.error(
-                    "Error saat menyimpan jawaban atau menghitung nilai:",
-                    error
-                  );
-                });
-            }
-        });
       }
+    };
+
+    // Finish button handler
+    finishButton.onclick = () => {
+      showActionConfirmation({
+        message: 'Apakah Anda yakin ingin menyelesaikan ujian ini? Jawaban yang sudah dikirim tidak dapat diubah kembali.',
+        onConfirm: function() {
+          submitAllAnswers()
+            .then(() => {
+              return submitAndFinish();
+            })
+            .catch((error) => {
+              console.error(
+                "Error saat menyimpan jawaban atau menghitung nilai:",
+                error
+              );
+            });
+        }
+      });
     };
   }
 
@@ -206,7 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   questions.forEach((question, index) => {
     const options = question.querySelectorAll("input[type='radio']");
-    const textarea = question.querySelector("textarea.text-answer");
+    const textarea = question.querySelector("textarea.form-control");
     const idSoal = question.getAttribute("data-id-soal");
 
     options.forEach((option) => {
@@ -224,7 +257,15 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(
           `Jawaban disimpan: { idSoal: ${idSoal}, answer: "${answer}" }`
         );
-        markAnsweredQuestion(index);
+        // Only mark as answered if there's actual content
+        if (answer.length > 0) {
+          markAnsweredQuestion(index);
+        } else {
+          // Remove answered mark if textarea is cleared
+          if (navButtons[index]) {
+            navButtons[index].classList.remove("answered");
+          }
+        }
       });
     }
   });
@@ -235,7 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("beforeunload", () => {
     if (remainingTime <= 0) {
-      localStorage.removeItem("remainingTime");
+      storage.remove("remainingTime");
     }
   });
 });

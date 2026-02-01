@@ -44,6 +44,7 @@
             try {
                 var data = this.dataset;
 
+
                 // Store mahasiswa ID for accept button
                 document.getElementById('modalMahasiswaId').value = data.id;
                 document.getElementById('modalUserId').value = data.userid;
@@ -52,6 +53,7 @@
                     userId: data.userid,
                     nama: data.nama,
                     stambuk: data.stambuk
+
                 };
 
                 // BASE URL ADJUSTMENT: 'res' is at project root, not inside 'public'

@@ -262,7 +262,7 @@ $dokumen = $dokumen ?? [];
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="fw-semibold mb-0" style="font-size: 1.15rem;">Biodata Diri</h5>
                         <button class="btn btn-sm btn-outline-primary" onclick="navigateTo('biodata')">
-                            <i class="bi bi-pencil me-1"></i>Edit
+                            <i class="bi bi-pencil me-1"></i>Lihat Profil
                         </button>
                     </div>
                 </div>

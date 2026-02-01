@@ -14,6 +14,15 @@ $biodataStatus = $biodataStatus ?? false;
 $isBerkasEmpty = $isBerkasEmpty ?? true;
 ?>
 
+    <?php 
+    // 1. Cek Status Penerimaan dari data $res (ambil data terbaru/pertama)
+    $isAccepted = false;
+    if (!empty($res) && isset($res[0]['accepted']) && $res[0]['accepted'] == 1) {
+        $isAccepted = true;
+    }
+    ?>
+
+
 <!-- Page Header -->
 <?php
     $title = 'Upload Berkas';
@@ -39,6 +48,16 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                             <i class="bi bi-exclamation-triangle-fill"></i>
                             <div>Lengkapi biodata terlebih dahulu</div>
                         </div>
+
+                    <?php elseif ($isAccepted): ?>
+                        <div class="alert alert-success d-flex align-items-center gap-2 rounded-3" role="alert">
+                            <i class="bi bi-check-circle-fill fs-4"></i>
+                            <div>
+                                <h6 class="fw-bold mb-0">Berkas Telah Diterima!</h6>
+                                <p class="mb-0 small">Seluruh berkas persyaratan Anda telah diverifikasi dan disetujui. Anda tidak perlu mengunggah ulang.</p>
+                            </div>
+                        </div>
+
                     <?php else: ?>
                         <form id="berkasForm" enctype="multipart/form-data">
                             <div class="mb-4">
@@ -73,7 +92,6 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                 <small class="text-muted">Format: PDF</small>
                             </div>
 
-                            <!-- Download Template -->
                             <div class="p-3 rounded-3 mb-4" style="background: #f0f9ff;">
                                 <a id="downloadFile1" href="#" download class="d-flex align-items-center gap-3 text-decoration-none">
                                     <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 48px; height: 48px; background: var(--gradient-primary);">
@@ -107,20 +125,18 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered align-middle mb-0">
                             <thead>
-                                <tr>
-                                    <th class="ps-4">ID</th>
+                                <tr> 
+                                    <th>No</th>                                   
                                     <th>Tanggal</th>
                                     <th>Nama</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (!$isBerkasEmpty && !empty($res)): ?>
-                                    <?php foreach ($res as $result): ?>
-                                        <tr>
-                                            <td class="ps-4">
-                                                <span class="badge bg-light text-dark">CCA00<?= $result['id_mahasiswa'] ?></span>
-                                            </td>
+                                <?php if (!$isBerkasEmpty && !empty($res)): $nomor = 0; $nomor++;?>
+                                    <?php foreach ($res as $result): ?>                                    
+                                        <tr>                                    
+                                            <td class="small text-muted"><?= $nomor ?></td>
                                             <td class="small text-muted"><?= $result['created_at'] ?></td>
                                             <td><?= htmlspecialchars($nama) ?></td>
                                             <td>
