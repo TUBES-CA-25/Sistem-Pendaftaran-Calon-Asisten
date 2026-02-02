@@ -4,70 +4,65 @@ namespace App\Core;
 
 class Router
 {
-    protected static $getRoutes = [];
-    protected static $postRoutes = [];
-    protected static $putRoutes = [];
-    protected static $deleteRoutes = [];
+    private static array $routes = [];
 
-    public static function get($path, $handler)
+    public static function add(string $method, string $path, $controller): void
     {
-        self::$getRoutes[] = ['path' => $path, 'handler' => $handler];
+        self::$routes[$method][$path] = $controller;
     }
 
-    public static function post($path, $handler)
+    public static function get(string $path, $controller): void
     {
-        self::$postRoutes[] = ['path' => $path, 'handler' => $handler];
+        self::add('GET', $path, $controller);
     }
 
-    public static function put($path, $handler)
+    public static function post(string $path, $controller): void
     {
-        self::$putRoutes[] = ['path' => $path, 'handler' => $handler];
+        self::add('POST', $path, $controller);
     }
 
-    public static function delete($path, $handler)
+    public static function route(string $method, string $path): void
     {
-        self::$deleteRoutes[] = ['path' => $path, 'handler' => $handler];
-    }
-
-    public static function route($method, $path)
-    {
-        $routes = [];
-        switch (strtoupper($method)) {
-            case 'GET':
-                $routes = self::$getRoutes;
-                break;
-            case 'POST':
-                $routes = self::$postRoutes;
-                break;
-            case 'PUT':
-                $routes = self::$putRoutes;
-                break;
-            case 'DELETE':
-                $routes = self::$deleteRoutes;
-                break;
-        }
-
-        $found = false;
-
-        foreach ($routes as $route) {
-            $pattern = str_replace("/", "\/", $route['path']);
-            $pattern = preg_replace('/\{(\w+)\}/', '(?P<$1>[^\/]+)', $pattern);
-            $pattern = '/^' . $pattern . '\/?$/'; 
-            if (preg_match($pattern, $path, $matches)) {
-                $handler = $route['handler'];
-                $found = true;
-
-                if (is_callable($handler)) {
-                    return $handler(array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY));
-                }
-
-                throw new \Exception('Handler not callable.');
+        // 1. Try exact match first
+        if (isset(self::$routes[$method][$path])) {
+            $controller = self::$routes[$method][$path];
+            if (is_callable($controller)) {
+                call_user_func($controller);
+                return;
             }
         }
 
-        if (!$found) {
-            http_response_code(404);
-            exit;
+        // 2. Try regex match for dynamic routes (e.g. /{page})
+        if (isset(self::$routes[$method])) {
+            foreach (self::$routes[$method] as $routePath => $controller) {
+                // Only process routes with parameters
+                if (strpos($routePath, '{') === false) {
+                    continue;
+                }
+
+                // Convert {param} to regex group ([^/]+)
+                // We use # as delimiter
+                $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '([^/]+)', $routePath);
+                // Escape any other regex chars in the path if needed? 
+                // For now assuming simple paths. 
+                // To be safer, we could quote everything then unquote the braces part, but simplistic replacement is standard for simple routers.
+                $pattern = "#^" . $pattern . "$#";
+
+                if (preg_match($pattern, $path, $matches)) {
+                    // Remove full match from matches array
+                    array_shift($matches);
+                    
+                    if (is_callable($controller)) {
+                        // Pass matches as arguments to the controller
+                        call_user_func_array($controller, $matches);
+                        return;
+                    }
+                }
+            }
         }
+
+        // 3. 404 Not Found
+        http_response_code(404);
+        echo "404 - Page Not Found";
     }
 }

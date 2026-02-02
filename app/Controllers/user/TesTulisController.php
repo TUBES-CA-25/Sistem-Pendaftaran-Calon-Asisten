@@ -6,6 +6,7 @@ use App\Core\View;
 use App\Model\SoalExam;
 use App\Model\JawabanExam;
 use App\Model\NilaiAkhir;
+
 class TesTulisController extends Controller {
     public function index() {
         try {
