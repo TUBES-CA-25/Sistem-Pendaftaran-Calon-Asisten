@@ -29,6 +29,8 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
 <main class="container-fluid px-4 pb-4">
 
     <div class="row g-4">
+
+    
         <!-- Form Card -->
         <div class="col-lg-5">
             <div class="card border-0 shadow-sm rounded-4">
@@ -111,6 +113,8 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
                 </div>
             </div>
         </div>
+
+
 
         <!-- History Table Card -->
         <div class="col-lg-7">

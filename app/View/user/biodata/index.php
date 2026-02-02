@@ -26,6 +26,7 @@ $noHp = $noHp ?? 'No Telephone';
 $isBiodataEmpty = $isBiodataEmpty ?? true;
 ?>
 
+
 <!-- Page Header -->
 <?php
     $title = 'Biodata';
@@ -100,12 +101,23 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
                             <label for="kelas" class="form-label fw-semibold">Kelas</label>
                             <select class="form-select form-select-lg rounded-3" id="floatingSelect" name="kelas" required>
                                 <option selected disabled>Pilih Kelas Anda</option>
-                                <!-- JS populates this, but if editing we might need to pre-select. 
-                                     The existing JS likely handles populating based on values? 
-                                     Assuming biodata.js handles default selection if value provided? 
-                                     We will set a data attribute for JS to use. -->
+                                <option value="<?php echo htmlspecialchars($kelas) ?>" selected><?= htmlspecialchars($kelas) ?></option>                                
                                 <?php if ($kelas !== 'Kelas'): ?>
-                                    <option value="<?= htmlspecialchars($kelas) ?>" selected><?= htmlspecialchars($kelas) ?></option>
+                                    <?php 
+                                        $kelasOptions = [];
+                                        if ($jenisKelamin === "wanita") {
+                                            $kelasOptions = ["B1", "B2", "B3", "B4", "B5"];
+                                        } else if ($jenisKelamin === "pria" || $jenisKelamin === "laki-laki") {
+                                            $kelasOptions = ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"];
+                                        }
+                                        ?>
+                                    <option value="<?php echo htmlspecialchars($kelas) ?>" selected><?= htmlspecialchars($kelas) ?></option>
+                                     <?php foreach ($kelasOptions as $kelasOps) : ?>
+                                        <option value="<?= htmlspecialchars($kelasOps) ?>" <?= ($kelas === $kelasOps) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($kelasOps) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                    <!-- cari -->
                                 <?php endif; ?>
                             </select>
                         </div>
@@ -230,6 +242,13 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
 function enableEditMode() {
     document.getElementById('displaySection').style.display = 'none';
     document.getElementById('formSection').style.display = 'block';
+    
+    if (typeof updateKelasOptions === "function") {
+        updateKelasOptions(); 
+    } else {    
+        const gender = document.querySelector('input[name="gender"]:checked');
+        if(gender) $(gender).trigger('change'); 
+    }
 }
 
 function cancelEdit() {
