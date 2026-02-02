@@ -112,7 +112,7 @@ $dokumen = $dokumen ?? [];
                         </h4>
                         <p class="small mb-3" style="opacity: 0.9;">
                             <?= $graduationStatus === 'Lulus' 
-                                ? 'Anda telah berhasil melewati seluruh tahapan seleksi calon asisten laboratorium. Silakan cek informasi selanjutnya.' 
+                                ? 'Anda telah berhasil melewati seluruh tahapan seleksi calon asisten laboratorium.' 
                                 : 'Terima kasih telah berpartisipasi dalam proses seleksi. Tetap semangat dan coba lagi di kesempatan berikutnya.' ?>
                         </p>
                         
@@ -364,8 +364,8 @@ $dokumen = $dokumen ?? [];
                             </div>
                         </div>
 
-                        <!-- Alamat (Full Width) -->
-                        <div class="col-12">
+                        <!-- Alamat -->
+                        <div class="col-md-6">
                             <div class="d-flex align-items-start gap-3">
                                 <div class="rounded-3 bg-info bg-opacity-10 p-2 flex-shrink-0">
                                     <i class="bi bi-geo-alt-fill text-info fs-5"></i>
@@ -378,21 +378,7 @@ $dokumen = $dokumen ?? [];
                         </div>
                     </div>
 
-                    <?php 
-                    $isBiodataIncomplete = isset($isBiodataEmpty) ? $isBiodataEmpty : (empty($biodata) || (isset($biodata['isBiodataEmpty']) && $biodata['isBiodataEmpty']));
-                    if ($isBiodataIncomplete): 
-                    ?>
-                        <div class="mt-4 pt-3 border-top text-center">
-                            <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill bg-warning bg-opacity-10 text-warning mb-3">
-                                <i class="bi bi-exclamation-circle-fill"></i>
-                                <small class="fw-semibold">Silahkan lengkapi biodata Anda terlebih dahulu</small>
-                            </div>
-                            <br>
-                            <button onclick="navigateTo('biodata')" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm fw-bold">
-                                Lengkapi Biodata <i class="bi bi-arrow-right ms-1"></i>
-                            </button>
-                        </div>
-                    <?php endif; ?>
+
                 </div>
             </div>
 
@@ -413,11 +399,11 @@ $dokumen = $dokumen ?? [];
                                  style="width: 100px; height: 100px; object-fit: cover;"
                                  onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/dummy.jpeg'">
                         <?php else: ?>
-                            <!-- Default Avatar with Initials -->
-                            <div class="rounded-circle border border-3 border-primary d-flex align-items-center justify-content-center text-white fw-bold mx-auto"
-                                 style="width: 100px; height: 100px; background: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%); font-size: 2.5rem; line-height: 1;">
-                                <?= $profileDisplay['initials'] ?>
-                            </div>
+                            <!-- Default Avatar (Fallback) -->
+                            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png"
+                                 alt="Profile"
+                                 class="rounded-circle border border-3 border-primary"
+                                 style="width: 100px; height: 100px; object-fit: cover;">
                         <?php endif; ?>
                     </div>
 

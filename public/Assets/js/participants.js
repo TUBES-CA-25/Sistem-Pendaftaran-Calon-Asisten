@@ -93,7 +93,7 @@
             if (data.status === 'success') {
                 var msgModal = bootstrap.Modal.getInstance(document.getElementById('sendMessageModal'));
                 if (msgModal) msgModal.hide();
-                showSuccessPopup('Pesan berhasil dikirim!');
+                showAlert('Pesan berhasil dikirim!', true);
             } else {
                 showAlert('Gagal: ' + data.message, false);
             }
@@ -299,7 +299,7 @@
         
         // Determine which ID to use
         if (!userId && !mhsId) {
-            alert('✗ ID data tidak ditemukan');
+            showAlert('ID data tidak ditemukan', false);
             return;
         }
         
@@ -321,17 +321,17 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        alert('✓ Data berhasil dihapus!');
+                        showAlert('Data berhasil dihapus!', true);
                         setTimeout(function() {
                             location.reload();
                         }, 1000);
                     } else {
-                        alert('✗ Gagal: ' + (data.message || 'Terjadi kesalahan'));
+                        showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('✗ Terjadi kesalahan saat menghapus data');
+                    showAlert('Terjadi kesalahan saat menghapus data', false);
                 });
             }
         });
@@ -412,29 +412,37 @@
         renderSelectedMahasiswa();
     });
     
-    // Submit notification form - Using jQuery off/on to prevent duplicates
+    // Submit notification form - Broadcast Mode
     $('#addNotificationForm').off('submit').on('submit', function(e) {
         e.preventDefault();
         
         var message = document.getElementById('notifMessage').value;
-        var btnSubmit = this.querySelector('button[type="submit"]');
+        var btnSubmit = document.querySelector('button[form="addNotificationForm"]');
         var originalText = btnSubmit.innerHTML;
-        
-        if (selectedMahasiswa.length === 0) {
-            showAlert('Pilih peserta terlebih dahulu', false);
-            return;
-        }
         
         if (!message.trim()) {
             showAlert('Pesan tidak boleh kosong', false);
             return;
         }
         
+        // Auto-select ALL students for broadcast
+        var select = document.getElementById('mahasiswa');
+        var mahasiswaIds = [];
+        
+        Array.from(select.options).forEach(function(option) {
+            if (option.value) {
+                mahasiswaIds.push(option.value);
+            }
+        });
+
+        if (mahasiswaIds.length === 0) {
+            showAlert('Tidak ada peserta yang terdaftar untuk dikirimi notifikasi.', false);
+            return;
+        }
+
         // Disable button and show loading state
         btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mengirim...';
-        
-        var mahasiswaIds = selectedMahasiswa.map(function(m) { return m.id; });
+        btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mengirim Broadcast...';
         
         fetch(`${APP_URL}/addallnotif`, {
             method: 'POST',
@@ -449,22 +457,19 @@
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                showAlert('Notifikasi berhasil dikirim ke ' + selectedMahasiswa.length + ' peserta!', true);
+                showAlert('Broadcast berhasil dikirim ke ' + mahasiswaIds.length + ' peserta!', true);
                 var modal = bootstrap.Modal.getInstance(document.getElementById('addNotification'));
                 if (modal) modal.hide();
                 
                 // Reset form
-                selectedMahasiswa = [];
-                renderSelectedMahasiswa();
                 document.getElementById('notifMessage').value = '';
-                document.getElementById('mahasiswa').selectedIndex = 0;
             } else {
                 showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            showAlert('Terjadi kesalahan saat mengirim notifikasi', false);
+            showAlert('Terjadi kesalahan saat mengirim broadcast', false);
         })
         .finally(() => {
             // Re-enable button

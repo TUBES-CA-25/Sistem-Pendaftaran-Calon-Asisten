@@ -163,52 +163,33 @@ $result = $result ?? [];
             </div>
             <div class="modal-body">
                 <form id="addNotificationForm">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="mahasiswa" class="form-label fw-semibold">
-                                    <i class="bi bi-person-plus me-1"></i>Pilih Peserta
-                                </label>
-                                <select class="form-select" id="mahasiswa">
-                                    <option value="" disabled selected>-- Pilih Peserta --</option>
-                                    <?php foreach ($mahasiswaList as $mahasiswa): ?>
-                                        <option value="<?= $mahasiswa['id'] ?>" data-userid="<?= $mahasiswa['idUser'] ?>">
-                                            <?= htmlspecialchars($mahasiswa['stambuk']) ?> - <?= htmlspecialchars($mahasiswa['nama_lengkap']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <div class="mt-2 d-flex gap-2">
-                                    <button type="button" class="btn btn-outline-primary btn-sm" id="addMahasiswaButton">
-                                        <i class="bi bi-plus-circle me-1"></i>Tambah
-                                    </button>
-                                    <button type="button" class="btn btn-outline-success btn-sm" id="addAllMahasiswaButton">
-                                        <i class="bi bi-people me-1"></i>Tambah Semua
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">
-                                    <i class="bi bi-people-fill me-1"></i>Peserta Terpilih
-                                    <span class="badge bg-primary ms-1" id="selectedCount">0</span>
-                                </label>
-                                <div class="border rounded p-2" style="max-height: 150px; overflow-y: auto;">
-                                    <ul class="list-group list-group-flush" id="selectedMahasiswaList">
-                                        <li class="list-group-item text-muted text-center py-3">
-                                            <i class="bi bi-inbox me-1"></i>Belum ada peserta dipilih
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                    <!-- Hidden Select for Logic Compatibility -->
+                    <div style="display: none;">
+                        <select class="form-select" id="mahasiswa">
+                            <option value="" disabled selected>-- Pilih Peserta --</option>
+                            <?php foreach ($mahasiswaList as $mahasiswa): ?>
+                                <option value="<?= $mahasiswa['id'] ?>" data-userid="<?= $mahasiswa['idUser'] ?>">
+                                    <?= htmlspecialchars($mahasiswa['stambuk']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div id="selectedMahasiswaList"></div>
+                        <span id="selectedCount"></span>
+                    </div>
+
+                    <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+                        <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                        <div>
+                            <strong>Broadcast Notifikasi</strong>
+                            <div class="small">Pesan yang Anda tulis di bawah ini akan dikirimkan kepada <u>seluruh peserta</u> yang terdaftar dalam sistem.</div>
                         </div>
                     </div>
+
                     <div class="mb-3">
                         <label for="notifMessage" class="form-label fw-semibold">
-                            <i class="bi bi-chat-text me-1"></i>Pesan Notifikasi
+                            <i class="bi bi-chat-text me-1"></i>Pesan Broadcast
                         </label>
-                        <textarea class="form-control" id="notifMessage" rows="4" placeholder="Tulis pesan notifikasi untuk peserta..." required></textarea>
-                        <div class="form-text">Pesan ini akan dikirim ke semua peserta yang dipilih.</div>
+                        <textarea class="form-control" id="notifMessage" rows="5" placeholder="Tulis pesan pengumuman atau informasi penting di sini..." required></textarea>
                     </div>
                 </form>
             </div>
@@ -492,7 +473,7 @@ $result = $result ?? [];
                         </button>
                         <!-- REJECT BUTTON - HIDDEN BY DEFAULT -->
                         <button type="button" class="btn px-4 py-2" id="btnBatalkanModal" onclick="cancelVerification()" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3); display: none;">
-                            <i class="bi bi-x-circle me-2"></i>Batal kan Verifikasi
+                            <i class="bi bi-x-circle me-2"></i>Batalkan Verifikasi
                         </button>
                     </div>
                 </div>

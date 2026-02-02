@@ -454,7 +454,7 @@ function showConfirmDelete(callback, message) {
 }
 
 // 4. Helper for showing alerts
-function showAlert(message, isSuccess) {
+function showAlert(message, isSuccess = true) {
     // If a toast system exists, use it
     const toastMessageEl = document.getElementById('toastMessage');
     const toastEl = document.getElementById('liveToast');

@@ -44,7 +44,6 @@ $role = $role ?? ($_SESSION['user']['role'] ?? ($_SESSION['role'] ?? 'User'));
 $navbarClass = 'page-navbar page-navbar-user';
 
 // Count notifications for badge (only for user)
-// Count notifications for badge (only for user)
 if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
     // Filter only unread notifications
     $unreadNotifs = array_filter($notifikasi, function($n) {
@@ -171,3 +170,15 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
         </div>
     </div>
 </nav>
+
+<!-- Global Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055">
+  <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="toastMessage">
+        <!-- Message -->
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>

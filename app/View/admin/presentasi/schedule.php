@@ -13,9 +13,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 <style>
     .btn-action { width: 36px; height: 36px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
     .table-hover tbody tr:hover { background-color: rgba(61, 194, 236, 0.08); }
-    .multi-select-item { cursor: pointer; padding: 5px; }
-    .multi-select-item:hover { background: #f0f0f0; }
-    .multi-select-item.selected { background: #e0f7ff; }
+
 
     /* Unified Table Style */
     .table-custom { --bs-table-border-color: #e0e0e0; }
@@ -47,25 +45,9 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                 <input type="text" id="searchJadwal" class="form-control rounded-3 ps-5" placeholder="Cari mahasiswa...">
             </div>
             <div class="d-flex gap-3">
-                <div class="dropdown">
-                    <button class="btn btn-primary bg-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-plus-circle"></i> Tambah Data
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 mt-2">
-                        <li>
-                            <a class="dropdown-item px-3 py-2 d-flex align-items-center gap-2" href="javascript:void(0);" id="btnAddJadwal">
-                                <i class="bi bi-person-plus text-primary"></i>
-                                <span>Tambah Satuan</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item px-3 py-2 d-flex align-items-center gap-2" href="javascript:void(0);" id="btnBulkJadwal">
-                                <i class="bi bi-people text-success"></i>
-                                <span>Bulk Schedule</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                <button class="btn btn-primary bg-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2" id="btnAddJadwal">
+                    <i class="bi bi-plus-circle"></i> Tambah Jadwal
+                </button>
             </div>
         </div>
 
@@ -160,38 +142,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 </div>
 
 <!-- Modal Bulk Schedule -->
-<div class="modal fade" id="bulkJadwalModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow rounded-4">
-            <div class="modal-header bg-gradient-header text-white border-0 rounded-top-4">
-                <h5 class="modal-title fw-semibold"><i class="bi bi-calendar-plus me-2"></i>Bulk Schedule</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <form id="formBulkJadwal" method="POST" action="javascript:void(0);">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold text-secondary">Pilih Mahasiswa:</label>
-                                <div class="border rounded-3 p-2 bg-light" style="max-height: 250px; overflow-y: auto;" id="bulkMahasiswaList"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3"><label class="text-secondary">Pilih Ruangan:</label><select class="form-select rounded-3" id="bulkRuangan" required></select></div>
-                            <div class="mb-3"><label class="text-secondary">Tanggal:</label><input type="date" class="form-control rounded-3" id="bulkTanggal" required></div>
-                            <div class="mb-3"><label class="text-secondary">Waktu Mulai:</label><input type="time" class="form-control rounded-3" id="bulkWaktuMulai" required></div>
-                            <div class="mb-3"><label class="text-secondary">Durasi (menit):</label><input type="number" class="form-control rounded-3" id="bulkDurasi" value="15" min="5" required></div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-top border-light">
-                <button class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="formBulkJadwal" class="btn btn-primary bg-gradient-primary rounded-3"><i class="bi bi-check-lg"></i> Simpan Semua</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Modal Update Jadwal -->
 <div class="modal fade" id="updateJadwalModal" tabindex="-1" aria-hidden="true">
@@ -255,22 +206,10 @@ $(document).ready(function() {
         $.post(APP_URL + '/getavailablemahasiswa', function(res) {
             if (res.status === 'success') {
                 let opts = '<option value="">-- Pilih Mahasiswa --</option>';
-                let checks = '';
                 res.data.forEach((m, idx) => {
                     opts += `<option value="${m.id_presentasi}">${m.nama_lengkap} - ${m.stambuk}</option>`;
-                    checks += `<div class="multi-select-item" data-id="${m.id_presentasi}">
-                        <input type="checkbox" id="bm_${idx}" value="${m.id_presentasi}">
-                        <label for="bm_${idx}">${m.nama_lengkap}</label></div>`;
                 });
                 $('#selectMahasiswa').html(opts);
-                $('#bulkMahasiswaList').html(checks || '<p class="text-muted text-center">Tidak ada mahasiswa</p>');
-                
-                $('#bulkMahasiswaList .multi-select-item').click(function(e) {
-                     if(e.target.tagName !== 'INPUT') {
-                         const cb = $(this).find('input'); cb.prop('checked', !cb.prop('checked'));
-                     }
-                     $(this).toggleClass('selected', $(this).find('input').prop('checked'));
-                });
             }
         }, 'json');
     }
@@ -332,26 +271,7 @@ $(document).ready(function() {
         }, 'json');
     });
 
-    $('#btnBulkJadwal').click(function(e) {
-        e.preventDefault();
-        loadAvailableMahasiswa(); loadRuangan();
-        $('#formBulkJadwal')[0].reset();
-        new bootstrap.Modal('#bulkJadwalModal').show();
-    });
 
-    // Simplified Bulk Logic (Sequential calls like original)
-    // ... (To save space I am omitting the full bulk logic here, assuming standard implementation or users can copy)
-    // Actually, I should include it for functionality.
-    
-    $('#formBulkJadwal').submit(function(e) {
-        e.preventDefault();
-        const selected = [];
-        $('#bulkMahasiswaList input:checked').each(function() { selected.push($(this).val()); });
-        if(selected.length===0) return showAlert('Pilih mahasiswa', false);
-        
-        // ... Logic for bulk schedule ... (Simplified for speed: usually calls savejadwalpresentasi in loop)
-        showAlert('Fitur Bulk Schedule belum diimplementasi ulang sepenuhnya di file baru ini. Gunakan Tambah Manual sementara.', false);
-    });
 
     $(document).on('click', '.btn-edit-jadwal', function() {
         const btn = $(this);

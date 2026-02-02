@@ -188,12 +188,6 @@ $mahasiswaList = $mahasiswaList ?? [];
                                             data-statusakhir="<?= $row['status_akhir'] ?? 'Pending' ?>">
                                         <i class="bi bi-pencil"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-danger bg-danger-subtle text-danger border-0 rounded-3 btn-delete-attendance"
-                                            title="Hapus"
-                                            data-id="<?= $row['id'] ?>"
-                                            data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -605,12 +599,16 @@ $(document).ready(function() {
                     data: JSON.stringify({ id: id }),
                     success: function(res) {
                         if(res.status === 'success') {
-                            // Use Flash Message pattern - No delay needed
-                            sessionStorage.setItem('pendingToast', JSON.stringify({ 
-                                message: 'Data kehadiran berhasil dihapus!', 
-                                isSuccess: true 
-                            }));
-                            location.reload(); 
+                            showAlert('Data kehadiran berhasil dihapus!', true);
+                            
+                            // Real-time update: Remove row
+                            const btn = $(`.btn-delete[data-id="${id}"]`);
+                            const tr = btn.closest('tr');
+                            if (tr.length) {
+                                tr.fadeOut(300, function() {
+                                    $(this).remove();
+                                });
+                            }
                         } else {
                             showAlert(res.message || 'Gagal menghapus data', false);
                         }
@@ -665,8 +663,8 @@ $(document).ready(function() {
                     showAlert('Perubahan berhasil disimpan!', true);
                     
                     // Update DOM Row
-                    const btn = $(`.open-detail[data-id="${data.id}"]`);
-                    const tr = btn.closest('tr');
+                    const editBtn = $(`.open-detail[data-id="${data.id}"]`);
+                    const tr = editBtn.closest('tr');
                     
                     if (tr.length) {
                         const getBadge = (val) => {
@@ -684,26 +682,31 @@ $(document).ready(function() {
                             return `<span class="badge bg-info text-dark">${val}</span>`;
                         };
 
-                        // Update btn data attrs (for next open)
-                        btn.data('absensitestertulis', data.tesTertulis);
-                        btn.data('absensipresentasi', data.presentasi);
-                        btn.data('absensiwawancarai', data.wawancaraI);
-                        btn.data('absensiwawancaraii', data.wawancaraII);
-                        btn.data('statusakhir', data.statusAkhir);
+                        // 1. Update Edit Button Data Attributes (for next edit)
+                        editBtn.data('absensitestertulis', data.tesTertulis);
+                        editBtn.data('absensipresentasi', data.presentasi);
+                        editBtn.data('absensiwawancarai', data.wawancaraI);
+                        editBtn.data('absensiwawancaraii', data.wawancaraII);
+                        editBtn.data('statusakhir', data.statusAkhir);
 
-                        // Update Table Columns (Tes, Presentasi, Wawancara I, II)
-                        // Correct Indices: 
-                        // 3: Tes Tertulis
-                        // 4: Presentasi
-                        // 5: Wawancara I
-                        // 6: Wawancara II
-                        
+                        // 2. Update Recap (Eye) Button Data Attributes (Crucial for Recap Modal)
+                        const rekapBtn = tr.find('.open-rekap');
+                        if (rekapBtn.length) {
+                            rekapBtn.data('tes', data.tesTertulis);
+                            rekapBtn.data('presentasi', data.presentasi);
+                            rekapBtn.data('wawancara1', data.wawancaraI);
+                            rekapBtn.data('wawancara2', data.wawancaraII);
+                            // Note: 'nilai' and 'berkas' are not updated here as they are not editable in this modal
+                        }
+
+                        // 3. Update Table Columns
+                        // 3: Tes Tertulis, 4: Presentasi, 5: Wawancara I, 6: Wawancara II
                         tr.find('td:eq(3)').html(getBadge(data.tesTertulis));
                         tr.find('td:eq(4)').html(getBadge(data.presentasi));
                         tr.find('td:eq(5)').html(getBadge(data.wawancaraI));
                         tr.find('td:eq(6)').html(getBadge(data.wawancaraII));
                         
-                        // Update Status Akhir Badge (Index 7)
+                        // 4. Update Status Akhir Badge (Index 7)
                         const statusBadge = tr.find('.status-akhir-badge');
                         if(statusBadge.length) {
                             const s = data.statusAkhir;
@@ -719,7 +722,7 @@ $(document).ready(function() {
                         }
                     }
                     
-                    // Close Modal (as requested)
+                    // Close Modal
                     $('#detailAbsensiModal').modal('hide'); 
                 } else {
                     showAlert(res.message || 'Terjadi kesalahan', false);
@@ -809,20 +812,42 @@ $(document).ready(function() {
         badge.removeClass('bg-success bg-danger bg-secondary');
         
         const t = btn.data('tes');
+        const nilaiAkhir = parseFloat(btn.data('nilai')) || 0;
         const p = btn.data('presentasi');
         const w1 = btn.data('wawancara1');
         const w2 = btn.data('wawancara2');
+        const berkas = btn.data('berkas'); // 1=Accepted, 0=Pending, 2=Rejected
 
-        const isAllHadir = (t === 'Hadir' && p === 'Hadir' && w1 === 'Hadir' && w2 === 'Hadir');
-        const isFailed = (t === 'Alpha' || t === 'Tidak Hadir' || 
-                          p === 'Alpha' || p === 'Tidak Hadir' || 
-                          w1 === 'Alpha' || w1 === 'Tidak Hadir' || 
-                          w2 === 'Alpha' || w2 === 'Tidak Hadir');
+        // Definition of "Lolos" (Pass)
+        // 1. Berkas verified (1)
+        // 2. Test Hadir AND Score >= 70
+        // 3. Presentasi Hadir
+        // 4. Wawancara 1 & 2 Hadir
+        const isLolos = (
+            berkas == 1 &&
+            t === 'Hadir' && nilaiAkhir >= 70 &&
+            p === 'Hadir' &&
+            w1 === 'Hadir' &&
+            w2 === 'Hadir'
+        );
 
-        if(isAllHadir) {
+        // Definition of "Gagal" (Fail)
+        // 1. Berkas Rejected (2) OR
+        // 2. Test Alpha OR (Test Hadir but Score < 70)
+        // 3. Presentasi Alpha
+        // 4. Wawancara Alpha
+        const isGagal = (
+            berkas == 2 ||
+            t === 'Alpha' || t === 'Tidak Hadir' || (t === 'Hadir' && nilaiAkhir < 70) ||
+            p === 'Alpha' || p === 'Tidak Hadir' || 
+            w1 === 'Alpha' || w1 === 'Tidak Hadir' || 
+            w2 === 'Alpha' || w2 === 'Tidak Hadir'
+        );
+
+        if(isLolos) {
             box.addClass('bg-success-subtle'); // Light green
             badge.addClass('bg-success').text('LOLOS');
-        } else if (isFailed) {
+        } else if (isGagal) {
             box.addClass('bg-danger-subtle'); // Light red
             badge.addClass('bg-danger').text('TIDAK LOLOS');
         } else {

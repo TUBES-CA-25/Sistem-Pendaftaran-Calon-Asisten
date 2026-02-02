@@ -38,7 +38,11 @@
             console.log("Error Status:", status);
             console.log("Error Details:", error);
             console.log("Server Response:", xhr.responseText);
-            alert("Terjadi kesalahan: " + error);
+            if (typeof showAlert === 'function') {
+                showAlert("Terjadi kesalahan: " + error, false);
+            } else {
+                alert("Terjadi kesalahan: " + error);
+            }
           },
         });
       });

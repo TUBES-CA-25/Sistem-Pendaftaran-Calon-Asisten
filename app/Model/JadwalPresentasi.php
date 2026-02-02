@@ -225,6 +225,7 @@ class JadwalPresentasi extends Model
             JOIN presentasi p ON jp.id_presentasi = p.id
             JOIN ruangan r ON jp.id_ruangan = r.id
             WHERE p.id_mahasiswa = ?
+            AND jp.tanggal >= CURDATE()
             ORDER BY jp.tanggal ASC, jp.waktu ASC
             LIMIT 1";
 

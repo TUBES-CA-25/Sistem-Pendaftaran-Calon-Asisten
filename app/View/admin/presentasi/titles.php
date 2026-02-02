@@ -47,12 +47,12 @@ $mahasiswaList = $mahasiswaList ?? [];
                 <table class="table table-bordered table-hover align-middle mb-0" id="tablePengajuan">
                     <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                         <tr>
-                            <th class="fw-semibold text-uppercase small py-3 px-3">No</th>
-                            <th class="fw-semibold text-uppercase small py-3 px-3">Nama Lengkap</th>
-                            <th class="fw-semibold text-uppercase small py-3 px-3">Stambuk</th>
-                            <th class="fw-semibold text-uppercase small py-3 px-3">Judul Presentasi</th>
-                            <th class="fw-semibold text-uppercase small py-3 px-3">Status</th>
-                            <th class="fw-semibold text-uppercase small py-3 px-3">Aksi</th>
+                        <th class="fw-semibold text-uppercase small py-3 px-3 text-center">No</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3 text-start">Nama Lengkap</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3 text-start">Stambuk</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3 text-start">Judul Presentasi</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3 text-center">Status</th>
+                            <th class="fw-semibold text-uppercase small py-3 px-3 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,15 +79,15 @@ $mahasiswaList = $mahasiswaList ?? [];
                                 }
                             ?>
                             <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
-                                <td class="text-muted"><?= $i ?></td>
-                                <td><strong class="text-dark"><?= htmlspecialchars($row['nama'] ?? '-') ?></strong></td>
-                                <td class="text-secondary"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
-                                <td class="text-secondary"><?= htmlspecialchars($row['judul'] ?? '-') ?></td>
-                                <td>
+                                <td class="text-muted text-center"><?= $i ?></td>
+                                <td class="text-start"><strong class="text-dark"><?= htmlspecialchars($row['nama'] ?? '-') ?></strong></td>
+                                <td class="text-secondary text-start"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
+                                <td class="text-secondary text-start"><?= htmlspecialchars($row['judul'] ?? '-') ?></td>
+                                <td class="text-center">
                                     <span class="badge <?= $badgeClass ?> badge-status px-3 py-2 rounded-3"><?= $badgeText ?></span>
                                 </td>
-                                <td>
-                                    <div class="d-flex gap-2 flex-nowrap align-items-center">
+                                <td class="text-center">
+                                    <div class="d-flex gap-2 flex-nowrap align-items-center justify-content-center">
                                         <button class="btn btn-sm btn-action bg-info-subtle text-info border-0 rounded-3 btn-detail-pengajuan"
                                                 data-nama="<?= htmlspecialchars($row['nama'] ?? '') ?>"
                                                 data-stambuk="<?= htmlspecialchars($row['stambuk'] ?? '-') ?>"

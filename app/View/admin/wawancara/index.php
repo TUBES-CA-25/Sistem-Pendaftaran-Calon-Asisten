@@ -61,25 +61,9 @@ $colors = ['#2f66f6'];
                     <input type="text" id="searchInput" class="form-control rounded-3 ps-5" placeholder="Cari nama atau stambuk...">
                 </div>
             <div class="d-flex gap-3">
-                <div class="dropdown">
-                    <button class="btn btn-primary btn-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-plus-circle"></i> Tambah Data
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 mt-2">
-                        <li>
-                            <a class="dropdown-item px-3 py-2 d-flex align-items-center gap-2" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
-                                <i class="bi bi-person-plus text-primary"></i>
-                                <span>Tambah Satuan</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item px-3 py-2 d-flex align-items-center gap-2" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#bulkScheduleModal">
-                                <i class="bi bi-people text-success"></i>
-                                <span>Bulk Schedule</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                <button class="btn btn-primary btn-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2" type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
+                    <i class="bi bi-plus-circle"></i> Tambah Jadwal
+                </button>
             </div>
             </div>
 
@@ -155,81 +139,7 @@ $colors = ['#2f66f6'];
 
 </div>
 
-<!-- Modal Bulk Schedule Interview -->
-<div class="modal fade" id="bulkScheduleModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4">
-            <div class="modal-header modal-header-gradient border-0">
-                <h5 class="modal-title fw-bold text-white"><i class="bi bi-calendar-plus me-2"></i>Bulk Schedule Wawancara</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <form id="bulkInterviewForm" method="POST" action="javascript:void(0);">
-                    <div class="row g-4">
-                        <div class="col-md-7">
-                            <label class="form-label fw-bold">Pilih Mahasiswa</label>
-                            <div class="input-group mb-2">
-                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-                                <input type="text" id="searchBulkMhs" class="form-control border-start-0" placeholder="Cari stambuk/nama...">
-                            </div>
-                            <div class="border rounded-3 p-2 shadow-sm" style="max-height: 300px; overflow-y: auto;">
-                                <div class="list-group list-group-flush" id="bulkMahasiswaChecklist">
-                                    <?php foreach ($mahasiswaList as $m): ?>
-                                        <label class="list-group-item d-flex align-items-center gap-3 py-2 cursor-pointer">
-                                            <input class="form-check-input m-0 flex-shrink-0" type="checkbox" value="<?= $m['id'] ?>">
-                                            <div class="d-flex flex-column">
-                                                <span class="fw-semibold small"><?= htmlspecialchars($m['nama_lengkap']) ?></span>
-                                                <span class="text-secondary smaller" style="font-size: 0.75rem;"><?= htmlspecialchars($m['stambuk']) ?></span>
-                                            </div>
-                                        </label>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                            <div class="mt-2 d-flex justify-content-between">
-                                <span class="text-muted smaller" id="selectedCount">0 dipilih</span>
-                                <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" id="selectAllBulk">Pilih Semua</button>
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Ruangan</label>
-                                <select class="form-select" name="ruangan" required>
-                                    <option value="" disabled selected>Pilih Ruangan</option>
-                                    <?php foreach ($ruanganList as $r): ?>
-                                        <option value="<?= $r['id'] ?>"><?= $r['nama'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Jenis Wawancara</label>
-                                <select class="form-select" name="wawancara" required>
-                                    <option value="" disabled selected>Pilih Jenis</option>
-                                    <option value="wawancara kepala lab I">Wawancara Kepala Lab I</option>
-                                    <option value="wawancara kepala lab II">Wawancara Kepala Lab II</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Tanggal</label>
-                                <input type="date" class="form-control" name="tanggal" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Waktu Mulai</label>
-                                <input type="time" class="form-control" name="waktu" required>
-                            </div>
-                            <div class="alert alert-info border-0 shadow-sm p-2 mb-0" style="font-size: 0.75rem;">
-                                <i class="bi bi-info-circle me-1"></i> Seluruh mahasiswa terpilih akan dijadwalkan pada waktu dan ruangan yang sama.
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="bulkInterviewForm" class="btn btn-success btn-gradient-success px-4 rounded-3 text-white">Simpan Bulk</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <div class="modal fade modal-wawancara" id="addJadwalModal" tabindex="-1" aria-labelledby="addJadwalModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -450,44 +360,7 @@ $colors = ['#2f66f6'];
         });
 
 
-        // Bulk Search logic
-        $('#searchBulkMhs').on('keyup', function() {
-            let filter = $(this).val().toLowerCase();
-            $('#bulkMahasiswaChecklist label').each(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(filter) > -1);
-            });
-        });
 
-        // Select All Bulk
-        $('#selectAllBulk').click(function() {
-            const isAllChecked = $('#bulkMahasiswaChecklist input:checked').length === $('#bulkMahasiswaChecklist input:visible').length;
-            $('#bulkMahasiswaChecklist input:visible').prop('checked', !isAllChecked).trigger('change');
-            $(this).text(!isAllChecked ? 'Batalkan Semua' : 'Pilih Semua');
-        });
-
-        $(document).on('change', '#bulkMahasiswaChecklist input', function() {
-            $('#selectedCount').text($('#bulkMahasiswaChecklist input:checked').length + ' dipilih');
-        });
-
-        // Save Bulk Interview
-        $('#bulkInterviewForm').submit(function(e) {
-            e.preventDefault();
-            const checked = [];
-            $('#bulkMahasiswaChecklist input:checked').each(function() { checked.push($(this).val()); });
-
-            if (checked.length === 0) return showAlert('Pilih minimal satu mahasiswa', false);
-
-            const fd = new FormData(this);
-            const data = {
-                id: checked,
-                ruangan: fd.get('ruangan'),
-                wawancara: fd.get('wawancara'),
-                tanggal: fd.get('tanggal'),
-                waktu: fd.get('waktu')
-            };
-
-            saveWawancara(data, '#bulkScheduleModal');
-        });
 
         function saveWawancara(data, modalId) {
             $.ajax({
@@ -498,10 +371,10 @@ $colors = ['#2f66f6'];
                 success: function (response) {
                     if (response.status === 'success') {
                         $(modalId).modal('hide');
-                        showModal("Jadwal berhasil disimpan");
+                        showAlert("Jadwal berhasil disimpan", true);
                         document.querySelector('a[data-page="wawancara"]').click();
                     } else {
-                        showModal("Jadwal gagal disimpan: " + response.message);
+                        showAlert("Jadwal gagal disimpan: " + response.message, false);
                     }
                 },
                 error: function (xhr) {

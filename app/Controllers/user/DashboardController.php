@@ -77,7 +77,8 @@ class DashboardController extends Controller {
         }
 
         // Stage 4: Wawancara (Absensi Hadir)
-        if (self::getAbsensiWawancaraI()) {
+        // User request: Must attend both Wawancara I and II
+        if (self::getAbsensiWawancaraI() && self::getAbsensiWawancaraII()) {
             $i++;
         } else {
             return $i;

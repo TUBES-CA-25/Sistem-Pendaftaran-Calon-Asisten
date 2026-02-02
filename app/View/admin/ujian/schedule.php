@@ -50,25 +50,9 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                 <input type="text" id="searchInput" class="form-control rounded-3 ps-5" placeholder="Cari nama atau stambuk...">
             </div>
             <div class="d-flex gap-3">
-                <div class="dropdown">
-                    <button class="btn btn-primary btn-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-plus-circle"></i> Tambah Data
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 mt-2">
-                        <li>
-                            <a class="dropdown-item px-3 py-2 d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
-                                <i class="bi bi-person-plus text-primary"></i>
-                                <span>Tambah Satuan</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item px-3 py-2 d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#bulkScheduleModal">
-                                <i class="bi bi-people text-success"></i>
-                                <span>Bulk Schedule</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                <button class="btn btn-primary btn-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2" type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
+                    <i class="bi bi-plus-circle"></i> Tambah Jadwal
+                </button>
             </div>
         </div>
 
@@ -140,77 +124,7 @@ $bankSoalList = $data['bankSoalList'] ?? [];
     </div>
 </main>
 
-<!-- Modal Bulk Schedule -->
-<div class="modal fade" id="bulkScheduleModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4">
-            <div class="modal-header modal-header-gradient border-0">
-                <h5 class="modal-title fw-bold"><i class="bi bi-calendar-plus me-2"></i>Bulk Schedule Tes Tertulis</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <form id="bulkJadwalForm">
-                    <div class="row g-4">
-                        <div class="col-md-7">
-                            <label class="form-label fw-bold">Pilih Mahasiswa</label>
-                            <div class="input-group mb-2">
-                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-                                <input type="text" id="searchBulkMhs" class="form-control border-start-0" placeholder="Cari stambuk/nama...">
-                            </div>
-                            <div class="border rounded-3 p-2 shadow-sm" style="max-height: 300px; overflow-y: auto;">
-                                <div class="list-group list-group-flush" id="bulkMahasiswaChecklist">
-                                    <?php foreach ($mahasiswaList as $m): ?>
-                                        <label class="list-group-item d-flex align-items-center gap-3 py-2 cursor-pointer">
-                                            <input class="form-check-input m-0 flex-shrink-0" type="checkbox" value="<?= $m['id'] ?>" data-name="<?= htmlspecialchars($m['nama_lengkap']) ?>" data-stambuk="<?= htmlspecialchars($m['stambuk']) ?>">
-                                            <div class="d-flex flex-column">
-                                                <span class="fw-semibold small"><?= htmlspecialchars($m['nama_lengkap']) ?></span>
-                                                <span class="text-secondary smaller" style="font-size: 0.75rem;"><?= htmlspecialchars($m['stambuk']) ?></span>
-                                            </div>
-                                        </label>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                            <div class="mt-2 d-flex justify-content-between">
-                                <span class="text-muted smaller" id="selectedCount">0 dipilih</span>
-                                <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" id="selectAllBulk">Pilih Semua</button>
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Ruangan</label>
-                                <select class="form-select" name="ruangan" required>
-                                    <option value="" disabled selected>Pilih Ruangan</option>
-                                    <?php foreach ($ruanganList as $r): ?>
-                                        <option value="<?= $r['id'] ?>"><?= $r['nama'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Kegiatan</label>
-                                <input type="text" class="form-control" name="kegiatan" value="Tes Tertulis">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Tanggal</label>
-                                <input type="date" class="form-control" name="tanggal" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Waktu Mulai</label>
-                                <input type="time" class="form-control" name="waktu" required>
-                            </div>
-                            <div class="alert alert-info border-0 shadow-sm p-2 mb-0" style="font-size: 0.75rem;">
-                                <i class="bi bi-info-circle me-1"></i> Seluruh mahasiswa terpilih akan dijadwalkan pada waktu dan ruangan yang sama.
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="bulkJadwalForm" class="btn btn-success btn-gradient-success px-4 rounded-3">Simpan Bulk</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Modal Tambah Jadwal -->
 <div class="modal fade" id="addJadwalModal" tabindex="-1">
@@ -331,25 +245,6 @@ $(document).ready(function() {
         });
     });
 
-    // Bulk Search logic
-    $('#searchBulkMhs').on('keyup', function() {
-        let filter = $(this).val().toLowerCase();
-        $('#bulkMahasiswaChecklist label').each(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(filter) > -1);
-        });
-    });
-
-    // Select All Bulk
-    $('#selectAllBulk').click(function() {
-        const isAllChecked = $('#bulkMahasiswaChecklist input:checked').length === $('#bulkMahasiswaChecklist input:visible').length;
-        $('#bulkMahasiswaChecklist input:visible').prop('checked', !isAllChecked).trigger('change');
-        $(this).text(!isAllChecked ? 'Batalkan Semua' : 'Pilih Semua');
-    });
-
-    $(document).on('change', '#bulkMahasiswaChecklist input', function() {
-        $('#selectedCount').text($('#bulkMahasiswaChecklist input:checked').length + ' dipilih');
-    });
-
     // Add student to the single-add modal list
     $('#addMhsToList').click(function() {
         const id = $('#mahasiswaSelect').val();
@@ -388,25 +283,7 @@ $(document).ready(function() {
         saveSchedule(data, '#addJadwalModal');
     });
 
-    // Save Bulk Schedule
-    $('#bulkJadwalForm').submit(function(e) {
-        e.preventDefault();
-        const checked = [];
-        $('#bulkMahasiswaChecklist input:checked').each(function() { checked.push($(this).val()); });
 
-        if (checked.length === 0) return showAlert('Pilih minimal satu mahasiswa', false);
-
-        const fd = new FormData(this);
-        const data = {
-            id: checked,
-            ruangan: fd.get('ruangan'),
-            kegiatan: fd.get('kegiatan'),
-            tanggal: fd.get('tanggal'),
-            waktu: fd.get('waktu')
-        };
-
-        saveSchedule(data, '#bulkScheduleModal');
-    });
 
     // Open Edit Modal
     $(document).on('click', '.open-edit', function() {

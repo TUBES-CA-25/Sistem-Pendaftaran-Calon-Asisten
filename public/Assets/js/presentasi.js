@@ -19,7 +19,7 @@ $(document).ready(function() {
             },
             error: function(xhr, status, error) {
                 console.log('Error:', xhr.responseText);
-                alert('Terjadi kesalahan: ' + error);
+                showAlert('Terjadi kesalahan: ' + error, false);
             }
         });
     });
