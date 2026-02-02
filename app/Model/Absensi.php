@@ -40,8 +40,8 @@ class Absensi extends Model {
                     COALESCE(na.total_nilai, na.nilai) as nilai_akhir,
                     bm.accepted as berkas_status,
                     bm.foto as berkas_foto
-                FROM " . self::$table . " a
-                JOIN mahasiswa m ON a.id_mahasiswa = m.id
+                FROM mahasiswa m
+                LEFT JOIN " . self::$table . " a ON m.id = a.id_mahasiswa
                 LEFT JOIN nilai_akhir na ON m.id = na.id_mahasiswa
                 LEFT JOIN berkas_mahasiswa bm ON m.id = bm.id_mahasiswa
                     AND bm.id = (
@@ -49,7 +49,7 @@ class Absensi extends Model {
                         FROM berkas_mahasiswa
                         WHERE id_mahasiswa = m.id
                     )
-                GROUP BY a.id";
+                GROUP BY m.id";
 
         try {
             $stmt = self::getDB()->prepare($sql);

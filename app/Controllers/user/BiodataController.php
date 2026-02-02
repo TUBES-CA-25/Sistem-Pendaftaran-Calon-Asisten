@@ -61,15 +61,29 @@ class BiodataController extends Controller
             );
 
             // Check if biodata already exists to decide between save (insert) or update
-            if ($this->isEmpty()) {
-                // Insert new data
+            if (!$biodata->isExist($idUser)) {
+                // Insert new data (Create Mahasiswa Record)
                 if ($biodata->save($biodata)) {
+                    // Logic Tambahan: Create Default Absensi
+                    // Ambil ID Mahasiswa yang baru saja dibuat
+                    $mahasiswaModel = new \App\Model\Mahasiswa();
+                    $mhs = $mahasiswaModel->getMahasiswaId($idUser);
+                    
+                    if ($mhs) {
+                        $absensiModel = new \App\Model\Absensi();
+                        $absensiModel->createDefaultAbsensi($mhs['id']);
+                    }
+
                     echo json_encode(['status' => 'success', 'message' => 'Data berhasil disimpan']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan data baru']);
                 }
             } else {
                 // Update existing data
                 if ($biodata->updateBiodata($biodata)) {
                     echo json_encode(['status' => 'success', 'message' => 'Data berhasil diperbarui']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Gagal memperbarui data']);
                 }
             } 
         } catch (\Exception $e) {

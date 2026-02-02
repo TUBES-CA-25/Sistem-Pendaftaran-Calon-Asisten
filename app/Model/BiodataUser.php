@@ -72,7 +72,7 @@ class BiodataUser extends Model
             $idJurusanData = $this->getIdJurusan($biodata->jurusan);
             if (!$idJurusanData) {
                 error_log("Error: Jurusan tidak ditemukan - " . $biodata->jurusan);
-                return false;
+                throw new \Exception("Jurusan tidak valid: " . $biodata->jurusan);
             }
             $biodata->idJurusan = $idJurusanData['id'];
 
@@ -81,9 +81,9 @@ class BiodataUser extends Model
             $idKelasData = $this->getIdKelas($biodata->kelas);
             if (!$idKelasData) {
                 error_log("Error: Kelas tidak ditemukan - " . $biodata->kelas);
-                return false;
+                throw new \Exception("Kelas tidak valid: " . $biodata->kelas);
             }
-            $biodata->idKelas = $idKelasData['id']; // Pastikan variabel ini konsisten
+            $biodata->idKelas = $idKelasData['id'];
 
             // Binding Parameter
             $stmt->bindParam(1, $biodata->idUser);
@@ -99,14 +99,22 @@ class BiodataUser extends Model
 
             // Eksekusi Query
             if ($stmt->execute()) {
-                return true; // Berhasil
+                error_log("Biodata saved successfully for user: " . $biodata->idUser);
+                return true;
             } else {
-                error_log("Error: Gagal menyimpan biodata");
-                return false; // Gagal
+                error_log("Error: Failed to execute statement - " . json_encode($stmt->errorInfo()));
+                throw new \Exception("Gagal mengeksekusi query database.");
             }
         } catch (\PDOException $e) {
-            error_log("SQL Error: " . $e->getMessage());
-            return false;
+            // Check for duplicate entry
+            if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062 && strpos($e->getMessage(), 'no_telp') !== false) {
+                throw new \Exception("Nomor HP sudah terdaftar. Silakan gunakan nomor lain.");
+            }
+            error_log("PDO Error: " . $e->getMessage() . " | Code: " . $e->getCode());
+            throw new \Exception("Database error: " . $e->getMessage());
+        } catch (\Exception $e) {
+            error_log("General Error: " . $e->getMessage());
+            throw $e;
         }
     }
     private function getIdJurusan($namaJurusan)
@@ -147,14 +155,26 @@ class BiodataUser extends Model
         }
 
         return (
-            $result['id_jurusan'] === null || $result['stambuk'] === null ||
-            $result['id_kelas'] === null || $result['nama_lengkap'] === null ||
-            $result['alamat'] === null || $result['jenis_kelamin'] === null ||
-            $result['tempat_lahir'] === null || $result['tanggal_lahir'] === null ||
-            $result['no_telp'] === null
+            empty($result['id_jurusan']) || 
+            empty($result['stambuk']) ||
+            empty($result['id_kelas']) || 
+            empty($result['nama_lengkap']) ||
+            empty($result['alamat']) || 
+            empty($result['jenis_kelamin']) ||
+            empty($result['tempat_lahir']) || 
+            empty($result['tanggal_lahir']) ||
+            empty($result['no_telp'])
         );
     }
 
+    public function isExist($idUser)
+    {
+        $query = "SELECT id FROM " . static::$table . " WHERE id_user = ?";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(1, $idUser);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC) !== false;
+    }
 
     public function getBiodata($id)
     {
@@ -243,8 +263,16 @@ class BiodataUser extends Model
         $stmt->bindParam(8, $biodata->idUser); 
     }
     try {
-        return $stmt->execute();
+        if ($stmt->execute()) {
+            return true;
+        } else {
+             error_log("Error updateBiodata execute returned false");
+             return false;
+        }
     } catch (\Exception $e) {
+        if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062 && strpos($e->getMessage(), 'no_telp') !== false) {
+             throw new \Exception("Nomor HP sudah terdaftar. Silakan gunakan nomor lain.");
+        }
         error_log("SQL Error: " . $sql . " Params: " . json_encode([$biodata->namaLengkap, $idJurusan['id'], $idKelas['id'], $biodata->alamat, $biodata->jenisKelamin, $biodata->tempatLahir, $biodata->tanggalLahir, $biodata->noHp, $biodata->idUser]));
         throw new \Exception("Gagal mengupdate biodata: " . $e->getMessage());
     }

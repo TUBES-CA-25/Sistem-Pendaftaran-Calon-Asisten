@@ -70,12 +70,19 @@ class RekapKehadiranController extends Controller
         }
         $input = json_decode(file_get_contents('php://input'), true);
         
-        $id = $input['id'];
-        $wawancaraI = $input['wawancaraI'];
-        $wawancaraII = $input['wawancaraII'];
-        $wawancaraIII = '-'; // Removed Wawancara III
-        $tesTertulis = $input['tesTertulis'];
-        $presentasi = $input['presentasi'];
+        $id = $input['id'] ?? null;
+        $mhsId = $input['mhsId'] ?? null;
+        $wawancaraI = $input['wawancaraI'] ?? '-';
+        $wawancaraII = $input['wawancaraII'] ?? '-';
+        $wawancaraIII = '-'; 
+        $tesTertulis = $input['tesTertulis'] ?? '-';
+        $presentasi = $input['presentasi'] ?? '-';
+
+        if (!$mhsId) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => 'ID Mahasiswa tidak valid']);
+            return;
+        }
 
         $absensi = new Absensi(
             $id,
@@ -85,15 +92,26 @@ class RekapKehadiranController extends Controller
             $tesTertulis,
             $presentasi
         );
-        if($absensi->updateAbsensi()) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'success', 'message' => 'Absensi berhasil diupdate']);
+
+        // If ID is null, we need to insert a NEW record for this mahasiswa
+        if (!$id || $id === '') {
+            if ($absensi->addMahasiswa($absensi, [$mhsId])) {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'success', 'message' => 'Absensi berhasil dibuat']);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'error', 'message' => 'Gagal membuat absensi']);
+            }
         } else {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate absensi']);
+            // Update existing record
+            if($absensi->updateAbsensi()) {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'success', 'message' => 'Absensi berhasil diupdate']);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate absensi']);
+            }
         }
-
-
     }
 
     public function deleteData() {

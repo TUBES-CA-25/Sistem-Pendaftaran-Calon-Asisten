@@ -482,7 +482,7 @@ class Mahasiswa extends Model
             }
         }
 
-        return $result;
+        return $stmt->rowCount();
     }
 
     /**
