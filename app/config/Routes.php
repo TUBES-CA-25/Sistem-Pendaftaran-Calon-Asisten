@@ -4,6 +4,7 @@
 use App\Controllers\HomeController;
 use App\Controllers\AuthController;
 use App\Controllers\NotifikasiController;
+use App\Controllers\ForgotPasswordController;
 
 // Controllers User
 use App\Controllers\User\DashboardController;
@@ -34,6 +35,8 @@ Router::get('/soal', [new TesTulisController, 'index']);
 Router::get('/tes-tulis', fn() => (new \App\Controllers\HomeController)->loadContent('tesTulis')); 
 Router::get('/tesTulis', fn() => (new \App\Controllers\HomeController)->loadContent('tesTulis')); 
 Router::get('/login', [new AuthController, 'index']);
+Router::get('/lupa-password', [new ForgotPasswordController, 'index']);
+Router::get('/reset-password', [new ForgotPasswordController, 'reset']);
 
 // IMPORTANT: Specific routes MUST come before catch-all route /{page}
 // Export and download routes
@@ -51,6 +54,8 @@ Router::get('/{page}', [new HomeController, 'loadContent']);
 
 Router::post('/login/authenticate', [new AuthController, 'authenticate']);
 Router::post('/register/authenticate', [new AuthController, 'register']);
+Router::post('/lupa-password/send', [new ForgotPasswordController, 'sendResetLink']);
+Router::post('/reset-password/update', [new ForgotPasswordController, 'updatePassword']);
 Router::post('/logout', [new AuthController, 'logout']);
 Router::post("/store", [new BiodataController, 'saveBiodata']);
 Router::post("/berkas", [new BerkasController, 'saveBerkas']);

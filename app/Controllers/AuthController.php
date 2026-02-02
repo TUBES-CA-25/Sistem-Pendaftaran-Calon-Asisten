@@ -18,7 +18,7 @@ class AuthController extends Controller
 
     public function index()
     {
-        View::render('index', 'login');
+        View::render('index', 'auth');
     }
 
     public function authenticate()

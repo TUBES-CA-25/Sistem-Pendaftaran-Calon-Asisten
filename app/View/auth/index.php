@@ -56,7 +56,7 @@
                         <input type="checkbox" class="form-check-input" id="customCheck" name="check">
                         <label class="form-check-label" for="customCheck">Remember me</label>
                     </div>
-                    <a href="lupapasword">Lupa password?</a>
+                    <a href="lupa-password">Lupa password?</a>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-submit w-100" name="login" id="btnlogin">

@@ -149,4 +149,34 @@ class UserModel extends Model {
         
         return $stmt->execute();
     }
+
+    public static function findByEmail($email) {
+        $query = "SELECT * FROM " . static::$table . " WHERE username = :email LIMIT 1";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(':email', $email);
+
+        if ($stmt->execute()) {
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        return null;
+    }
+
+    public function updateResetToken($id, $tokenHash) {
+        $query = "UPDATE " . static::$table . " SET reset_token_hash = :token, reset_token_expires_at = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = :id";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(':token', $tokenHash);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+
+    public static function findByResetToken($tokenHash) {
+        $query = "SELECT * FROM " . static::$table . " WHERE reset_token_hash = :token AND reset_token_expires_at > NOW() LIMIT 1";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(':token', $tokenHash);
+
+        if ($stmt->execute()) {
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        return null;
+    }
 }
