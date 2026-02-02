@@ -39,7 +39,8 @@ class Absensi extends Model {
                     a.absensi_presentasi,
                     COALESCE(na.total_nilai, na.nilai) as nilai_akhir,
                     bm.accepted as berkas_status,
-                    bm.foto as berkas_foto
+                    bm.foto as berkas_foto,
+                    m.status_akhir
                 FROM mahasiswa m
                 LEFT JOIN " . self::$table . " a ON m.id = a.id_mahasiswa
                 LEFT JOIN nilai_akhir na ON m.id = na.id_mahasiswa

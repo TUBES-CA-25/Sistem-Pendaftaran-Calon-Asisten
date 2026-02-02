@@ -112,7 +112,8 @@ class Mahasiswa extends Model
                     'ppt' => $presentasi['ppt'] ?? null,
                     'is_accepted' => $presentasi['is_accepted'] ?? null,
                     'is_revisi' => $presentasi['is_revisi'] ?? null
-                ]
+                ],
+                'status_akhir' => $stmt['status_akhir'] ?? 'Pending'
             ];
         }
 
@@ -325,6 +326,15 @@ class Mahasiswa extends Model
         $stmt->bindParam(':tempat_lahir', $tempatLahir);
         $stmt->bindParam(':tanggal_lahir', $tanggalLahir);
         $stmt->execute();
+    }
+
+    public function updateStatusAkhir($id, $status)
+    {
+        $query = "UPDATE " . static::$table . " SET status_akhir = :status WHERE id = :id";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
     }
 
     public function getBerkasMahasiswa($mahasiswaId)
