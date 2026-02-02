@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 29 Jan 2026 pada 02.23
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.2.12
+-- Generation Time: Feb 02, 2026 at 01:35 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `absensi`
+-- Table structure for table `absensi`
 --
 
 CREATE TABLE `absensi` (
@@ -34,21 +34,26 @@ CREATE TABLE `absensi` (
   `absensi_wawancara_III` varchar(225) NOT NULL DEFAULT 'Alpha',
   `absensi_tes_tertulis` varchar(225) NOT NULL DEFAULT 'Alpha',
   `absensi_wawancara_I` varchar(225) NOT NULL DEFAULT 'Alpha',
-  `absensi_presentasi` varchar(225) NOT NULL DEFAULT 'Alpha'
+  `absensi_presentasi` varchar(225) NOT NULL DEFAULT 'Alpha',
+  `status_akhir` varchar(20) DEFAULT '-'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data untuk tabel `absensi`
+-- Dumping data for table `absensi`
 --
 
-INSERT INTO `absensi` (`id`, `id_mahasiswa`, `absensi_wawancara_II`, `absensi_wawancara_III`, `absensi_tes_tertulis`, `absensi_wawancara_I`, `absensi_presentasi`) VALUES
-(22, 91, 'Hadir', '-', 'Hadir', 'Hadir', 'Hadir'),
-(23, 97, '-', '-', '-', '-', '-');
+INSERT INTO `absensi` (`id`, `id_mahasiswa`, `absensi_wawancara_II`, `absensi_wawancara_III`, `absensi_tes_tertulis`, `absensi_wawancara_I`, `absensi_presentasi`, `status_akhir`) VALUES
+(22, 91, 'Hadir', '-', 'Hadir', 'Hadir', 'Hadir', 'Lolos'),
+(23, 97, '-', '-', '-', '-', '-', '-'),
+(24, 98, '-', '-', '-', '-', '-', '-'),
+(26, 100, '-', '-', '-', '-', '-', '-'),
+(29, 112, '-', '-', '-', '-', '-', '-'),
+(30, 113, '-', '-', '-', '-', '-', '-');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `bank_soal`
+-- Table structure for table `bank_soal`
 --
 
 CREATE TABLE `bank_soal` (
@@ -62,17 +67,16 @@ CREATE TABLE `bank_soal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `bank_soal`
+-- Dumping data for table `bank_soal`
 --
 
 INSERT INTO `bank_soal` (`id`, `nama`, `deskripsi`, `created_at`, `updated_at`, `token`, `is_active`) VALUES
-(26, 'Ujiansda', '1221ee12', '2026-01-20 12:31:51', '2026-01-20 12:31:51', '12e212e', 0),
-(32, 'Ujian 2025', '3rwer', '2026-01-20 23:51:15', '2026-01-28 10:12:40', 'ssd', 1);
+(34, 'Ujian CCA 2025', 'Ujian Pendaftaran Calon Asisten laboratorium 2026', '2026-01-31 11:47:52', '2026-01-31 13:44:31', '12345', 1);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `berkas_mahasiswa`
+-- Table structure for table `berkas_mahasiswa`
 --
 
 CREATE TABLE `berkas_mahasiswa` (
@@ -88,56 +92,18 @@ CREATE TABLE `berkas_mahasiswa` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `berkas_mahasiswa`
+-- Dumping data for table `berkas_mahasiswa`
 --
 
 INSERT INTO `berkas_mahasiswa` (`id`, `id_mahasiswa`, `foto`, `cv`, `transkrip_nilai`, `surat_pernyataan`, `accepted`, `created_at`, `modified`) VALUES
-(30, 91, '6971d16cf313f.png', '694212c67df9b.pdf', '694212c67e1b3.pdf', '694212c67e3b7.pdf', 1, '2025-12-17 02:17:42', NULL),
-(31, 91, '6971d16cf313f.png', '69466eb8c34eb.pdf', '69466eb8c36c4.pdf', '69466eb8c37cc.pdf', 1, '2025-12-20 09:39:04', NULL),
-(32, 91, '6971d16cf313f.png', '69466eba04f50.pdf', '69466eba04fd4.pdf', '69466eba050b1.pdf', 1, '2025-12-20 09:39:06', NULL),
-(33, 91, '6971d16cf313f.png', '69466ebc5c859.pdf', '69466ebc5c909.pdf', '69466ebc5c9b0.pdf', 1, '2025-12-20 09:39:08', NULL),
-(34, 91, '6971d16cf313f.png', '69466ebe6896e.pdf', '69466ebe68a00.pdf', '69466ebe68a92.pdf', 1, '2025-12-20 09:39:10', NULL),
-(35, 91, '6971d16cf313f.png', '69466ebe8f009.pdf', '69466ebe8f08e.pdf', '69466ebe8f10e.pdf', 1, '2025-12-20 09:39:10', NULL),
-(36, 91, '6971d16cf313f.png', '69466ebec3161.pdf', '69466ebec3204.pdf', '69466ebec328d.pdf', 1, '2025-12-20 09:39:10', NULL),
-(37, 91, '6971d16cf313f.png', '6947813f0dfa8.pdf', '6947813f0e335.pdf', '6947813f0e6f0.pdf', 1, '2025-12-21 05:10:23', NULL),
-(38, 91, '6971d16cf313f.png', '695fc4f2af071.pdf', '695fc4f2af3b2.pdf', '695fc4f2af4cb.pdf', 1, '2026-01-08 14:53:38', NULL),
-(40, 91, '6971d16cf313f.png', '696cd1ee62f52.pdf', '696cd1ee6331f.pdf', '696cd1ee6343a.pdf', 1, '2026-01-18 12:28:30', NULL),
-(41, 91, '6971d16cf313f.png', '696cd1f1a7ec6.pdf', '696cd1f1a801a.pdf', '696cd1f1a8151.pdf', 1, '2026-01-18 12:28:33', NULL),
-(42, 91, '6971d16cf313f.png', '696cd1f1e2109.pdf', '696cd1f1e236c.pdf', '696cd1f1e25e7.pdf', 1, '2026-01-18 12:28:33', NULL),
-(43, 91, '6971d16cf313f.png', '6971aeec66dbc.pdf', '6971aeec66ec4.pdf', '6971aeec66fae.pdf', 1, '2026-01-22 05:00:28', NULL),
-(44, 91, '6971d16cf313f.png', '6971aeef660b1.pdf', '6971aeef661c5.pdf', '6971aeef66315.pdf', 1, '2026-01-22 05:00:31', NULL),
-(45, 91, '6971d16cf313f.png', '6971aeefd8c38.pdf', '6971aeefd8d8e.pdf', '6971aeefd8f46.pdf', 1, '2026-01-22 05:00:31', NULL),
-(46, 91, '6971d16cf313f.png', '6971aefb2e93e.pdf', '6971aefb2ea93.pdf', '6971aefb2ebea.pdf', 1, '2026-01-22 05:00:43', NULL),
-(47, 91, '6971d16cf313f.png', '6971c5548cd70.pdf', '6971c5548ce87.pdf', '6971c5548cf81.pdf', 1, '2026-01-22 06:36:04', NULL),
-(48, 91, '6971d16cf313f.png', '6971cbb174dcf.pdf', '6971cbb174f73.pdf', '6971cbb1750a7.pdf', 1, '2026-01-22 07:03:13', NULL),
-(49, 91, '6971d16cf313f.png', '6971cdba163f1.pdf', '6971cdba16512.pdf', '6971cdba16621.pdf', 1, '2026-01-22 07:11:54', NULL),
-(50, 91, '6972060f24e79.jpg', '6972060f25518.pdf', '6972060f25afd.pdf', '6972060f25f03.pdf', 1, '2026-01-22 11:12:15', NULL),
-(51, 97, '6979df4266448.jpg', '6979df4266aa2.pdf', '6979df4266f98.pdf', '6979df426936a.pdf', 1, '2026-01-28 10:04:50', NULL),
-(52, 97, '6979df43dcae5.jpg', '6979df43dcdd0.pdf', '6979df43dd033.pdf', '6979df43dd32e.pdf', 1, '2026-01-28 10:04:51', NULL),
-(53, 97, '6979df510c617.jpg', '6979df510c93a.pdf', '6979df510cbfb.pdf', '6979df510ce59.pdf', 1, '2026-01-28 10:05:05', NULL),
-(54, 97, '6979df5692747.jpg', '6979df5692a73.pdf', '6979df5692d2a.pdf', '6979df5692faf.pdf', 1, '2026-01-28 10:05:10', NULL),
-(55, 97, '6979df717b111.jpg', '6979df717b365.pdf', '6979df717b498.pdf', '6979df717b8e8.pdf', 1, '2026-01-28 10:05:37', NULL),
-(56, 97, '6979df7208677.jpg', '6979df720882f.pdf', '6979df7208999.pdf', '6979df7208b14.pdf', 1, '2026-01-28 10:05:38', NULL),
-(57, 97, '6979df722deaf.jpg', '6979df722e442.pdf', '6979df722e99d.pdf', '6979df722ee64.pdf', 1, '2026-01-28 10:05:38', NULL),
-(58, 97, '6979df725458f.jpg', '6979df72548fa.pdf', '6979df7254b4e.pdf', '6979df7254ddf.pdf', 1, '2026-01-28 10:05:38', NULL),
-(59, 97, '6979df726a844.jpg', '6979df726b2f5.pdf', '6979df726b863.pdf', '6979df726bd30.pdf', 1, '2026-01-28 10:05:38', NULL),
-(60, 97, '6979df728ef7e.jpg', '6979df728f38c.pdf', '6979df728f4ed.pdf', '6979df728f617.pdf', 1, '2026-01-28 10:05:38', NULL),
-(61, 97, '6979dfad2028b.jpg', '6979dfad2059b.pdf', '6979dfad207fc.pdf', '6979dfad20ab2.pdf', 1, '2026-01-28 10:06:37', NULL),
-(62, 97, '6979e04bb83bd.jpg', '6979e04bb87cb.pdf', '6979e04bb8a74.pdf', '6979e04bb8d26.pdf', 1, '2026-01-28 10:09:15', NULL),
-(63, 97, '6979e04bce30b.jpg', '6979e04bce872.pdf', '6979e04bceb86.pdf', '6979e04bceebf.pdf', 1, '2026-01-28 10:09:15', NULL),
-(64, 97, '6979e04bd962f.jpg', '6979e04bd9ba9.pdf', '6979e04bd9f20.pdf', '6979e04bda25e.pdf', 1, '2026-01-28 10:09:15', NULL),
-(65, 97, '6979e04be3b46.jpg', '6979e04be3f89.pdf', '6979e04be4b10.pdf', '6979e04be4f5b.pdf', 1, '2026-01-28 10:09:15', NULL),
-(66, 97, '6979e04c0278f.jpg', '6979e04c02b85.pdf', '6979e04c02e92.pdf', '6979e04c03185.pdf', 1, '2026-01-28 10:09:16', NULL),
-(67, 97, '6979e04c17e6e.jpg', '6979e04c1828d.pdf', '6979e04c185c3.pdf', '6979e04c18ab2.pdf', 1, '2026-01-28 10:09:16', NULL),
-(68, 97, '6979e04c1cd86.jpg', '6979e04c1d158.pdf', '6979e04c1d46a.pdf', '6979e04c1d98d.pdf', 1, '2026-01-28 10:09:16', NULL),
-(69, 97, '6979e04c24b1c.jpg', '6979e04c24f68.pdf', '6979e04c2527d.pdf', '6979e04c25576.pdf', 1, '2026-01-28 10:09:16', NULL),
-(70, 97, '6979e04c286e4.jpg', '6979e04c28a90.pdf', '6979e04c28d36.pdf', '6979e04c29077.pdf', 1, '2026-01-28 10:09:16', NULL),
-(71, 97, '6979e0ca3feb2.jpeg', '6979e0ca401cd.pdf', '6979e0ca404b2.pdf', '6979e0ca40752.pdf', 1, '2026-01-28 10:11:22', NULL);
+(75, 91, '697e5b91bae9e.png', '697e5b91bb1d5.pdf', '697e5b91bb439.pdf', '697e5b91bb6e0.pdf', 1, '2026-01-31 19:39:02', NULL),
+(76, 113, '698061359da32.png', '698061359ddd7.pdf', '698061359df1e.pdf', '698061359e02b.pdf', 1, '2026-02-02 08:32:53', NULL),
+(77, 114, '69806a92290ce.jpg', '69806a922956a.pdf', '69806a922979d.pdf', '69806a92299bc.pdf', 0, '2026-02-02 09:12:50', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `dashboard`
+-- Table structure for table `dashboard`
 --
 
 CREATE TABLE `dashboard` (
@@ -151,7 +117,7 @@ CREATE TABLE `dashboard` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `deadline_kegiatan`
+-- Table structure for table `deadline_kegiatan`
 --
 
 CREATE TABLE `deadline_kegiatan` (
@@ -162,7 +128,7 @@ CREATE TABLE `deadline_kegiatan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `deadline_kegiatan`
+-- Dumping data for table `deadline_kegiatan`
 --
 
 INSERT INTO `deadline_kegiatan` (`id`, `jenis`, `tanggal`, `updated_at`) VALUES
@@ -174,7 +140,7 @@ INSERT INTO `deadline_kegiatan` (`id`, `jenis`, `tanggal`, `updated_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `jadwal_presentasi`
+-- Table structure for table `jadwal_presentasi`
 --
 
 CREATE TABLE `jadwal_presentasi` (
@@ -188,17 +154,10 @@ CREATE TABLE `jadwal_presentasi` (
   `is_completed` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data untuk tabel `jadwal_presentasi`
---
-
-INSERT INTO `jadwal_presentasi` (`id`, `id_presentasi`, `id_ruangan`, `tanggal`, `waktu`, `created_at`, `modified`, `is_completed`) VALUES
-(13, 18, 19, '2026-01-26', '05:53:00', '2026-01-22 21:50:28', NULL, 0);
-
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `jawaban`
+-- Table structure for table `jawaban`
 --
 
 CREATE TABLE `jawaban` (
@@ -210,10 +169,20 @@ CREATE TABLE `jawaban` (
   `modified` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `jawaban`
+--
+
+INSERT INTO `jawaban` (`id`, `id_soal`, `id_mahasiswa`, `jawaban`, `created_at`, `modified`) VALUES
+(505, 200, 91, '3', '2026-02-02 05:19:57', NULL),
+(506, 202, 91, '', '2026-02-02 05:19:57', NULL),
+(507, 200, 113, '1', '2026-02-02 08:39:49', NULL),
+(508, 202, 113, 'ads', '2026-02-02 08:39:49', NULL);
+
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `jurusan`
+-- Table structure for table `jurusan`
 --
 
 CREATE TABLE `jurusan` (
@@ -224,7 +193,7 @@ CREATE TABLE `jurusan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `jurusan`
+-- Dumping data for table `jurusan`
 --
 
 INSERT INTO `jurusan` (`id`, `nama`, `created_at`, `modified`) VALUES
@@ -234,7 +203,7 @@ INSERT INTO `jurusan` (`id`, `nama`, `created_at`, `modified`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kegiatan_admin`
+-- Table structure for table `kegiatan_admin`
 --
 
 CREATE TABLE `kegiatan_admin` (
@@ -246,7 +215,7 @@ CREATE TABLE `kegiatan_admin` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `kegiatan_admin`
+-- Dumping data for table `kegiatan_admin`
 --
 
 INSERT INTO `kegiatan_admin` (`id`, `judul`, `tanggal`, `deskripsi`, `created_at`) VALUES
@@ -256,7 +225,7 @@ INSERT INTO `kegiatan_admin` (`id`, `judul`, `tanggal`, `deskripsi`, `created_at
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kelas`
+-- Table structure for table `kelas`
 --
 
 CREATE TABLE `kelas` (
@@ -267,7 +236,7 @@ CREATE TABLE `kelas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `kelas`
+-- Dumping data for table `kelas`
 --
 
 INSERT INTO `kelas` (`id`, `nama`, `created_at`, `modified`) VALUES
@@ -290,7 +259,7 @@ INSERT INTO `kelas` (`id`, `nama`, `created_at`, `modified`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `mahasiswa`
+-- Table structure for table `mahasiswa`
 --
 
 CREATE TABLE `mahasiswa` (
@@ -307,21 +276,27 @@ CREATE TABLE `mahasiswa` (
   `no_telp` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `modified` timestamp NULL DEFAULT NULL,
-  `foto_profil` varchar(255) DEFAULT NULL
+  `foto_profil` varchar(255) DEFAULT NULL,
+  `status_akhir` enum('Pending','Lulus','Tidak Lulus') DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `mahasiswa`
+-- Dumping data for table `mahasiswa`
 --
 
-INSERT INTO `mahasiswa` (`id`, `id_user`, `id_jurusan`, `stambuk`, `id_kelas`, `nama_lengkap`, `alamat`, `jenis_kelamin`, `tempat_lahir`, `tanggal_lahir`, `no_telp`, `created_at`, `modified`, `foto_profil`) VALUES
-(91, 57, 1, '13020230309', 2, 'Raihan Nur Rizqillah', 'Antang', 'Pria', 'Kota Makassar', '2025-12-19', '08219503918', '2025-12-17 02:16:52', NULL, '6972052dabc15.jpeg'),
-(97, 65, 1, '13020230308', 2, 'Raihan Nur', 'jalan sunu', 'Pria', 'Makassar', '2026-01-29', '0811423743', '2026-01-28 08:52:35', NULL, '6979dec1247e5.png');
+INSERT INTO `mahasiswa` (`id`, `id_user`, `id_jurusan`, `stambuk`, `id_kelas`, `nama_lengkap`, `alamat`, `jenis_kelamin`, `tempat_lahir`, `tanggal_lahir`, `no_telp`, `created_at`, `modified`, `foto_profil`, `status_akhir`) VALUES
+(91, 57, 1, '13020230309', 10, 'Raihan Nur Rizqillah', 'Antang', 'Wanita', 'Kota Makassar', '2026-01-30', '08219503918', '2025-12-17 02:16:52', NULL, '697e59763710d.png', 'Tidak Lulus'),
+(97, 65, 1, '13020230308', 2, 'Raihan Nur', 'jalan sunu', 'Pria', 'Makassar', '2026-01-29', '0811423743', '2026-01-28 08:52:35', NULL, NULL, 'Pending'),
+(98, 66, NULL, '13020230311', NULL, '13020230311@umi.ac.id', NULL, NULL, NULL, NULL, NULL, '2026-02-01 08:22:23', NULL, NULL, 'Pending'),
+(100, 68, 1, '13020230232', 7, 'La Ode Dhaifan', 'Jalan Jati', 'Pria', 'Raha', '2025-12-18', '082214958313', '2026-02-02 05:54:41', NULL, NULL, 'Pending'),
+(112, 70, 1, '13020230245', 10, 'Sitti Aisyah', 'Bonto Bila 13', 'Wanita', 'Pangkajenne', '2005-01-13', '087863391808', '2026-02-02 06:55:06', NULL, '69804b8e6b03b.png', 'Pending'),
+(113, 67, 2, '13020230306', 5, 'Nahwa Kaka', 'Jalan antang', 'Pria', 'Bandung', '2026-02-02', '082195039180', '2026-02-02 08:18:33', NULL, '69805f5fc7706.png', 'Pending'),
+(114, 71, 1, '13020230300', 11, 'Rifki', 'Nipa', 'Wanita', 'Nipa', '2026-02-02', '082195031980', '2026-02-02 08:59:02', NULL, '6980675641dee.jpeg', 'Pending');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `nilai_akhir`
+-- Table structure for table `nilai_akhir`
 --
 
 CREATE TABLE `nilai_akhir` (
@@ -334,16 +309,17 @@ CREATE TABLE `nilai_akhir` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `nilai_akhir`
+-- Dumping data for table `nilai_akhir`
 --
 
 INSERT INTO `nilai_akhir` (`id`, `id_mahasiswa`, `nilai`, `total_nilai`, `created_at`, `modified`) VALUES
-(46, 91, 0, 90, '2026-01-22 20:59:45', NULL);
+(69, 91, 0, 0, '2026-02-02 05:19:57', NULL),
+(70, 113, 0, 90, '2026-02-02 08:39:49', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `notifikasi`
+-- Table structure for table `notifikasi`
 --
 
 CREATE TABLE `notifikasi` (
@@ -356,7 +332,7 @@ CREATE TABLE `notifikasi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `notifikasi`
+-- Dumping data for table `notifikasi`
 --
 
 INSERT INTO `notifikasi` (`id`, `id_mahasiswa`, `pesan`, `is_read`, `created_at`, `modified`) VALUES
@@ -411,12 +387,24 @@ INSERT INTO `notifikasi` (`id`, `id_mahasiswa`, `pesan`, `is_read`, `created_at`
 (97, 91, 'Nilai Tes Tertulis Anda telah keluar. Skor: 100. Status: LULUS. Selamat! Silahkan pantau jadwal interview selanjutnya.', 1, '2026-01-27 21:47:24', NULL),
 (98, 97, 'jelek cv mu', 1, '2026-01-28 10:10:18', NULL),
 (99, 91, 'Nilai Tes Tertulis Anda telah keluar. Skor: 90. Status: LULUS. Selamat! Silahkan pantau jadwal interview selanjutnya.', 1, '2026-01-28 11:25:30', NULL),
-(100, 91, 'Pesan Revisi/Keterangan: judulmu bagus', 1, '2026-01-28 22:54:20', NULL);
+(100, 91, 'Pesan Revisi/Keterangan: judulmu bagus', 1, '2026-01-28 22:54:20', NULL),
+(101, 91, 'Judul presentasi Anda telah DITERIMA.', 1, '2026-01-29 20:20:56', NULL),
+(102, 91, 'Judul presentasi Anda DITOLAK. Silakan cek revisi.', 1, '2026-01-29 20:23:27', NULL),
+(103, 91, 'Judul presentasi Anda telah DITERIMA.', 1, '2026-01-29 20:25:58', NULL),
+(104, 91, 'Judul presentasi Anda DITOLAK. Silakan cek revisi.', 1, '2026-01-29 20:29:07', NULL),
+(105, 91, 'Judul presentasi Anda telah DITERIMA.', 1, '2026-01-29 20:29:12', NULL),
+(106, 91, 'Judul presentasi Anda DITOLAK. Silakan cek revisi.', 1, '2026-01-29 20:33:19', NULL),
+(107, 91, 'Nilai Tes Tertulis Anda telah keluar. Skor: 90. Status: LULUS. Selamat! Silahkan pantau jadwal interview selanjutnya.', 1, '2026-01-29 20:38:41', NULL),
+(108, 91, 'Nilai Tes Tertulis Anda telah keluar. Skor: 100. Status: LULUS. Selamat! Silahkan pantau jadwal interview selanjutnya.', 1, '2026-01-31 03:49:18', NULL),
+(109, 91, 'Nilai Tes Tertulis Anda telah keluar. Skor: 100. Status: LULUS. Selamat! Silahkan pantau jadwal interview selanjutnya.', 1, '2026-01-31 14:54:27', NULL),
+(110, 91, 'Nilai Tes Tertulis Anda telah keluar. Skor: 20. Status: TIDAK LULUS. Jangan berkecil hati, tetap semangat!', 1, '2026-01-31 23:48:53', NULL),
+(111, 113, 'Nilai Tes Tertulis Anda telah keluar. Skor: 90. Status: LULUS. Selamat! Silahkan pantau jadwal interview selanjutnya.', 0, '2026-02-02 09:14:51', NULL),
+(112, 91, 'Judul presentasi Anda telah DITERIMA.', 1, '2026-02-02 09:18:11', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `pengumuman`
+-- Table structure for table `pengumuman`
 --
 
 CREATE TABLE `pengumuman` (
@@ -429,7 +417,7 @@ CREATE TABLE `pengumuman` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `presentasi`
+-- Table structure for table `presentasi`
 --
 
 CREATE TABLE `presentasi` (
@@ -446,16 +434,16 @@ CREATE TABLE `presentasi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `presentasi`
+-- Dumping data for table `presentasi`
 --
 
 INSERT INTO `presentasi` (`id`, `id_mahasiswa`, `judul`, `ppt`, `makalah`, `is_accepted`, `is_revisi`, `keterangan`, `created_at`, `modified`) VALUES
-(18, 91, 'Tipe data C++', '6972ae8752d8e.pptx', '6972ae87530f2.pdf', 0, 1, 'judulmu bagus', '2025-12-17 06:28:00', NULL);
+(19, 91, 'technical meeting', '698074fc48584.pptx', '698074fc48a89.pdf', 1, 0, 'Sedang menunggu verifikasi', '2026-02-02 09:18:03', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `ruangan`
+-- Table structure for table `ruangan`
 --
 
 CREATE TABLE `ruangan` (
@@ -466,26 +454,30 @@ CREATE TABLE `ruangan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `ruangan`
+-- Dumping data for table `ruangan`
 --
 
 INSERT INTO `ruangan` (`id`, `nama`, `created_at`, `modified`) VALUES
-(5, 'LAB MULTIMEDI', '2025-01-03 10:14:07', '2026-01-27 14:38:36'),
-(6, 'LAB MICROCONTROLLERR', '2025-01-03 10:14:07', '2026-01-13 04:07:34'),
+(5, 'LAB MULTIMEDIA', '2025-01-03 10:14:07', '2026-02-01 01:36:45'),
 (10, 'RUANGAN KEPALA LAB II', '2025-02-01 07:00:06', NULL),
-(18, 'STARTUP', '2026-01-08 06:11:37', NULL),
-(19, 'LAB IOT', '2026-01-14 06:15:30', NULL);
+(18, 'LAB STARTUP', '2026-01-08 06:11:37', '2026-01-31 07:26:08'),
+(19, 'LAB INTERNET OF THINGS', '2026-01-14 06:15:30', '2026-02-01 01:38:29'),
+(23, 'RUANGAN KEPALA LAB I', '2026-01-31 14:27:35', NULL),
+(25, 'LAB COMPUTER VISION', '2026-01-31 14:29:28', NULL),
+(26, 'LAB DATA SCIENCE', '2026-01-31 14:31:44', NULL),
+(27, 'LAB COMPUTER NETWORK', '2026-02-01 08:37:24', '2026-02-01 01:37:46');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `soal`
+-- Table structure for table `soal`
 --
 
 CREATE TABLE `soal` (
   `id` int(11) UNSIGNED NOT NULL,
   `bank_soal_id` int(11) DEFAULT NULL,
   `deskripsi` varchar(255) NOT NULL,
+  `image_url` varchar(500) DEFAULT NULL,
   `pilihan` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '\'Bukan soal pilihan ganda\'',
   `jawaban` varchar(255) DEFAULT '''soal tidak punya jawaban''',
   `status_soal` varchar(255) NOT NULL,
@@ -494,30 +486,17 @@ CREATE TABLE `soal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `soal`
+-- Dumping data for table `soal`
 --
 
-INSERT INTO `soal` (`id`, `bank_soal_id`, `deskripsi`, `pilihan`, `jawaban`, `status_soal`, `created_at`, `modified`) VALUES
-(171, 26, 'Contoh Soal Pilihan Ganda: Berapa hasil dari 2 + 2?', 'A. 2, B. 3, C. 4, D. 5, E. 6', 'C', 'pilihan_ganda', '2026-01-20 23:48:27', NULL),
-(172, 26, 'Contoh Soal Essay: Jelaskan pengertian MVC (Model-View-Controller)', '', 'MVC adalah pola arsitektur software yang memisahkan aplikasi menjadi tiga komponen utama: Model (data), View (tampilan), dan Controller (logika)', 'essay', '2026-01-20 23:48:27', NULL),
-(173, 26, 'Contoh Soal: 1 + 1 = ?', 'A. 1, B. 2, C. 3, D. 4, E. 5', 'B', 'pilihan_ganda', '2026-01-20 23:48:52', NULL),
-(178, 32, 'Contoh Soal Pilihan Ganda: Berapa hasil dari 2 + 2?', '', '3', 'essay', '2026-01-21 00:06:00', '2026-01-24 23:03:15'),
-(179, 32, 'Contoh Soal Essay: Jelaskan pengertian MVC (Model-View-Controller)', '', 'MVC adalah pola arsitektur software yang memisahkan aplikasi menjadi tiga komponen utama: Model (data), View (tampilan), dan Controller (logika)', 'essay', '2026-01-21 00:06:00', NULL),
-(180, 32, '![](/Sistem-Pendaftaran-Calon-Asisten/public/uploads/soal_content/img_1769301593_697566593c873.png)\n\ntryt', '', 'xxa', 'essay', '2026-01-25 00:40:30', NULL),
-(181, 32, '![](/Sistem-Pendaftaran-Calon-Asisten/public/uploads/soal_content/img_1769301593_697566593c873.png)\r\n\r\ntryt', 'bukan soal pilihan', 'xxa', 'essay', '2026-01-25 00:40:30', NULL),
-(182, 32, '![](/Sistem-Pendaftaran-Calon-Asisten/public/uploads/soal_content/img_1769303877_69756f4515942.png)\nqwewq', '', 'qwewq', 'essay', '2026-01-25 01:18:00', NULL),
-(183, 32, '![](/Sistem-Pendaftaran-Calon-Asisten/public/uploads/soal_content/img_1769303877_69756f4515942.png)\r\nqwewq', 'bukan soal pilihan', 'qwewq', 'essay', '2026-01-25 01:18:00', NULL),
-(184, 32, '![](/Sistem-Pendaftaran-Calon-Asisten/public/uploads/soal_content/img_1769304252_697570bc7db40.jpeg)\n\nmjkn', '', 'mkn', 'essay', '2026-01-25 01:24:40', NULL),
-(185, 32, '![](/Sistem-Pendaftaran-Calon-Asisten/public/uploads/soal_content/img_1769304252_697570bc7db40.jpeg)\r\n\r\nmjkn', 'bukan soal pilihan', 'mkn', 'essay', '2026-01-25 01:24:40', NULL),
-(186, 32, '![](/Sistem-Pendaftaran-Calon-Asisten/public/uploads/soal_content/img_1769305732_697576840215c.png)\n\nltarar', '', 'asdawewsad', 'essay', '2026-01-25 01:49:19', NULL),
-(187, 32, '![](/Sistem-Pendaftaran-Calon-Asisten/public/uploads/soal_content/img_1769305732_697576840215c.png)\r\n\r\nltarar', 'bukan soal pilihan', 'asdawewsad', 'essay', '2026-01-25 01:49:19', NULL),
-(188, 32, '![](/Sistem-Pendaftaran-Calon-Asisten/public/uploads/soal_content/img_1769319236_6975ab4416e9b.jpeg)\r\n\r\napa ini', 'bukan soal pilihan', 'iya', 'essay', '2026-01-25 05:34:04', NULL),
-(189, 32, '![](/Sistem-Pendaftaran-Calon-Asisten/public/uploads/soal_content/img_1769374798_6976844e7238d.png)\r\n\r\nsda', 'A. wad, B. wda, C. awd, D. adw, E. wad', 'E', 'pilihan_ganda', '2026-01-25 21:00:13', NULL);
+INSERT INTO `soal` (`id`, `bank_soal_id`, `deskripsi`, `image_url`, `pilihan`, `jawaban`, `status_soal`, `created_at`, `modified`) VALUES
+(200, 34, 'asd', 'res/uploads/soal/soal_697df0128aaf3.png', 'A. a, B. as, C. as, D. s', 'A', 'pilihan_ganda', '2026-01-31 12:05:38', NULL),
+(202, 34, 'jalan?', 'res/uploads/soal/soal_697e159505499.png', 'bukan soal pilihan', '\'soal tidak punya jawaban\'', 'essay', '2026-01-31 14:45:41', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `test_tertulis`
+-- Table structure for table `test_tertulis`
 --
 
 CREATE TABLE `test_tertulis` (
@@ -532,7 +511,7 @@ CREATE TABLE `test_tertulis` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -540,6 +519,8 @@ CREATE TABLE `user` (
   `username` varchar(255) NOT NULL DEFAULT '" "',
   `stambuk` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `reset_token_hash` varchar(64) DEFAULT NULL,
+  `reset_token_expires_at` datetime DEFAULT NULL,
   `role` enum('Admin','User') NOT NULL DEFAULT 'User',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `modified` timestamp NULL DEFAULT NULL,
@@ -549,26 +530,31 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `user`
+-- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `username`, `stambuk`, `password`, `role`, `created_at`, `modified`, `id_ruang_presentasi`, `id_ruang_tes_tulis`, `id_ruang_wawancara`) VALUES
-(10, 'admin', '111111111', '12345678', 'Admin', '2025-12-17 01:44:54', '0000-00-00 00:00:00', NULL, NULL, NULL),
-(32, 'admin', 'adminiclabs', '$2y$10$AfzljbcP/jV9pJk.dU1hcOHe1yfCFO1vA7YOTEbHQ7/AI4oLkyYLu', 'Admin', '2024-12-18 09:58:31', '0000-00-00 00:00:00', NULL, NULL, NULL),
-(33, 'admin12', 'admin', '$2y$10$7wE5Q2S1paQm/EtBFKuuZeb4RLzUjt4sEny98T/anNlqCQVzGyD5q', 'Admin', '2025-01-03 08:52:28', '0000-00-00 00:00:00', NULL, NULL, NULL),
-(55, '\"admin4 \"', 'admin4', 'admin4', 'Admin', '2025-12-16 23:52:35', '0000-00-00 00:00:00', NULL, NULL, NULL),
-(57, 'umi@umi.ac.id', '13020230309', '$2y$10$8xILIVdyUCCcqBPyYl0WleMtmWycfgtR5x.SyD.BOLgc5dgJnzXBy', 'User', '2025-12-17 02:16:03', '0000-00-00 00:00:00', NULL, 4, 5),
-(60, '12345@umi.ac.id', '13020230301', '$2y$10$c0ZFC3HYRUCYhl2mSATb5OqB4uNzzEHM0FDN1bShYD3dMvlHjft3O', 'User', '2026-01-28 08:31:27', NULL, NULL, NULL, NULL),
-(61, '12345@umi.ac.id', '13020230100', '$2y$10$6PO19YP3Zhmr2TApXw9ioega4OOzctlAM6lkVEhWGrglYI0QyWik.', 'User', '2026-01-28 08:31:46', NULL, NULL, NULL, NULL),
-(62, '12345@umi.ac.id', '13020230101', '$2y$10$PtxVwvwy68qvQCAMDO/uteTlJM9woW44bv/iTzxyCprDOgvk0RMrq', 'User', '2026-01-28 08:32:04', NULL, NULL, NULL, NULL),
-(63, '12345@umi.ac.id', '13020230303', '$2y$10$3gHrqRfV9FCzBMZEYbk19.OWw8LTTSeXlOe4WDb2kG3CBO0qeaQOm', 'User', '2026-01-28 08:32:22', NULL, NULL, NULL, NULL),
-(64, '12345@umi.ac.id', '13020230304', '$2y$10$0TkfgS5JJhiw9/bujtmE6u7CeoP1QkdUvs6dImg/ZxVbv7X2bYdPy', 'User', '2026-01-28 08:32:28', NULL, NULL, NULL, NULL),
-(65, '12345@umi.ac.id', '13020230308', '$2y$10$XE0ZP6CThJv.VrNBZ37IR.Ahlc8Dqcag0m12YYUdZiDQZs9IZaisS', 'User', '2026-01-28 08:52:35', NULL, NULL, NULL, NULL);
+INSERT INTO `user` (`id`, `username`, `stambuk`, `password`, `reset_token_hash`, `reset_token_expires_at`, `role`, `created_at`, `modified`, `id_ruang_presentasi`, `id_ruang_tes_tulis`, `id_ruang_wawancara`) VALUES
+(10, 'admin', '111111111', '12345678', NULL, NULL, 'Admin', '2025-12-17 01:44:54', '0000-00-00 00:00:00', NULL, NULL, NULL),
+(32, 'admin', 'adminiclabs', '$2y$10$AfzljbcP/jV9pJk.dU1hcOHe1yfCFO1vA7YOTEbHQ7/AI4oLkyYLu', NULL, NULL, 'Admin', '2024-12-18 09:58:31', '0000-00-00 00:00:00', NULL, NULL, NULL),
+(33, 'admin12', 'admin', '$2y$10$7wE5Q2S1paQm/EtBFKuuZeb4RLzUjt4sEny98T/anNlqCQVzGyD5q', NULL, NULL, 'Admin', '2025-01-03 08:52:28', '0000-00-00 00:00:00', NULL, NULL, NULL),
+(55, '\"admin4 \"', 'admin4', 'admin4', NULL, NULL, 'Admin', '2025-12-16 23:52:35', '0000-00-00 00:00:00', NULL, NULL, NULL),
+(57, 'umi@umi.ac.id', '13020230309', '$2y$10$8xILIVdyUCCcqBPyYl0WleMtmWycfgtR5x.SyD.BOLgc5dgJnzXBy', NULL, NULL, 'User', '2025-12-17 02:16:03', '0000-00-00 00:00:00', NULL, 4, 5),
+(60, '12345@umi.ac.id', '13020230301', '$2y$10$c0ZFC3HYRUCYhl2mSATb5OqB4uNzzEHM0FDN1bShYD3dMvlHjft3O', NULL, NULL, 'User', '2026-01-28 08:31:27', NULL, NULL, NULL, NULL),
+(61, '12345@umi.ac.id', '13020230100', '$2y$10$6PO19YP3Zhmr2TApXw9ioega4OOzctlAM6lkVEhWGrglYI0QyWik.', NULL, NULL, 'User', '2026-01-28 08:31:46', NULL, NULL, NULL, NULL),
+(62, '12345@umi.ac.id', '13020230101', '$2y$10$PtxVwvwy68qvQCAMDO/uteTlJM9woW44bv/iTzxyCprDOgvk0RMrq', NULL, NULL, 'User', '2026-01-28 08:32:04', NULL, NULL, NULL, NULL),
+(63, '12345@umi.ac.id', '13020230303', '$2y$10$3gHrqRfV9FCzBMZEYbk19.OWw8LTTSeXlOe4WDb2kG3CBO0qeaQOm', NULL, NULL, 'User', '2026-01-28 08:32:22', NULL, NULL, NULL, NULL),
+(64, '12345@umi.ac.id', '13020230304', '$2y$10$0TkfgS5JJhiw9/bujtmE6u7CeoP1QkdUvs6dImg/ZxVbv7X2bYdPy', NULL, NULL, 'User', '2026-01-28 08:32:28', NULL, NULL, NULL, NULL),
+(65, '12345@umi.ac.id', '13020230308', '$2y$10$XE0ZP6CThJv.VrNBZ37IR.Ahlc8Dqcag0m12YYUdZiDQZs9IZaisS', NULL, NULL, 'User', '2026-01-28 08:52:35', NULL, NULL, NULL, NULL),
+(66, '13020230311@umi.ac.id', '13020230311', '$2y$10$ryCwJJFOQ79dbQ3rh67o1uovjh.XdZxBi6OOkVR8W2FG9IAe5PzQi', NULL, NULL, 'User', '2026-02-01 08:22:23', NULL, NULL, NULL, NULL),
+(67, '13020230306@student.umi.ac.id', '13020230306', '$2y$10$PRaAtUAsX3RijJTq02FTw.BThRHlUgax8131KWObgjqA4uB764VZG', '2c79b5fde20a7ac5e66deafbbbdf41a232c164e88a6081776a180e4c40dd6784', '2026-02-02 14:50:28', 'User', '2026-02-02 05:28:11', NULL, NULL, NULL, NULL),
+(68, '13020230232@student.umi.ac.id', '13020230232', '$2y$10$AV.5VhFuGmFGF5i2Km5Dbe8/VHr3XM7/lAVbRBElZHIut0NZWRrUm', NULL, NULL, 'User', '2026-02-02 05:54:41', NULL, NULL, NULL, NULL),
+(70, '13020230245@student.umi.ac.id', '13020230245', '$2y$10$.12mmolA7wVC1bJKIXZlK.c/ueaDzeOfnvn75UJLhRDtxJF3WV78G', NULL, NULL, 'User', '2026-02-02 06:54:27', NULL, NULL, NULL, NULL),
+(71, '13020230300@umi.ac.id', '13020230300', '$2y$10$u7erK99iJjzJFg6./zcZDet9kv9WvEQCxozvqKUUO5vHebLfKgT2a', NULL, NULL, 'User', '2026-02-02 08:56:16', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `wawancara`
+-- Table structure for table `wawancara`
 --
 
 CREATE TABLE `wawancara` (
@@ -583,54 +569,55 @@ CREATE TABLE `wawancara` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `wawancara`
+-- Dumping data for table `wawancara`
 --
 
 INSERT INTO `wawancara` (`id`, `id_mahasiswa`, `id_ruangan`, `jenis_wawancara`, `waktu`, `tanggal`, `created_at`, `modified`) VALUES
 (15, 91, 6, 'wawancara kepala lab II', '00:28:00', '2026-01-27', '2026-01-26 00:28:47', NULL),
-(16, 91, 5, 'Tes Tertulis', '21:40:00', '2026-01-27', '2026-01-26 11:37:37', NULL),
-(19, 97, 6, 'Tes Tertulis', '19:26:00', '2026-02-06', '2026-01-28 11:21:28', NULL);
+(19, 97, 6, 'Tes Tertulis', '19:26:00', '2026-02-06', '2026-01-28 11:21:28', NULL),
+(20, 91, 5, 'wawancara kepala lab I', '04:53:00', '2026-01-02', '2026-01-29 20:50:43', NULL),
+(21, 97, 10, 'wawancara kepala lab II', '00:41:00', '2026-02-12', '2026-01-31 16:39:39', NULL);
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indeks untuk tabel `absensi`
+-- Indexes for table `absensi`
 --
 ALTER TABLE `absensi`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `unique_id_mahasiswa` (`id_mahasiswa`);
 
 --
--- Indeks untuk tabel `bank_soal`
+-- Indexes for table `bank_soal`
 --
 ALTER TABLE `bank_soal`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `berkas_mahasiswa`
+-- Indexes for table `berkas_mahasiswa`
 --
 ALTER TABLE `berkas_mahasiswa`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_mahasiswa_berkas_mahasiswa` (`id_mahasiswa`);
 
 --
--- Indeks untuk tabel `dashboard`
+-- Indexes for table `dashboard`
 --
 ALTER TABLE `dashboard`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id_mahasiswa` (`id_mahasiswa`);
 
 --
--- Indeks untuk tabel `deadline_kegiatan`
+-- Indexes for table `deadline_kegiatan`
 --
 ALTER TABLE `deadline_kegiatan`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `jenis` (`jenis`);
 
 --
--- Indeks untuk tabel `jadwal_presentasi`
+-- Indexes for table `jadwal_presentasi`
 --
 ALTER TABLE `jadwal_presentasi`
   ADD PRIMARY KEY (`id`),
@@ -638,7 +625,7 @@ ALTER TABLE `jadwal_presentasi`
   ADD KEY `id_ruangan` (`id_ruangan`);
 
 --
--- Indeks untuk tabel `jawaban`
+-- Indexes for table `jawaban`
 --
 ALTER TABLE `jawaban`
   ADD PRIMARY KEY (`id`),
@@ -646,25 +633,25 @@ ALTER TABLE `jawaban`
   ADD KEY `fk_mahasiswa_jawaban2` (`id_soal`);
 
 --
--- Indeks untuk tabel `jurusan`
+-- Indexes for table `jurusan`
 --
 ALTER TABLE `jurusan`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `kegiatan_admin`
+-- Indexes for table `kegiatan_admin`
 --
 ALTER TABLE `kegiatan_admin`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `kelas`
+-- Indexes for table `kelas`
 --
 ALTER TABLE `kelas`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `mahasiswa`
+-- Indexes for table `mahasiswa`
 --
 ALTER TABLE `mahasiswa`
   ADD PRIMARY KEY (`id`),
@@ -675,47 +662,47 @@ ALTER TABLE `mahasiswa`
   ADD KEY `fk_mahasiswa_user2` (`id_jurusan`);
 
 --
--- Indeks untuk tabel `nilai_akhir`
+-- Indexes for table `nilai_akhir`
 --
 ALTER TABLE `nilai_akhir`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id_mahasiswa` (`id_mahasiswa`);
 
 --
--- Indeks untuk tabel `notifikasi`
+-- Indexes for table `notifikasi`
 --
 ALTER TABLE `notifikasi`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_mahasiswa_notifikasi` (`id_mahasiswa`);
 
 --
--- Indeks untuk tabel `pengumuman`
+-- Indexes for table `pengumuman`
 --
 ALTER TABLE `pengumuman`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `presentasi`
+-- Indexes for table `presentasi`
 --
 ALTER TABLE `presentasi`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_mahasiswa` (`id_mahasiswa`);
 
 --
--- Indeks untuk tabel `ruangan`
+-- Indexes for table `ruangan`
 --
 ALTER TABLE `ruangan`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `soal`
+-- Indexes for table `soal`
 --
 ALTER TABLE `soal`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_bank_soal_id` (`bank_soal_id`);
 
 --
--- Indeks untuk tabel `test_tertulis`
+-- Indexes for table `test_tertulis`
 --
 ALTER TABLE `test_tertulis`
   ADD PRIMARY KEY (`id`),
@@ -723,181 +710,181 @@ ALTER TABLE `test_tertulis`
   ADD KEY `id_ruangan` (`id_ruangan`);
 
 --
--- Indeks untuk tabel `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`stambuk`);
 
 --
--- Indeks untuk tabel `wawancara`
+-- Indexes for table `wawancara`
 --
 ALTER TABLE `wawancara`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_mahasiswa_wawancara` (`id_mahasiswa`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `absensi`
+-- AUTO_INCREMENT for table `absensi`
 --
 ALTER TABLE `absensi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
--- AUTO_INCREMENT untuk tabel `bank_soal`
+-- AUTO_INCREMENT for table `bank_soal`
 --
 ALTER TABLE `bank_soal`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
--- AUTO_INCREMENT untuk tabel `berkas_mahasiswa`
+-- AUTO_INCREMENT for table `berkas_mahasiswa`
 --
 ALTER TABLE `berkas_mahasiswa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
--- AUTO_INCREMENT untuk tabel `dashboard`
+-- AUTO_INCREMENT for table `dashboard`
 --
 ALTER TABLE `dashboard`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `deadline_kegiatan`
+-- AUTO_INCREMENT for table `deadline_kegiatan`
 --
 ALTER TABLE `deadline_kegiatan`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- AUTO_INCREMENT untuk tabel `jadwal_presentasi`
+-- AUTO_INCREMENT for table `jadwal_presentasi`
 --
 ALTER TABLE `jadwal_presentasi`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT untuk tabel `jawaban`
+-- AUTO_INCREMENT for table `jawaban`
 --
 ALTER TABLE `jawaban`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=494;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=509;
 
 --
--- AUTO_INCREMENT untuk tabel `jurusan`
+-- AUTO_INCREMENT for table `jurusan`
 --
 ALTER TABLE `jurusan`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT untuk tabel `kegiatan_admin`
+-- AUTO_INCREMENT for table `kegiatan_admin`
 --
 ALTER TABLE `kegiatan_admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT untuk tabel `kelas`
+-- AUTO_INCREMENT for table `kelas`
 --
 ALTER TABLE `kelas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT untuk tabel `mahasiswa`
+-- AUTO_INCREMENT for table `mahasiswa`
 --
 ALTER TABLE `mahasiswa`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
 
 --
--- AUTO_INCREMENT untuk tabel `nilai_akhir`
+-- AUTO_INCREMENT for table `nilai_akhir`
 --
 ALTER TABLE `nilai_akhir`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
--- AUTO_INCREMENT untuk tabel `notifikasi`
+-- AUTO_INCREMENT for table `notifikasi`
 --
 ALTER TABLE `notifikasi`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
 
 --
--- AUTO_INCREMENT untuk tabel `pengumuman`
+-- AUTO_INCREMENT for table `pengumuman`
 --
 ALTER TABLE `pengumuman`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `presentasi`
+-- AUTO_INCREMENT for table `presentasi`
 --
 ALTER TABLE `presentasi`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT untuk tabel `ruangan`
+-- AUTO_INCREMENT for table `ruangan`
 --
 ALTER TABLE `ruangan`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
--- AUTO_INCREMENT untuk tabel `soal`
+-- AUTO_INCREMENT for table `soal`
 --
 ALTER TABLE `soal`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=190;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=203;
 
 --
--- AUTO_INCREMENT untuk tabel `test_tertulis`
+-- AUTO_INCREMENT for table `test_tertulis`
 --
 ALTER TABLE `test_tertulis`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT untuk tabel `user`
+-- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
--- AUTO_INCREMENT untuk tabel `wawancara`
+-- AUTO_INCREMENT for table `wawancara`
 --
 ALTER TABLE `wawancara`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
--- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+-- Constraints for dumped tables
 --
 
 --
--- Ketidakleluasaan untuk tabel `absensi`
+-- Constraints for table `absensi`
 --
 ALTER TABLE `absensi`
   ADD CONSTRAINT `absensi_ibfk_1` FOREIGN KEY (`id_mahasiswa`) REFERENCES `mahasiswa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `berkas_mahasiswa`
+-- Constraints for table `berkas_mahasiswa`
 --
 ALTER TABLE `berkas_mahasiswa`
   ADD CONSTRAINT `fk_mahasiswa_berkas_mahasiswa` FOREIGN KEY (`id_mahasiswa`) REFERENCES `mahasiswa` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `dashboard`
+-- Constraints for table `dashboard`
 --
 ALTER TABLE `dashboard`
   ADD CONSTRAINT `fk_mahasiswa_dashboard` FOREIGN KEY (`id_mahasiswa`) REFERENCES `mahasiswa` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `jadwal_presentasi`
+-- Constraints for table `jadwal_presentasi`
 --
 ALTER TABLE `jadwal_presentasi`
   ADD CONSTRAINT `jadwal_presentasi_ibfk_3` FOREIGN KEY (`id_presentasi`) REFERENCES `presentasi` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `jadwal_presentasi_ibfk_4` FOREIGN KEY (`id_ruangan`) REFERENCES `ruangan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `jawaban`
+-- Constraints for table `jawaban`
 --
 ALTER TABLE `jawaban`
   ADD CONSTRAINT `fk_mahasiswa_jawaban1` FOREIGN KEY (`id_mahasiswa`) REFERENCES `mahasiswa` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_mahasiswa_jawaban2` FOREIGN KEY (`id_soal`) REFERENCES `soal` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `mahasiswa`
+-- Constraints for table `mahasiswa`
 --
 ALTER TABLE `mahasiswa`
   ADD CONSTRAINT `fk_mahasiswa_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`) ON DELETE CASCADE,
@@ -905,38 +892,38 @@ ALTER TABLE `mahasiswa`
   ADD CONSTRAINT `fk_mahasiswa_user2` FOREIGN KEY (`id_jurusan`) REFERENCES `jurusan` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `nilai_akhir`
+-- Constraints for table `nilai_akhir`
 --
 ALTER TABLE `nilai_akhir`
   ADD CONSTRAINT `fk_mahasiswa_nilai_akhir1` FOREIGN KEY (`id_mahasiswa`) REFERENCES `mahasiswa` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `notifikasi`
+-- Constraints for table `notifikasi`
 --
 ALTER TABLE `notifikasi`
   ADD CONSTRAINT `fk_mahasiswa_notifikasi` FOREIGN KEY (`id_mahasiswa`) REFERENCES `mahasiswa` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `presentasi`
+-- Constraints for table `presentasi`
 --
 ALTER TABLE `presentasi`
   ADD CONSTRAINT `presentasi_ibfk_1` FOREIGN KEY (`id_mahasiswa`) REFERENCES `mahasiswa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `soal`
+-- Constraints for table `soal`
 --
 ALTER TABLE `soal`
   ADD CONSTRAINT `fk_soal_bank_soal` FOREIGN KEY (`bank_soal_id`) REFERENCES `bank_soal` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `test_tertulis`
+-- Constraints for table `test_tertulis`
 --
 ALTER TABLE `test_tertulis`
   ADD CONSTRAINT `test_tertulis_ibfk_1` FOREIGN KEY (`id_mahasiswa`) REFERENCES `mahasiswa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `test_tertulis_ibfk_2` FOREIGN KEY (`id_ruangan`) REFERENCES `ruangan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `wawancara`
+-- Constraints for table `wawancara`
 --
 ALTER TABLE `wawancara`
   ADD CONSTRAINT `fk_mahasiswa_wawancara` FOREIGN KEY (`id_mahasiswa`) REFERENCES `mahasiswa` (`id`) ON DELETE CASCADE;
