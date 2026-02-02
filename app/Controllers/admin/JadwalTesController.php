@@ -34,6 +34,12 @@ class JadwalTesController extends Controller
         $jadwalTesList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         $mahasiswaList = \App\Controllers\Admin\PesertaController::viewAllMahasiswa() ?? [];
+        
+        // Filter: Exclude students who already have a "Tes Tertulis" schedule
+        $scheduledMahasiswaIds = array_column($jadwalTesList, 'id_mahasiswa');
+        $mahasiswaList = array_filter($mahasiswaList, function($mhs) use ($scheduledMahasiswaIds) {
+            return !in_array($mhs['id'], $scheduledMahasiswaIds);
+        });
         $ruanganList = \App\Controllers\Admin\RuanganController::viewAllRuangan() ?? [];
 
         $data = [
@@ -94,11 +100,32 @@ class JadwalTesController extends Controller
             $sql = "INSERT INTO wawancara (id_mahasiswa, id_ruangan, jenis_wawancara, waktu, tanggal) VALUES (?, ?, ?, ?, ?)";
             $stmt = $db->prepare($sql);
 
+            // Prepare check statement for duplicate prevention
+            $checkSql = "SELECT COUNT(*) FROM wawancara WHERE id_mahasiswa = ? AND jenis_wawancara LIKE 'Tes Tertulis%'";
+            $checkStmt = $db->prepare($checkSql);
+
+            $successCount = 0;
+            $skippedCount = 0;
+
             foreach ($ids as $id_mahasiswa) {
+                // Check if already scheduled
+                $checkStmt->execute([$id_mahasiswa]);
+                if ($checkStmt->fetchColumn() > 0) {
+                    $skippedCount++;
+                    continue; 
+                }
+
                 $stmt->execute([$id_mahasiswa, $id_ruangan, $kegiatan, $waktu, $tanggal]);
+                $successCount++;
             }
 
-            echo json_encode(['status' => 'success', 'message' => 'Jadwal berhasil disimpan']);
+            if ($successCount > 0) {
+                $msg = "Berhasil menjadwalkan $successCount mahasiswa.";
+                if ($skippedCount > 0) $msg .= " ($skippedCount dilewati karena sudah ada jadwal)";
+                echo json_encode(['status' => 'success', 'message' => $msg]);
+            } else {
+                 echo json_encode(['status' => 'error', 'message' => 'Semua mahasiswa yang dipilih sudah memiliki jadwal.']);
+            }
         } catch (\Exception $e) {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }

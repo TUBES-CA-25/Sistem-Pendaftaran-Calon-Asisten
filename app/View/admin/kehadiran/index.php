@@ -188,7 +188,7 @@ $mahasiswaList = $mahasiswaList ?? [];
                                     <button class="btn btn-sm btn-warning bg-warning-subtle text-warning border-0 rounded-3 open-detail"
                                             title="Edit"
                                             data-id="<?= $row['id'] ?>"
-                                            data-userid="<?= $row['id'] ?>"
+                                            data-mhsid="<?= $row['id_mahasiswa'] ?>"
                                             data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
                                             data-stambuk="<?= $row['stambuk'] ?>"
                                             data-absensiwawancarai="<?= $row['absensi_wawancara_I'] ?? '' ?>"
@@ -435,6 +435,7 @@ function renderStatusBadge($val) {
                     <p class="text-muted small mb-0" id="detailStambuk">Stambuk</p>
                 </div>
                 <input type="hidden" id="detailUserId">
+                <input type="hidden" id="detailMhsId">
 
                 <div class="row g-3">
                     <div class="col-6">
@@ -624,7 +625,8 @@ $(document).ready(function() {
 
         $('#detailNama').text(btn.data('nama'));
         $('#detailStambuk').text(btn.data('stambuk'));
-        $('#detailUserId').val(btn.data('userid'));
+        $('#detailUserId').val(btn.data('id') || '');
+        $('#detailMhsId').val(btn.data('mhsid'));
         $('#avatarInitial').text(btn.data('nama').charAt(0).toUpperCase());
 
         // Set values
@@ -639,6 +641,7 @@ $(document).ready(function() {
     $('#saveDetailAbsensi').click(function() {
         const data = {
             id: $('#detailUserId').val(),
+            mhsId: $('#detailMhsId').val(),
             tesTertulis: $('#tesTertulis').val(),
             presentasi: $('#presentasi').val(),
             wawancaraI: $('#wawancaraI').val(),

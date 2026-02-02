@@ -25,6 +25,7 @@ header("X-Frame-Options: SAMEORIGIN");
 header("Referrer-Policy: strict-origin-when-cross-origin");
 
 require_once '../app/Core/autoload.php';
+App\Config\Config::initTimezone();
 
 $app = new App\Core\App;
 $app->run();

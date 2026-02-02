@@ -18,7 +18,7 @@ class AuthController extends Controller
 
     public function index()
     {
-        View::render('index', 'login');
+        View::render('index', 'auth');
     }
 
     public function authenticate()
@@ -87,17 +87,11 @@ class AuthController extends Controller
                 $user->__construct2($name, $stambuk, $hashedPassword);
 
                 $userId = $user->save();
+                
+                // FIXED: Do not create Mahasiswa/Absensi automatically.
+                // User must complete biodata first.
 
                 if ($userId) {
-                    // Create Mahasiswa Record and get the new mahasiswa ID
-                    $mahasiswaId = Mahasiswa::create($userId, $stambuk, $name);
-                    
-                    // Auto-create default absensi record for the new mahasiswa
-                    if ($mahasiswaId) {
-                        $absensiModel = new Absensi();
-                        $absensiModel->createDefaultAbsensi($mahasiswaId);
-                    }
-
                     header('Content-Type: application/json');
                     echo json_encode(['status' => 'success', 'message' => 'Registration successful. Please log in.']);
                 } else {

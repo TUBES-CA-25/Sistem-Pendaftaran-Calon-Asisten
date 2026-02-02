@@ -30,8 +30,20 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/de
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body p-4 p-md-5">
                     <div class="row align-items-center">
-                        <div class="col-auto">
-                            <img src="<?= $photo ?>" alt="Profile Picture" class="rounded-4 object-fit-cover" style="width: 120px; height: 120px;">
+                        <div class="col-auto position-relative profile-img-container">
+                             <div class="position-relative d-inline-block" style="width: 120px; height: 120px;">
+                                <img src="<?= $photo ?>" alt="Profile Picture" class="rounded-4 object-fit-cover w-100 h-100 profile-img-target">
+                                <div onclick="document.getElementById('profileImageInput').click();" 
+                                     class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 rounded-4 d-flex flex-column align-items-center justify-content-center text-white opacity-0 profile-overlay" 
+                                     style="transition: opacity 0.2s; cursor: pointer;">
+                                    <i class="bx bx-camera fs-3 mb-1"></i>
+                                    <small class="fw-bold" style="font-size: 0.7rem;">Ubah Foto</small>
+                                </div>
+                            </div>
+                            <input type="file" id="profileImageInput" class="d-none" accept="image/*">
+                            <style>
+                                .profile-img-container:hover .profile-overlay { opacity: 1 !important; }
+                            </style>
                         </div>
                         <div class="col">
                             <h4 class="fw-bold text-primary mb-1"><?= $nama ?></h4>
@@ -40,9 +52,9 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/de
                         </div>
                         <div class="col-auto mt-3 mt-md-0">
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-primary px-4 rounded-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                                <a href="/Sistem-Pendaftaran-Calon-Asisten/public/biodata" class="btn btn-primary px-4 rounded-3 d-flex align-items-center gap-2">
                                     <i class="bx bx-edit"></i> Edit Profile
-                                </button>
+                                </a>
                                 <button type="button" id="logoutButton" class="btn btn-danger px-4 rounded-3 d-flex align-items-center gap-2">
                                     <i class="bx bx-log-out"></i> Logout
                                 </button>
@@ -100,79 +112,9 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/de
     </div>
 </main>
 
-<!-- Bootstrap Edit Modal -->
-<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content rounded-4 border-0">
-            <div class="modal-header border-bottom-0 pb-0">
-                <h5 class="modal-title fw-bold" id="editProfileModalLabel">Edit Profile</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4 pt-3">
-                <form id="editProfileForm">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="nama" class="form-label small text-muted">Nama Lengkap</label>
-                            <input type="text" class="form-control" id="nama" name="nama" value="<?= $nama; ?>">
-                        </div>
-                        <div class="col-md-6">
-                             <label for="noHp" class="form-label small text-muted">No Telephone</label>
-                            <input type="text" class="form-control" id="noHp" name="noHp" value="<?= $noHp; ?>">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="jurusan" class="form-label small text-muted">Jurusan</label>
-                            <select class="form-select" id="jurusan" name="jurusan">
-                                <option value="Teknik Informatika" <?= $jurusan === 'Teknik Informatika' ? 'selected' : ''; ?>>Teknik Informatika</option>
-                                <option value="Sistem Informasi" <?= $jurusan === 'Sistem Informasi' ? 'selected' : ''; ?>>Sistem Informasi</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="kelas" class="form-label small text-muted">Kelas</label>
-                            <select class="form-select" id="kelas" name="kelas" required></select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="jenisKelamin" class="form-label small text-muted">Jenis Kelamin</label>
-                            <select class="form-select" id="jenisKelamin" name="jenisKelamin">
-                                <option value="Pria" <?= $jenisKelamin === "Pria" ? "selected" : ""; ?>>Pria</option>
-                                <option value="Wanita" <?= $jenisKelamin === "Wanita" ? "selected" : ""; ?>>Wanita</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                             <label for="username" class="form-label small text-muted">Username (Email)</label>
-                             <input type="text" class="form-control" id="username" name="username" value="<?= $userName; ?>">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="tempatLahir" class="form-label small text-muted">Tempat Lahir</label>
-                            <input type="text" class="form-control" id="tempatLahir" name="tempatLahir" value="<?= $tempatLahir; ?>">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="tanggalLahir" class="form-label small text-muted">Tanggal Lahir</label>
-                            <input type="date" class="form-control" id="tanggalLahir" name="tanggalLahir" value="<?= $tanggalLahir; ?>">
-                        </div>
-                        <div class="col-12">
-                            <label for="alamat" class="form-label small text-muted">Alamat</label>
-                            <input type="text" class="form-control" id="alamat" name="alamat" value="<?= $alamat; ?>">
-                        </div>
-                        <div class="col-12">
-                            <label for="password" class="form-label small text-muted">Password (Kosongkan jika tidak ingin diubah)</label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Password Baru">
-                        </div>
-                        <div class="col-12">
-                            <label for="image" class="form-label small text-muted">Foto Profil</label>
-                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
-                <button type="button" class="btn btn-light rounded-3" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" form="editProfileForm" class="btn btn-primary rounded-3 px-4">Save Changes</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+<!-- Clean Script (No Modal, No Form Submit for Edit Profile) -->
 <script>
+<<<<<<< HEAD
     function showModal(message, gifUrl = null) {
         // Reuse global sweet alert or Bootstrap Modal if exists
         // For consistency in this refactor, let's use a dynamic Bootstrap modal notification
@@ -221,77 +163,35 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/de
         return { success: true, message: "Tempat lahir valid." };
     }
 
+=======
+>>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
     $(document).ready(function () {
-        const phoneInput = document.getElementById("noHp");
-        const namaInput = document.getElementById("nama");
-        const tempatLahirInput = document.getElementById("tempatLahir");
-        
-        const safeListeners = (el) => {
-            if (el) {
-                el.addEventListener("input", function () {
-                    el.setCustomValidity("");
-                    el.reportValidity();
-                });
-            }
-        };
-
-        safeListeners(phoneInput);
-        safeListeners(namaInput);
-        safeListeners(tempatLahirInput);
-
-        // Update Kelas on Load and Change
-        updateKelasOptions();
-        $('#jenisKelamin').on('change', function () {
-            updateKelasOptions();
-        });
-
-        function updateKelasOptions() {
-            const genderSelect = document.getElementById('jenisKelamin');
-            const kelasSelect = document.getElementById('kelas');
-            if(!genderSelect || !kelasSelect) return;
-
-            const gender = genderSelect.value;
-            const currentKelas = "<?= $kelas ?>";
-
-            // Clear existing options except default if we want, but here we rebuild
-            kelasSelect.innerHTML = '<option value="">Pilih Kelas</option>';
-
-            const kelasOptions = gender === 'Wanita'
-                ? ['B1', 'B2', 'B3', 'B4', 'B5', 'B6']
-                : ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9'];
-            
-            kelasOptions.forEach(kelas => {
-                const option = document.createElement('option');
-                option.value = kelas;
-                option.textContent = kelas;
-                if(kelas === currentKelas) option.selected = true;
-                kelasSelect.appendChild(option);
-            });
-        }
-
         $('#logoutButton').click(function (e) {
             e.preventDefault();
             $.ajax({
                 url: '/Sistem-Pendaftaran-Calon-Asisten/public/logout',
                 type: 'POST',
                 success: function (response) {
-                    // Assuming response is JSON
                     const res = (typeof response === 'string') ? JSON.parse(response) : response;
                     if (res.status === 'success') {
-                         // We can use the simple modal or just redirect
                          window.location.href = '/Sistem-Pendaftaran-Calon-Asisten/public/';
                     } else {
-                        alert('Logout gagal');
+                        showAlert('Logout gagal', false);
                     }
                 }
             });
         });
 
-        $('#editProfileForm').submit(function (e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this); // Easier way to capture form data
+        // Profile Image Upload Handler (Change Event)
+        $('#profileImageInput').change(function() {
+            if (this.files && this.files[0]) {
+                const formData = new FormData();
+                formData.append('image', this.files[0]);
+                
+                const $overlay = $('.profile-overlay');
+                const originalContent = $overlay.html();
 
+<<<<<<< HEAD
             let isValid = true;
             if (namaInput && !validateNoNumber(namaInput.value).success) {
                 namaInput.setCustomValidity(validateNoNumber(namaInput.value).message);
@@ -341,12 +241,51 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/de
                             }, 1500);
                         } else {
                             showModal(res.message || 'Gagal memperbarui profil', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
+=======
+                // Show uploading state using DOM creation
+                const spinner = document.createElement('div');
+                spinner.className = 'spinner-border spinner-border-sm text-white';
+                spinner.setAttribute('role', 'status');
+                
+                $overlay.empty().append(spinner);
+                $overlay.css('opacity', '1');
+                
+                $.ajax({
+                    url: '/Sistem-Pendaftaran-Calon-Asisten/public/updateprofile',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        try {
+                             const res = typeof response === 'string' ? JSON.parse(response) : response;
+                              if (res.status === 'success') {
+                                 showAlert('Upload Success!', true); 
+                                 if (res.newPhoto) {
+                                     const newUrl = res.newPhoto + '?t=' + new Date().getTime();
+                                     $('.profile-img-target, .navbar-profile-img, img[alt="Profile Picture"]').attr('src', newUrl);
+                                 }
+                             } else {
+                                 console.log('Debug Info:', res.debug);
+                                 showAlert(res.message || 'Gagal upload foto', false);
+                             }
+                        } catch(e) { 
+                            console.error('JSON Parse Error:', e);
+                            showAlert('Error parsing response from server.', false);
+                        } finally {
+                             $overlay.html(originalContent);
+                             $overlay.css('opacity', '');
+>>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
                         }
-                    } catch (e) {
-                        console.error('Error parsing response:', e);
+                    },
+                    error: function(xhr, status, error) {
+                         console.error('AJAX Error:', error);
+                         showAlert('Terjadi kesalahan koneksi saat mengunggah gambar.', false);
+                         $overlay.html(originalContent);
+                         $overlay.css('opacity', '');
                     }
-                }
-            });
+                });
+            }
         });
     });
 </script>

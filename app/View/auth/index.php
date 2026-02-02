@@ -56,7 +56,11 @@
                         <input type="checkbox" class="form-check-input" id="customCheck" name="check">
                         <label class="form-check-label" for="customCheck">Remember me</label>
                     </div>
+<<<<<<< HEAD
                     <a href="<?= APP_URL ?>/forgotPassword">Lupa password?</a>
+=======
+                    <a href="lupa-password">Lupa password?</a>
+>>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-submit w-100" name="login" id="btnlogin">

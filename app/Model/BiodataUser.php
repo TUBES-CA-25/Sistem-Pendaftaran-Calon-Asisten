@@ -103,9 +103,19 @@ class BiodataUser extends Model
                 return true;
             } else {
                 error_log("Error: Failed to execute statement - " . json_encode($stmt->errorInfo()));
+<<<<<<< HEAD
                 throw new \Exception("Query execution failed: " . json_encode($stmt->errorInfo()));
             }
         } catch (\PDOException $e) {
+=======
+                throw new \Exception("Gagal mengeksekusi query database.");
+            }
+        } catch (\PDOException $e) {
+            // Check for duplicate entry
+            if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062 && strpos($e->getMessage(), 'no_telp') !== false) {
+                throw new \Exception("Nomor HP sudah terdaftar. Silakan gunakan nomor lain.");
+            }
+>>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
             error_log("PDO Error: " . $e->getMessage() . " | Code: " . $e->getCode());
             throw new \Exception("Database error: " . $e->getMessage());
         } catch (\Exception $e) {
@@ -151,14 +161,26 @@ class BiodataUser extends Model
         }
 
         return (
-            $result['id_jurusan'] === null || $result['stambuk'] === null ||
-            $result['id_kelas'] === null || $result['nama_lengkap'] === null ||
-            $result['alamat'] === null || $result['jenis_kelamin'] === null ||
-            $result['tempat_lahir'] === null || $result['tanggal_lahir'] === null ||
-            $result['no_telp'] === null
+            empty($result['id_jurusan']) || 
+            empty($result['stambuk']) ||
+            empty($result['id_kelas']) || 
+            empty($result['nama_lengkap']) ||
+            empty($result['alamat']) || 
+            empty($result['jenis_kelamin']) ||
+            empty($result['tempat_lahir']) || 
+            empty($result['tanggal_lahir']) ||
+            empty($result['no_telp'])
         );
     }
 
+    public function isExist($idUser)
+    {
+        $query = "SELECT id FROM " . static::$table . " WHERE id_user = ?";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->bindParam(1, $idUser);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC) !== false;
+    }
 
     public function getBiodata($id)
     {
@@ -247,8 +269,16 @@ class BiodataUser extends Model
         $stmt->bindParam(8, $biodata->idUser); 
     }
     try {
-        return $stmt->execute();
+        if ($stmt->execute()) {
+            return true;
+        } else {
+             error_log("Error updateBiodata execute returned false");
+             return false;
+        }
     } catch (\Exception $e) {
+        if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062 && strpos($e->getMessage(), 'no_telp') !== false) {
+             throw new \Exception("Nomor HP sudah terdaftar. Silakan gunakan nomor lain.");
+        }
         error_log("SQL Error: " . $sql . " Params: " . json_encode([$biodata->namaLengkap, $idJurusan['id'], $idKelas['id'], $biodata->alamat, $biodata->jenisKelamin, $biodata->tempatLahir, $biodata->tanggalLahir, $biodata->noHp, $biodata->idUser]));
         throw new \Exception("Gagal mengupdate biodata: " . $e->getMessage());
     }

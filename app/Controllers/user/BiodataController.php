@@ -61,10 +61,27 @@ class BiodataController extends Controller
                 $noHp
             );
 
+<<<<<<< HEAD
             // Try to save first, if duplicate key error, update instead
             try {
+=======
+            // Check if biodata already exists to decide between save (insert) or update
+            if (!$biodata->isExist($idUser)) {
+                // Insert new data (Create Mahasiswa Record)
+>>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
                 if ($biodata->save($biodata)) {
+                    // Logic Tambahan: Create Default Absensi
+                    // Ambil ID Mahasiswa yang baru saja dibuat
+                    $mahasiswaModel = new \App\Model\Mahasiswa();
+                    $mhs = $mahasiswaModel->getMahasiswaId($idUser);
+                    
+                    if ($mhs) {
+                        $absensiModel = new \App\Model\Absensi();
+                        $absensiModel->createDefaultAbsensi($mhs['id']);
+                    }
+
                     echo json_encode(['status' => 'success', 'message' => 'Data berhasil disimpan']);
+<<<<<<< HEAD
                     exit;
                 }
             } catch (\Exception $e) {
@@ -89,6 +106,17 @@ class BiodataController extends Controller
                     error_log("Save Error: " . $e->getMessage());
                     echo json_encode(['status' => 'error', 'message' => 'Error menyimpan: ' . $e->getMessage()]);
                     exit;
+=======
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan data baru']);
+                }
+            } else {
+                // Update existing data
+                if ($biodata->updateBiodata($biodata)) {
+                    echo json_encode(['status' => 'success', 'message' => 'Data berhasil diperbarui']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Gagal memperbarui data']);
+>>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
                 }
             }
         } catch (\Exception $e) {
