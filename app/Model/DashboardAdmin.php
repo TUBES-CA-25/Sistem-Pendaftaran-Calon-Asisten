@@ -12,7 +12,7 @@ class DashboardAdmin extends Model
     public static function getTotalPendaftar(): int
     {
         try {
-            $sql = "SELECT COUNT(*) FROM absensi"; // Changed from tableMahasiswa to absensi to match Monitoring view
+            $sql = "SELECT COUNT(*) FROM " . self::$tableMahasiswa;
             $stmt = self::getDB()->prepare($sql);
             $stmt->execute();
             return (int) $stmt->fetchColumn();
@@ -23,22 +23,36 @@ class DashboardAdmin extends Model
 
     public static function getPendaftarLulus(): int
     {
-        return self::countByNilaiThreshold('>=', 70);
+        try {
+            $sql = "SELECT COUNT(*) FROM " . self::$tableMahasiswa . " WHERE status_akhir = 'Lulus'";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->execute();
+            return (int) $stmt->fetchColumn();
+        } catch (\Throwable $e) {
+            return 0;
+        }
     }
 
     public static function getPendaftarGagal(): int
     {
-        return self::countByNilaiThreshold('<', 70);
+        try {
+            $sql = "SELECT COUNT(*) FROM " . self::$tableMahasiswa . " WHERE status_akhir = 'Tidak Lulus'";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->execute();
+            return (int) $stmt->fetchColumn();
+        } catch (\Throwable $e) {
+            return 0;
+        }
     }
 
     public static function getPendaftarPending(): int
     {
         try {
-            $total = self::getTotalPendaftar();
-            $lulus = self::getPendaftarLulus();
-            $gagal = self::getPendaftarGagal();
-            $pending = $total - $lulus - $gagal;
-            return $pending > 0 ? $pending : 0;
+            // Pending includes explicitly 'Pending' OR NULL/Empty
+            $sql = "SELECT COUNT(*) FROM " . self::$tableMahasiswa . " WHERE status_akhir = 'Pending' OR status_akhir IS NULL OR status_akhir = ''";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->execute();
+            return (int) $stmt->fetchColumn();
         } catch (\Throwable $e) {
             return 0;
         }
@@ -315,23 +329,7 @@ class DashboardAdmin extends Model
         return $status;
     }
 
-    private static function countByNilaiThreshold(string $operator, int $threshold): int
-    {
-        try {
-            // Join with absensi to ensure we only count students in the monitoring list
-            $sql = "SELECT COUNT(n.id_mahasiswa) 
-                    FROM nilai_akhir n
-                    JOIN absensi a ON n.id_mahasiswa = a.id_mahasiswa
-                    WHERE COALESCE(n.total_nilai, n.nilai) {$operator} :threshold";
-            
-            $stmt = self::getDB()->prepare($sql);
-            $stmt->bindValue(':threshold', $threshold, PDO::PARAM_INT);
-            $stmt->execute();
-            return (int) $stmt->fetchColumn();
-        } catch (\Throwable $e) {
-            return 0;
-        }
-    }
+
 
     /**
      * @return array<int, array{tanggal: string, judul: string, jenis: string}>
