@@ -103,19 +103,13 @@ class BiodataUser extends Model
                 return true;
             } else {
                 error_log("Error: Failed to execute statement - " . json_encode($stmt->errorInfo()));
-<<<<<<< HEAD
                 throw new \Exception("Query execution failed: " . json_encode($stmt->errorInfo()));
-            }
-        } catch (\PDOException $e) {
-=======
-                throw new \Exception("Gagal mengeksekusi query database.");
             }
         } catch (\PDOException $e) {
             // Check for duplicate entry
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062 && strpos($e->getMessage(), 'no_telp') !== false) {
                 throw new \Exception("Nomor HP sudah terdaftar. Silakan gunakan nomor lain.");
             }
->>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
             error_log("PDO Error: " . $e->getMessage() . " | Code: " . $e->getCode());
             throw new \Exception("Database error: " . $e->getMessage());
         } catch (\Exception $e) {

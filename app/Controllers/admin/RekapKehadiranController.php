@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers\Admin;
 use App\Model\Absensi;
+use App\Model\Mahasiswa;
 use App\Core\Controller;
 class RekapKehadiranController extends Controller
 {
@@ -76,7 +77,9 @@ class RekapKehadiranController extends Controller
         $wawancaraII = $input['wawancaraII'] ?? '-';
         $wawancaraIII = '-'; 
         $tesTertulis = $input['tesTertulis'] ?? '-';
+        $tesTertulis = $input['tesTertulis'] ?? '-';
         $presentasi = $input['presentasi'] ?? '-';
+        $statusAkhir = $input['statusAkhir'] ?? null;
 
         if (!$mhsId) {
             header('Content-Type: application/json');
@@ -105,6 +108,12 @@ class RekapKehadiranController extends Controller
         } else {
             // Update existing record
             if($absensi->updateAbsensi()) {
+                // Update Status Akhir if provided
+                if ($statusAkhir && $mhsId) {
+                    $mahasiswa = new Mahasiswa();
+                    $mahasiswa->updateStatusAkhir($mhsId, $statusAkhir);
+                }
+
                 header('Content-Type: application/json');
                 echo json_encode(['status' => 'success', 'message' => 'Absensi berhasil diupdate']);
             } else {

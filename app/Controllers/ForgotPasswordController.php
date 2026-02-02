@@ -2,22 +2,17 @@
 
 namespace App\Controllers;
 
+use App\Core\Env;
 use App\Core\Controller;
 use App\Core\View;
-<<<<<<< HEAD
 use App\Core\Database;
 use App\Model\PasswordReset;
-=======
-use App\Core\Mailer;
-use App\Core\Env;
->>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
 use App\Model\UserModel;
 
 class ForgotPasswordController extends Controller
 {
     public function index()
     {
-<<<<<<< HEAD
         // Render the forgot password view
         require_once __DIR__ . '/../View/auth/forgotPassword.php';
     }
@@ -31,33 +26,18 @@ class ForgotPasswordController extends Controller
             ob_end_clean();
             header('Content-Type: application/json');
             echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-=======
-        View::render('forgot_password', 'auth');
-    }
-
-    public function sendResetLink()
-    {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
->>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
             return;
         }
 
         $email = $_POST['email'] ?? '';
-<<<<<<< HEAD
 
         if (empty($email)) {
             ob_end_clean();
             header('Content-Type: application/json');
-=======
-        if (empty($email)) {
->>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
             echo json_encode(['status' => 'error', 'message' => 'Email wajib diisi']);
             return;
         }
 
-<<<<<<< HEAD
         try {
             // Verify if user exists
             $db = Database::getInstance();
@@ -104,12 +84,12 @@ class ForgotPasswordController extends Controller
             $smtp_debug_log = ""; 
 
             $mail->isSMTP();
-            $mail->Host       = getenv('MAIL_HOST') ?: 'smtp.gmail.com';
+            $mail->Host       = Env::get('MAIL_HOST', 'smtp.gmail.com');
             $mail->SMTPAuth   = true;
-            $mail->Username   = getenv('MAIL_USERNAME');
-            $mail->Password   = getenv('MAIL_PASSWORD');
-            $mail->SMTPSecure = getenv('MAIL_ENCRYPTION') ?: \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
-            $mail->Port       = getenv('MAIL_PORT') ?: 465;
+            $mail->Username   = Env::get('MAIL_USERNAME');
+            $mail->Password   = Env::get('MAIL_PASSWORD');
+            $mail->SMTPSecure = Env::get('MAIL_ENCRYPTION') === 'ssl' ? \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS : \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = Env::get('MAIL_PORT', 465);
             
             // Bypass SSL verification for XAMPP/Localhost
             $mail->SMTPOptions = array(
@@ -121,17 +101,17 @@ class ForgotPasswordController extends Controller
             );
 
             // Recipients
-            $mail->setFrom(getenv('MAIL_FROM') ?: 'noreply@iclabs.ac.id', getenv('APP_NAME') ?: 'IC-ASSIST');
+            $mail->setFrom(Env::get('MAIL_FROM', 'noreply@iclabs.ac.id'), Env::get('APP_NAME', 'IC-ASSIST'));
             $mail->addAddress($email);
 
             // Content
             $mail->isHTML(true);
-            $mail->Subject = 'Reset Password - Sistem Pendaftaran';
+            $mail->Subject = 'Reset Password - ' . Env::get('APP_NAME', 'IC-ASSIST');
             $mail->Body    = "
                 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f6f9;'>
                     <div style='background-color: white; border-radius: 10px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
                         <div style='text-align: center; margin-bottom: 30px;'>
-                            <h2 style='color: #0097d9; margin: 0; font-size: 24px;'>" . (getenv('APP_NAME') ?: 'IC-ASSIST') . "</h2>
+                            <h2 style='color: #0097d9; margin: 0; font-size: 24px;'>" . Env::get('APP_NAME', 'IC-ASSIST') . "</h2>
                             <p style='color: #666; font-size: 14px; margin-top: 5px;'>Sistem Pendaftaran Calon Asisten</p>
                         </div>
                         
@@ -155,7 +135,7 @@ class ForgotPasswordController extends Controller
                         <p style='color: #aaa; font-size: 12px; text-align: center;'>
                             Jika Anda tidak merasa melakukan permintaan ini, abaikan saja email ini. Akun Anda tetap aman.<br>
                             <br>
-                            &copy; " . date('Y') . " " . (getenv('APP_NAME') ?: 'IC-ASSIST') . ". All rights reserved.
+                            &copy; " . date('Y') . " " . Env::get('APP_NAME', 'IC-ASSIST') . ". All rights reserved.
                         </p>
                     </div>
                 </div>
@@ -209,95 +189,10 @@ class ForgotPasswordController extends Controller
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Content-Type: application/json');
             echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
-=======
-        $user = UserModel::findByEmail($email);
-
-        if (!$user) {
-            echo json_encode(['status' => 'error', 'message' => 'Email tidak ditemukan']);
-            return;
-        }
-
-        // Generate Token
-        $token = bin2hex(random_bytes(32));
-        $tokenHash = hash('sha256', $token);
-        // Save to DB
-        $userModel = new UserModel();
-        if ($userModel->updateResetToken($user['id'], $tokenHash)) {
-            // Send Email
-            $mailer = new Mailer();
-            $resetLink = Env::get('APP_URL') . '/reset-password?token=' . $token;
-            
-            $subject = "Reset Password - IC-ASSIST";
-            $body = "
-                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;'>
-                    <div style='background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center;'>
-                        <h2 style='color: #0097d9; margin: 0 0 5px 0;'>IC-ASSIST</h2>
-                        <p style='color: #6c757d; margin: 0 0 30px 0; font-size: 14px;'>Sistem Pendaftaran Calon Asisten</p>
-                        
-                        <div style='text-align: left; color: #333333;'>
-                            <p>Halo,</p>
-                            <p>Kami menerima permintaan untuk mereset password akun Anda. Jika ini benar Anda, silakan klik tombol di bawah ini:</p>
-                        </div>
-
-                        <div style='margin: 30px 0;'>
-                            <a href='{$resetLink}' style='background-color: #0097d9; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block;'>Reset Password Saya</a>
-                        </div>
-                        
-                        <div style='text-align: left; color: #6c757d; font-size: 13px; border-top: 1px solid #eeeeee; padding-top: 20px;'>
-                            <p>Link ini hanya berlaku selama 1 jam.</p>
-                            <p style='font-size: 12px; color: #adb5bd;'>Jika Anda tidak merasa melakukan permintaan ini, abaikan saja email ini. Akun Anda tetap aman.</p>
-                        </div>
-                        
-                        <div style='margin-top: 30px; font-size: 11px; color: #adb5bd;'>
-                            &copy; 2026 IC-ASSIST All rights reserved
-                        </div>
-                    </div>
-                </div>
-            ";
-
-            $sent = $mailer->send($email, $subject, $body);
-
-            if ($sent === true) {
-                echo json_encode(['status' => 'success', 'message' => 'Link reset password telah dikirim ke email Anda. Cek inbox/spam.']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Gagal mengirim email. Silakan coba lagi. ' . $sent]);
-            }
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Gagal memproses permintaan.']);
-        }
-    }
-
-    public function reset()
-    {
-        $token = $_GET['token'] ?? '';
-        if (empty($token)) {
-            echo "Token invalid.";
-            return;
-        }
-        
-        // Verify token existence (optional here, mostly done in update)
-        // Check if token valid before showing form?
-        $tokenHash = hash('sha256', $token);
-        $user = UserModel::findByResetToken($tokenHash);
-
-        if (!$user) {
-            echo "Link reset password tidak valid atau sudah kadaluarsa.";
-            return;
-        }
-
-        View::render('reset_password', 'auth');
-    }
-
-    public function updatePassword()
-    {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
->>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
             return;
         }
 
         $token = $_POST['token'] ?? '';
-<<<<<<< HEAD
         $email = $_POST['email'] ?? '';
         $newPassword = $_POST['newPassword'] ?? '';
         $confirmPassword = $_POST['confirmPassword'] ?? '';
@@ -320,31 +215,11 @@ class ForgotPasswordController extends Controller
 
         if (!$record) {
             header('Content-Type: application/json');
-=======
-        $password = $_POST['password'] ?? '';
-        $confirmPassword = $_POST['confirm_password'] ?? '';
-
-        if (empty($token) || empty($password) || empty($confirmPassword)) {
-            echo json_encode(['status' => 'error', 'message' => 'Semua kolom wajib diisi']);
-            return;
-        }
-
-        if ($password !== $confirmPassword) {
-            echo json_encode(['status' => 'error', 'message' => 'Password tidak cocok']);
-            return;
-        }
-
-        $tokenHash = hash('sha256', $token);
-        $user = UserModel::findByResetToken($tokenHash);
-
-        if (!$user) {
->>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
             echo json_encode(['status' => 'error', 'message' => 'Token tidak valid atau kadaluarsa']);
             return;
         }
 
         // Update Password
-<<<<<<< HEAD
         // Use UserModel to update
         $userModel = new UserModel();
         // First get user ID
@@ -374,16 +249,6 @@ class ForgotPasswordController extends Controller
         } else {
             header('Content-Type: application/json');
             echo json_encode(['status' => 'error', 'message' => 'User tidak ditemukan']);
-=======
-        $userModel = new UserModel();
-        // updateUser method hashes password automatically if provided
-        if ($userModel->updateUser($user['id'], $user['username'], $password)) {
-            // Clear token
-            $userModel->updateResetToken($user['id'], null);
-            echo json_encode(['status' => 'success', 'message' => 'Password berhasil diubah. Silakan login.']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Gagal mengubah password.']);
->>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
         }
     }
 }

@@ -61,14 +61,9 @@ class BiodataController extends Controller
                 $noHp
             );
 
-<<<<<<< HEAD
-            // Try to save first, if duplicate key error, update instead
-            try {
-=======
             // Check if biodata already exists to decide between save (insert) or update
             if (!$biodata->isExist($idUser)) {
                 // Insert new data (Create Mahasiswa Record)
->>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
                 if ($biodata->save($biodata)) {
                     // Logic Tambahan: Create Default Absensi
                     // Ambil ID Mahasiswa yang baru saja dibuat
@@ -81,32 +76,6 @@ class BiodataController extends Controller
                     }
 
                     echo json_encode(['status' => 'success', 'message' => 'Data berhasil disimpan']);
-<<<<<<< HEAD
-                    exit;
-                }
-            } catch (\Exception $e) {
-                // If duplicate entry error, try to update
-                if (strpos($e->getMessage(), 'Duplicate entry') !== false || strpos($e->getMessage(), '23000') !== false) {
-                    error_log("Duplicate key detected, attempting update");
-                    try {
-                        if ($biodata->updateBiodata($biodata)) {
-                            echo json_encode(['status' => 'success', 'message' => 'Data berhasil diperbarui']);
-                            exit;
-                        } else {
-                            echo json_encode(['status' => 'error', 'message' => 'Gagal memperbarui data. Silahkan coba lagi.']);
-                            exit;
-                        }
-                    } catch (\Exception $updateError) {
-                        error_log("Update Error: " . $updateError->getMessage());
-                        echo json_encode(['status' => 'error', 'message' => 'Error memperbarui: ' . $updateError->getMessage()]);
-                        exit;
-                    }
-                } else {
-                    // Other error
-                    error_log("Save Error: " . $e->getMessage());
-                    echo json_encode(['status' => 'error', 'message' => 'Error menyimpan: ' . $e->getMessage()]);
-                    exit;
-=======
                 } else {
                     echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan data baru']);
                 }
@@ -116,7 +85,6 @@ class BiodataController extends Controller
                     echo json_encode(['status' => 'success', 'message' => 'Data berhasil diperbarui']);
                 } else {
                     echo json_encode(['status' => 'error', 'message' => 'Gagal memperbarui data']);
->>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
                 }
             }
         } catch (\Exception $e) {

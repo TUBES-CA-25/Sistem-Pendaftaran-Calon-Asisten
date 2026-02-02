@@ -33,7 +33,7 @@
                                 <input type="password" class="form-control form-control-lg rounded-3" id="password" name="password" placeholder="Masukkan password baru">
                                 <small class="text-muted">Kosongkan jika tidak ingin mengubah password</small>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12"
                                 <label for="image" class="form-label fw-medium">Foto Profil</label>
                                 <input type="file" class="form-control form-control-lg rounded-3" id="image" name="image" accept="image/*">
                                 <small class="text-muted">Format: JPG, PNG. Maksimal 2MB</small>

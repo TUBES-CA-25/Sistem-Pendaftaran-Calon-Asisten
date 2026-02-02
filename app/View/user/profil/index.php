@@ -114,7 +114,6 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/de
 
 <!-- Clean Script (No Modal, No Form Submit for Edit Profile) -->
 <script>
-<<<<<<< HEAD
     function showModal(message, gifUrl = null) {
         // Reuse global sweet alert or Bootstrap Modal if exists
         // For consistency in this refactor, let's use a dynamic Bootstrap modal notification
@@ -162,9 +161,6 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/de
         }
         return { success: true, message: "Tempat lahir valid." };
     }
-
-=======
->>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
     $(document).ready(function () {
         $('#logoutButton').click(function (e) {
             e.preventDefault();
@@ -191,25 +187,6 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/de
                 const $overlay = $('.profile-overlay');
                 const originalContent = $overlay.html();
 
-<<<<<<< HEAD
-            let isValid = true;
-            if (namaInput && !validateNoNumber(namaInput.value).success) {
-                namaInput.setCustomValidity(validateNoNumber(namaInput.value).message);
-                namaInput.reportValidity();
-                isValid = false;
-            }
-            if (tempatLahirInput && !validateTempatLahir(tempatLahirInput.value).success) {
-                tempatLahirInput.setCustomValidity(validateTempatLahir(tempatLahirInput.value).message);
-                tempatLahirInput.reportValidity();
-                isValid = false;
-            }
-            if (phoneInput && !validatePhoneNumber(phoneInput.value).success) {
-                phoneInput.setCustomValidity(validatePhoneNumber(phoneInput.value).message);
-                phoneInput.reportValidity();
-                isValid = false;
-            }
-
-            if (!isValid) return;
 
             $.ajax({
                 url: '/Sistem-Pendaftaran-Calon-Asisten/public/updateprofile',
@@ -241,50 +218,17 @@ $photo = $photo ?? '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/de
                             }, 1500);
                         } else {
                             showModal(res.message || 'Gagal memperbarui profil', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failed.gif');
-=======
-                // Show uploading state using DOM creation
-                const spinner = document.createElement('div');
-                spinner.className = 'spinner-border spinner-border-sm text-white';
-                spinner.setAttribute('role', 'status');
-                
-                $overlay.empty().append(spinner);
-                $overlay.css('opacity', '1');
-                
-                $.ajax({
-                    url: '/Sistem-Pendaftaran-Calon-Asisten/public/updateprofile',
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        try {
-                             const res = typeof response === 'string' ? JSON.parse(response) : response;
-                              if (res.status === 'success') {
-                                 showAlert('Upload Success!', true); 
-                                 if (res.newPhoto) {
-                                     const newUrl = res.newPhoto + '?t=' + new Date().getTime();
-                                     $('.profile-img-target, .navbar-profile-img, img[alt="Profile Picture"]').attr('src', newUrl);
-                                 }
-                             } else {
-                                 console.log('Debug Info:', res.debug);
-                                 showAlert(res.message || 'Gagal upload foto', false);
-                             }
-                        } catch(e) { 
-                            console.error('JSON Parse Error:', e);
-                            showAlert('Error parsing response from server.', false);
-                        } finally {
-                             $overlay.html(originalContent);
-                             $overlay.css('opacity', '');
->>>>>>> 30acf3bbc860d283f5ee93b12c43dfdaf24b6057
                         }
-                    },
-                    error: function(xhr, status, error) {
-                         console.error('AJAX Error:', error);
-                         showAlert('Terjadi kesalahan koneksi saat mengunggah gambar.', false);
-                         $overlay.html(originalContent);
-                         $overlay.css('opacity', '');
+                    } catch(e) {
+                         console.error('JSON Parse Error:', e);
+                         showModal('Error parsing response from server.', null);
                     }
-                });
+                },
+                error: function(xhr, status, error) {
+                     console.error('AJAX Error:', error);
+                     showModal('Terjadi kesalahan koneksi saat mengunggah gambar.', null);
+                }
+            });
             }
         });
     });

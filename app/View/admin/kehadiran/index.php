@@ -149,26 +149,16 @@ $mahasiswaList = $mahasiswaList ?? [];
                             <td class="text-center"><?= renderStatusBadge($row['absensi_wawancara_I']) ?></td>
                             <td class="text-center"><?= renderStatusBadge($row['absensi_wawancara_II']) ?></td>
                             <td class="text-center">
-                                <?php 
-                                    $t = $row['absensi_tes_tertulis'];
-                                    $p = $row['absensi_presentasi'];
-                                    $w1 = $row['absensi_wawancara_I'];
-                                    $w2 = $row['absensi_wawancara_II'];
-
-                                    $allHadir = ($t === 'Hadir' && $p === 'Hadir' && $w1 === 'Hadir' && $w2 === 'Hadir');
-                                    $hasFailed = ($t === 'Alpha' || $t === 'Tidak Hadir' || 
-                                                  $p === 'Alpha' || $p === 'Tidak Hadir' || 
-                                                  $w1 === 'Alpha' || $w1 === 'Tidak Hadir' || 
-                                                  $w2 === 'Alpha' || $w2 === 'Tidak Hadir');
-
-                                    if ($allHadir) {
-                                        echo '<span class="badge bg-success rounded-pill px-3">Lolos</span>';
-                                    } elseif ($hasFailed) {
-                                        echo '<span class="badge bg-danger rounded-pill px-3">Tidak Lolos</span>';
-                                    } else {
-                                        echo '<span class="badge bg-secondary rounded-pill px-3">Pending</span>';
-                                    }
+                                <?php
+                                    $statusAkhir = $row['status_akhir'] ?? 'Pending';
+                                    $badgeClass = 'text-warning bg-warning bg-opacity-10';
+                                    if($statusAkhir === 'Lulus') $badgeClass = 'text-success bg-success bg-opacity-10';
+                                    elseif($statusAkhir === 'Tidak Lulus') $badgeClass = 'text-danger bg-danger bg-opacity-10';
                                 ?>
+                                <span class="badge rounded-pill px-3 py-2 status-akhir-badge <?= $badgeClass ?>" 
+                                      style="font-size: 0.75rem;">
+                                    <?= strtoupper($statusAkhir) ?>
+                                </span>
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2">
@@ -194,7 +184,8 @@ $mahasiswaList = $mahasiswaList ?? [];
                                             data-absensiwawancarai="<?= $row['absensi_wawancara_I'] ?? '' ?>"
                                             data-absensiwawancaraii="<?= $row['absensi_wawancara_II'] ?? '' ?>"
                                             data-absensitestertulis="<?= $row['absensi_tes_tertulis'] ?? '' ?>"
-                                            data-absensipresentasi="<?= $row['absensi_presentasi'] ?? '' ?>">
+                                            data-absensipresentasi="<?= $row['absensi_presentasi'] ?? '' ?>"
+                                            data-statusakhir="<?= $row['status_akhir'] ?? 'Pending' ?>">
                                         <i class="bi bi-pencil"></i>
                                     </button>
                                     <button class="btn btn-sm btn-danger bg-danger-subtle text-danger border-0 rounded-3 btn-delete-attendance"
@@ -475,6 +466,17 @@ function renderStatusBadge($val) {
                         </select>
                     </div>
                 </div>
+                
+                <div class="row g-3 mt-1">
+                    <div class="col-12">
+                        <label class="small text-muted mb-1">Status Akhir</label>
+                        <select id="detailStatusAkhir" class="form-select form-select-custom">
+                            <option value="Pending">Pending</option>
+                            <option value="Lulus">Lulus</option>
+                            <option value="Tidak Lulus">Tidak Lulus</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -492,6 +494,9 @@ function renderStatusBadge($val) {
 <script>
 $(document).ready(function() {
     const APP_URL = '<?= APP_URL ?>';
+    
+    // Handle Status Akhir Dropdown Change (REMOVED - TABLE IS READ ONLY)
+
 
 
     const selectedContainer = $('#selectedMahasiswaList');
@@ -634,6 +639,7 @@ $(document).ready(function() {
         $('#presentasi').val(btn.data('absensipresentasi') || '');
         $('#wawancaraI').val(btn.data('absensiwawancarai') || '');
         $('#wawancaraII').val(btn.data('absensiwawancaraii') || '');
+        $('#detailStatusAkhir').val(btn.data('statusakhir') || 'Pending');
 
         modal.modal('show');
     });
@@ -646,6 +652,7 @@ $(document).ready(function() {
             presentasi: $('#presentasi').val(),
             wawancaraI: $('#wawancaraI').val(),
             wawancaraII: $('#wawancaraII').val(),
+            statusAkhir: $('#detailStatusAkhir').val(),
         };
 
         $.ajax({
@@ -658,7 +665,7 @@ $(document).ready(function() {
                     showAlert('Perubahan berhasil disimpan!', true);
                     
                     // Update DOM Row
-                    const btn = $(`.open-detail[data-userid="${data.id}"]`);
+                    const btn = $(`.open-detail[data-id="${data.id}"]`);
                     const tr = btn.closest('tr');
                     
                     if (tr.length) {
@@ -682,6 +689,7 @@ $(document).ready(function() {
                         btn.data('absensipresentasi', data.presentasi);
                         btn.data('absensiwawancarai', data.wawancaraI);
                         btn.data('absensiwawancaraii', data.wawancaraII);
+                        btn.data('statusakhir', data.statusAkhir);
 
                         // Update Table Columns (Tes, Presentasi, Wawancara I, II)
                         // Correct Indices: 
@@ -694,6 +702,21 @@ $(document).ready(function() {
                         tr.find('td:eq(4)').html(getBadge(data.presentasi));
                         tr.find('td:eq(5)').html(getBadge(data.wawancaraI));
                         tr.find('td:eq(6)').html(getBadge(data.wawancaraII));
+                        
+                        // Update Status Akhir Badge (Index 7)
+                        const statusBadge = tr.find('.status-akhir-badge');
+                        if(statusBadge.length) {
+                            const s = data.statusAkhir;
+                            statusBadge.text(s.toUpperCase());
+                            
+                            // Remove old classes
+                            statusBadge.removeClass('bg-success bg-danger bg-warning text-dark text-white text-success text-danger text-warning bg-opacity-10');
+                            
+                            // Add new classes
+                            if(s === 'Lulus') statusBadge.addClass('text-success bg-success bg-opacity-10');
+                            else if(s === 'Tidak Lulus') statusBadge.addClass('text-danger bg-danger bg-opacity-10');
+                            else statusBadge.addClass('text-warning bg-warning bg-opacity-10');
+                        }
                     }
                     
                     // Close Modal (as requested)
