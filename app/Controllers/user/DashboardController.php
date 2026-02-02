@@ -53,53 +53,48 @@ class DashboardController extends Controller {
         return \App\Model\DashboardAdmin::getKegiatanByMonth((int)date('Y'), (int)date('m'));
     }
     public static function getMajorStagesSelesai() {
-        if (self::getGraduationStatus() === 'Lulus' && self::isPengumumanOpen()) {
-            return 4;
-        }
         $i = 0;
-        // Stage 1: Berkas (Biodata + Documents)
+        
+        // Stage 1: Berkas
         if (self::getBiodataStatus() && self::getBerkasStatus()) {
             $i++;
-        }
-        // Stage 2: Tes (Written Test + PPT Judul)
-        if (self::getAbsensiTesTertulis() && self::getPptJudulAccStatus()) {
-            $i++;
-        }
-        // Stage 3: Wawancara (PPT Submission + Presentation + Interview I)
-        if (self::getPptStatus() && self::getAbsensiPresentasi() && self::getAbsensiWawancaraI()) {
-            $i++;
-        }
-        // Stage 4: Final (Interview II + Interview III + Selection Result)
-        if (self::getAbsensiWawancaraII() && self::getAbsensiWawancaraIII() && self::getGraduationStatus() !== 'Pending') {
-            $i++;
-        }
-        return $i;
-    }
-    public static function getNumberTahapanSelesai() {
-        // Keep raw count for internal use if needed, but major stages is what's displayed
-        $i = 0;
-        if(self::getBiodataStatus()) { $i++; }
-        if(self::getBerkasStatus()) { $i++; }
-        if(self::getAbsensiTesTertulis()) { $i++; }
-        if(self::getAbsensiWawancaraI()) { $i++; }
-        if(self::getAbsensiWawancaraII()) { $i++; }
-        if(self::getAbsensiWawancaraIII()) { $i++; }
-        if(self::getAbsensiPresentasi()) { $i++; }
-        if(self::getPptStatus()) { $i++; }
-        if(self::getPptJudulAccStatus()) { $i++; }
-        if(self::getGraduationStatus() !== 'Pending') { $i++; }
-        return $i;
-    }
-    public static function getPercentage() {
-        if (self::getGraduationStatus() === 'Lulus' && self::isPengumumanOpen()) {
-            return 100;
+        } else {
+            return $i; // Sequential: stop if previous not complete
         }
 
-        $completed = self::getMajorStagesSelesai(); 
-        $total = 4; 
-        if ($completed == 0) {
-            return 0;
+        // Stage 2: Tes Tertulis (Exam Submitted)
+        if (self::getAbsensiTesTertulis()) {
+            $i++;
+        } else {
+            return $i;
         }
+
+        // Stage 3: Presentasi (Absensi Hadir)
+        if (self::getAbsensiPresentasi()) {
+            $i++;
+        } else {
+            return $i;
+        }
+
+        // Stage 4: Wawancara (Absensi Hadir)
+        if (self::getAbsensiWawancaraI()) {
+            $i++;
+        } else {
+            return $i;
+        }
+
+        // Stage 5: Pengumuman (Status Akhir is Lulus/Tidak Lulus)
+        // If status is finalized (Lulus/Tidak Lulus), user has reached the final stage
+        if (self::getGraduationStatus() === 'Lulus' || self::getGraduationStatus() === 'Tidak Lulus') {
+             $i++;
+        }
+
+        return $i;
+    }
+
+    public static function getPercentage() {
+        $completed = self::getMajorStagesSelesai(); 
+        $total = 5; 
         return ($completed / $total) * 100; 
     }
     

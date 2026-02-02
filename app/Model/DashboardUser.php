@@ -54,33 +54,21 @@ class DashboardUser extends Model {
 
         try {
             // Check if score exists in nilai_akhir
-            // If no score, then the exam is NOT completed, regardless of absensi status
+            // User requested: "jika sudah mengerjakan ujian bagian ini akan terisi"
             $queryNilai = "SELECT COUNT(*) FROM nilai_akhir WHERE id_mahasiswa = :id";
             $stmtNilai = self::getDB()->prepare($queryNilai);
             
             if ($stmtNilai) {
                 $stmtNilai->bindParam(':id', $id);
                 $stmtNilai->execute();
-                if ($stmtNilai->fetchColumn() == 0) {
-                    return false;
+                if ($stmtNilai->fetchColumn() > 0) {
+                    return true;
                 }
             }
         } catch (\Throwable $e) {
-            // Fallback just in case table doesn't exist or other error
             error_log("Error check nilai in DashboardUser: " . $e->getMessage());
         }
 
-        $query = "SELECT absensi_tes_tertulis FROM " . self::$tableAbsensi . " WHERE id_mahasiswa = :id";
-        $stmt = self::getDB()->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        $result = $stmt->fetch();
-        if(!$result) {
-            return false;
-        }
-        if ($result['absensi_tes_tertulis'] == "Hadir") {
-            return true;
-        }
         return false;
     }
     public function getAbsensiWawancaraI() {
@@ -187,15 +175,15 @@ class DashboardUser extends Model {
         $id = $this->getMahasiswaId();
         if (!$id) return 'Pending';
 
-        $query = "SELECT COALESCE(total_nilai, nilai) as final_score FROM nilai_akhir WHERE id_mahasiswa = :id";
+        $query = "SELECT status_akhir FROM " . self::$tableMahasiswa . " WHERE id = :id";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        if (!$result) return 'Pending';
+        if (!$result || empty($result['status_akhir'])) return 'Pending';
 
-        return ($result['final_score'] >= 70) ? 'Lulus' : 'Gagal';
+        return $result['status_akhir'];
     }
 
     public function isPengumumanOpen() {

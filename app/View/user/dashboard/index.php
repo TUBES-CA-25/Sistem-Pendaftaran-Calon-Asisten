@@ -99,7 +99,7 @@ $dokumen = $dokumen ?? [];
 
 
 
-            <?php if ($graduationStatus !== 'Pending' || $isPengumumanOpen): ?>
+            <?php if ($graduationStatus === 'Lulus' || $graduationStatus === 'Tidak Lulus'): ?>
                 <!-- Graduation Announcement Card (Visible when finalized or announcement open) -->
                 <div class="card border-0 shadow rounded-4 mb-4 overflow-hidden position-relative" 
                      style="background: <?= $graduationStatus === 'Lulus' ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #dc2626)' ?>; color: white;">
@@ -115,15 +115,11 @@ $dokumen = $dokumen ?? [];
                                 ? 'Anda telah berhasil melewati seluruh tahapan seleksi calon asisten laboratorium. Silakan cek informasi selanjutnya.' 
                                 : 'Terima kasih telah berpartisipasi dalam proses seleksi. Tetap semangat dan coba lagi di kesempatan berikutnya.' ?>
                         </p>
-                        <?php if ($graduationStatus === 'Lulus'): ?>
-                            <button class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-primary shadow-sm">
-                                <i class="bi bi-info-circle me-1"></i>Informasi Lanjutan
-                            </button>
-                        <?php endif; ?>
+                        
                     </div>
                     <!-- Decorative Circles (Bubbles) -->
-                    <div class="position-absolute rounded-circle bg-white opacity-10" style="width: 150px; height: 150px; top: -40px; right: -40px;"></div>
-                    <div class="position-absolute rounded-circle bg-white opacity-10" style="width: 80px; height: 80px; bottom: -15px; left: 5%;"></div>
+                    <div class="position-absolute rounded-circle bg-white" style="width: 150px; height: 150px; top: -40px; right: -40px; opacity: 0.1;"></div>
+                    <div class="position-absolute rounded-circle bg-white" style="width: 80px; height: 80px; bottom: -15px; left: -20px; opacity: 0.1;"></div>
                 </div>
             <?php else: ?>
                 <!-- Announcement Coming Soon Card (Visible when closed and pending) -->
@@ -211,6 +207,7 @@ $dokumen = $dokumen ?? [];
                                 <div class="d-flex align-items-center justify-content-between position-relative mb-4 mt-2 px-1">
                                     <!-- Progress Line Background -->
                                     <div class="position-absolute w-100 bg-light" style="height:3px; top:10px; left:0; z-index:0"></div>
+                                    <!-- Progress Line Active -->
                                     <!-- Progress Line Active -->
                                     <?php $stepProgress = min(($tahapanSelesai / 5) * 100, 100); ?>
                                     <div class="position-absolute bg-primary stepper-line" style="height:3px; top:10px; left:0; width:<?= $stepProgress ?>%; z-index:1; transition: width 1s ease;"></div>

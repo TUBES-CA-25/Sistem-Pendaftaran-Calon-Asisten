@@ -349,8 +349,9 @@ class HomeController extends Controller
             'tahapan' => [
                 ["1", "Pemberkasan", $tahapanSelesai >= 1, "tahap ini"],
                 ["2", "Tes Seleksi", $tahapanSelesai >= 2, "tahap ini"],
-                ["3", "Wawancara", $tahapanSelesai >= 3, "tahap ini"],
-                ["4", "Hasil Akhir", $tahapanSelesai >= 4, "tahap ini"],
+                ["3", "Presentasi", $tahapanSelesai >= 3, "tahap ini"],
+                ["4", "Wawancara", $tahapanSelesai >= 4, "tahap ini"],
+                ["5", "Pengumuman", $tahapanSelesai >= 5, "tahap ini"],
             ],
             'biodata' => $biodata,
             'user' => $user,
