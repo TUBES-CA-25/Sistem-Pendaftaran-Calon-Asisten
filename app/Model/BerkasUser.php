@@ -284,7 +284,7 @@ class BerkasUser extends Model {
         // Get old files to delete them after successful update
         $oldFiles = $this->getOldBerkasFiles($idMahasiswa);
 
-        $query = "UPDATE " . static::$table . " SET foto = ?, cv = ?, transkrip_nilai = ?, surat_pernyataan = ?, accepted = 0 WHERE id_mahasiswa = ?";
+        $query = "UPDATE " . static::$table . " SET foto = ?, cv = ?, transkrip_nilai = ?, surat_pernyataan = ?, accepted = 0, created_at = CURRENT_TIMESTAMP WHERE id_mahasiswa = ?";
         $stmt = self::getDB()->prepare($query);
 
         $gambar = $this->getImageName($berkasUser->foto, $berkasUser->fotoSize);
@@ -344,7 +344,7 @@ class BerkasUser extends Model {
         $stmtCheck->execute();
 
         if ($stmtCheck->rowCount() > 0) {
-            $query = "UPDATE " . static::$table . " SET foto = ? WHERE id_mahasiswa = ?";
+            $query = "UPDATE " . static::$table . " SET foto = ?, created_at = CURRENT_TIMESTAMP WHERE id_mahasiswa = ?";
             $stmt = self::getDB()->prepare($query);
             $stmt->bindParam(1, $gambar);
             $stmt->bindParam(2, $idMahasiswa);

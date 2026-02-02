@@ -360,6 +360,7 @@ class HomeController extends Controller
             'graduationStatus' => DashboardController::getGraduationStatus(),
             'isPengumumanOpen' => DashboardController::isPengumumanOpen(),
             'currentActivities' => DashboardController::getKegiatanByMonth(),
+            'isBiodataEmpty' => BiodataController::isEmpty()
         ];
     }
 
