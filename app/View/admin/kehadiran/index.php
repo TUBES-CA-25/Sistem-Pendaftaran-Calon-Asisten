@@ -172,7 +172,8 @@ $mahasiswaList = $mahasiswaList ?? [];
                                             data-nilai="<?= $row['nilai_akhir'] ?? '' ?>"
                                             data-presentasi="<?= $row['absensi_presentasi'] ?>"
                                             data-wawancara1="<?= $row['absensi_wawancara_I'] ?>"
-                                            data-wawancara2="<?= $row['absensi_wawancara_II'] ?>">
+                                            data-wawancara2="<?= $row['absensi_wawancara_II'] ?>"
+                                            data-statusakhir="<?= $row['status_akhir'] ?? 'Pending' ?>">
                                         <i class="bi bi-eye"></i>
                                     </button>
                                     <button class="btn btn-sm btn-warning bg-warning-subtle text-warning border-0 rounded-3 open-detail"
@@ -696,6 +697,7 @@ $(document).ready(function() {
                             rekapBtn.data('presentasi', data.presentasi);
                             rekapBtn.data('wawancara1', data.wawancaraI);
                             rekapBtn.data('wawancara2', data.wawancaraII);
+                            rekapBtn.data('statusakhir', data.statusAkhir);
                             // Note: 'nilai' and 'berkas' are not updated here as they are not editable in this modal
                         }
 
@@ -804,55 +806,25 @@ $(document).ready(function() {
         $('#statusWawancara1').html(createBadge(btn.data('wawancara1')));
         $('#statusWawancara2').html(createBadge(btn.data('wawancara2')));
 
-        // 5. Final Result
+        // 5. Final Result - Use status_akhir from database instead of auto-calculation
         const box = $('#finalResultBox');
         const badge = $('#finalStatus');
-        
-        box.removeClass('bg-success-subtle bg-danger-subtle bg-light');
-        badge.removeClass('bg-success bg-danger bg-secondary');
-        
-        const t = btn.data('tes');
-        const nilaiAkhir = parseFloat(btn.data('nilai')) || 0;
-        const p = btn.data('presentasi');
-        const w1 = btn.data('wawancara1');
-        const w2 = btn.data('wawancara2');
-        const berkas = btn.data('berkas'); // 1=Accepted, 0=Pending, 2=Rejected
 
-        // Definition of "Lolos" (Pass)
-        // 1. Berkas verified (1)
-        // 2. Test Hadir AND Score >= 70
-        // 3. Presentasi Hadir
-        // 4. Wawancara 1 & 2 Hadir
-        const isLolos = (
-            berkas == 1 &&
-            t === 'Hadir' && nilaiAkhir >= 70 &&
-            p === 'Hadir' &&
-            w1 === 'Hadir' &&
-            w2 === 'Hadir'
-        );
+        box.removeClass('bg-success-subtle bg-danger-subtle bg-light bg-warning-subtle');
+        badge.removeClass('bg-success bg-danger bg-secondary bg-warning');
 
-        // Definition of "Gagal" (Fail)
-        // 1. Berkas Rejected (2) OR
-        // 2. Test Alpha OR (Test Hadir but Score < 70)
-        // 3. Presentasi Alpha
-        // 4. Wawancara Alpha
-        const isGagal = (
-            berkas == 2 ||
-            t === 'Alpha' || t === 'Tidak Hadir' || (t === 'Hadir' && nilaiAkhir < 70) ||
-            p === 'Alpha' || p === 'Tidak Hadir' || 
-            w1 === 'Alpha' || w1 === 'Tidak Hadir' || 
-            w2 === 'Alpha' || w2 === 'Tidak Hadir'
-        );
+        // Get status_akhir from database
+        const statusAkhir = btn.data('statusakhir') || 'Pending';
 
-        if(isLolos) {
+        if(statusAkhir === 'Lulus') {
             box.addClass('bg-success-subtle'); // Light green
-            badge.addClass('bg-success').text('LOLOS');
-        } else if (isGagal) {
+            badge.addClass('bg-success').text('LULUS');
+        } else if (statusAkhir === 'Tidak Lulus') {
             box.addClass('bg-danger-subtle'); // Light red
-            badge.addClass('bg-danger').text('TIDAK LOLOS');
+            badge.addClass('bg-danger').text('TIDAK LULUS');
         } else {
-            box.addClass('bg-light');
-            badge.addClass('bg-secondary').text('PROSES');
+            box.addClass('bg-warning-subtle');
+            badge.addClass('bg-warning').text('PENDING');
         }
 
         modal.modal('show');
