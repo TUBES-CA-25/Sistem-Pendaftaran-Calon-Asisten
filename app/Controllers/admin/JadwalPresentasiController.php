@@ -197,23 +197,17 @@ class JadwalPresentasiController extends Controller
 
     public function getAvailableMahasiswa()
     {
-        $logFile = __DIR__ . '/../../debug_presentasi.log';
-        file_put_contents($logFile, date('Y-m-d H:i:s') . " - getAvailableMahasiswa controller called\n", FILE_APPEND);
-
         header('Content-Type: application/json');
 
         try {
             $jadwal = new JadwalPresentasi();
             $data = $jadwal->getMahasiswaWithoutSchedule();
 
-            file_put_contents($logFile, "Returning " . count($data) . " mahasiswa to frontend\n", FILE_APPEND);
-
             echo json_encode([
                 'status' => 'success',
                 'data' => $data
             ]);
         } catch (\Exception $e) {
-            file_put_contents($logFile, "ERROR in getAvailableMahasiswa: " . $e->getMessage() . "\n", FILE_APPEND);
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
@@ -237,45 +231,32 @@ class JadwalPresentasiController extends Controller
 
     public function saveSingleJadwal()
     {
-        $logFile = __DIR__ . '/../../debug_presentasi.log';
-        file_put_contents($logFile, date('Y-m-d H:i:s') . " - saveSingleJadwal controller called\n", FILE_APPEND);
-
         header('Content-Type: application/json');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            file_put_contents($logFile, "ERROR: Not a POST request\n", FILE_APPEND);
             echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
             return;
         }
 
         try {
-            file_put_contents($logFile, "POST data: " . print_r($_POST, true) . "\n", FILE_APPEND);
-
             $id_presentasi = $_POST['id_presentasi'] ?? null;
             $id_ruangan = $_POST['id_ruangan'] ?? null;
             $tanggal = $_POST['tanggal'] ?? null;
             $waktu = $_POST['waktu'] ?? null;
 
-            file_put_contents($logFile, "Parsed: id_presentasi=$id_presentasi, id_ruangan=$id_ruangan, tanggal=$tanggal, waktu=$waktu\n", FILE_APPEND);
-
             if (!$id_presentasi || !$id_ruangan || !$tanggal || !$waktu) {
-                file_put_contents($logFile, "ERROR: Missing required fields\n", FILE_APPEND);
                 echo json_encode(['status' => 'error', 'message' => 'Semua field harus diisi']);
                 return;
             }
 
-            file_put_contents($logFile, "Creating JadwalPresentasi object and calling saveSingle\n", FILE_APPEND);
             $jadwal = new JadwalPresentasi();
 
             if ($jadwal->saveSingle($id_presentasi, $id_ruangan, $tanggal, $waktu)) {
-                file_put_contents($logFile, "SUCCESS: Jadwal saved successfully\n", FILE_APPEND);
                 echo json_encode(['status' => 'success', 'message' => 'Jadwal berhasil disimpan']);
             } else {
-                file_put_contents($logFile, "ERROR: saveSingle returned false\n", FILE_APPEND);
                 echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan jadwal']);
             }
         } catch (\Exception $e) {
-            file_put_contents($logFile, "EXCEPTION: " . $e->getMessage() . "\n", FILE_APPEND);
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }

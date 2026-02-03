@@ -302,26 +302,6 @@ class JadwalPresentasi extends Model
      */
     public function getMahasiswaWithoutSchedule()
     {
-        $logFile = __DIR__ . '/../../debug_presentasi.log';
-        file_put_contents($logFile, date('Y-m-d H:i:s') . " - getMahasiswaWithoutSchedule called\n", FILE_APPEND);
-
-        // Debug: Check how many presentasi are accepted
-        $debugSql1 = "SELECT COUNT(*) as count FROM presentasi WHERE is_accepted = 1";
-        $debugStmt1 = self::getDB()->prepare($debugSql1);
-        $debugStmt1->execute();
-        $acceptedCount = $debugStmt1->fetch(\PDO::FETCH_ASSOC)['count'];
-        file_put_contents($logFile, "Total presentasi accepted: $acceptedCount\n", FILE_APPEND);
-
-        // Debug: Check how many already scheduled
-        $debugSql2 = "SELECT COUNT(DISTINCT p.id_mahasiswa) as count
-                      FROM jadwal_presentasi jp
-                      JOIN presentasi p ON jp.id_presentasi = p.id";
-        $debugStmt2 = self::getDB()->prepare($debugSql2);
-        $debugStmt2->execute();
-        $scheduledCount = $debugStmt2->fetch(\PDO::FETCH_ASSOC)['count'];
-        file_put_contents($logFile, "Total mahasiswa already scheduled: $scheduledCount\n", FILE_APPEND);
-
-        // Main query - removed absensi filter for now to test
         $sql = "SELECT
                 p.id as id_presentasi,
                 m.id as id_mahasiswa,
@@ -341,12 +321,6 @@ class JadwalPresentasi extends Model
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        file_put_contents($logFile, "Available mahasiswa count: " . count($result) . "\n", FILE_APPEND);
-        if (count($result) > 0) {
-            file_put_contents($logFile, "First result: " . print_r($result[0], true) . "\n", FILE_APPEND);
-        }
-        file_put_contents($logFile, "---\n", FILE_APPEND);
 
         return $result;
     }
@@ -380,11 +354,6 @@ class JadwalPresentasi extends Model
      */
     public function saveSingle($id_presentasi, $id_ruangan, $tanggal, $waktu)
     {
-        // Write to file log for debugging
-        $logFile = __DIR__ . '/../../debug_presentasi.log';
-        file_put_contents($logFile, date('Y-m-d H:i:s') . " - saveSingle called\n", FILE_APPEND);
-        file_put_contents($logFile, "id_presentasi: $id_presentasi, id_ruangan: $id_ruangan, tanggal: $tanggal, waktu: $waktu\n", FILE_APPEND);
-
         // Get id_mahasiswa from presentasi table
         $getMhsSql = "SELECT id_mahasiswa FROM presentasi WHERE id = ?";
         $getMhsStmt = self::getDB()->prepare($getMhsSql);
@@ -393,12 +362,10 @@ class JadwalPresentasi extends Model
         $mhsData = $getMhsStmt->fetch(\PDO::FETCH_ASSOC);
 
         if (!$mhsData) {
-            file_put_contents($logFile, "ERROR: Data presentasi tidak ditemukan for id_presentasi: $id_presentasi\n", FILE_APPEND);
             throw new \Exception("Data presentasi tidak ditemukan");
         }
 
         $idMahasiswa = $mhsData['id_mahasiswa'];
-        file_put_contents($logFile, "Found id_mahasiswa: $idMahasiswa\n", FILE_APPEND);
 
         // Check if mahasiswa already has ANY presentation schedule
         $checkSql = "SELECT COUNT(*) as count
@@ -410,21 +377,14 @@ class JadwalPresentasi extends Model
         $checkStmt->execute();
         $result = $checkStmt->fetch(\PDO::FETCH_ASSOC);
 
-        file_put_contents($logFile, "Duplicate check count: " . $result['count'] . "\n", FILE_APPEND);
-
         if ($result['count'] > 0) {
-            file_put_contents($logFile, "BLOCKING: Mahasiswa $idMahasiswa already has schedule - throwing exception\n", FILE_APPEND);
             throw new \Exception("Mahasiswa ini sudah memiliki jadwal presentasi");
         }
-
-        file_put_contents($logFile, "Validation passed, inserting new schedule\n", FILE_APPEND);
 
         $sql = "INSERT INTO " . static::$table . " (id_presentasi, id_ruangan, tanggal, waktu) VALUES (?, ?, ?, ?)";
 
         $date = $this->validateAndFormatDate($tanggal);
         $time = $this->validateAndFormatTime($waktu);
-
-        file_put_contents($logFile, "Formatted date: $date, time: $time\n", FILE_APPEND);
 
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(1, $id_presentasi, \PDO::PARAM_INT);
@@ -432,9 +392,6 @@ class JadwalPresentasi extends Model
         $stmt->bindParam(3, $date);
         $stmt->bindParam(4, $time);
 
-        $executeResult = $stmt->execute();
-        file_put_contents($logFile, "Insert result: " . ($executeResult ? "SUCCESS" : "FAILED") . "\n\n", FILE_APPEND);
-
-        return $executeResult;
+        return $stmt->execute();
     }
 }
