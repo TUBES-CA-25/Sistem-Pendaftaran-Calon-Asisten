@@ -64,7 +64,7 @@ class PesertaController extends Controller {
             return;
         }
 
-        $idUser = $_POST['id'] ?? '';
+        $idUser = $_POST['id'] ?? '';   
         $idMahasiswa = $_POST['mahasiswaId'] ?? '';
 
         if (!$idUser && !$idMahasiswa) {

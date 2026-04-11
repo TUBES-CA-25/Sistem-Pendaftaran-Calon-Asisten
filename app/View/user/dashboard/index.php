@@ -144,9 +144,9 @@ $dokumen = $dokumen ?? [];
                             <div class="card-body p-4 d-flex flex-column justify-content-center">
                                 <h6 class="fw-semibold mb-3 text-center">Progress Pendaftaran</h6>
 
-                                <div class="d-flex align-items-center justify-content-center position-relative mb-3" style="height: 160px;">
-                                    <!-- SVG Circular Progress (Scaled down for tighter layout) -->
-                                    <svg width="150" height="150" class="progress-ring">
+                                <div class="position-relative mx-auto mb-3" style="max-width: 150px;">
+                                    <!-- SVG Circular Progress (Responsive) -->
+                                    <svg viewBox="0 0 150 150" class="progress-ring w-100 h-auto">
                                         <defs>
                                             <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                                 <stop offset="0%" stop-color="#3dc2ec" />
@@ -171,9 +171,9 @@ $dokumen = $dokumen ?? [];
                                     </svg>
 
                                     <!-- Text di tengah -->
-                                    <div class="position-absolute text-center">
+                                    <div class="position-absolute top-50 start-50 translate-middle text-center w-100">
                                         <div class="h3 fw-bold text-primary mb-0"><?= $percentage ?>%</div>
-                                        <small class="text-muted" style="font-size: 0.65rem;">Complete</small>
+                                        <small class="text-muted d-block mt-1" style="font-size: 0.65rem;">Complete</small>
                                     </div>
                                 </div>
 
@@ -202,40 +202,39 @@ $dokumen = $dokumen ?? [];
                                     Anda telah menyelesaikan <strong><?= $tahapanSelesai ?></strong> dari 5 tahapan pendaftaran.
                                 </p>
 
-                                <!-- Stepper Vertical layout or cramped horizontal?
-                                     Let's stick to horizontal but with better spacing for side-by-side -->
-                                <div class="d-flex align-items-center justify-content-between position-relative mb-4 mt-2 px-1">
-                                    <!-- Progress Line Background -->
-                                    <div class="position-absolute w-100 bg-light" style="height:3px; top:10px; left:0; z-index:0"></div>
-                                    <!-- Progress Line Active -->
-                                    <!-- Progress Line Active -->
-                                    <?php $stepProgress = min(($tahapanSelesai / 5) * 100, 100); ?>
-                                    <div class="position-absolute bg-primary stepper-line" style="height:3px; top:10px; left:0; width:<?= $stepProgress ?>%; z-index:1; transition: width 1s ease;"></div>
+                                <div class="w-100 overflow-x-auto pb-2 mb-3">
+                                    <div class="d-flex align-items-start justify-content-between position-relative mt-2 px-1 mx-auto" style="min-width: 360px;">
+                                        <!-- Progress Line Background -->
+                                        <div class="position-absolute bg-light" style="height:3px; top:10px; left:0; right:0; z-index:0"></div>
+                                        <!-- Progress Line Active -->
+                                        <?php $stepProgress = min(($tahapanSelesai / 5) * 100, 100); ?>
+                                        <div class="position-absolute bg-primary stepper-line" style="height:3px; top:10px; left:0; width:<?= $stepProgress ?>%; z-index:1; transition: width 1s ease;"></div>
 
-                                    <?php
-                                    $stepperStages = [
-                                        ['number' => 1, 'color' => 'danger', 'label' => 'Berkas', 'threshold' => 1],
-                                        ['number' => 2, 'color' => 'warning', 'label' => 'Tes Tertulis', 'threshold' => 2],
-                                        ['number' => 3, 'color' => 'info', 'label' => 'Presentasi', 'threshold' => 3],
-                                        ['number' => 4, 'color' => 'success', 'label' => 'Wawancara', 'threshold' => 4],
-                                        ['number' => 5, 'color' => 'primary', 'label' => 'Pengumuman', 'threshold' => 5]
-                                    ];
+                                        <?php
+                                        $stepperStages = [
+                                            ['number' => 1, 'color' => 'danger', 'label' => 'Berkas', 'threshold' => 1],
+                                            ['number' => 2, 'color' => 'warning', 'label' => 'Tes Tertulis', 'threshold' => 2],
+                                            ['number' => 3, 'color' => 'info', 'label' => 'Presentasi', 'threshold' => 3],
+                                            ['number' => 4, 'color' => 'success', 'label' => 'Wawancara', 'threshold' => 4],
+                                            ['number' => 5, 'color' => 'primary', 'label' => 'Pengumuman', 'threshold' => 5]
+                                        ];
 
-                                    foreach ($stepperStages as $step):
-                                        $isActive = $tahapanSelesai >= $step['threshold'];
-                                    ?>
-                                        <div class="text-center position-relative" style="z-index:2">
-                                            <div class="rounded-circle bg-<?= $isActive ? $step['color'] : 'light' ?> <?= $isActive ? '' : 'border' ?> d-flex align-items-center justify-content-center mx-auto mb-2 shadow-sm"
-                                                 style="width:22px; height:22px">
-                                                <?php if ($isActive): ?>
-                                                    <i class="bi bi-check text-white fw-bold" style="font-size: 0.7rem;"></i>
-                                                <?php else: ?>
-                                                    <span class="text-muted fw-bold" style="font-size: 0.6rem;"><?= $step['number'] ?></span>
-                                                <?php endif; ?>
+                                        foreach ($stepperStages as $step):
+                                            $isActive = $tahapanSelesai >= $step['threshold'];
+                                        ?>
+                                            <div class="text-center position-relative px-1" style="z-index:2; flex: 1;">
+                                                <div class="rounded-circle bg-<?= $isActive ? $step['color'] : 'light' ?> <?= $isActive ? '' : 'border' ?> d-flex align-items-center justify-content-center mx-auto mb-2 shadow-sm"
+                                                     style="width:22px; height:22px">
+                                                    <?php if ($isActive): ?>
+                                                        <i class="bi bi-check text-white fw-bold" style="font-size: 0.7rem;"></i>
+                                                    <?php else: ?>
+                                                        <span class="text-muted fw-bold" style="font-size: 0.6rem;"><?= $step['number'] ?></span>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <small class="fw-bold d-block text-<?= $isActive ? $step['color'] : 'muted' ?>" style="font-size: 0.6rem; word-break: break-word; line-height: 1.2;"><?= $step['label'] ?></small>
                                             </div>
-                                            <small class="fw-bold d-block text-<?= $isActive ? $step['color'] : 'muted' ?>" style="font-size: 0.6rem;"><?= $step['label'] ?></small>
-                                        </div>
-                                    <?php endforeach; ?>
+                                        <?php endforeach; ?>
+                                    </div>
                                 </div>
 
                                 <!-- New Legend/Info section -->
