@@ -64,15 +64,43 @@ window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
 };
 
 function validateStambuk(stambuk) {
-  const stambukRegex = /^(131|130)(2022|2023|2024|2025)[0-9]{4}$/;
-
-  if (!stambukRegex.test(stambuk)) {
+  if (stambuk.length !== 11) {
     return {
       success: false,
-      message:
-        "Stambuk harus diawali dengan 131 atau 130, diikuti tahun 2022-2025, dan panjangnya 11 karakter.",
+      message: "Stambuk/NIM harus memiliki panjang 11 karakter.",
     };
   }
+
+  const prefix = stambuk.substring(0, 3);
+  if (prefix !== '130' && prefix !== '131') {
+    return {
+      success: false,
+      message: "Stambuk harus diawali dengan 130 atau 131.",
+    };
+  }
+
+  const yearStr = stambuk.substring(3, 7);
+  const yearOfNim = parseInt(yearStr, 10);
+  const currentYear = new Date().getFullYear();
+  const minYear = currentYear - 3;
+  const maxYear = currentYear;
+
+  if (isNaN(yearOfNim) || yearOfNim < minYear || yearOfNim > maxYear) {
+    return {
+      success: false,
+      message: `Pendaftaran hanya terbuka untuk mahasiswa angkatan ${minYear} sampai ${maxYear}.`,
+    };
+  }
+
+  const suffix = stambuk.substring(7);
+  const suffixRegex = /^[0-9]{4}$/;
+  if (!suffixRegex.test(suffix)) {
+    return {
+      success: false,
+      message: "Format Stambuk/NIM tidak valid pada 4 digit terakhir.",
+    };
+  }
+
   return { success: true, message: "Stambuk valid." };
 }
 

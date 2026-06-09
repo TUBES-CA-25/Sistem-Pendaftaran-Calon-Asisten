@@ -69,6 +69,47 @@ class AuthController extends Controller
                     return;
                 }
 
+                if (strlen($stambuk) !== 11) {
+                    header('Content-Type: application/json');
+                    echo json_encode(['status' => 'error', 'message' => 'Stambuk/NIM harus memiliki panjang 11 karakter.']);
+                    return;
+                }
+
+                $prefix = substr($stambuk, 0, 3);
+                if ($prefix !== '130' && $prefix !== '131') {
+                    header('Content-Type: application/json');
+                    echo json_encode(['status' => 'error', 'message' => 'Stambuk harus diawali dengan 130 atau 131.']);
+                    return;
+                }
+
+                $yearStr = substr($stambuk, 3, 4);
+                if (!is_numeric($yearStr)) {
+                    header('Content-Type: application/json');
+                    echo json_encode(['status' => 'error', 'message' => 'Format Stambuk/NIM tidak valid.']);
+                    return;
+                }
+
+                $yearOfNim = (int) $yearStr;
+                $currentYear = (int) date('Y');
+                $minYear = $currentYear - 3;
+                $maxYear = $currentYear;
+
+                if ($yearOfNim < $minYear || $yearOfNim > $maxYear) {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'status' => 'error', 
+                        'message' => 'Pendaftaran hanya terbuka untuk mahasiswa angkatan ' . $minYear . ' sampai ' . $maxYear . '.'
+                    ]);
+                    return;
+                }
+
+                $suffix = substr($stambuk, 7);
+                if (!ctype_digit($suffix) || strlen($suffix) !== 4) {
+                    header('Content-Type: application/json');
+                    echo json_encode(['status' => 'error', 'message' => 'Format Stambuk/NIM tidak valid pada 4 digit terakhir.']);
+                    return;
+                }
+
                 if ($password !== $confirmPassword) {
                     header('Content-Type: application/json');
                     echo json_encode(['status' => 'error', 'message' => 'Passwords do not match.']);
