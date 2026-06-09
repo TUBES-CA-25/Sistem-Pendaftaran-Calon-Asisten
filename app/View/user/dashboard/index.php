@@ -26,10 +26,11 @@ $dokumen = $dokumen ?? [];
 ?>
 
 <style>
+    /* Inline helper classes for dynamically generated items in JavaScript */
     .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 5px;
+        gap: 4px;
     }
     .calendar-date {
         aspect-ratio: 1;
@@ -38,15 +39,15 @@ $dokumen = $dokumen ?? [];
         align-items: center;
         justify-content: center;
         font-size: 0.85rem;
-        border-radius: 10px;
+        border-radius: 8px;
         position: relative;
     }
     .calendar-date.other-month {
         opacity: 0.3;
     }
     .calendar-date.today {
-        background: rgba(37, 99, 235, 0.1);
-        color: #2563eb;
+        background-color: rgb(219 234 254);
+        color: rgb(37 99 235);
         font-weight: 700;
     }
     .calendar-date.has-activity {
@@ -54,7 +55,7 @@ $dokumen = $dokumen ?? [];
         transition: all 0.2s ease;
     }
     .calendar-date.has-activity:hover {
-        background: rgba(0,0,0,0.02);
+        background-color: rgb(241 245 249);
         transform: scale(1.05);
     }
     .activity-dots {
@@ -66,12 +67,7 @@ $dokumen = $dokumen ?? [];
     .dot {
         width: 4px;
         height: 4px;
-        border-radius: 50%;
-    }
-    .last-child-no-border:last-child {
-        border-bottom: none !important;
-        margin-bottom: 0 !important;
-        padding-bottom: 0 !important;
+        border-radius: 9999px;
     }
 </style>
 
@@ -83,378 +79,322 @@ $dokumen = $dokumen ?? [];
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="container-fluid px-4 pb-4">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
 
     <!-- Greeting Header -->
-    <div class="mb-4">
-        <h1 class="display-6 fw-bold text-dark mb-1">
+    <div class="mb-6">
+        <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">
             Hello <?= htmlspecialchars($biodata['namaLengkap'] ?? $user['username'] ?? 'User') ?> 👋
         </h1>
     </div>
 
-    <div class="row g-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- Main Content (Left Column) - 8 col -->
-        <div class="col-lg-8">
-
-
+        <!-- Main Content (Left Column) - 2/3 width -->
+        <div class="lg:col-span-2 space-y-6">
 
             <?php if ($graduationStatus === 'Lulus' || $graduationStatus === 'Tidak Lulus'): ?>
                 <!-- Graduation Announcement Card (Visible when finalized or announcement open) -->
-                <div class="card border-0 shadow rounded-4 mb-4 overflow-hidden position-relative" 
-                     style="background: <?= $graduationStatus === 'Lulus' ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #dc2626)' ?>; color: white;">
-                    <div class="card-body p-4 text-center position-relative" style="z-index: 2;">
-                        <div class="mb-2">
-                            <i class="bi bi-patch-check-fill display-4" style="opacity: 0.9;"></i>
+                <div class="relative overflow-hidden rounded-2xl shadow-sm p-6 text-center text-white" 
+                     style="background: <?= $graduationStatus === 'Lulus' ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #dc2626)' ?>;">
+                    <div class="relative z-10">
+                        <div class="mb-3">
+                            <i class="bi bi-patch-check-fill text-5xl opacity-90"></i>
                         </div>
-                        <h4 class="fw-bold mb-2">
+                        <h4 class="text-xl font-bold mb-2">
                             <?= $graduationStatus === 'Lulus' ? 'Selamat, Anda telah lulus!' : 'Mohon Maaf, Anda Belum Lulus.' ?>
                         </h4>
-                        <p class="small mb-3" style="opacity: 0.9;">
+                        <p class="text-sm opacity-90">
                             <?= $graduationStatus === 'Lulus' 
                                 ? 'Anda telah berhasil melewati seluruh tahapan seleksi calon asisten laboratorium.' 
                                 : 'Terima kasih telah berpartisipasi dalam proses seleksi. Tetap semangat dan coba lagi di kesempatan berikutnya.' ?>
                         </p>
-                        
                     </div>
                     <!-- Decorative Circles (Bubbles) -->
-                    <div class="position-absolute rounded-circle bg-white" style="width: 150px; height: 150px; top: -40px; right: -40px; opacity: 0.1;"></div>
-                    <div class="position-absolute rounded-circle bg-white" style="width: 80px; height: 80px; bottom: -15px; left: -20px; opacity: 0.1;"></div>
+                    <div class="absolute rounded-full bg-white w-[150px] h-[150px] -top-10 -right-10 opacity-10"></div>
+                    <div class="absolute rounded-full bg-white w-[80px] h-[80px] -bottom-4 -left-5 opacity-10"></div>
                 </div>
             <?php else: ?>
                 <!-- Announcement Coming Soon Card (Visible when closed and pending) -->
-                <div class="card border-0 shadow-sm rounded-4 mb-4 bg-primary bg-opacity-10 border border-primary border-opacity-25">
-                    <div class="card-body p-4 d-flex align-items-center gap-3">
-                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 45px; height: 45px;">
-                            <i class="bi bi-bell-fill text-white"></i>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold mb-1 text-primary">Hasil Seleksi Sedang Diproses</h6>
-                            <p class="small text-muted mb-0">Pengumuman kelulusan akan ditampilkan di sini setelah seluruh tahapan seleksi berakhir. Tetap pantau!</p>
-                        </div>
+                <div class="flex items-center gap-4 p-5 rounded-2xl bg-blue-50 border border-blue-100/50">
+                    <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-content-center shrink-0">
+                        <i class="bi bi-bell-fill text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="font-bold text-blue-800 mb-1">Hasil Seleksi Sedang Diproses</h6>
+                        <p class="text-sm text-slate-600">Pengumuman kelulusan akan ditampilkan di sini setelah seluruh tahapan seleksi berakhir. Tetap pantau!</p>
                     </div>
                 </div>
             <?php endif; ?>
 
-                <!-- Progress & Stepper Row -->
-                <div class="row g-4 mb-4">
-                    <!-- Progress Circular Card -->
-                    <div class="col-md-5">
-                        <div class="card border-0 shadow-sm rounded-4 h-100">
-                            <div class="card-body p-4 d-flex flex-column justify-content-center">
-                                <h6 class="fw-semibold mb-3 text-center">Progress Pendaftaran</h6>
+            <!-- Progress & Stepper Row -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                <!-- Progress Circular Card -->
+                <div class="md:col-span-5 bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col justify-center">
+                    <h6 class="font-bold text-slate-700 mb-4 text-center">Progress Pendaftaran</h6>
 
-                                <div class="position-relative mx-auto mb-3" style="max-width: 150px;">
-                                    <!-- SVG Circular Progress (Responsive) -->
-                                    <svg viewBox="0 0 150 150" class="progress-ring w-100 h-auto">
-                                        <defs>
-                                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                <stop offset="0%" stop-color="#3dc2ec" />
-                                                <stop offset="100%" stop-color="#2563eb" />
-                                            </linearGradient>
-                                        </defs>
-                                        <circle class="progress-ring-circle-bg"
-                                            stroke="#e5e7eb"
-                                            stroke-width="10"
-                                            fill="transparent"
-                                            r="65"
-                                            cx="75"
-                                            cy="75"/>
-                                        <circle class="progress-ring-circle"
-                                            stroke="url(#gradient)"
-                                            stroke-width="10"
-                                            fill="transparent"
-                                            r="65"
-                                            cx="75"
-                                            cy="75"
-                                            style="stroke-dasharray: 408.41; stroke-dashoffset: <?= 408.41 * (1 - $percentage/100) ?>; transform: rotate(-90deg); transform-origin: center;"/>
-                                    </svg>
+                    <div class="relative mx-auto mb-4 w-36 h-36">
+                        <!-- SVG Circular Progress (Responsive) -->
+                        <svg viewBox="0 0 150 150" class="w-full h-full">
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#3dc2ec" />
+                                    <stop offset="100%" stop-color="#2563eb" />
+                                </linearGradient>
+                            </defs>
+                            <circle stroke="#f1f5f9" stroke-width="10" fill="transparent" r="65" cx="75" cy="75"/>
+                            <circle stroke="url(#gradient)" stroke-width="10" fill="transparent" r="65" cx="75" cy="75"
+                                    style="stroke-dasharray: 408.41; stroke-dashoffset: <?= 408.41 * (1 - $percentage/100) ?>; transform: rotate(-90deg); transform-origin: center; transition: stroke-dashoffset 1s ease-in-out;"/>
+                        </svg>
 
-                                    <!-- Text di tengah -->
-                                    <div class="position-absolute top-50 start-50 translate-middle text-center w-100">
-                                        <div class="h3 fw-bold text-primary mb-0"><?= $percentage ?>%</div>
-                                        <small class="text-muted d-block mt-1" style="font-size: 0.65rem;">Complete</small>
-                                    </div>
-                                </div>
-
-                                <!-- Legend -->
-                                <div class="d-flex justify-content-center gap-3">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="rounded-circle bg-primary" style="width:8px;height:8px"></div>
-                                        <small class="text-muted" style="font-size: 0.7rem;">Terisi</small>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="rounded-circle bg-light border" style="width:8px;height:8px"></div>
-                                        <small class="text-muted" style="font-size: 0.7rem;">Kosong</small>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- Text di tengah -->
+                        <div class="absolute inset-0 flex flex-col items-center justify-content-center text-center">
+                            <span class="text-2xl font-black text-blue-600"><?= $percentage ?>%</span>
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Complete</span>
                         </div>
                     </div>
 
-                    <!-- Status Stepper Card -->
-                    <div class="col-md-7">
-                        <div class="card border-0 shadow-sm rounded-4 h-100">
-                            <div class="card-body p-4">
-                                <h6 class="fw-semibold mb-4">Status Pendaftaran</h6>
-                                
-                                <p class="small text-muted mb-4 lh-sm">
-                                    Anda telah menyelesaikan <strong><?= $tahapanSelesai ?></strong> dari 5 tahapan pendaftaran.
-                                </p>
-
-                                <div class="w-100 overflow-x-auto pb-2 mb-3">
-                                    <div class="d-flex align-items-start justify-content-between position-relative mt-2 px-1 mx-auto" style="min-width: 360px;">
-                                        <!-- Progress Line Background -->
-                                        <div class="position-absolute bg-light" style="height:3px; top:10px; left:0; right:0; z-index:0"></div>
-                                        <!-- Progress Line Active -->
-                                        <?php $stepProgress = min(($tahapanSelesai / 5) * 100, 100); ?>
-                                        <div class="position-absolute bg-primary stepper-line" style="height:3px; top:10px; left:0; width:<?= $stepProgress ?>%; z-index:1; transition: width 1s ease;"></div>
-
-                                        <?php
-                                        $stepperStages = [
-                                            ['number' => 1, 'color' => 'danger', 'label' => 'Berkas', 'threshold' => 1],
-                                            ['number' => 2, 'color' => 'warning', 'label' => 'Tes Tertulis', 'threshold' => 2],
-                                            ['number' => 3, 'color' => 'info', 'label' => 'Presentasi', 'threshold' => 3],
-                                            ['number' => 4, 'color' => 'success', 'label' => 'Wawancara', 'threshold' => 4],
-                                            ['number' => 5, 'color' => 'primary', 'label' => 'Pengumuman', 'threshold' => 5]
-                                        ];
-
-                                        foreach ($stepperStages as $step):
-                                            $isActive = $tahapanSelesai >= $step['threshold'];
-                                        ?>
-                                            <div class="text-center position-relative px-1" style="z-index:2; flex: 1;">
-                                                <div class="rounded-circle bg-<?= $isActive ? $step['color'] : 'light' ?> <?= $isActive ? '' : 'border' ?> d-flex align-items-center justify-content-center mx-auto mb-2 shadow-sm"
-                                                     style="width:22px; height:22px">
-                                                    <?php if ($isActive): ?>
-                                                        <i class="bi bi-check text-white fw-bold" style="font-size: 0.7rem;"></i>
-                                                    <?php else: ?>
-                                                        <span class="text-muted fw-bold" style="font-size: 0.6rem;"><?= $step['number'] ?></span>
-                                                    <?php endif; ?>
-                                                </div>
-                                                <small class="fw-bold d-block text-<?= $isActive ? $step['color'] : 'muted' ?>" style="font-size: 0.6rem; word-break: break-word; line-height: 1.2;"><?= $step['label'] ?></small>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
-                                </div>
-
-                                <!-- New Legend/Info section -->
-                                <div class="mt-4 pt-2 border-top">
-                                    <small class="text-muted d-block mb-1" style="font-size: 0.65rem;">Sistem Seleksi:</small>
-                                    <div class="d-flex flex-wrap gap-2">
-                                        <?php foreach ($stepperStages as $step): ?>
-                                            <div class="badge bg-<?= $step['color'] ?> bg-opacity-10 text-<?= $step['color'] ?> border border-<?= $step['color'] ?> border-opacity-25" style="font-size: 0.55rem;">
-                                                <?= $step['label'] ?>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- Legend -->
+                    <div class="flex justify-center gap-4 mt-2">
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-2 h-2 rounded-full bg-blue-600"></div>
+                            <span class="text-xs text-slate-500">Terisi</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-2 h-2 rounded-full bg-slate-200"></div>
+                            <span class="text-xs text-slate-500">Kosong</span>
                         </div>
                     </div>
                 </div>
 
+                <!-- Status Stepper Card -->
+                <div class="md:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col justify-between">
+                    <div>
+                        <h6 class="font-bold text-slate-700 mb-2">Status Pendaftaran</h6>
+                        
+                        <p class="text-sm text-slate-500 mb-6">
+                            Anda telah menyelesaikan <strong class="text-slate-800"><?= $tahapanSelesai ?></strong> dari 5 tahapan pendaftaran.
+                        </p>
 
+                        <div class="w-full overflow-x-auto pb-2 mb-4">
+                            <div class="flex items-start justify-between relative mt-2 px-1 mx-auto min-w-[340px]">
+                                <!-- Progress Line Background -->
+                                <div class="absolute h-0.5 bg-slate-100 top-2.5 left-0 right-0 z-0"></div>
+                                <!-- Progress Line Active -->
+                                <?php $stepProgress = min(($tahapanSelesai / 5) * 100, 100); ?>
+                                <div class="absolute h-0.5 bg-blue-600 top-2.5 left-0 stepper-line transition-all duration-1000" style="width:<?= $stepProgress ?>%; z-index:1;"></div>
+
+                                <?php
+                                $stepperStages = [
+                                    ['number' => 1, 'bgActive' => 'bg-red-500', 'textActive' => 'text-red-500', 'label' => 'Berkas', 'threshold' => 1],
+                                    ['number' => 2, 'bgActive' => 'bg-amber-500', 'textActive' => 'text-amber-500', 'label' => 'Tes Tertulis', 'threshold' => 2],
+                                    ['number' => 3, 'bgActive' => 'bg-cyan-500', 'textActive' => 'text-cyan-500', 'label' => 'Presentasi', 'threshold' => 3],
+                                    ['number' => 4, 'bgActive' => 'bg-emerald-500', 'textActive' => 'text-emerald-500', 'label' => 'Wawancara', 'threshold' => 4],
+                                    ['number' => 5, 'bgActive' => 'bg-blue-600', 'textActive' => 'text-blue-600', 'label' => 'Pengumuman', 'threshold' => 5]
+                                ];
+
+                                foreach ($stepperStages as $step):
+                                    $isActive = $tahapanSelesai >= $step['threshold'];
+                                ?>
+                                    <div class="text-center relative px-1 z-10 flex-1">
+                                        <div class="w-6 h-6 rounded-full flex items-center justify-content-center mx-auto mb-2 shadow-sm transition-all duration-300 <?= $isActive ? $step['bgActive'] : 'bg-slate-100 border border-slate-200' ?>">
+                                            <?php if ($isActive): ?>
+                                                <i class="bi bi-check text-white text-xs font-bold"></i>
+                                            <?php else: ?>
+                                                <span class="text-slate-400 font-bold text-[10px]"><?= $step['number'] ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <span class="font-bold block text-[10px] leading-tight transition-colors <?= $isActive ? $step['textActive'] : 'text-slate-400' ?>"><?= $step['label'] ?></span>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- New Legend/Info section -->
+                    <div class="border-t border-slate-100 pt-4 mt-2">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-2">Sistem Seleksi:</span>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-red-50 text-red-600 border-red-100">Berkas</span>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-amber-50 text-amber-600 border-amber-100">Tes Tertulis</span>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-cyan-50 text-cyan-600 border-cyan-100">Presentasi</span>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-emerald-50 text-emerald-600 border-emerald-100">Wawancara</span>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-blue-50 text-blue-600 border-blue-100">Pengumuman</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Biodata Diri Card -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-header bg-white border-0 p-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="fw-semibold mb-0">Biodata Diri</h5>
-                        <button class="btn btn-sm btn-outline-primary" onclick="navigateTo('biodata')">
-                            <i class="bi bi-pencil me-1"></i>Lihat Biodata
-                        </button>
-                    </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h5 class="font-bold text-slate-800 text-lg">Biodata Diri</h5>
+                    <button class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition" onclick="navigateTo('biodata')">
+                        <i class="bi bi-pencil me-1"></i>Lihat Biodata
+                    </button>
                 </div>
-                <div class="card-body p-4">
-                    <div class="row g-3">
-                        <!-- Nama Lengkap -->
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="rounded-3 bg-primary bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-person-fill text-primary fs-5"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Nama Lengkap</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['namaLengkap'] ?? '-') ?></p>
-                                </div>
-                            </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Nama Lengkap -->
+                    <div class="flex items-start gap-3">
+                        <div class="rounded-xl bg-blue-50 p-2.5 shrink-0 text-blue-600">
+                            <i class="bi bi-person-fill text-lg"></i>
                         </div>
-
-                        <!-- NIM -->
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="rounded-3 bg-success bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-123 text-success fs-5"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">NIM</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($user['stambuk'] ?? '-') ?></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Email -->
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="rounded-3 bg-info bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-envelope-fill text-info fs-5"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Email</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($userName ?? '-') ?></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tempat, Tanggal Lahir -->
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="rounded-3 bg-warning bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-calendar-event text-warning fs-5"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Tempat, Tanggal Lahir</small>
-                                    <p class="mb-0 fw-semibold">
-                                        <?= htmlspecialchars($biodata['tempatLahir'] ?? '-') ?>,
-                                        <?= htmlspecialchars($biodata['tanggalLahir'] ?? '-') ?>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Jenis Kelamin -->
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="rounded-3 bg-secondary bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-gender-ambiguous text-secondary fs-5"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Jenis Kelamin</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['jenisKelamin'] ?? '-') ?></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Nomor HP -->
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="rounded-3 bg-danger bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-telephone-fill text-danger fs-5"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Nomor HP</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['noHp'] ?? '-') ?></p>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        <!-- Program Studi -->
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="rounded-3 bg-success bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-book-fill text-success fs-5"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Program Studi</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['jurusan'] ?? '-') ?></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Alamat -->
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start gap-3">
-                                <div class="rounded-3 bg-info bg-opacity-10 p-2 flex-shrink-0">
-                                    <i class="bi bi-geo-alt-fill text-info fs-5"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <small class="text-muted d-block mb-1">Alamat</small>
-                                    <p class="mb-0 fw-semibold"><?= htmlspecialchars($biodata['alamat'] ?? '-') ?></p>
-                                </div>
-                            </div>
+                        <div>
+                            <small class="text-xs text-slate-400 block mb-0.5">Nama Lengkap</small>
+                            <p class="font-semibold text-slate-700 text-sm"><?= htmlspecialchars($biodata['namaLengkap'] ?? '-') ?></p>
                         </div>
                     </div>
 
+                    <!-- NIM -->
+                    <div class="flex items-start gap-3">
+                        <div class="rounded-xl bg-emerald-50 p-2.5 shrink-0 text-emerald-600">
+                            <i class="bi bi-123 text-lg"></i>
+                        </div>
+                        <div>
+                            <small class="text-xs text-slate-400 block mb-0.5">NIM</small>
+                            <p class="font-semibold text-slate-700 text-sm"><?= htmlspecialchars($user['stambuk'] ?? '-') ?></p>
+                        </div>
+                    </div>
 
+                    <!-- Email -->
+                    <div class="flex items-start gap-3">
+                        <div class="rounded-xl bg-cyan-50 p-2.5 shrink-0 text-cyan-600">
+                            <i class="bi bi-envelope-fill text-lg"></i>
+                        </div>
+                        <div>
+                            <small class="text-xs text-slate-400 block mb-0.5">Email</small>
+                            <p class="font-semibold text-slate-700 text-sm"><?= htmlspecialchars($userName ?? '-') ?></p>
+                        </div>
+                    </div>
+
+                    <!-- Tempat, Tanggal Lahir -->
+                    <div class="flex items-start gap-3">
+                        <div class="rounded-xl bg-amber-50 p-2.5 shrink-0 text-amber-600">
+                            <i class="bi bi-calendar-event text-lg"></i>
+                        </div>
+                        <div>
+                            <small class="text-xs text-slate-400 block mb-0.5">Tempat, Tanggal Lahir</small>
+                            <p class="font-semibold text-slate-700 text-sm">
+                                <?= htmlspecialchars($biodata['tempatLahir'] ?? '-') ?>,
+                                <?= htmlspecialchars($biodata['tanggalLahir'] ?? '-') ?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Jenis Kelamin -->
+                    <div class="flex items-start gap-3">
+                        <div class="rounded-xl bg-slate-50 p-2.5 shrink-0 text-slate-600">
+                            <i class="bi bi-gender-ambiguous text-lg"></i>
+                        </div>
+                        <div>
+                            <small class="text-xs text-slate-400 block mb-0.5">Jenis Kelamin</small>
+                            <p class="font-semibold text-slate-700 text-sm"><?= htmlspecialchars($biodata['jenisKelamin'] ?? '-') ?></p>
+                        </div>
+                    </div>
+
+                    <!-- Nomor HP -->
+                    <div class="flex items-start gap-3">
+                        <div class="rounded-xl bg-red-50 p-2.5 shrink-0 text-red-600">
+                            <i class="bi bi-telephone-fill text-lg"></i>
+                        </div>
+                        <div>
+                            <small class="text-xs text-slate-400 block mb-0.5">Nomor HP</small>
+                            <p class="font-semibold text-slate-700 text-sm"><?= htmlspecialchars($biodata['noHp'] ?? '-') ?></p>
+                        </div>
+                    </div>
+
+                    <!-- Program Studi -->
+                    <div class="flex items-start gap-3">
+                        <div class="rounded-xl bg-emerald-50 p-2.5 shrink-0 text-emerald-600">
+                            <i class="bi bi-book-fill text-lg"></i>
+                        </div>
+                        <div>
+                            <small class="text-xs text-slate-400 block mb-0.5">Program Studi</small>
+                            <p class="font-semibold text-slate-700 text-sm"><?= htmlspecialchars($biodata['jurusan'] ?? '-') ?></p>
+                        </div>
+                    </div>
+
+                    <!-- Alamat -->
+                    <div class="flex items-start gap-3">
+                        <div class="rounded-xl bg-cyan-50 p-2.5 shrink-0 text-cyan-600">
+                            <i class="bi bi-geo-alt-fill text-lg"></i>
+                        </div>
+                        <div>
+                            <small class="text-xs text-slate-400 block mb-0.5">Alamat</small>
+                            <p class="font-semibold text-slate-700 text-sm"><?= htmlspecialchars($biodata['alamat'] ?? '-') ?></p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- Sidebar (Right Column) - 4 col -->
-        <div class="col-lg-4">
+        <!-- Sidebar (Right Column) - 1/3 width -->
+        <div class="lg:col-span-1 space-y-6">
 
             <!-- Profile Card -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4 text-center d-flex flex-column align-items-center justify-content-center">
-                    <!-- Profile Photo -->
-                    <div class="mb-3 d-flex justify-content-center">
-                        <?php if ($profileDisplay['hasValidPhoto']): ?>
-                            <img src="<?= htmlspecialchars($profileDisplay['photoPath']) ?>"
-                                 alt="Profile"
-                                 class="rounded-circle border border-3 border-primary"
-                                 style="width: 100px; height: 100px; object-fit: cover;"
-                                 onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/dummy.jpeg'">
-                        <?php else: ?>
-                            <!-- Default Avatar (Fallback) -->
-                            <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png"
-                                 alt="Profile"
-                                 class="rounded-circle border border-3 border-primary"
-                                 style="width: 100px; height: 100px; object-fit: cover;">
-                        <?php endif; ?>
-                    </div>
-
-
-                    <!-- Name & Title -->
-                    <h5 class="fw-bold mb-1"><?= htmlspecialchars($biodata['namaLengkap'] ?? $user['username'] ?? 'User') ?></h5>
-                    <p class="text-muted mb-3 small">Calon Asisten Lab</p>
-
-                    <!-- Edit Button -->
-                    <button class="btn btn-sm btn-outline-primary w-100" onclick="loadPage('biodata')">
-                        <i class="bi bi-pencil me-2"></i>Lihat Biodata
-                    </button>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 text-center">
+                <!-- Profile Photo -->
+                <div class="mb-4 flex justify-center">
+                    <?php if ($profileDisplay['hasValidPhoto']): ?>
+                        <img src="<?= htmlspecialchars($profileDisplay['photoPath']) ?>"
+                             alt="Profile"
+                             class="rounded-full border-4 border-blue-50 w-24 h-24 object-cover"
+                             onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/dummy.jpeg'">
+                    <?php else: ?>
+                        <!-- Default Avatar (Fallback) -->
+                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png"
+                             alt="Profile"
+                             class="rounded-full border-4 border-blue-50 w-24 h-24 object-cover">
+                    <?php endif; ?>
                 </div>
+
+                <!-- Name & Title -->
+                <h5 class="font-bold text-slate-800 mb-0.5 text-base"><?= htmlspecialchars($biodata['namaLengkap'] ?? $user['username'] ?? 'User') ?></h5>
+                <p class="text-xs text-slate-400 mb-4">Calon Asisten Lab</p>
+
+                <!-- Edit Button -->
+                <button class="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 font-semibold text-sm rounded-xl transition duration-200" onclick="loadPage('biodata')">
+                    <i class="bi bi-pencil me-2"></i>Lihat Biodata
+                </button>
             </div>
 
             <!-- Calendar Widget -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center">
-                    <h6 class="fw-semibold mb-0">Calendar</h6>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-light rounded-circle" id="prev-month">
-                            <i class="bi bi-chevron-left"></i>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h6 class="font-bold text-slate-700">Calendar</h6>
+                    <div class="flex gap-1">
+                        <button class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-content-center text-slate-600 transition" id="prev-month">
+                            <i class="bi bi-chevron-left text-xs"></i>
                         </button>
-                        <button class="btn btn-sm btn-light rounded-circle" id="next-month">
-                            <i class="bi bi-chevron-right"></i>
+                        <button class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-content-center text-slate-600 transition" id="next-month">
+                            <i class="bi bi-chevron-right text-xs"></i>
                         </button>
                     </div>
                 </div>
-                <div class="card-body p-4">
-                    <!-- Calendar Header -->
-                    <div class="text-center mb-3">
-                        <p class="fw-semibold mb-0" id="calendar-month-year">
-                            <?= date('F Y') ?>
-                        </p>
-                    </div>
+                
+                <!-- Calendar Header -->
+                <div class="text-center mb-3">
+                    <p class="font-bold text-sm text-slate-800" id="calendar-month-year">
+                        <?= date('F Y') ?>
+                    </p>
+                </div>
 
-                    <!-- Day headers -->
-                    <div class="d-flex justify-content-between mb-2">
-                        <?php
-                        $days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-                        foreach($days as $day):
-                        ?>
-                            <div class="text-center text-muted small fw-semibold" style="width:14.28%">
-                                <?= $day ?>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
+                <!-- Day headers -->
+                <div class="grid grid-cols-7 gap-1 mb-2 text-center text-slate-400 text-[10px] font-bold tracking-wider">
+                    <div>SUN</div>
+                    <div>MON</div>
+                    <div>TUE</div>
+                    <div>WED</div>
+                    <div>THU</div>
+                    <div>FRI</div>
+                    <div>SAT</div>
+                </div>
 
-                    <!-- Calendar dates (will be populated by JavaScript) -->
-                    <div class="calendar-grid" id="calendar-dates">
-                        <!-- Dates will be generated by JavaScript -->
-                    </div>
+                <!-- Calendar dates -->
+                <div class="grid grid-cols-7 gap-1" id="calendar-dates">
+                    <!-- Dates will be generated by JavaScript -->
                 </div>
             </div>
 
@@ -464,34 +404,34 @@ $dokumen = $dokumen ?? [];
             </script>
 
             <!-- Upcoming Events -->
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center">
-                    <h6 class="fw-semibold mb-0">Upcoming</h6>
-                    <a href="javascript:void(0)" onclick="navigateTo('wawancara')" class="text-primary text-decoration-none small fw-semibold">View All</a>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h6 class="font-bold text-slate-700">Upcoming</h6>
+                    <a href="javascript:void(0)" onclick="navigateTo('wawancara')" class="text-xs text-blue-600 hover:text-blue-700 font-bold transition">View All</a>
                 </div>
-                <div class="card-body p-4">
+                
+                <div>
                     <?php if ($jadwalPresentasiUser): ?>
-                        <div class="d-flex gap-3">
-                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0"
-                                 style="width:48px; height:48px">
-                                <i class="bi bi-calendar-event text-white"></i>
+                        <div class="flex gap-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-content-center shrink-0">
+                                <i class="bi bi-calendar-event text-lg"></i>
                             </div>
-                            <div class="flex-grow-1">
-                                <p class="mb-1 fw-semibold"><?= htmlspecialchars($jadwalPresentasiUser['judul'] ?? 'Presentasi') ?></p>
-                                <small class="text-muted">
+                            <div>
+                                <p class="font-semibold text-slate-800 text-sm mb-0.5"><?= htmlspecialchars($jadwalPresentasiUser['judul'] ?? 'Presentasi') ?></p>
+                                <span class="text-slate-400 text-xs block mb-0.5">
                                     <i class="bi bi-calendar3 me-1"></i>
                                     <?= $jadwalPresentasiUser['formattedDate'] ?? '-' ?>
-                                </small><br>
-                                <small class="text-muted">
+                                </span>
+                                <span class="text-slate-400 text-xs block">
                                     <i class="bi bi-clock me-1"></i>
                                     <?= $jadwalPresentasiUser['formattedTime'] ?? '-' ?> WIB
-                                </small>
+                                </span>
                             </div>
                         </div>
                     <?php else: ?>
-                        <div class="text-center py-3">
-                            <i class="bi bi-calendar-x fs-2 text-muted mb-2 d-block"></i>
-                            <p class="text-muted small mb-0">No upcoming events</p>
+                        <div class="text-center py-6 text-slate-400">
+                            <i class="bi bi-calendar-x text-3xl mb-2 block opacity-65"></i>
+                            <span class="text-xs">No upcoming events</span>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -501,44 +441,43 @@ $dokumen = $dokumen ?? [];
     </div>
 </main>
 
-<!-- Bootstrap Message Modal -->
+<!-- Custom Message Modal -->
 <div class="modal fade" id="customMessageModal" tabindex="-1" aria-labelledby="customMessageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 rounded-4">
-            <div class="modal-header bg-gradient-primary text-white border-0 py-3">
-                <h5 class="modal-title" id="customMessageModalLabel">
+        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+            <div class="modal-header bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 py-4 px-6 flex justify-between items-center">
+                <h5 class="modal-title font-bold text-base" id="customMessageModalLabel">
                     <i class="bi bi-envelope-fill me-2"></i>Pesan
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4">
-                <div class="d-flex flex-column gap-3">
+            <div class="modal-body p-6">
+                <div class="space-y-4">
                     <?php if (empty($notifikasi)): ?>
-                        <div class="text-center py-4">
-                            <i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
-                            <p class="text-muted mb-0">Tidak ada pesan</p>
+                        <div class="text-center py-8 text-slate-400">
+                            <i class="bi bi-inbox text-5xl mb-3 block opacity-60"></i>
+                            <p class="text-sm">Tidak ada pesan</p>
                         </div>
                     <?php else: ?>
                         <?php foreach ($notifikasi as $notif): ?>
-                            <div class="p-3 rounded-3 border">
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <div class="rounded-circle d-flex align-items-center justify-content-center"
-                                         style="width: 32px; height: 32px; background: var(--bs-gradient);">
-                                        <i class="bi bi-person-fill text-white small"></i>
+                            <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-content-center font-bold text-xs">
+                                        T
                                     </div>
-                                    <strong>Tim Iclabs</strong>
+                                    <strong class="text-slate-700 text-sm">Tim Iclabs</strong>
                                 </div>
-                                <p class="mb-2"><?= htmlspecialchars($notif['pesan']) ?></p>
-                                <small class="text-muted">
+                                <p class="text-slate-600 text-sm mb-2 leading-relaxed"><?= htmlspecialchars($notif['pesan']) ?></p>
+                                <span class="text-slate-400 text-xs block">
                                     <i class="bi bi-clock me-1"></i><?= $notif['created_at'] ?>
-                                </small>
+                                </span>
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Tutup</button>
+            <div class="modal-footer border-0 p-4 bg-slate-50 flex justify-end">
+                <button type="button" class="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
@@ -547,16 +486,16 @@ $dokumen = $dokumen ?? [];
 <!-- Upcoming Activities Modal -->
 <div class="modal fade" id="upcomingActivitiesModal" tabindex="-1" aria-labelledby="upcomingActivitiesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4">
-            <div class="modal-header bg-white border-0 py-3">
-                <h5 class="modal-title fw-bold" id="upcomingActivitiesModalLabel">Upcoming Activities</h5>
+        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+            <div class="modal-header border-0 py-4 px-6 flex justify-between items-center bg-slate-50 border-b border-slate-100">
+                <h5 class="modal-title font-bold text-slate-800 text-base" id="upcomingActivitiesModalLabel">Upcoming Activities</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4 pt-0" id="upcomingActivitiesBody">
+            <div class="modal-body p-6" id="upcomingActivitiesBody">
                 <!-- Content populated by JS -->
             </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Close</button>
+            <div class="modal-footer border-0 p-4 bg-slate-50 flex justify-end">
+                <button type="button" class="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

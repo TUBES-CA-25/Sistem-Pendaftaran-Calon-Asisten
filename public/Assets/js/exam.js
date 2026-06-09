@@ -74,10 +74,10 @@ window.renderSoalList = function(soalArray) {
     
     if (!soalArray || soalArray.length === 0) {
         soalList.innerHTML = `
-            <div class="text-center py-5">
-                <i class='bx bx-file-blank text-muted fs-1 mb-3'></i>
-                <h5 class="text-secondary">Belum Ada Soal</h5>
-                <p class="text-muted small">Klik tombol "Tambah Soal" untuk menambahkan soal baru ke bank ini</p>
+            <div class="text-center py-12 flex flex-col items-center">
+                <i class='bx bx-file-blank text-slate-300 text-6xl mb-4'></i>
+                <h5 class="text-slate-600 font-bold text-lg mb-1">Belum Ada Soal</h5>
+                <p class="text-slate-400 text-sm max-w-sm">Klik tombol "Tambah Soal" untuk menambahkan soal baru ke bank ini</p>
             </div>`;
         return;
     }
@@ -86,39 +86,39 @@ window.renderSoalList = function(soalArray) {
     soalArray.forEach((soal, index) => {
         const isPG = (soal.status_soal || '') === 'pilihan_ganda';
         const optionsHtml = isPG && soal.pilihan ? window.renderOptions(soal.pilihan) : '';
-        const borderColor = isPG ? 'border-primary' : 'border-warning';
+        const borderColor = isPG ? 'border-blue-500' : 'border-amber-500';
         
         html += `
-        <div class="card mb-3 shadow-sm border-start ${borderColor} border-4" data-id="${soal.id}" data-type="${soal.status_soal || 'essay'}">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="badge bg-primary rounded-3 fs-5 px-3 py-2">${index + 1}</div>
-                        <span class="badge rounded-pill ${isPG ? 'bg-primary bg-opacity-10 text-primary' : 'bg-warning bg-opacity-10 text-warning'} px-3 py-2">
+        <div class="card bg-white p-6 rounded-2xl shadow-sm border-l-4 ${borderColor} mb-4 transition-all duration-300 hover:shadow-md" data-id="${soal.id}" data-type="${soal.status_soal || 'essay'}">
+            <div>
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-blue-600 text-white rounded-lg text-lg px-3 py-1 font-bold flex items-center justify-center">${index + 1}</div>
+                        <span class="rounded-full text-xs font-semibold px-3 py-1.5 ${isPG ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'}">
                             ${isPG ? 'Pilihan Ganda' : 'Essay'}
                         </span>
                     </div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-light text-primary border-0" onclick="window.editSoal(${soal.id})" title="Edit">
-                            <i class='bx bx-edit'></i>
+                    <div class="flex gap-2">
+                        <button class="p-2 bg-slate-50 hover:bg-blue-50 text-blue-600 rounded-xl transition-colors border-0" onclick="window.editSoal(${soal.id})" title="Edit">
+                            <i class='bx bx-edit text-lg'></i>
                         </button>
-                        <button class="btn btn-sm btn-light text-danger border-0" onclick="window.deleteSoal(${soal.id})" title="Hapus">
-                            <i class='bx bx-trash'></i>
+                        <button class="p-2 bg-slate-50 hover:bg-red-50 text-red-600 rounded-xl transition-colors border-0" onclick="window.deleteSoal(${soal.id})" title="Hapus">
+                            <i class='bx bx-trash text-lg'></i>
                         </button>
                     </div>
                 </div>
                 ${soal.image_url ? `
-                <div class="mb-3">
-                    <img src="${window.getImageUrl(soal.image_url)}" alt="Gambar Soal" style="max-width: 100%; max-height: 400px; border-radius: 8px; border: 2px solid #e2e8f0;" onerror="this.style.display='none'">
+                <div class="mb-4">
+                    <img src="${window.getImageUrl(soal.image_url)}" alt="Gambar Soal" style="max-width: 100%; max-height: 400px; border-radius: 12px; border: 1px solid #e2e8f0;" onerror="this.style.display='none'">
                 </div>` : ''}
-                <div class="mb-3 text-dark condition-render-markdown">${soal.deskripsi ? marked.parse(soal.deskripsi) : ''}</div>
+                <div class="mb-4 text-slate-800 text-sm leading-relaxed font-medium condition-render-markdown">${soal.deskripsi ? marked.parse(soal.deskripsi) : ''}</div>
                 ${optionsHtml}
                 ${soal.jawaban ? `
-                <div class="alert alert-success bg-success bg-opacity-10 border-success border-start border-3 d-flex align-items-center gap-2 mb-0">
-                    <i class='bx bx-check-circle text-success fs-4'></i>
+                <div class="bg-emerald-50 border-l-4 border-emerald-500 text-emerald-800 p-4 rounded-xl flex items-center gap-3 mt-4">
+                    <i class='bx bx-check-circle text-emerald-600 text-xl'></i>
                     <div>
-                        <div class="small fw-bold text-success text-uppercase">Jawaban Benar</div>
-                        <div class="text-success">${window.escapeHtml(soal.jawaban)}</div>
+                        <div class="text-xs font-semibold uppercase text-emerald-600 tracking-wider">Jawaban Benar</div>
+                        <div class="text-sm font-medium mt-0.5">${window.escapeHtml(soal.jawaban)}</div>
                     </div>
                 </div>` : ''}
             </div>
@@ -166,11 +166,11 @@ window.renderOptions = function(pilihan) {
         )
     );
 
-    let html = '<div class="p-3 bg-light bg-opacity-50 rounded-3 mb-3">';
+    let html = '<div class="p-4 bg-slate-50/70 rounded-xl mb-4 border border-slate-100/80">';
 
     // Only show "Pilihan Jawaban" header if not images
     if (!hasImages) {
-        html += '<div class="small fw-bold text-secondary text-uppercase mb-2">Pilihan Jawaban</div>';
+        html += '<div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Pilihan Jawaban</div>';
     }
 
     options.forEach(opt => {
@@ -186,17 +186,17 @@ window.renderOptions = function(pilihan) {
         if (isImage) {
             html += `
                 <div class="mb-3">
-                    <strong class="text-dark">${opt.key}.</strong>
+                    <strong class="text-slate-700">${opt.key}.</strong>
                     <div class="mt-2">
                         <img src="${window.getImageUrl(escapeHtml(opt.value))}"
                              alt="Pilihan ${opt.key}"
-                             style="max-width: 100%; height: auto; max-height: 200px; border-radius: 8px; border: 2px solid #e2e8f0; display: block;"
+                             style="max-width: 100%; height: auto; max-height: 200px; border-radius: 8px; border: 1px solid #e2e8f0; display: block;"
                              onerror="this.onerror=null; this.src='https://placehold.co/400x200?text=Gambar+Tidak+Ditemukan'; this.style.border='2px dashed #ff0000';">
                     </div>
                 </div>
             `;
         } else {
-            html += `<div class="py-1 text-dark">${escapeHtml(opt.key + '. ' + opt.value)}</div>`;
+            html += `<div class="py-1.5 text-slate-800 font-medium">${escapeHtml(opt.key + '. ' + opt.value)}</div>`;
         }
     });
 
@@ -535,29 +535,29 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
                         emptyState.remove();
                     }
 
-                    // Create new card HTML (Bootstrap 5)
+                    // Create new card HTML (Tailwind CSS)
                     const newId = data.id || Date.now();
                     const newCard = document.createElement('div');
-                    newCard.className = 'col-md-6 col-lg-4 col-xl-3';
+                    newCard.className = 'col-span-1';
                     newCard.id = `bank-card-${newId}`;
                     newCard.innerHTML = `
-                        <div class="card h-100 border-0 rounded-4 hover-card overflow-hidden">
-                                <!-- Card Cover Image -->
-                                <div class="card-cover position-relative" style="height: 120px; background-color: #2563eb; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.1) 2px, transparent 2px, transparent 10px);">
-                                    <div class="position-absolute top-0 end-0 p-3">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition duration-200 overflow-hidden flex flex-col h-full">
+                                <!-- Card Cover Pattern -->
+                                <div class="h-28 bg-blue-600 relative shrink-0" style="background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px, transparent 10px);">
+                                    <div class="absolute top-3 right-3">
                                         <div class="dropdown">
-                                            <button class="btn btn-sm btn-link text-white p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class='bx bx-dots-horizontal-rounded fs-4'></i>
+                                            <button class="w-8 h-8 flex items-center justify-center text-white hover:bg-white/20 rounded-lg transition border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class='bx bx-dots-horizontal-rounded text-xl'></i>
                                             </button>
-                                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-3">
+                                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-xl p-1.5 mt-1 bg-white">
                                                 <li>
-                                                    <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:void(0)" onclick="window.editBankModal(${newId})">
-                                                        <i class='bx bx-edit text-primary'></i> Edit
+                                                    <a class="dropdown-item flex items-center gap-2 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg text-sm transition" href="javascript:void(0)" onclick="window.editBankModal(${newId})">
+                                                        <i class='bx bx-edit text-blue-600 text-base'></i> <span class="font-medium">Edit</span>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger" href="javascript:void(0)" onclick="deleteBank(${newId})">
-                                                        <i class='bx bx-trash'></i> Hapus
+                                                    <a class="dropdown-item flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg text-sm transition" href="javascript:void(0)" onclick="deleteBank(${newId})">
+                                                        <i class='bx bx-trash text-base'></i> <span class="font-medium">Hapus</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -565,41 +565,41 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
                                     </div>
                                 </div>
                                 
-                                <div class="card-body pt-0 px-4 pb-4 position-relative">
+                                <div class="p-5 flex flex-col flex-grow">
                                     
-                                    <div class="mt-4 pt-2 cursor-pointer" onclick="openBankDetail(${newId}, '${escapeHtml(nama)}')">
-                                        <h5 class="fw-bold text-dark mb-1 text-truncate" title="${escapeHtml(nama)}">
+                                    <div class="cursor-pointer flex-grow" onclick="openBankDetail(${newId}, '${escapeHtml(nama)}')">
+                                        <h3 class="font-bold text-slate-800 text-lg mb-1 line-clamp-1" title="${escapeHtml(nama)}">
                                             ${escapeHtml(nama)}
-                                        </h5>
-                                        <p class="text-secondary small mb-3 text-truncate-2" style="min-height: 40px;">
+                                        </h3>
+                                        <p class="text-slate-400 text-xs mb-4 line-clamp-2 h-8 font-medium">
                                             ${escapeHtml(deskripsi || 'Tidak ada deskripsi')}
                                         </p>
                                         
-                                        <div class="d-flex gap-2 flex-wrap mb-2">
-                                            <span class="badge rounded-pill text-white px-3 py-2 border-0" style="background-color: #ff5252;">
-                                                <i class='bx bx-file me-1'></i> 0 Soal
+                                        <div class="flex gap-2 flex-wrap mb-3">
+                                            <span class="inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full bg-red-50 text-red-600">
+                                                <i class='bx bx-file mr-1 text-sm'></i> 0 Soal
                                             </span>
-                                            <span class="badge rounded-pill text-white px-3 py-2 border-0" style="background-color: #448aff;" title="Pilihan Ganda">
+                                            <span class="inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-600" title="Pilihan Ganda">
                                                 PG: 0
                                             </span>
-                                            <span class="badge rounded-pill text-dark px-3 py-2 border-0" style="background-color: #ffd740;" title="Essay">
+                                            <span class="inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600" title="Essay">
                                                 Essay: 0
                                             </span>
                                         </div>
-                                        <div class="mb-0">
-                                            <span class="badge rounded-pill text-dark px-3 py-2 border-0" style="background-color: #69f0ae;">
-                                                <i class='bx bx-key me-1'></i> ${escapeHtml(token)}
+                                        <div class="mb-4">
+                                            <span class="inline-flex items-center text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600">
+                                                <i class='bx bx-key mr-1 text-sm'></i> ${escapeHtml(token)}
                                             </span>
                                         </div>
-                                        
-                                        <div class="mt-3 pt-3 border-top border-light d-flex justify-content-between align-items-center" onclick="event.stopPropagation()">
-                                            <span class="small fw-bold text-secondary">Status: 
-                                                <span id="statusText_${newId}" class="text-danger">Tidak Aktif</span>
-                                            </span>
-                                            <div class="form-check form-switch cursor-pointer">
-                                                <input class="form-check-input bank-active-switch cursor-pointer" type="checkbox" id="activeSwitch_${newId}" 
-                                                onchange="window.activateBank(${newId})">
-                                            </div>
+                                    </div>
+                                    
+                                    <div class="pt-4 border-t border-slate-100 flex justify-between items-center" onclick="event.stopPropagation()">
+                                        <span class="text-xs font-bold text-slate-500">Status: 
+                                            <span id="statusText_${newId}" class="text-red-500">Tidak Aktif</span>
+                                        </span>
+                                        <div class="form-check form-switch p-0 m-0 flex items-center">
+                                            <input class="form-check-input bank-active-switch cursor-pointer w-9 h-5 bg-slate-200 checked:bg-blue-600 border-0 rounded-full appearance-none transition-colors" type="checkbox" id="activeSwitch_${newId}" 
+                                            onchange="window.activateBank(${newId})">
                                         </div>
                                     </div>
                                 </div>

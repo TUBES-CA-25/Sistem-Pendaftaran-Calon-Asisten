@@ -26,87 +26,84 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="container-fluid px-4 pb-4">
-
-    <div class="row g-4">
-
-    
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <!-- Form Card -->
-        <div class="col-lg-5">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-transparent border-0 p-4">
-                    <h5 class="fw-bold mb-0">
-                        <i class="bi bi-file-earmark-slides me-2 text-primary"></i>Submit Presentasi
+        <div class="lg:col-span-5">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-full flex flex-col">
+                <div class="flex items-center gap-2 mb-6">
+                    <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="bi bi-file-earmark-slides text-blue-600"></i>Submit Presentasi
                     </h5>
                 </div>
-                <div class="card-body p-4 pt-0">
+                <div class="flex-1">
                     <?php if (!$biodataStatus): ?>
-                        <div class="alert alert-warning d-flex align-items-center gap-2 rounded-3" role="alert">
+                        <div class="flex items-center gap-2.5 p-4 rounded-xl bg-amber-50 border border-amber-100 text-amber-800 text-sm" role="alert">
                             <i class="bi bi-exclamation-triangle-fill"></i>
-                            <div>Lengkapi biodata terlebih dahulu!</div>
+                            <div class="font-semibold">Lengkapi biodata terlebih dahulu!</div>
                         </div>
                     <?php elseif (!$berkasStatus): ?>
-                        <div class="alert alert-warning d-flex align-items-center gap-2 rounded-3" role="alert">
+                        <div class="flex items-center gap-2.5 p-4 rounded-xl bg-amber-50 border border-amber-100 text-amber-800 text-sm" role="alert">
                             <i class="bi bi-exclamation-triangle-fill"></i>
-                            <div>Lengkapi berkas terlebih dahulu!</div>
+                            <div class="font-semibold">Lengkapi berkas terlebih dahulu!</div>
                         </div>
                     <?php elseif (!$absensiTesTertulis): ?>
-                        <div class="alert alert-warning d-flex align-items-center gap-2 rounded-3" role="alert">
+                        <div class="flex items-center gap-2.5 p-4 rounded-xl bg-amber-50 border border-amber-100 text-amber-800 text-sm" role="alert">
                             <i class="bi bi-exclamation-triangle-fill"></i>
-                            <div>Anda belum mengikuti tes tertulis!</div>
+                            <div class="font-semibold">Anda belum mengikuti tes tertulis!</div>
                         </div>
                     <?php elseif (empty($results) || (isset($results['is_accepted']) && $results['is_accepted'] == 0) || (isset($results['is_revisi']) && $results['is_revisi'] == 1)): ?>
                         <!-- Form Submit Judul -->
-                        <form id="berkasPresentasiForm">
-                            <div class="mb-4">
-                                <label for="judul" class="form-label fw-semibold">
-                                    <i class="bi bi-pencil-square me-1"></i>Judul Presentasi
+                        <form id="berkasPresentasiForm" class="space-y-5">
+                            <div>
+                                <label for="judul" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
+                                    <i class="bi bi-pencil-square text-blue-600"></i>Judul Presentasi
                                 </label>
-                                <input type="text" class="form-control form-control-lg rounded-3" id="judul" name="judul" placeholder="Masukkan judul presentasi Anda" required <?php if (!$canSubmitJudul) echo 'disabled'; ?>>
+                                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold transition disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed" id="judul" name="judul" placeholder="Masukkan judul presentasi Anda" required <?php if (!$canSubmitJudul) echo 'disabled'; ?>>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3" <?php if (!$canSubmitJudul) echo 'disabled'; ?>>
-                                <i class="bi bi-send me-2"></i>Submit Judul
+                            <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" <?php if (!$canSubmitJudul) echo 'disabled'; ?>>
+                                <i class="bi bi-send"></i>Submit Judul
                             </button>
                         </form>
                     <?php elseif (isset($results['is_accepted']) && $results['is_accepted'] == 1): ?>
                         <!-- Form Submit PPT & Makalah -->
-                        <div class="alert alert-success d-flex align-items-center gap-2 rounded-3 mb-4" role="alert">
+                        <div class="flex items-center gap-2.5 p-4 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-800 text-sm mb-4" role="alert">
                             <i class="bi bi-check-circle-fill"></i>
-                            <div>Judul Anda telah disetujui! Silahkan upload file.</div>
+                            <div class="font-semibold">Judul Anda telah disetujui! Silahkan upload file.</div>
                         </div>
 
-                        <form id="presentasiFormAccepted" enctype="multipart/form-data">
-                            <div class="mb-4">
-                                <label for="ppt" class="form-label fw-semibold">
-                                    <i class="bi bi-file-earmark-ppt me-1"></i>File PPT
+                        <form id="presentasiFormAccepted" enctype="multipart/form-data" class="space-y-5">
+                            <div>
+                                <label for="ppt" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
+                                    <i class="bi bi-file-earmark-ppt text-blue-600"></i>File PPT
                                 </label>
-                                <input class="form-control form-control-lg rounded-3" type="file" id="ppt" name="ppt" accept=".ppt,.pptx" required <?php if (!$canSubmitPpt) echo 'disabled'; ?>>
-                                <small class="text-muted">Format: PPT, PPTX (Max 10MB)</small>
+                                <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed" type="file" id="ppt" name="ppt" accept=".ppt,.pptx" required <?php if (!$canSubmitPpt) echo 'disabled'; ?>>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PPT, PPTX (Max 10MB)</span>
                             </div>
 
-                            <div class="mb-4">
-                                <label for="makalah" class="form-label fw-semibold">
-                                    <i class="bi bi-file-earmark-pdf me-1"></i>Makalah
+                            <div>
+                                <label for="makalah" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
+                                    <i class="bi bi-file-earmark-pdf text-blue-600"></i>Makalah
                                 </label>
-                                <input class="form-control form-control-lg rounded-3" type="file" id="makalah" name="makalah" accept="application/pdf" required <?php if (!$canSubmitPpt) echo 'disabled'; ?>>
-                                <small class="text-muted">Format: PDF (Max 2MB)</small>
+                                <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed" type="file" id="makalah" name="makalah" accept="application/pdf" required <?php if (!$canSubmitPpt) echo 'disabled'; ?>>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF (Max 2MB)</span>
                             </div>
 
                             <!-- Download Template -->
-                            <div class="p-3 rounded-3 mb-4" style="background: #f0f9ff;">
-                                <a id="downloadFile1" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/Template-Laporan-Makalah.docx" download class="d-flex align-items-center gap-3 text-decoration-none">
-                                    <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 48px; height: 48px; background: var(--gradient-primary);">
-                                        <i class="bx bx-file text-white fs-4"></i>
+                            <div class="p-4 rounded-xl bg-blue-50 border border-blue-100/50 hover:bg-blue-100/70 transition duration-200 mb-6">
+                                <a id="downloadFile1" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/Template-Laporan-Makalah.docx" download class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
+                                        <i class="bx bx-file text-white text-lg"></i>
                                     </div>
                                     <div>
-                                        <span class="fw-semibold text-primary d-block">Download Template Makalah</span>
-                                        <small class="text-muted">Gunakan template yang disediakan</small>
+                                        <span class="font-bold text-blue-800 text-sm block">Download Template Makalah</span>
+                                        <span class="text-[10px] text-slate-400 block font-medium">Gunakan template yang disediakan</span>
                                     </div>
                                 </a>
                             </div>
 
-                            <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3" <?php if (!$canSubmitPpt) echo 'disabled'; ?>>
-                                <i class="bi bi-upload me-2"></i>Submit File
+                            <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" <?php if (!$canSubmitPpt) echo 'disabled'; ?>>
+                                <i class="bi bi-upload"></i>Submit File
                             </button>
                         </form>
                     <?php endif; ?>
@@ -114,76 +111,72 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
             </div>
         </div>
 
-
-
         <!-- History Table Card -->
-        <div class="col-lg-7">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-transparent border-0 p-4">
-                    <h5 class="fw-bold mb-0">
-                        <i class="bi bi-clock-history me-2 text-primary"></i>Hasil Submit Judul Presentasi
+        <div class="lg:col-span-7">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-full flex flex-col">
+                <div class="flex items-center gap-2 mb-6">
+                    <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="bi bi-clock-history text-blue-600"></i>Hasil Submit Judul Presentasi
                     </h5>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="ps-4">No</th>
-                                    <th>Judul</th>
-                                    <th>Status</th>
-                                    <th>Waktu</th>
-                                    <th>Keterangan</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($results)): ?>
-                                    <?php
-                                    $i = 1;
-                                    if (isset($results['judul'])) {
-                                        $results = [$results];
-                                    }
-                                    foreach ($results as $row):
-                                        $revisi = !$row['is_accepted']
-                                            ? (!empty($row['revisi']) ? 'Revisi: ' . $row['revisi'] : 'Ditolak')
-                                            : 'Diterima';
-                                        $keterangan = !$row['is_accepted']
-                                            ? (!empty($row['is_revisi'] && (!empty($row['keterangan']) || !$row['keterangan'])) ? $row['keterangan'] : 'Belum Diterima')
-                                            : 'Silahkan submit PPT dan makalah!';
-                                        $isAccepted = $row['is_accepted'];
-                                    ?>
-                                        <tr>
-                                            <td class="ps-4"><?= $i ?></td>
-                                            <td>
-                                                <span class="fw-medium"><?= htmlspecialchars($row['judul']) ?></span>
-                                            </td>
-                                            <td>
-                                                <?php if ($isAccepted): ?>
-                                                    <span class="badge badge-success-subtle rounded-pill px-3 py-2">
-                                                        <i class="bi bi-check-circle-fill me-1"></i><?= htmlspecialchars($revisi) ?>
-                                                    </span>
-                                                <?php else: ?>
-                                                    <span class="badge badge-warning-subtle rounded-pill px-3 py-2">
-                                                        <i class="bi bi-clock-fill me-1"></i><?= htmlspecialchars($revisi) ?>
-                                                    </span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="small text-muted"><?= htmlspecialchars($row['created_at']) ?></td>
-                                            <td class="small"><?= htmlspecialchars($keterangan) ?></td>
-                                        </tr>
-                                    <?php $i++;
-                                    endforeach; ?>
-                                <?php else: ?>
+                <div class="overflow-x-auto rounded-xl border border-slate-100">
+                    <table class="min-w-full divide-y divide-slate-100 text-sm">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">No</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Judul</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Status</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Waktu</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 bg-white">
+                            <?php if (!empty($results)): ?>
+                                <?php
+                                $i = 1;
+                                if (isset($results['judul'])) {
+                                    $results = [$results];
+                                }
+                                foreach ($results as $row):
+                                    $revisi = !$row['is_accepted']
+                                        ? (!empty($row['revisi']) ? 'Revisi: ' . $row['revisi'] : 'Ditolak')
+                                        : 'Diterima';
+                                    $keterangan = !$row['is_accepted']
+                                        ? (!empty($row['is_revisi'] && (!empty($row['keterangan']) || !$row['keterangan'])) ? $row['keterangan'] : 'Belum Diterima')
+                                        : 'Silahkan submit PPT and makalah!';
+                                    $isAccepted = $row['is_accepted'];
+                                ?>
                                     <tr>
-                                        <td colspan="5" class="text-center py-5">
-                                            <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
-                                            <span class="text-muted">Tidak ada data untuk ditampilkan</span>
+                                        <td class="px-4 py-3 text-slate-500 font-medium text-xs"><?= $i ?></td>
+                                        <td class="px-4 py-3 text-slate-700 font-bold text-xs">
+                                            <span class="break-words"><?= htmlspecialchars($row['judul']) ?></span>
                                         </td>
+                                        <td class="px-4 py-3 whitespace-nowrap">
+                                            <?php if ($isAccepted): ?>
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-100">
+                                                    <i class="bi bi-check-circle-fill"></i><?= htmlspecialchars($revisi) ?>
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-100">
+                                                    <i class="bi bi-clock-fill"></i><?= htmlspecialchars($revisi) ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-slate-500 font-medium text-xs"><?= htmlspecialchars($row['created_at']) ?></td>
+                                        <td class="px-4 py-3 text-slate-500 text-xs font-medium"><?= htmlspecialchars($keterangan) ?></td>
                                     </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                                <?php $i++;
+                                endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="5" class="px-4 py-8 text-center text-slate-400">
+                                        <i class="bi bi-inbox text-4xl mb-2 block opacity-50"></i>
+                                        <span class="text-xs font-medium">Tidak ada data untuk ditampilkan</span>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

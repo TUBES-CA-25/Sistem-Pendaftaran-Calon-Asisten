@@ -7,104 +7,8 @@
  */
 $nilai = $nilai ?? [];
 ?>
-<style>
-    /* Custom styles that complement Bootstrap */
-    /* Main layout reset removed to match other pages */
-
-    /* Stat Cards with custom gradients */
-    .stat-card {
-        border-radius: 12px;
-        padding: 16px 20px;
-        border-left: 4px solid #2563eb;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    }
-
-    .stat-card.success {
-        border-left-color: #10b981;
-    }
-
-    .stat-card.warning {
-        border-left-color: #f59e0b;
-    }
-
-    .stat-value {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #1e293b;
-    }
-
-    .stat-label {
-        font-size: 0.85rem;
-        color: #64748b;
-        margin-top: 4px;
-    }
-
-    /* Soal Card custom border colors */
-    .soal-card.correct {
-        border-left: 5px solid #10b981 !important;
-    }
-
-    .soal-card.wrong {
-        border-left: 5px solid #ef4444 !important;
-    }
-
-    .soal-card.unanswered {
-        border-left: 5px solid #94a3b8 !important;
-        background-color: #f8fafc;
-    }
-
-    .soal-number {
-        background: var(--gradient-header);
-        color: #fff;
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.9rem;
-        font-weight: 700;
-        box-shadow: 0 4px 10px rgba(47, 102, 246, 0.3);
-    }
-
-    /* Filter Button Styles */
-    .filter-btn-group {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    .filter-btn {
-        border: 2px solid #e2e8f0;
-        background: #fff;
-        color: #64748b;
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.875rem;
-        transition: all 0.2s ease;
-        cursor: pointer;
-    }
-
-    .filter-btn:hover {
-        border-color: #2563eb;
-        color: #2563eb;
-        background: #eff6ff;
-    }
-
-    .filter-btn.active {
-        border-color: #2563eb;
-        background: #2563eb;
-        color: #fff;
-    }
-
-    .filter-btn i {
-        margin-right: 4px;
-    }
-</style>
 
 <main>
-    <!-- Page Header -->
     <!-- Page Header -->
     <?php
         $title = 'Daftar Nilai Tes Tertulis';
@@ -113,266 +17,207 @@ $nilai = $nilai ?? [];
         require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
-    <div class="container-fluid px-4 mt-3">
+    <div class="max-w-7xl mx-auto px-4 py-6">
         <!-- View List -->
         <div id="view-list">
-        <!-- Search Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
-            <div class="position-relative" style="width: 280px; max-width: 100%;">
-                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-                <input type="text" id="searchInput" class="form-control ps-5 rounded-3" placeholder="Cari mahasiswa...">
+            <!-- Search Bar -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <div class="relative w-full sm:w-72">
+                    <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm" placeholder="Cari mahasiswa...">
+                </div>
             </div>
+
+            <?php if (empty($nilai)): ?>
+                <div class="flex flex-col items-center justify-center py-16 text-slate-400 bg-white rounded-2xl border border-slate-100 shadow-sm p-8 text-center">
+                    <i class="bi bi-inbox text-6xl mb-4 text-slate-300"></i>
+                    <h3 class="text-lg font-bold text-slate-700 mb-1">Belum ada peserta</h3>
+                    <p class="text-sm max-w-sm text-slate-500">Data nilai akan muncul setelah mahasiswa mengerjakan tes tertulis</p>
+                </div>
+            <?php else: ?>
+                <!-- Clean Table -->
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm" id="tableNilai">
+                            <thead class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                                <tr>
+                                    <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 60px;">No</th>
+                                    <th class="font-bold text-xs uppercase tracking-wider py-4 px-4">Mahasiswa</th>
+                                    <th class="font-bold text-xs uppercase tracking-wider py-4 px-4">Stambuk</th>
+                                    <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 150px;">Nilai Akhir</th>
+                                    <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 180px;">Status</th>
+                                    <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 120px;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <?php $i = 1; foreach ($nilai as $value): ?>
+                                    <?php
+                                    // Raw auto-calculated score
+                                    $nilaiTes = $value['nilai'] ?? null;
+                                    // Manual override/Final score
+                                    $nilaiTotal = $value['total'] ?? null;
+
+                                    // Determine which value to display
+                                    $displayNilai = ($nilaiTotal !== null && $nilaiTotal !== '') ? $nilaiTotal : $nilaiTes;
+                                    
+                                    // Determine status badge
+                                    $statusLabel = 'Belum Dinilai';
+                                    $statusBadge = 'text-slate-500 bg-slate-50 border border-slate-200';
+
+                                    if ($displayNilai !== null && $displayNilai !== '-' && $displayNilai !== '') {
+                                        $score = (int)$displayNilai;
+                                        if ($score >= 70) {
+                                            $statusLabel = 'Memenuhi';
+                                            $statusBadge = 'text-emerald-700 bg-emerald-50 border border-emerald-100';
+                                        } else {
+                                            $statusLabel = 'Tidak Memenuhi';
+                                            $statusBadge = 'text-red-700 bg-red-50 border border-red-100';
+                                        }
+                                    }
+                                    ?>
+                                    <tr class="hover:bg-slate-50/85 transition">
+                                        <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $i ?></td>
+                                        <td class="py-4 px-4">
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-slate-800"><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></span>
+                                                <span class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-0.5">Mahasiswa</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-slate-600 py-4 px-4 font-semibold"><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>
+                                        <td class="text-center py-4 px-4">
+                                            <span class="inline-block px-3 py-1 bg-blue-50 text-blue-700 border border-blue-100 text-xs font-semibold rounded-lg">
+                                                <?= ($displayNilai !== null && $displayNilai !== '') ? $displayNilai : 'Belum ada' ?>
+                                            </span>
+                                        </td>
+                                        <td class="text-center py-4 px-4">
+                                            <span class="inline-block px-3 py-1.5 text-xs font-semibold rounded-lg <?= $statusBadge ?>">
+                                                <?= $statusLabel ?>
+                                            </span>
+                                        </td>
+                                        <td class="text-center py-4 px-4">
+                                            <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm shadow-blue-500/10 mx-auto btn-detail"
+                                                    data-id="<?= htmlspecialchars($value['id'] ?? '') ?>"
+                                                    data-nama="<?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?>"
+                                                    data-stambuk="<?= htmlspecialchars($value['stambuk'] ?? '-') ?>"
+                                                    data-nilai="<?= htmlspecialchars($nilaiTes) ?>"
+                                                    data-total="<?= htmlspecialchars($nilaiTotal ?? '') ?>">
+                                                <i class="bi bi-eye"></i> Detail
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php $i++; endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
 
-        <?php if (empty($nilai)): ?>
-            <div class="text-center py-5 text-secondary">
-                <i class="bi bi-inbox display-1 opacity-50"></i>
-                <h3 class="h4 mt-3 mb-2">Belum ada peserta</h3>
-                <p class="mb-0">Data nilai akan muncul setelah mahasiswa mengerjakan tes tertulis</p>
-            </div>
-        <?php else: ?>
-            <!-- Clean Table -->
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle mb-0" id="tableNilai">
-                    <thead style="background-color: #ffffff;">
-                        <tr>
-                            <th class="text-center fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 60px;">No</th>
-                            <th class="fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase;">Mahasiswa</th>
-                            <th class="fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase;">Stambuk</th>
-                            <th class="text-center fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 120px;">Nilai Akhir</th>
-                            <th class="text-center fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 140px;">Status</th>
-                            <th class="text-center fw-bold py-3 px-3" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 120px;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $i = 1; foreach ($nilai as $value): ?>
-                            <?php
-                            // Raw auto-calculated score
-                            $nilaiTes = $value['nilai'] ?? null;
-                            // Manual override/Final score
-                            $nilaiTotal = $value['total'] ?? null;
-
-                            // Determine which value to display
-                            // Priority: Total (Manual) > Nilai (Auto)
-                            $displayNilai = ($nilaiTotal !== null && $nilaiTotal !== '') ? $nilaiTotal : $nilaiTes;
-                            
-                            // Determine status badge
-                            $statusLabel = 'Belum Dinilai';
-                            $statusBadge = 'bg-secondary';
-
-                            if ($displayNilai !== null && $displayNilai !== '-' && $displayNilai !== '') {
-                                $score = (int)$displayNilai;
-                                if ($score >= 70) {
-                                    $statusLabel = 'Memenuhi';
-                                    $statusBadge = 'bg-success';
-                                } else {
-                                    $statusLabel = 'Tidak Memenuhi';
-                                    $statusBadge = 'bg-danger';
-                                }
-                            }
-                            ?>
-                            <tr>
-                                <td class="text-center py-3 px-3" style="color: #6b7280; font-weight: 500;"><?= $i ?></td>
-                                <td class="py-3 px-3">
-                                    <div class="d-flex flex-column">
-                                        <span class="fw-bold text-dark"><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></span>
-                                        <span class="small text-muted">Mahasiswa</span>
-                                    </div>
-                                </td>
-                                <td class="py-3 px-3" style="color: #4b5563;"><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>
-                                <td class="text-center py-3 px-3">
-                                    <span class="badge bg-info text-dark rounded-pill px-3">
-                                        <?= ($displayNilai !== null && $displayNilai !== '') ? $displayNilai : 'Belum ada' ?>
-                                    </span>
-                                </td>
-                                <td class="text-center py-3 px-3">
-                                    <span class="badge <?= $statusBadge ?> rounded-pill px-3">
-                                        <?= $statusLabel ?>
-                                    </span>
-                                </td>
-                                <td class="text-center py-3 px-3">
-                                    <button class="btn btn-sm btn-primary rounded-3 btn-detail"
-                                            data-id="<?= htmlspecialchars($value['id'] ?? '') ?>"
-                                            data-nama="<?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?>"
-                                            data-stambuk="<?= htmlspecialchars($value['stambuk'] ?? '-') ?>"
-                                            data-nilai="<?= htmlspecialchars($nilaiTes) ?>"
-                                            data-total="<?= htmlspecialchars($nilaiTotal ?? '') ?>">
-                                        <i class="bi bi-eye"></i> Detail
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php $i++; endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        <?php endif; ?>
-    </div>
-
         <!-- View Detail (Inline) -->
-        <div id="view-detail" class="d-none pt-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="h4 fw-semibold text-dark mb-0">
-                    <i class="bi bi-person-badge"></i> Detail Nilai Mahasiswa
+        <div id="view-detail" class="hidden pt-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <i class="bi bi-person-badge text-blue-600"></i> Detail Nilai Mahasiswa
                 </h2>
-                <button class="btn btn-light rounded-3 px-4" id="btnBack">
+                <button class="px-4 py-2.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition flex items-center gap-2" id="btnBack">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </button>
             </div>
 
-            <div class="card bg-light border-0">
-                <div class="card-body p-4">
-                    <!-- Info Grid using Bootstrap Grid -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <div class="card border-start border-4 border-primary h-100">
-                                <div class="card-body">
-                                    <label class="text-muted text-uppercase small mb-1">Nama Lengkap</label>
-                                    <div class="fs-5 fw-semibold text-dark" id="detailNama">-</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card border-start border-4 border-primary h-100">
-                                <div class="card-body">
-                                    <label class="text-muted text-uppercase small mb-1">Stambuk</label>
-                                    <div class="fs-5 fw-semibold text-dark" id="detailStambuk">-</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card border-start border-4 border-primary h-100">
-                                <div class="card-body">
-                                    <label class="text-muted text-uppercase small mb-1">Nilai Akhir</label>
-                                    <div class="fs-5 fw-semibold text-dark" id="detailTotalNilai">-</div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="bg-slate-50 rounded-2xl border border-slate-100 shadow-sm p-6 space-y-6">
+                <!-- Info Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-5 rounded-2xl border-l-4 border-blue-600 shadow-sm border border-slate-100 flex flex-col justify-center">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Lengkap</span>
+                        <div class="text-lg font-bold text-slate-800" id="detailNama">-</div>
                     </div>
-
-                    <!-- Statistik Jawaban -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-value" id="statTotal">0</div>
-                                <div class="stat-label">Total Soal</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="stat-card success">
-                                <div class="stat-value text-success" id="statBenar">0</div>
-                                <div class="stat-label">Benar</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="stat-card warning">
-                                <div class="stat-value text-danger" id="statSalah">0</div>
-                                <div class="stat-label">Salah</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-value text-muted" id="statTidakDijawab">0</div>
-                                <div class="stat-label">Tidak Dijawab</div>
-                            </div>
-                        </div>
+                    <div class="bg-white p-5 rounded-2xl border-l-4 border-blue-600 shadow-sm border border-slate-100 flex flex-col justify-center">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Stambuk</span>
+                        <div class="text-lg font-bold text-slate-800" id="detailStambuk">-</div>
                     </div>
-
-                    <!-- Soal Jawaban Section -->
-                    <div class="mt-4">
-                        <div class="d-flex justify-content-between align-items-center pb-2 border-bottom mb-3 flex-wrap gap-2">
-                            <h5 class="fw-semibold text-dark mb-0">
-                                <i class="bi bi-list-check"></i> Soal dan Jawaban
-                            </h5>
-                            <div class="filter-btn-group">
-                                <button class="filter-btn active" data-filter="semua">
-                                    <i class="bi bi-grid-3x3-gap"></i> Semua
-                                </button>
-                                <button class="filter-btn" data-filter="pilihan_ganda">
-                                    <i class="bi bi-ui-checks"></i> Pilihan Ganda
-                                </button>
-                                <button class="filter-btn" data-filter="essay">
-                                    <i class="bi bi-pencil-square"></i> Essay
-                                </button>
-                            </div>
-                        </div>
-                        <div id="soalJawabanList" class="row g-3">
-                            <p class="text-muted">Memuat data...</p>
-                        </div>
+                    <div class="bg-white p-5 rounded-2xl border-l-4 border-blue-600 shadow-sm border border-slate-100 flex flex-col justify-center">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nilai Akhir</span>
+                        <div class="text-lg font-bold text-slate-800" id="detailTotalNilai">-</div>
                     </div>
+                </div>
 
-                    <!-- Nilai Form -->
-                    <div class="mt-4 pt-4 border-top">
-                        <h5 class="fw-semibold text-dark mb-3">
-                            <i class="bi bi-pencil-square"></i> Input Nilai Akhir
+                <!-- Statistik Jawaban -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border-l-4 border-slate-400 shadow-sm border border-slate-100 flex flex-col justify-center">
+                        <div class="text-2xl font-bold text-slate-800" id="statTotal">0</div>
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Total Soal</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border-l-4 border-emerald-500 shadow-sm border border-slate-100 flex flex-col justify-center">
+                        <div class="text-2xl font-bold text-emerald-600" id="statBenar">0</div>
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Benar</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border-l-4 border-red-500 shadow-sm border border-slate-100 flex flex-col justify-center">
+                        <div class="text-2xl font-bold text-red-600" id="statSalah">0</div>
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Salah</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border-l-4 border-slate-350 shadow-sm border border-slate-100 flex flex-col justify-center">
+                        <div class="text-2xl font-bold text-slate-400" id="statTidakDijawab">0</div>
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Tidak Dijawab</div>
+                    </div>
+                </div>
+
+                <!-- Soal Jawaban Section -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b border-slate-100 mb-6 gap-4">
+                        <h5 class="font-bold text-slate-800 flex items-center gap-2 text-base">
+                            <i class="bi bi-list-check text-blue-600"></i> Soal dan Jawaban
                         </h5>
-                        <form id="formNilaiAkhir">
-                            <div class="d-flex gap-2 flex-wrap">
-                                <input type="number"
-                                       id="nilaiAkhir"
-                                       class="form-control rounded-3"
-                                       style="max-width: 200px;"
-                                       placeholder="Masukkan nilai (0-100)"
-                                       min="0"
-                                       max="100">
-                                <button type="submit" class="btn btn-success rounded-3 px-4">
-                                    <i class="bi bi-check-lg"></i> Simpan Nilai
-                                </button>
-                            </div>
-                        </form>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="filter-btn px-4 py-2 bg-blue-600 border border-blue-600 text-white text-sm font-semibold rounded-xl transition cursor-pointer" data-filter="semua">
+                                <i class="bi bi-grid-3x3-gap"></i> Semua
+                            </button>
+                            <button class="filter-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 text-sm font-semibold rounded-xl transition cursor-pointer" data-filter="pilihan_ganda">
+                                <i class="bi bi-ui-checks"></i> Pilihan Ganda
+                            </button>
+                            <button class="filter-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 text-sm font-semibold rounded-xl transition cursor-pointer" data-filter="essay">
+                                <i class="bi bi-pencil-square"></i> Essay
+                            </button>
+                        </div>
                     </div>
+                    <div id="soalJawabanList" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <p class="text-slate-400">Memuat data...</p>
+                    </div>
+                </div>
+
+                <!-- Nilai Form -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                    <h5 class="font-bold text-slate-800 mb-4 flex items-center gap-2 text-base">
+                        <i class="bi bi-pencil-square text-blue-600"></i> Input Nilai Akhir
+                    </h5>
+                    <form id="formNilaiAkhir" class="flex items-center gap-3 flex-wrap">
+                        <input type="number"
+                               id="nilaiAkhir"
+                               class="w-full sm:w-48 px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition"
+                               placeholder="Masukkan nilai (0-100)"
+                               min="0"
+                               max="100">
+                        <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl transition flex items-center gap-2 shadow-md shadow-emerald-500/10">
+                            <i class="bi bi-check-lg"></i> Simpan Nilai
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </main>
-
-<!-- Bootstrap Alert Modal (replacing custom alert modal) -->
-<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4 shadow-lg">
-            <div class="modal-body text-center p-5">
-                <i id="alertIcon" class="bi display-1 mb-3" style="display: none;"></i>
-                <p id="alertMessage" class="fs-5 fw-semibold mb-4">-</p>
-                <button type="button" class="btn btn-primary px-4 rounded-3" data-bs-dismiss="modal">Tutup</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
 $(document).ready(function() {
     let currentMahasiswaId = null;
-    const alertModalEl = document.getElementById('alertModal');
-    const alertModalBS = new bootstrap.Modal(alertModalEl);
 
     // Helper function to get full image URL
     function getImageUrl(path) {
         if (!path) return '';
-        // If path already starts with http or /, return as is
         if (path.startsWith('http') || path.startsWith('/')) {
             return path;
         }
-        // Otherwise prepend base URL
         const baseUrl = '<?= APP_URL ?>'.replace('/public', '');
         return baseUrl + '/' + path;
-    }
-
-    // Helper function to show alert using Bootstrap Modal
-    function showAlert(message, isSuccess) {
-        $('#alertMessage').text(message);
-        
-        const iconClass = isSuccess 
-            ? 'bi-check-circle-fill text-success' 
-            : 'bi-x-circle-fill text-danger';
-            
-        $('#alertIcon').removeClass().addClass('bi display-1 mb-3 ' + iconClass).show();
-        alertModalBS.show();
-
-        // Auto hide after 2 seconds
-        setTimeout(() => {
-            alertModalBS.hide();
-        }, 2000);
     }
 
     // Search functionality
@@ -413,7 +258,7 @@ $(document).ready(function() {
         $('#nilaiAkhir').val(total || '');
 
         // Loading State for Questions
-        $('#soalJawabanList').html('<div class="col-12"><p class="text-muted">Memuat data...</p></div>');
+        $('#soalJawabanList').html('<div class="col-12"><p class="text-slate-400">Memuat data...</p></div>');
 
         // Fetch Questions
         $.ajax({
@@ -438,47 +283,39 @@ $(document).ready(function() {
                         let cardClass, borderClass, icon, statusBadge;
 
                         if (!isAnswered) {
-                            // Tidak dijawab
                             tidakDijawabCount++;
-                            cardClass = 'unanswered';
-                            borderClass = 'border-secondary';
-                            icon = '<i class="bi bi-question-circle-fill text-muted"></i>';
-                            statusBadge = 'bg-secondary';
+                            cardClass = 'border-l-4 border-slate-400 bg-slate-50/50 rounded-2xl border border-slate-100 p-5 shadow-sm';
+                            icon = '<i class="bi bi-question-circle-fill text-slate-400"></i>';
+                            statusBadge = 'bg-slate-100 text-slate-600';
                         } else if (isCorrect) {
-                            // Benar
                             benarCount++;
-                            cardClass = 'correct';
-                            borderClass = 'border-success';
-                            icon = '<i class="bi bi-check-circle-fill text-success"></i>';
-                            statusBadge = 'bg-success';
+                            cardClass = 'border-l-4 border-emerald-500 bg-white rounded-2xl border border-slate-100 p-5 shadow-sm';
+                            icon = '<i class="bi bi-check-circle-fill text-emerald-500"></i>';
+                            statusBadge = 'bg-emerald-50 text-emerald-700';
                         } else {
-                            // Salah
                             salahCount++;
-                            cardClass = 'wrong';
-                            borderClass = 'border-danger';
-                            icon = '<i class="bi bi-x-circle-fill text-danger"></i>';
-                            statusBadge = 'bg-danger';
+                            cardClass = 'border-l-4 border-red-500 bg-white rounded-2xl border border-slate-100 p-5 shadow-sm';
+                            icon = '<i class="bi bi-x-circle-fill text-red-500"></i>';
+                            statusBadge = 'bg-red-50 text-red-700';
                         }
 
-                        // Format pilihan untuk ditampilkan
+                        // Format options for display
                         let pilihanHTML = '';
                         try {
                             const pilihanObj = JSON.parse(item.pilihan);
-                            // Check if pilihan contains image URLs
                             pilihanHTML = Object.entries(pilihanObj)
                                 .map(([key, value]) => {
-                                    // Check if value is an image URL
                                     if (value && (value.includes('.jpg') || value.includes('.jpeg') || value.includes('.png') || value.includes('.gif') || value.includes('.webp'))) {
                                         return `
-                                            <div class="mb-2">
-                                                <strong>${key}.</strong>
-                                                <div class="mt-1">
-                                                    <img src="${getImageUrl(value)}" alt="Pilihan ${key}" style="max-width: 100%; height: auto; max-height: 200px; border-radius: 8px; border: 2px solid #e2e8f0;">
+                                            <div class="mb-2 flex items-start gap-2">
+                                                <strong class="text-slate-700">${key}.</strong>
+                                                <div>
+                                                    <img src="${getImageUrl(value)}" alt="Pilihan ${key}" class="max-w-full h-auto max-h-40 rounded-lg border border-slate-200">
                                                 </div>
                                             </div>
                                         `;
                                     } else {
-                                        return `<div class="mb-1"><strong>${key}.</strong> ${value}</div>`;
+                                        return `<div class="mb-1 text-slate-700"><strong class="text-slate-800">${key}.</strong> ${value}</div>`;
                                     }
                                 })
                                 .join('');
@@ -486,50 +323,46 @@ $(document).ready(function() {
                             pilihanHTML = item.pilihan;
                         }
 
-                        // Badge tipe soal
                         const tipeBadge = isPilihanGanda
-                            ? '<span class="badge bg-primary bg-opacity-10 text-primary border border-primary ms-2"><i class="bi bi-ui-checks"></i> PG</span>'
-                            : '<span class="badge bg-warning bg-opacity-10 text-warning border border-warning ms-2"><i class="bi bi-pencil-square"></i> Essay</span>';
+                            ? '<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-blue-50 text-blue-700 border border-blue-100 ml-2"><i class="bi bi-ui-checks"></i> PG</span>'
+                            : '<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-amber-50 text-amber-700 border border-amber-100 ml-2"><i class="bi bi-pencil-square"></i> Essay</span>';
 
-                        // Check if item has image
                         const hasImage = item.image_url && item.image_url.trim() !== '';
 
                         html += `
-                            <div class="col-lg-6 soal-item" data-tipe="${tipeSoal}">
-                                <div class="card soal-card ${cardClass} border-start border-4 ${borderClass} h-100 shadow-sm">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-start mb-3">
-                                            <div class="d-flex align-items-center">
-                                                <div class="soal-number">${index + 1}</div>
-                                                ${tipeBadge}
-                                            </div>
-                                            <div style="font-size: 1.2rem;">${icon}</div>
+                            <div class="soal-item" data-tipe="${tipeSoal}">
+                                <div class="${cardClass}">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg flex items-center justify-center font-bold text-sm shadow-sm">${index + 1}</div>
+                                            ${tipeBadge}
                                         </div>
-                                        ${hasImage ? `
-                                        <div class="mb-3">
-                                            <img src="${getImageUrl(item.image_url)}" alt="Gambar Soal ${index + 1}" style="max-width: 100%; height: auto; max-height: 300px; border-radius: 8px; border: 2px solid #e2e8f0;">
+                                        <div class="text-xl">${icon}</div>
+                                    </div>
+                                    ${hasImage ? `
+                                    <div class="mb-4">
+                                        <img src="${getImageUrl(item.image_url)}" alt="Gambar Soal ${index + 1}" class="max-w-full h-auto max-h-60 rounded-xl border border-slate-200">
+                                    </div>
+                                    ` : ''}
+                                    <div class="mb-4">
+                                        <span class="font-bold text-slate-800 leading-relaxed text-sm block">${item.deskripsi}</span>
+                                    </div>
+                                    <div class="text-xs space-y-3">
+                                        ${isPilihanGanda ? `
+                                        <div class="space-y-1.5 text-slate-600 bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                                            ${pilihanHTML}
                                         </div>
                                         ` : ''}
-                                        <div class="mb-3">
-                                            <strong class="text-dark">${item.deskripsi}</strong>
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Jawaban Benar:</span>
+                                            <span class="inline-block px-2 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 font-semibold rounded">${item.jawaban}</span>
                                         </div>
-                                        <div class="small">
-                                            ${isPilihanGanda ? `
-                                            <div class="mb-3">
-                                                ${pilihanHTML}
-                                            </div>
-                                            ` : ''}
-                                            <div class="mb-2">
-                                                <span class="text-muted">Jawaban Benar:</span>
-                                                <span class="badge bg-success ms-1">${item.jawaban}</span>
-                                            </div>
-                                            <div>
-                                                <span class="text-muted">Jawaban Mahasiswa:</span>
-                                                ${isAnswered
-                                                    ? `<span class="badge ${statusBadge} ms-1">${item.jawaban_user}</span>`
-                                                    : '<span class="badge bg-secondary ms-1">Tidak menjawab</span>'
-                                                }
-                                            </div>
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Jawaban Mahasiswa:</span>
+                                            ${isAnswered
+                                                ? `<span class="inline-block px-2 py-1 ${statusBadge} font-semibold rounded">${item.jawaban_user}</span>`
+                                                : '<span class="inline-block px-2 py-1 bg-slate-100 text-slate-600 font-semibold rounded">Tidak menjawab</span>'
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -537,7 +370,7 @@ $(document).ready(function() {
                         `;
                     });
 
-                    // Update statistik
+                    // Update stats
                     $('#statTotal').text(totalSoal);
                     $('#statBenar').text(benarCount);
                     $('#statSalah').text(salahCount);
@@ -545,8 +378,7 @@ $(document).ready(function() {
 
                     $('#soalJawabanList').html(html);
                 } else {
-                    $('#soalJawabanList').html('<div class="col-12"><p class="text-muted">Tidak ada data soal dan jawaban.</p></div>');
-                    // Reset statistik
+                    $('#soalJawabanList').html('<div class="col-12"><p class="text-slate-450">Tidak ada data soal dan jawaban.</p></div>');
                     $('#statTotal').text(0);
                     $('#statBenar').text(0);
                     $('#statSalah').text(0);
@@ -554,11 +386,10 @@ $(document).ready(function() {
                 }
             },
             error: function() {
-                $('#soalJawabanList').html('<div class="col-12"><p class="text-danger">Gagal memuat data.</p></div>');
+                $('#soalJawabanList').html('<div class="col-12"><p class="text-red-500">Gagal memuat data.</p></div>');
             }
         });
 
-        // Switch View using Bootstrap d-none
         $('#view-list').addClass('d-none');
         $('#view-detail').removeClass('d-none');
         window.scrollTo(0, 0);
@@ -575,9 +406,9 @@ $(document).ready(function() {
     $(document).on('click', '.filter-btn', function() {
         const filter = $(this).data('filter');
 
-        // Update active state
-        $('.filter-btn').removeClass('active');
-        $(this).addClass('active');
+        // Update active state style
+        $('.filter-btn').removeClass('bg-blue-600 border-blue-600 text-white hover:bg-blue-700').addClass('bg-white border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50');
+        $(this).removeClass('bg-white border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50').addClass('bg-blue-600 border-blue-600 text-white hover:bg-blue-700');
 
         // Filter soal items
         if (filter === 'semua') {
@@ -588,10 +419,9 @@ $(document).ready(function() {
         }
     });
 
-    // Submit nilai form
+    // Submit score form
     $('#formNilaiAkhir').on('submit', function(e) {
         e.preventDefault();
-
         const nilaiAkhir = $('#nilaiAkhir').val();
 
         if (!currentMahasiswaId) {
@@ -604,10 +434,9 @@ $(document).ready(function() {
             return;
         }
 
-        // Show loading state
         const btnSubmit = $(this).find('button[type="submit"]');
         const originalBtnText = btnSubmit.html();
-        btnSubmit.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menyimpan...');
+        btnSubmit.prop('disabled', true).html('<i class="bi bi-hourglass-split animate-spin mr-1"></i> Menyimpan...');
 
         $.ajax({
             url: '<?= APP_URL ?>/updatenilaiakhir',
@@ -620,38 +449,35 @@ $(document).ready(function() {
                 if (response.status === 'success') {
                     showAlert('Nilai berhasil disimpan!', true);
 
-                    // Real-time Update Logic
+                    // Real-time Update Logic in Table
                     const btn = $(`.btn-detail[data-id="${currentMahasiswaId}"]`);
                     const tr = btn.closest('tr');
 
                     if (tr.length) {
-                        // Determine badge class based on score using Bootstrap classes
-                        let badgeClass = 'bg-secondary';
+                        let badgeClass = 'text-slate-500 bg-slate-50 border border-slate-200';
                         let statusText = 'Belum Dinilai';
 
                         if (nilaiAkhir !== '') {
                             const score = parseInt(nilaiAkhir);
-
-                            // Update Status Logic - Status reflects Final Grade (Nilai Akhir)
                             if (score >= 70) {
-                                badgeClass = 'bg-success';
+                                badgeClass = 'text-emerald-700 bg-emerald-50 border border-emerald-100';
                                 statusText = 'Memenuhi';
                             } else {
-                                badgeClass = 'bg-danger';
+                                badgeClass = 'text-red-700 bg-red-50 border border-red-100';
                                 statusText = 'Tidak Memenuhi';
                             }
                         }
 
                         // Update Nilai Akhir Column (Index 3)
-                        tr.find('td:eq(3)').html(`<span class="badge bg-info text-dark rounded-pill px-3">${nilaiAkhir}</span>`);
+                        tr.find('td:eq(3)').html(`<span class="inline-block px-3 py-1 bg-blue-50 text-blue-700 border border-blue-100 text-xs font-semibold rounded-lg">${nilaiAkhir}</span>`);
 
                         // Update Status Column (Index 4)
-                        tr.find('td:eq(4)').html(`<span class="badge ${badgeClass} rounded-pill px-3">${statusText}</span>`);
+                        tr.find('td:eq(4)').html(`<span class="inline-block px-3 py-1.5 text-xs font-semibold rounded-lg ${badgeClass}">${statusText}</span>`);
 
-                        // Update Button Data Attribute for next open
+                        // Update Button Data Attribute
                         btn.data('total', nilaiAkhir);
 
-                        // Update the text in the detail view as well
+                        // Update detail text
                         $('#detailTotalNilai').text(nilaiAkhir);
                     }
                 } else {

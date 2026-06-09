@@ -1,30 +1,25 @@
-﻿
+
 // Universal wrapper for AJAX and Direct Load
 (function() {
     const initDaftarPesertaScript = function() {
         console.log('Daftar Peserta script loaded');
         
-        // Initialize DataTable
-        // Check if already initialized and destroy if so to prevent errors
-        if ($.fn.DataTable.isDataTable('#daftarPesertaTable')) {
-            $('#daftarPesertaTable').DataTable().destroy();
-        }
-
-        // Initialize DataTable with custom search (Paging disabled as requested)
-        var table = $('#daftarPesertaTable').DataTable({
-            dom: "t",
-            paging: false,
-            info: false,
-            ordering: false, // Disable sorting to match visual design (remove arrows)
-            language: {
-                search: "", 
-                searchPlaceholder: "Cari peserta..."
-            }
-        });
-
         // Link custom search input
-        $('#searchPeserta').on('keyup', function() {
-            table.search(this.value).draw();
+        $('#searchPeserta').off('input').on('input', function() {
+            var val = $(this).val().toLowerCase();
+            $('#daftarPesertaTable tbody tr').each(function() {
+                var row = $(this);
+                var name = row.find('td:nth-child(2)').text().toLowerCase();
+                var stambuk = row.find('td:nth-child(3)').text().toLowerCase();
+                var jurusan = row.find('td:nth-child(4)').text().toLowerCase();
+                var status = row.find('td:nth-child(5)').text().toLowerCase();
+                
+                if (name.indexOf(val) > -1 || stambuk.indexOf(val) > -1 || jurusan.indexOf(val) > -1 || status.indexOf(val) > -1) {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
         });
 
     // Store current row data
@@ -202,28 +197,28 @@
             if (btnTolak) btnTolak.style.display = 'none';
             
             if (berkasAccepted == '1') {
-                statusBadge.className = 'badge rounded-pill px-4 py-2 bg-success text-white';
+                statusBadge.className = 'inline-block rounded-full px-4 py-1.5 text-xs font-semibold bg-emerald-500 text-white';
                 statusBadge.innerHTML = '<i class="bi bi-check-circle me-1"></i>Berkas Terverifikasi';
-                statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow bg-success text-white d-flex align-items-center justify-content-center';
-                statusIcon.style.width = '30px';
-                statusIcon.style.height = '30px';
+                statusIcon.className = 'absolute bottom-0 right-0 w-8 h-8 rounded-full shadow-md flex items-center justify-center text-sm text-white font-bold bg-emerald-500 border-2 border-white';
+                statusIcon.style.width = '';
+                statusIcon.style.height = '';
                 statusIcon.innerHTML = '<i class="bi bi-check-lg"></i>';
                 btnBatalkan.style.display = 'inline-block';
             } else if (berkasAccepted == '0') {
-                statusBadge.className = 'badge rounded-pill px-4 py-2 bg-info text-white';
+                statusBadge.className = 'inline-block rounded-full px-4 py-1.5 text-xs font-semibold bg-blue-500 text-white';
                 statusBadge.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Menunggu Verifikasi';
-                statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow bg-info text-white d-flex align-items-center justify-content-center';
-                statusIcon.style.width = '30px';
-                statusIcon.style.height = '30px';
+                statusIcon.className = 'absolute bottom-0 right-0 w-8 h-8 rounded-full shadow-md flex items-center justify-center text-sm text-white font-bold bg-blue-500 border-2 border-white';
+                statusIcon.style.width = '';
+                statusIcon.style.height = '';
                 statusIcon.innerHTML = '<i class="bi bi-clock"></i>';
                 btnVerifikasi.style.display = 'inline-block';
                 btnVerifikasi.disabled = false;
             } else {
-                statusBadge.className = 'badge rounded-pill px-4 py-2 bg-secondary text-white';
+                statusBadge.className = 'inline-block rounded-full px-4 py-1.5 text-xs font-semibold bg-slate-500 text-white';
                 statusBadge.innerHTML = '<i class="bi bi-file-earmark-x me-1"></i>Belum Upload Berkas';
-                statusIcon.className = 'position-absolute bottom-0 end-0 rounded-circle shadow bg-secondary text-white d-flex align-items-center justify-content-center';
-                statusIcon.style.width = '30px';
-                statusIcon.style.height = '30px';
+                statusIcon.className = 'absolute bottom-0 right-0 w-8 h-8 rounded-full shadow-md flex items-center justify-center text-sm text-white font-bold bg-slate-500 border-2 border-white';
+                statusIcon.style.width = '';
+                statusIcon.style.height = '';
                 statusIcon.innerHTML = '<i class="bi bi-x-lg"></i>';
                 if (btnTerima) btnTerima.style.display = 'inline-block';
                 if (btnTolak) btnTolak.style.display = 'inline-block';
@@ -491,14 +486,14 @@
     const waitForJQuery = function(callback, maxAttempts = 50) {
         let attempts = 0;
         const check = function() {
-            if (typeof jQuery !== 'undefined' && typeof $ !== 'undefined' && $.fn.DataTable) {
+            if (typeof jQuery !== 'undefined' && typeof $ !== 'undefined') {
                 callback();
             } else {
                 attempts++;
                 if (attempts < maxAttempts) {
                     setTimeout(check, 100);
                 } else {
-                    console.error('jQuery/DataTables failed to load after ' + (maxAttempts * 100) + 'ms');
+                    console.error('jQuery failed to load after ' + (maxAttempts * 100) + 'ms');
                 }
             }
         };

@@ -20,94 +20,59 @@ $colors = ['#2f66f6'];
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<style>
-    /* Custom styles for action buttons */
-    .btn-action {
-        width: 32px;
-        height: 32px;
-        min-width: 32px;
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .btn-action i {
-        font-size: 1rem;
-        line-height: 1;
-    }
+<div class="max-w-7xl mx-auto px-4 py-6">
 
-    /* Unified Table Style */
-    .table-custom { --bs-table-border-color: #e0e0e0; }
-    .table-custom thead th {
-        color: #2f66f6; font-weight: 700; font-size: 0.75rem;
-        text-transform: uppercase; letter-spacing: 0.5px;
-        background-color: #fff; border-top: 1px solid #e0e0e0;
-        border-bottom: 1px solid #e0e0e0;
-        padding: 1rem 0.75rem;
-    }
-    .table-custom tbody td {
-        padding: 1rem 0.75rem; color: #333; font-size: 0.875rem;
-        border-color: #e0e0e0;
-    }
-</style>
+    <!-- Table Controls -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <div class="relative w-full sm:w-72">
+            <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input type="text" id="searchInput" class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm" placeholder="Cari nama atau stambuk...">
+        </div>
+        <button class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl flex items-center gap-2 transition shadow-sm border-0" type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
+            <i class="bi bi-plus-circle"></i> Tambah Jadwal
+        </button>
+    </div>
 
-<div class="container-fluid px-4 mt-3">
-
-            <!-- Table Controls -->
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
-                <div class="position-relative" style="width: 280px;">
-                    <i class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"></i>
-                    <input type="text" id="searchInput" class="form-control rounded-3 ps-5" placeholder="Cari nama atau stambuk...">
-                </div>
-            <div class="d-flex gap-3">
-                <button class="btn btn-primary btn-gradient-primary border-0 rounded-4 fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2" type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
-                    <i class="bi bi-plus-circle"></i> Tambah Jadwal
-                </button>
-            </div>
-            </div>
-
-            <!-- Data Table -->
-            <div class="card mb-3 rounded-0 border-0 shadow-none">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table id="wawancaraMahasiswa" class="table table-hover table-bordered align-middle mb-0 table-custom">
-                            <thead>
-                                <tr>
-                                    <th class="py-3 px-3 text-center" width="5%">NO</th>
-                                    <th class="py-3 px-3" width="25%">NAMA LENGKAP</th>
-                                    <th class="py-3 px-3" width="15%">STAMBUK</th>
-                                    <th class="py-3 px-3" width="20%">KEGIATAN</th>
-                                    <th class="py-3 px-3" width="10%">RUANGAN</th>
-                                    <th class="py-3 px-3" width="10%">TANGGAL</th>
-                                    <th class="py-3 px-3" width="10%">WAKTU</th>
-                                    <th class="py-3 px-3 text-center" width="5%">AKSI</th>
-                                </tr>
-                            </thead>
-                <tbody id="table-body" class="bg-white">
+    <!-- Data Table -->
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
+        <div class="overflow-x-auto">
+            <table id="wawancaraMahasiswa" class="w-full text-left border-collapse text-sm">
+                <thead>
+                    <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                        <th class="py-4 px-4 text-center font-bold uppercase tracking-wider" style="width: 5%;">NO</th>
+                        <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 25%;">NAMA LENGKAP</th>
+                        <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 15%;">STAMBUK</th>
+                        <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 20%;">KEGIATAN</th>
+                        <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 10%;">RUANGAN</th>
+                        <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 10%;">TANGGAL</th>
+                        <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 10%;">WAKTU</th>
+                        <th class="py-4 px-4 text-center font-bold uppercase tracking-wider" style="width: 5%;">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body" class="bg-white divide-y divide-slate-100">
                     <?php if (empty($wawancara)): ?>
                         <tr>
-                            <td colspan="8" class="text-center py-5 text-muted">
-                                <i class="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
-                                Belum ada data jadwal wawancara
+                            <td colspan="8" class="text-center py-16 text-slate-400">
+                                <i class="bi bi-inbox text-5xl d-block mb-3 opacity-55"></i>
+                                <span class="font-semibold text-sm">Belum ada data jadwal wawancara</span>
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php $i = 1; ?>
                         <?php foreach ($wawancara as $row): ?>
-                            <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
-                                <td class="text-center fw-bold text-secondary"><?= $i ?></td>
-                                <td>
-                                    <div class="fw-bold text-dark"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
+                            <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>" class="hover:bg-slate-50 transition duration-150">
+                                <td class="py-4 px-4 text-center font-bold text-slate-500"><?= $i ?></td>
+                                <td class="py-4 px-4">
+                                    <div class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
                                 </td>
-                                <td class="fw-medium text-secondary"><?= htmlspecialchars($row['stambuk']) ?></td>
-                                <td><?= htmlspecialchars($row['jenis_wawancara']) ?></td>
-                                <td><?= htmlspecialchars($row['ruangan']) ?></td>
-                                <td><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
-                                <td><?= htmlspecialchars($row['waktu']) ?></td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 open-update" 
+                                <td class="py-4 px-4 font-semibold text-slate-600"><?= htmlspecialchars($row['stambuk']) ?></td>
+                                <td class="py-4 px-4 font-medium text-slate-705"><?= htmlspecialchars($row['jenis_wawancara']) ?></td>
+                                <td class="py-4 px-4 font-medium text-slate-705"><?= htmlspecialchars($row['ruangan']) ?></td>
+                                <td class="py-4 px-4 text-slate-600"><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
+                                <td class="py-4 px-4 text-slate-600 font-semibold"><?= htmlspecialchars($row['waktu']) ?></td>
+                                <td class="py-4 px-4 text-center">
+                                    <div class="flex justify-center gap-2">
+                                        <button class="p-2 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg transition-colors border-0 open-update" 
                                                 data-bs-toggle="modal" data-bs-target="#updateWawancaraModal"
                                                 data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
                                                 data-stambuk="<?= htmlspecialchars($row['stambuk']) ?>"
@@ -120,7 +85,7 @@ $colors = ['#2f66f6'];
                                                 title="Edit Data">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3 btn-delete-wawancara" 
+                                        <button class="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors border-0 btn-delete-wawancara" 
                                                 data-id="<?= $row['id'] ?>"
                                                 title="Hapus Data">
                                             <i class="bi bi-trash"></i>
@@ -132,28 +97,25 @@ $colors = ['#2f66f6'];
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
-                </table>
-                    </div>
-                </div>
-            </div>
-
+            </table>
+        </div>
+    </div>
 </div>
 
-
-
+<!-- Add Jadwal Modal -->
 <div class="modal fade modal-wawancara" id="addJadwalModal" tabindex="-1" aria-labelledby="addJadwalModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content border-0 rounded-4 overflow-hidden">
-            <div class="modal-header modal-header-gradient border-0">
-                <h5 class="modal-title fw-bold text-white" id="addJadwalModalLabel"><i class="bi bi-plus-circle me-2"></i>Tambah Jadwal</h5>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-2xl overflow-hidden">
+            <div class="modal-header border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl">
+                <h5 class="modal-title font-bold text-lg" id="addJadwalModalLabel"><i class="bi bi-plus-circle me-2"></i>Tambah Jadwal</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4">
-                <form id="addJadwalForm" method="POST" action="javascript:void(0);">
-                    <div class="mb-3">
-                        <label for="mahasiswa" class="form-label fw-bold">Pilih Mahasiswa</label>
-                        <div class="d-flex gap-2 mb-2">
-                             <select class="form-select" id="mahasiswa">
+            <form id="addJadwalForm" method="POST" action="javascript:void(0);">
+                <div class="modal-body p-6 space-y-4">
+                    <div>
+                        <label for="mahasiswa" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Pilih Mahasiswa</label>
+                        <div class="flex gap-2 mb-3">
+                             <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition bg-white" id="mahasiswa">
                                 <option value="" disabled selected>-- Pilih Mahasiswa --</option>
                                 <?php foreach ($mahasiswaList as $mahasiswa): ?>
                                     <option value="<?= $mahasiswa['id'] ?>">
@@ -161,15 +123,16 @@ $colors = ['#2f66f6'];
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <button type="button" class="btn btn-secondary" id="addMahasiswaButton">Tambah</button>
+                            <button type="button" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl text-sm transition shrink-0 border-0" id="addMahasiswaButton">Tambah</button>
                         </div>
-                        <ul class="list-group list-group-flush border rounded-3 overflow-hidden shadow-sm" id="selectedMahasiswaList" style="max-height: 150px; overflow-y: auto;">
+                        <ul class="divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden shadow-sm" id="selectedMahasiswaList" style="max-height: 150px; overflow-y: auto;">
                         </ul>
                     </div>
-                    <div class="row g-3">
-                        <div class="col-6 mb-3">
-                            <label for="ruangan" class="form-label fw-bold">Ruangan</label>
-                            <select class="form-select" id="ruangan" required>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="ruangan" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Ruangan</label>
+                            <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition bg-white" id="ruangan" required>
                                 <option value="" disabled selected>-- Pilih --</option>
                                 <?php foreach ($ruanganList as $ruangan): ?>
                                     <option value="<?= $ruangan['id'] ?>">
@@ -178,50 +141,50 @@ $colors = ['#2f66f6'];
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-6 mb-3">
-                            <label for="wawancara" class="form-label fw-bold">Jenis Kegiatan</label>
-                            <select class="form-select" id="wawancara" required>
+                        <div>
+                            <label for="wawancara" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Jenis Kegiatan</label>
+                            <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition bg-white" id="wawancara" required>
                                 <option value="" disabled selected>-- Pilih --</option>
                                 <option value="wawancara kepala lab I">Wawancara Kepala Lab I</option>
                                 <option value="wawancara kepala lab II">Wawancara Kepala Lab II</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row g-3">
-                        <div class="col-6 mb-3">
-                            <label for="tanggal" class="form-label fw-bold">Tanggal</label>
-                            <input type="date" class="form-control" id="tanggal" required>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="tanggal" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Tanggal</label>
+                            <input type="date" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition bg-white" id="tanggal" required>
                         </div>
-                        <div class="col-6 mb-3">
-                            <label for="waktu" class="form-label fw-bold">Waktu</label>
-                            <input type="time" class="form-control" id="waktu" required>
+                        <div>
+                            <label for="waktu" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Waktu</label>
+                            <input type="time" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition bg-white" id="waktu" required>
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="addJadwalForm" class="btn btn-primary px-4 rounded-3">Tambah Jadwal</button>
-            </div>
+                </div>
+                <div class="modal-footer border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
+                    <button type="button" class="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-bold transition border-0 bg-transparent" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" form="addJadwalForm" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition shadow-sm border-0">Tambah Jadwal</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-
-<div class="modal fade modal-wawancara" id="updateWawancaraModal" tabindex="-1" aria-labelledby="updateWawancaraModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateWawancaraModalLabel"><i class="bi bi-pencil-square me-2"></i>Update Wawancara</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Update Wawancara Modal -->
+<div class="modal fade modal-wawancara" id="updateWawancaraModal" tabindex="-1" aria-labelledby="updateWawancaraModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-2xl overflow-hidden">
+            <div class="modal-header border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl">
+                <h5 class="modal-title font-bold text-lg" id="updateWawancaraModalLabel"><i class="bi bi-pencil-square me-2"></i>Update Wawancara</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <form id="updateWawancaraForm" method="POST" action="javascript:void(0);">
+            <form id="updateWawancaraForm" method="POST" action="javascript:void(0);">
+                <div class="modal-body p-6 space-y-4">
                     <input type="hidden" id="updateWawancaraId">
-                    <div class="mb-3">
-                        <label for="updateRuangan" class="form-label">Ruangan</label>
-                        <select class="form-select" id="updateRuangan" required>
+                    <div>
+                        <label for="updateRuangan" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Ruangan</label>
+                        <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition bg-white" id="updateRuangan" required>
                             <option value="" disabled selected>-- Pilih Ruangan --</option>
                             <?php foreach ($ruanganList as $ruangan): ?>
                                 <option value="<?= $ruangan['id'] ?>">
@@ -230,24 +193,28 @@ $colors = ['#2f66f6'];
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="updateTanggal" class="form-label">Tanggal</label>
-                        <input type="date" class="form-control" id="updateTanggal" required>
+                    <div>
+                        <label for="updateTanggal" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Tanggal</label>
+                        <input type="date" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition bg-white" id="updateTanggal" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="updateWaktu" class="form-label">Waktu</label>
-                        <input type="time" class="form-control" id="updateWaktu" required>
+                    <div>
+                        <label for="updateWaktu" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Waktu</label>
+                        <input type="time" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition bg-white" id="updateWaktu" required>
                     </div>
-                    <div class="mb-3">
-                        <select class="form-select" id="updateJenisWawancara" required>
+                    <div>
+                        <label for="updateJenisWawancara" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Jenis Wawancara</label>
+                        <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition bg-white" id="updateJenisWawancara" required>
                             <option value="" disabled selected>-- Pilih Jenis Wawancara --</option>
                             <option value="wawancara kepala lab I">Wawancara Kepala Lab I</option>
                             <option value="wawancara kepala lab II">Wawancara Kepala Lab II</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Update Jadwal</button>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
+                    <button type="button" class="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-bold transition border-0 bg-transparent" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition shadow-sm border-0">Update Jadwal</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -322,11 +289,11 @@ $colors = ['#2f66f6'];
             selectedMahasiswaList.innerHTML = "";
             selectedMahasiswa.forEach((mahasiswa) => {
                 const listItem = document.createElement("li");
-                listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+                listItem.className = "flex justify-between items-center bg-slate-50/80 px-4 py-2 text-sm font-semibold text-slate-700 rounded-lg mb-1";
                 listItem.textContent = mahasiswa.text;
 
                 const removeButton = document.createElement("button");
-                removeButton.className = "btn btn-sm btn-danger";
+                removeButton.className = "px-2.5 py-1 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border-0";
                 removeButton.textContent = "Hapus";
                 removeButton.addEventListener("click", () => {
                     selectedMahasiswa = selectedMahasiswa.filter((item) => item.id !== mahasiswa.id);
@@ -517,9 +484,9 @@ $colors = ['#2f66f6'];
                 if ($('#noResultsRow').length === 0) {
                     $("#table-body").append(`
                         <tr id="noResultsRow">
-                            <td colspan="8" class="text-center py-5 text-muted">
-                                <i class="bi bi-search fs-1 d-block mb-3 opacity-25"></i>
-                                Data yang Anda cari tidak ditemukan
+                            <td colspan="8" class="text-center py-16 text-slate-400">
+                                <i class="bi bi-search text-5xl d-block mb-3 opacity-55"></i>
+                                <span class="font-semibold text-sm">Data yang Anda cari tidak ditemukan</span>
                             </td>
                         </tr>
                     `);
@@ -547,28 +514,28 @@ $colors = ['#2f66f6'];
                         if (response.data.length === 0) {
                             tableBody.append(`
                                 <tr>
-                                    <td colspan="8" class="text-center py-5 text-muted">
-                                        <i class="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
-                                        Belum ada data jadwal wawancara di ruangan ini
+                                    <td colspan="8" class="text-center py-16 text-slate-400">
+                                        <i class="bi bi-inbox text-5xl d-block mb-3 opacity-55"></i>
+                                        <span class="font-semibold text-sm">Belum ada data jadwal wawancara di ruangan ini</span>
                                     </td>
                                 </tr>
                             `);
                         } else {
                             response.data.forEach(row => {
                                 tableBody.append(`
-                                    <tr data-id="${row.id}" data-userid="${row.id_mahasiswa}">
-                                        <td class="text-center fw-bold text-secondary">${i}</td>
-                                        <td>
-                                            <div class="fw-bold text-dark">${row.nama_lengkap}</div>
+                                    <tr data-id="${row.id}" data-userid="${row.id_mahasiswa}" class="hover:bg-slate-50 transition duration-150">
+                                        <td class="py-4 px-4 text-center font-bold text-slate-500">${i}</td>
+                                        <td class="py-4 px-4">
+                                            <div class="font-bold text-slate-800">${row.nama_lengkap}</div>
                                         </td>
-                                        <td class="fw-medium text-secondary">${row.stambuk}</td>
-                                        <td>${row.jenis_wawancara}</td>
-                                        <td>${row.ruangan}</td>
-                                        <td>${formatDate(row.tanggal)}</td>
-                                        <td>${row.waktu}</td>
-                                        <td class="text-center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <button class="btn btn-sm btn-action bg-warning-subtle text-warning border-0 rounded-3 open-update" 
+                                        <td class="py-4 px-4 font-semibold text-slate-600">${row.stambuk}</td>
+                                        <td class="py-4 px-4 font-medium text-slate-700">${row.jenis_wawancara}</td>
+                                        <td class="py-4 px-4 font-medium text-slate-700">${row.ruangan}</td>
+                                        <td class="py-4 px-4 text-slate-600">${formatDate(row.tanggal)}</td>
+                                        <td class="py-4 px-4 text-slate-600 font-semibold">${row.waktu}</td>
+                                        <td class="py-4 px-4 text-center">
+                                            <div class="flex justify-center gap-2">
+                                                <button class="p-2 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg transition-colors border-0 open-update" 
                                                         data-bs-toggle="modal" data-bs-target="#updateWawancaraModal"
                                                         data-nama="${row.nama_lengkap}"
                                                         data-stambuk="${row.stambuk}"
@@ -581,7 +548,7 @@ $colors = ['#2f66f6'];
                                                         title="Edit Data">
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-sm btn-action bg-danger-subtle text-danger border-0 rounded-3 btn-delete-wawancara" 
+                                                <button class="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors border-0 btn-delete-wawancara" 
                                                         data-id="${row.id}"
                                                         title="Hapus Data">
                                                     <i class="bi bi-trash"></i>

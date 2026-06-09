@@ -17,19 +17,92 @@ $results = $results ?? [];
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ICLabs - Tes Tertulis</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <!-- Bootstrap Icons -->
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Icon Libraries -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" crossorigin="anonymous">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?=APP_URL?>/Assets/css/exam.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link class="suppress-error" rel="icon" href="<?=APP_URL?>/Assets/Img/iclabs.png">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* Custom scrollbar for sidebar & question pane */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Active/Answered States for Navigation Buttons */
+        .nav-btn-soal.active {
+            background-color: #2563eb !important; /* bg-blue-600 */
+            border-color: #2563eb !important;
+            color: white !important;
+            font-weight: 700;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+        }
+        .nav-btn-soal.answered {
+            background-color: #0ea5e9 !important; /* bg-sky-500 */
+            border-color: #0ea5e9 !important;
+            color: white !important;
+        }
+        .nav-btn-soal.answered.active {
+            background-color: #2563eb !important;
+            border-color: #2563eb !important;
+        }
+        .nav-btn-soal.answered.active::after {
+            content: '✓';
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background-color: #0ea5e9;
+            color: white;
+            border-radius: 9999px;
+            width: 14px;
+            height: 14px;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid white;
+            font-weight: 900;
+        }
+
+        /* Answer Option Checked State styling */
+        .option-label-container {
+            transition: all 0.15s ease-in-out;
+        }
+        .option-label-container:hover {
+            background-color: rgb(241 245 249);
+            border-color: rgb(59 130 246);
+            transform: translateX(4px);
+        }
+        .option-label-container:has(input[type="radio"]:checked) {
+            background-color: rgb(239 246 255);
+            border-color: rgb(37 99 235);
+            border-width: 2px;
+            font-weight: 600;
+        }
+    </style>
+    
     <script>
         // Suppress tracking prevention warnings in console
         (function() {
@@ -37,13 +110,12 @@ $results = $results ?? [];
             console.error = function() {
                 const args = Array.from(arguments);
                 const message = args.join(' ');
-                // Filter out tracking prevention warnings
                 if (message && (
                     message.includes('Tracking Prevention') ||
                     message.includes('blocked access to storage') ||
                     message.includes('cdn.jsdelivr.net')
                 )) {
-                    return; // Suppress this error
+                    return;
                 }
                 originalError.apply(console, arguments);
             };
@@ -51,19 +123,15 @@ $results = $results ?? [];
 
         const APP_URL = <?= json_encode(APP_URL) ?>;
 
-        // Enhanced storage helper with fallback to memory
         window.storage = (function() {
             let memoryStorage = {};
             let useMemory = false;
-
-            // Test if localStorage is available
             try {
                 localStorage.setItem('__test__', '1');
                 localStorage.removeItem('__test__');
             } catch(e) {
                 useMemory = true;
             }
-
             return {
                 get: function(key) {
                     if (useMemory) return memoryStorage[key] || null;
@@ -91,230 +159,215 @@ $results = $results ?? [];
     </script>
 </head>
 
-<body class="bg-light">
+<body class="bg-slate-50 overflow-hidden flex flex-col h-screen">
     <!-- Navbar Header -->
-    <nav class="navbar navbar-dark bg-primary shadow-sm">
-        <div class="container-fluid px-3">
-            <span class="navbar-brand mb-0 h5">
-                <img src="<?=APP_URL?>/Assets/Img/iclabs.png" alt="Logo" height="30" class="d-inline-block align-text-top me-2">
-                ICLabs - Tes Tertulis
-            </span>
+    <nav class="bg-blue-600 shadow-md py-3 px-6 text-white shrink-0 flex items-center justify-between z-10">
+        <div class="flex items-center gap-2">
+            <img src="<?=APP_URL?>/Assets/Img/iclabs.png" alt="Logo" class="h-8 w-auto">
+            <span class="font-extrabold text-lg tracking-tight">ICLabs - Tes Tertulis</span>
         </div>
     </nav>
 
-    <!-- Main Container -->
-    <div class="container-fluid p-0" style="height: calc(100vh - 56px);">
-        <div class="row g-0 h-100">
-            <!-- Sidebar -->
-            <div class="col-lg-3 col-md-4 bg-white border-end shadow-sm overflow-auto">
-                <div class="p-3">
-                    <!-- Profile Section -->
-                    <div class="text-center mb-4 pb-3 border-bottom">
-                        <img src="<?= htmlspecialchars($photo) ?>"
-                             alt="User Photo"
-                             class="rounded-circle border border-3 border-primary mb-3 profile-photo"
-                             width="80" height="80">
-                        <h6 class="fw-bold mb-1"><?= htmlspecialchars($nama) ?></h6>
-                        <p class="text-muted small mb-0"><?= htmlspecialchars($stambuk) ?></p>
-                    </div>
+    <!-- Main Grid / Wrapper -->
+    <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+        <!-- Sidebar Navigation & Profile -->
+        <aside class="w-full md:w-80 bg-white border-r border-slate-100 flex flex-col shrink-0 overflow-y-auto">
+            <!-- Profile Section -->
+            <div class="p-6 border-b border-slate-100 text-center">
+                <img src="<?= htmlspecialchars($photo) ?>"
+                     alt="User Photo"
+                     class="w-20 h-20 rounded-2xl border-4 border-slate-50 shadow-inner mx-auto mb-3 object-cover"
+                     onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
+                <h6 class="font-bold text-slate-800 text-sm"><?= htmlspecialchars($nama) ?></h6>
+                <p class="text-xs text-slate-400 font-semibold tracking-wider uppercase"><?= htmlspecialchars($stambuk) ?></p>
+            </div>
 
-                    <!-- Question Navigation -->
-                    <h6 class="fw-bold mb-3 small text-muted">NAVIGASI SOAL</h6>
-                    <div class="d-grid gap-2" style="grid-template-columns: repeat(5, 1fr);">
-                        <?php for ($i = 1; $i <= count($results); $i++): ?>
-                            <button class="btn btn-outline-secondary btn-sm nav-btn-soal"
-                                    data-index="<?= $i - 1 ?>">
-                                <?= $i ?>
-                            </button>
-                        <?php endfor; ?>
-                    </div>
+            <!-- Question Navigation -->
+            <div class="p-6">
+                <h6 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">NAVIGASI SOAL</h6>
+                <div class="grid grid-cols-5 gap-2" id="examNavButtons">
+                    <?php for ($i = 1; $i <= count($results); $i++): ?>
+                        <button class="relative w-10 h-10 rounded-xl border border-slate-200 hover:border-blue-600 hover:bg-blue-50 text-slate-600 hover:text-blue-600 font-bold text-xs flex items-center justify-center transition nav-btn-soal"
+                                data-index="<?= $i - 1 ?>">
+                            <?= $i ?>
+                        </button>
+                    <?php endfor; ?>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Question Pane -->
+        <main class="flex-grow flex flex-col overflow-hidden">
+            <!-- Header Timer -->
+            <div class="bg-white border-b border-slate-100 p-6 flex items-center justify-between shrink-0">
+                <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <i class="bi bi-file-earmark-text text-blue-600"></i>Soal <span id="current-question-number">1</span>
+                </h5>
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 font-black text-sm">
+                    <i class="bi bi-clock-fill"></i>
+                    <span id="timer">30:00</span>
                 </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="col-lg-9 col-md-8 d-flex flex-column" style="height: 100%;">
-                <div class="p-4 flex-shrink-0">
-                    <!-- Timer Header -->
-                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
-                        <h5 class="mb-0 fw-bold">Soal <span id="current-question-number">1</span></h5>
-                        <div class="badge bg-info text-dark fs-6 py-2 px-3">
-                            <i class="bi bi-clock-fill me-2"></i>
-                            <span id="timer">30:00</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Questions Container with Scroll -->
-                <div class="flex-grow-1 overflow-auto px-4 pb-4" style="max-height: calc(100vh - 200px);">
-                    <div class="questions-container">
-                        <?php foreach ($results as $index => $result): ?>
-                            <div class="question card border-0 shadow-sm"
-                                 data-id-soal="<?= htmlspecialchars($result['id']) ?>"
-                                 style="display: none;">
-                                <div class="card-body p-4">
-                                    <!-- Question Text -->
-                                    <div class="mb-4">
-                                        <?php if (!empty($result['image_url'])): ?>
-                                            <?php
-                                            // Build full image URL
-                                            $imageUrl = $result['image_url'];
-                                            // If path doesn't start with http or /, prepend base URL
-                                            if (!preg_match('/^(http|\/)/i', $imageUrl)) {
-                                                $imageUrl = str_replace('/public', '', APP_URL) . '/' . $imageUrl;
-                                            }
-                                            ?>
-                                            <div class="mb-3">
-                                                <img src="<?= htmlspecialchars($imageUrl) ?>"
-                                                     class="img-thumbnail question-image-thumb"
-                                                     alt="Gambar Soal"
-                                                     onclick="showImageModal('<?= htmlspecialchars($imageUrl) ?>')"
-                                                     style="max-height: 200px; cursor: pointer; border: 2px solid #dee2e6; transition: all 0.3s ease;"
-                                                     onmouseover="this.style.borderColor='#0d6efd'; this.style.transform='scale(1.02)'"
-                                                     onmouseout="this.style.borderColor='#dee2e6'; this.style.transform='scale(1)'">
-                                            </div>
-                                        <?php endif; ?>
-                                        <p class="lead"><?= nl2br(htmlspecialchars($result['deskripsi'])) ?></p>
+            <!-- Question Slide Content -->
+            <div class="flex-grow overflow-y-auto p-6 md:p-8">
+                <div class="max-w-3xl mx-auto questions-container">
+                    <?php foreach ($results as $index => $result): ?>
+                        <div class="question bg-white rounded-2xl border border-slate-100 shadow-sm p-6 md:p-8 space-y-6"
+                             data-id-soal="<?= htmlspecialchars($result['id']) ?>"
+                             style="display: none;">
+                            
+                            <!-- Question Body -->
+                            <div class="space-y-4">
+                                <?php if (!empty($result['image_url'])): ?>
+                                    <?php
+                                    $imageUrl = $result['image_url'];
+                                    if (!preg_match('/^(http|\/)/i', $imageUrl)) {
+                                        $imageUrl = str_replace('/public', '', APP_URL) . '/' . $imageUrl;
+                                    }
+                                    ?>
+                                    <div class="w-full max-w-md">
+                                        <img src="<?= htmlspecialchars($imageUrl) ?>"
+                                             class="rounded-xl border border-slate-200 max-h-60 object-contain cursor-pointer hover:border-blue-500 hover:scale-[1.02] transition duration-200"
+                                             alt="Gambar Soal"
+                                             onclick="showImageModal('<?= htmlspecialchars($imageUrl) ?>')">
                                     </div>
+                                <?php endif; ?>
+                                <p class="text-slate-700 font-medium leading-relaxed text-base"><?= nl2br(htmlspecialchars($result['deskripsi'])) ?></p>
+                            </div>
 
-                                    <!-- Answer Section -->
-                                    <?php if ($result['status_soal'] === 'pilihan_ganda'): ?>
-                                        <!-- Multiple Choice Options -->
-                                        <div class="list-group mb-4">
-                                            <?php
-                                            // Try JSON decode first (new format)
-                                            $options = json_decode($result['pilihan'], true);
-
-                                            // If JSON decode fails, try CSV format (old format): "A. option1, B. option2, C. option3"
-                                            if (!is_array($options) || empty($options)) {
-                                                $pilihanString = trim($result['pilihan']);
-                                                if (!empty($pilihanString) && $pilihanString !== 'Bukan soal pilihan ganda') {
-                                                    // Split by comma to get individual options
-                                                    $optionsArray = explode(',', $pilihanString);
-                                                    $options = [];
-
-                                                    foreach ($optionsArray as $opt) {
-                                                        $opt = trim($opt);
-                                                        // Remove "A. ", "B. ", etc. prefix if exists
-                                                        $cleanOption = preg_replace('/^[A-Z]\.\s*/', '', $opt);
-                                                        if (!empty($cleanOption)) {
-                                                            $options[] = $cleanOption;
-                                                        }
-                                                    }
+                            <!-- Choice Section -->
+                            <?php if ($result['status_soal'] === 'pilihan_ganda'): ?>
+                                <div class="space-y-3">
+                                    <?php
+                                    $options = json_decode($result['pilihan'], true);
+                                    if (!is_array($options) || empty($options)) {
+                                        $pilihanString = trim($result['pilihan']);
+                                        if (!empty($pilihanString) && $pilihanString !== 'Bukan soal pilihan ganda') {
+                                            $optionsArray = explode(',', $pilihanString);
+                                            $options = [];
+                                            foreach ($optionsArray as $opt) {
+                                                $opt = trim($opt);
+                                                $cleanOption = preg_replace('/^[A-Z]\.\s*/', '', $opt);
+                                                if (!empty($cleanOption)) {
+                                                    $options[] = $cleanOption;
                                                 }
                                             }
-
-                                            $optionLabels = ['A', 'B', 'C', 'D', 'E', 'F'];
-
-                                            if (is_array($options) && !empty($options)):
-                                                foreach ($options as $optionIndex => $option):
-                                                    $label = $optionLabels[$optionIndex] ?? ($optionIndex + 1);
-                                            ?>
-                                                    <label class="list-group-item list-group-item-action d-flex align-items-center py-3 cursor-pointer">
-                                                        <input class="form-check-input me-3 flex-shrink-0"
-                                                               type="radio"
-                                                               name="answer[<?= htmlspecialchars($result['id']) ?>]"
-                                                               value="<?= htmlspecialchars($optionIndex) ?>">
-                                                        <span class="fw-semibold text-primary me-2"><?= $label ?>.</span>
-                                                        <span><?= htmlspecialchars($option) ?></span>
-                                                    </label>
-                                            <?php
-                                                endforeach;
-                                            else:
-                                            ?>
-                                                <div class="alert alert-warning">
-                                                    <i class="bi bi-exclamation-triangle me-2"></i>
-                                                    Pilihan jawaban tidak tersedia untuk soal ini.
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
-                                    <?php else: ?>
-                                        <!-- Essay Answer -->
-                                        <div class="mb-4">
-                                            <label class="form-label fw-semibold">Jawaban Anda:</label>
-                                            <textarea class="form-control"
-                                                      name="answer[<?= htmlspecialchars($result['id']) ?>]"
-                                                      rows="8"
-                                                      placeholder="Tulis jawaban Anda di sini..."
-                                                      style="resize: vertical;"></textarea>
+                                        }
+                                    }
+                                    $optionLabels = ['A', 'B', 'C', 'D', 'E', 'F'];
+                                    if (is_array($options) && !empty($options)):
+                                        foreach ($options as $optionIndex => $option):
+                                            $label = $optionLabels[$optionIndex] ?? ($optionIndex + 1);
+                                    ?>
+                                            <label class="flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-blue-600 hover:bg-blue-50/50 cursor-pointer transition option-label-container">
+                                                <input class="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500 flex-shrink-0"
+                                                       type="radio"
+                                                       name="answer[<?= htmlspecialchars($result['id']) ?>]"
+                                                       value="<?= htmlspecialchars($optionIndex) ?>">
+                                                <span class="font-bold text-blue-600"><?= $label ?>.</span>
+                                                <span class="text-sm text-slate-700 font-medium"><?= htmlspecialchars($option) ?></span>
+                                            </label>
+                                    <?php
+                                        endforeach;
+                                    else:
+                                    ?>
+                                        <div class="flex items-center gap-2.5 p-4 rounded-xl bg-amber-50 border border-amber-100 text-amber-800 text-sm">
+                                            <i class="bi bi-exclamation-triangle-fill"></i>
+                                            <div class="font-semibold">Pilihan jawaban tidak tersedia untuk soal ini.</div>
                                         </div>
                                     <?php endif; ?>
-
-                                    <!-- Navigation Buttons -->
-                                    <div class="d-flex justify-content-between gap-2 mt-4 pt-3 border-top">
-                                        <button class="btn btn-outline-primary btn-lg back-btn">
-                                            <i class="bi bi-arrow-left me-2"></i>
-                                            Sebelumnya
-                                        </button>
-                                        <button class="btn btn-primary btn-lg next-btn">
-                                            Selanjutnya
-                                            <i class="bi bi-arrow-right ms-2"></i>
-                                        </button>
-                                        <button class="btn btn-success btn-lg finish-btn" style="display: none;">
-                                            <i class="bi bi-check-circle me-2"></i>
-                                            Selesai
-                                        </button>
-                                    </div>
                                 </div>
+                            <?php else: ?>
+                                <!-- Essay -->
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Jawaban Anda:</label>
+                                    <textarea class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold transition"
+                                              name="answer[<?= htmlspecialchars($result['id']) ?>]"
+                                              rows="8"
+                                              placeholder="Tulis jawaban Anda di sini..."></textarea>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Bottom Navigation -->
+                            <div class="flex justify-between items-center gap-3 pt-6 border-t border-slate-100">
+                                <button type="button" class="px-5 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-sm rounded-xl transition flex items-center gap-2 back-btn">
+                                    <i class="bi bi-arrow-left"></i>Sebelumnya
+                                </button>
+                                <button type="button" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition flex items-center gap-2 next-btn">
+                                    Selanjutnya<i class="bi bi-arrow-right"></i>
+                                </button>
+                                <button type="button" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition flex items-center gap-2 finish-btn" style="display: none;">
+                                    <i class="bi bi-check-circle"></i>Selesai
+                                </button>
                             </div>
-                        <?php endforeach; ?>
-                    </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <!-- Custom Alert Modal -->
-    <div class="modal fade" id="customModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body text-center py-4">
-                    <!-- GIF Container with Flexbox for centering -->
-                    <div class="d-flex justify-content-center align-items-center mb-3">
-                        <img id="modalGif" src="" alt="Animation" style="width: 100px; display: none;">
-                    </div>
-                    <p id="modalMessage" class="mb-0">Pesan akan ditampilkan di sini.</p>
-                </div>
-                <div class="modal-footer border-0 justify-content-center">
-                    <button type="button" class="btn btn-primary" id="closeModal" data-bs-dismiss="modal">Tutup</button>
-                </div>
+    <div id="customModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 p-4 animate-fade-in">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-md w-full overflow-hidden p-6 text-center">
+            <div class="flex justify-center items-center mb-4">
+                <img id="modalGif" src="" alt="Animation" class="w-20 h-20" style="display: none;">
             </div>
+            <p id="modalMessage" class="text-slate-700 font-medium text-sm leading-relaxed mb-6">Pesan akan ditampilkan di sini.</p>
+            <button type="button" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition duration-200" id="closeModal">Tutup</button>
         </div>
     </div>
 
     <!-- Confirmation Modal -->
-    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold">Konfirmasi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 p-4 animate-fade-in">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-md w-full overflow-hidden p-6">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-4">
+                    <i class="bi bi-question-circle text-3xl"></i>
                 </div>
-                <div class="modal-body text-center py-4">
-                    <i class="bi bi-question-circle text-warning fs-1 mb-3 d-block"></i>
-                    <p id="confirmModalMessage" class="mb-0">Apakah Anda yakin?</p>
-                </div>
-                <div class="modal-footer border-0 justify-content-center gap-2">
-                    <button type="button" class="btn btn-secondary" id="confirmModalCancel" data-bs-dismiss="modal">
-                        Tidak
-                    </button>
-                    <button type="button" class="btn btn-primary" id="confirmModalConfirm">
-                        Ya, Lanjutkan
-                    </button>
-                </div>
+                <h5 class="text-lg font-bold text-slate-800 mb-2">Konfirmasi</h5>
+                <p id="confirmModalMessage" class="text-slate-500 text-sm leading-relaxed">Apakah Anda yakin?</p>
+            </div>
+            <div class="flex gap-3">
+                <button type="button" class="flex-1 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-sm rounded-xl transition" id="confirmModalCancel">
+                    Tidak
+                </button>
+                <button type="button" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition" id="confirmModalConfirm">
+                    Ya, Lanjutkan
+                </button>
             </div>
         </div>
     </div>
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Bootstrap Modal Instances
+        // Modal Shim for Tailwind Modals
+        class TailwindModalShim {
+            constructor(element) {
+                this.element = element;
+            }
+            show() {
+                this.element.classList.remove('hidden');
+                this.element.classList.add('flex');
+            }
+            hide() {
+                this.element.classList.remove('flex');
+                this.element.classList.add('hidden');
+            }
+        }
+
+        const bootstrap = {
+            Modal: function(element) {
+                return new TailwindModalShim(element);
+            }
+        };
+
         let customModalInstance = null;
         let confirmModalInstance = null;
 
-        // Initialize modals when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
             const customModalEl = document.getElementById('customModal');
             const confirmModalEl = document.getElementById('confirmModal');
@@ -327,7 +380,6 @@ $results = $results ?? [];
             }
         });
 
-        // Shim for showActionConfirmation using Bootstrap Modal
         window.showActionConfirmation = function(options) {
             const msg = document.getElementById('confirmModalMessage');
             const btnConfirm = document.getElementById('confirmModalConfirm');
@@ -336,7 +388,6 @@ $results = $results ?? [];
             if (msg && btnConfirm && btnCancel && confirmModalInstance) {
                 msg.innerHTML = options.message || 'Apakah Anda yakin?';
 
-                // Remove old listeners
                 const newBtnConfirm = btnConfirm.cloneNode(true);
                 btnConfirm.parentNode.replaceChild(newBtnConfirm, btnConfirm);
 
@@ -360,7 +411,6 @@ $results = $results ?? [];
             }
         };
 
-        // Shim for showModal using Bootstrap Modal
         window.showModal = function(message, gifUrl) {
             const msgEl = document.getElementById('modalMessage');
             const gifEl = document.getElementById('modalGif');
@@ -390,55 +440,48 @@ $results = $results ?? [];
             }
         };
 
-        // Image Modal Function
         window.showImageModal = function(imageUrl) {
             const modalHtml = `
-                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" style="max-height: 95vh;">
-                        <div class="modal-content" style="max-height: 95vh;">
-                            <div class="modal-header border-0 pb-2 flex-shrink-0">
-                                <h5 class="modal-title" id="imageModalLabel">
-                                    <i class="bi bi-image me-2"></i>Gambar Soal
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body text-center p-4" style="overflow-y: auto; max-height: calc(95vh - 120px);">
-                                <img src="${imageUrl}"
-                                     class="img-fluid rounded"
-                                     alt="Gambar Soal"
-                                     style="width: 100%; height: auto; object-fit: contain;">
-                            </div>
-                            <div class="modal-footer border-0 pt-2 flex-shrink-0">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                    <i class="bi bi-x-circle me-2"></i>Tutup
-                                </button>
-                            </div>
+                <div id="imageModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/75 p-4 animate-fade-in">
+                    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-4xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+                        <!-- Header -->
+                        <div class="flex justify-between items-center px-6 py-4 border-b border-slate-100 flex-shrink-0">
+                            <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                                <i class="bi bi-image text-blue-600"></i>Gambar Soal
+                            </h5>
+                            <button type="button" class="text-slate-400 hover:text-slate-600" onclick="closeImageModal()">
+                                <i class="bi bi-x-lg text-lg"></i>
+                            </button>
+                        </div>
+                        <!-- Body -->
+                        <div class="p-6 overflow-y-auto text-center flex-grow flex items-center justify-center">
+                            <img src="${imageUrl}" class="max-h-[60vh] max-w-full object-contain rounded-xl border border-slate-200" alt="Gambar Soal">
+                        </div>
+                        <!-- Footer -->
+                        <div class="px-6 py-4 border-t border-slate-100 flex justify-end flex-shrink-0">
+                            <button type="button" class="px-5 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-sm rounded-xl transition" onclick="closeImageModal()">
+                                <i class="bi bi-x-circle mr-1.5"></i>Tutup
+                            </button>
                         </div>
                     </div>
                 </div>
             `;
-
-            // Remove existing modal if any
+            
             const existingModal = document.getElementById('imageModal');
             if (existingModal) {
                 existingModal.remove();
             }
 
-            // Add modal to body
             document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-            // Show modal
-            const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
-            imageModal.show();
-
-            // Clean up after modal is hidden
-            document.getElementById('imageModal').addEventListener('hidden.bs.modal', function() {
-                this.remove();
-            });
         };
 
-        // Set exam session ID for timer management
-        // This ensures timer resets when admin resets the exam or user starts new attempt
+        window.closeImageModal = function() {
+            const existingModal = document.getElementById('imageModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+        };
+
         window.examSessionId = 'exam_<?= $bank['id'] ?? 'default' ?>_<?= $_SESSION['user']['id'] ?? 'guest' ?>_<?= $_SESSION['exam_session_timestamp'] ?? time() ?>';
     </script>
     <script src="<?=APP_URL?>/Assets/js/examScript.js"></script>

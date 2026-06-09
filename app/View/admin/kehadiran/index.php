@@ -5,83 +5,6 @@
 $absensiList = $absensiList ?? [];
 $mahasiswaList = $mahasiswaList ?? [];
 ?>
-<!-- Bootstrap Icons CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" crossorigin="anonymous">
-
-<script>
-    // Suppress tracking prevention warnings in console
-    (function() {
-        const originalError = console.error;
-        console.error = function(...args) {
-            const message = args[0]?.toString() || '';
-            if (message.includes('Tracking Prevention') ||
-                message.includes('storage') ||
-                message.includes('blocked access')) {
-                return; // Suppress tracking warnings
-            }
-            originalError.apply(console, args);
-        };
-    })();
-</script>
-
-<style>
-    /* Minimal styles for specific components */
-    .avatar-placeholder-large {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: var(--gradient-header);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 1.5rem;
-        margin: 0 auto 16px auto;
-    }
-
-    .multi-select-container {
-        max-height: 200px;
-        overflow-y: auto;
-        border: 1px solid #dee2e6;
-        border-radius: 0.375rem;
-        padding: 8px;
-        background: #fff;
-    }
-
-    .multi-select-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 12px;
-        border-radius: 0.25rem;
-        cursor: pointer;
-        transition: all 0.2s;
-        border: 1px solid transparent;
-        margin-bottom: 4px;
-    }
-
-    .multi-select-item:hover {
-        background: #f8f9fa;
-        border-color: #dee2e6;
-    }
-
-    .multi-select-item.selected {
-        background: #e0e7ff; /* indigo-100 */
-        border-color: #6366f1; /* indigo-500 */
-        color: #4338ca; /* indigo-800 */
-    }
-
-    .modal-kehadiran .modal-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-    }
-    
-    .modal-kehadiran .btn-close {
-        filter: brightness(0) invert(1);
-    }
-</style>
 
 <main>
     <!-- Page Header -->
@@ -92,109 +15,110 @@ $mahasiswaList = $mahasiswaList ?? [];
         require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
-    <div class="container-fluid px-4 mt-3">
+    <div class="max-w-7xl mx-auto px-4 py-6">
         <!-- Table Controls -->
-        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
-            <div class="position-relative" style="width: 280px; max-width: 100%;">
-                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-                <input type="text" id="searchKehadiran" class="form-control ps-5 rounded-3" placeholder="Cari nama atau stambuk...">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <div class="relative w-full sm:w-72">
+                <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="text" id="searchKehadiran" class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm" placeholder="Cari nama atau stambuk...">
             </div>
         </div>
 
         <?php if (empty($absensiList)): ?>
-            <div class="text-center py-5 text-secondary">
-                <i class="bi bi-inbox display-1 opacity-50"></i>
-                <h3 class="h4 mt-3 mb-2">Belum Ada Data Rekap</h3>
-                <p class="mb-0">Data rekap akan muncul setelah Anda menambahkan peserta</p>
+            <div class="flex flex-col items-center justify-center py-16 text-slate-400 bg-white rounded-2xl border border-slate-100 shadow-sm p-8 text-center">
+                <i class="bi bi-inbox text-6xl mb-4 text-slate-300"></i>
+                <h3 class="text-lg font-bold text-slate-700 mb-1">Belum Ada Data Rekap</h3>
+                <p class="text-sm max-w-sm text-slate-500">Data rekap akan muncul setelah Anda menambahkan peserta</p>
             </div>
         <?php else: ?>
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle mb-0" id="monitoringTable">
-                    <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                        <tr>
-                            <th class="fw-semibold text-uppercase small text-center py-3 px-3" style="width: 50px;">No</th>
-                            <th class="fw-semibold text-uppercase small py-3 px-3">Nama Lengkap</th>
-                            <th class="fw-semibold text-uppercase small py-3 px-3">Stambuk</th>
-                            <th class="fw-semibold text-uppercase small text-center py-3 px-3">Tes Tertulis</th>
-                            <th class="fw-semibold text-uppercase small text-center py-3 px-3">Presentasi</th>
-                            <th class="fw-semibold text-uppercase small text-center py-3 px-3">Wawancara I</th>
-                            <th class="fw-semibold text-uppercase small text-center py-3 px-3">Wawancara II</th>
-                            <th class="fw-semibold text-uppercase small text-center py-3 px-3">Status Akhir</th>
-                            <th class="fw-semibold text-uppercase small text-center py-3 px-3">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $no = 1; foreach ($absensiList as $row): ?>
-                        <tr>
-                            <td class="text-center"><?= $no++ ?></td>
-                            <td>
-                                <div class="d-flex align-items-center gap-3">
-                                    <?php
-                                        // Use only foto from berkas_mahasiswa upload (res/imageUser)
-                                        $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
-                                        if (!empty($row['berkas_foto'])) {
-                                            $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . htmlspecialchars($row['berkas_foto']) . '?v=' . time();
-                                        }
-                                    ?>
-                                    <img src="<?= $photoUrl ?>" alt="Foto" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid #e5e7eb;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
-                                    <div>
-                                        <div class="fw-semibold text-dark"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
-                                        <div class="small text-muted">Mahasiswa</div>
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm" id="monitoringTable">
+                        <thead class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                            <tr>
+                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 50px;">No</th>
+                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4">Nama Lengkap</th>
+                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4">Stambuk</th>
+                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center">Tes Tertulis</th>
+                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center">Presentasi</th>
+                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center">Wawancara I</th>
+                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center">Wawancara II</th>
+                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center">Status Akhir</th>
+                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <?php $no = 1; foreach ($absensiList as $row): ?>
+                            <tr class="hover:bg-slate-50/85 transition">
+                                <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $no++ ?></td>
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <?php
+                                            // Use only foto from berkas_mahasiswa upload (res/imageUser)
+                                            $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
+                                            if (!empty($row['berkas_foto'])) {
+                                                $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . htmlspecialchars($row['berkas_foto']) . '?v=' . time();
+                                            }
+                                        ?>
+                                        <img src="<?= $photoUrl ?>" alt="Foto" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 flex-shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
+                                        <div>
+                                            <div class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
+                                            <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Mahasiswa</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td><?= htmlspecialchars($row['stambuk']) ?></td>
-                            <td class="text-center"><?= renderStatusBadge($row['absensi_tes_tertulis']) ?></td>
-                            <td class="text-center"><?= renderStatusBadge($row['absensi_presentasi']) ?></td>
-                            <td class="text-center"><?= renderStatusBadge($row['absensi_wawancara_I']) ?></td>
-                            <td class="text-center"><?= renderStatusBadge($row['absensi_wawancara_II']) ?></td>
-                            <td class="text-center">
-                                <?php
-                                    $statusAkhir = $row['status_akhir'] ?? 'Pending';
-                                    $badgeClass = 'text-warning bg-warning bg-opacity-10';
-                                    if($statusAkhir === 'Lulus') $badgeClass = 'text-success bg-success bg-opacity-10';
-                                    elseif($statusAkhir === 'Tidak Lulus') $badgeClass = 'text-danger bg-danger bg-opacity-10';
-                                ?>
-                                <span class="badge rounded-pill px-3 py-2 status-akhir-badge <?= $badgeClass ?>" 
-                                      style="font-size: 0.75rem;">
-                                    <?= strtoupper($statusAkhir) ?>
-                                </span>
-                            </td>
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <button class="btn btn-sm btn-info bg-info-subtle text-info border-0 rounded-3 open-rekap"
-                                            title="Detail Rekap"
-                                            data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
-                                            data-stambuk="<?= $row['stambuk'] ?>"
-                                            data-foto="<?= !empty($row['berkas_foto']) ? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . htmlspecialchars($row['berkas_foto']) : '' ?>"
-                                            data-berkas="<?= $row['berkas_status'] ?? '0' ?>"
-                                            data-tes="<?= $row['absensi_tes_tertulis'] ?>"
-                                            data-nilai="<?= $row['nilai_akhir'] ?? '' ?>"
-                                            data-presentasi="<?= $row['absensi_presentasi'] ?>"
-                                            data-wawancara1="<?= $row['absensi_wawancara_I'] ?>"
-                                            data-wawancara2="<?= $row['absensi_wawancara_II'] ?>"
-                                            data-statusakhir="<?= $row['status_akhir'] ?? 'Pending' ?>">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-warning bg-warning-subtle text-warning border-0 rounded-3 open-detail"
-                                            title="Edit"
-                                            data-id="<?= $row['id'] ?>"
-                                            data-mhsid="<?= $row['id_mahasiswa'] ?>"
-                                            data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
-                                            data-stambuk="<?= $row['stambuk'] ?>"
-                                            data-absensiwawancarai="<?= $row['absensi_wawancara_I'] ?? '' ?>"
-                                            data-absensiwawancaraii="<?= $row['absensi_wawancara_II'] ?? '' ?>"
-                                            data-absensitestertulis="<?= $row['absensi_tes_tertulis'] ?? '' ?>"
-                                            data-absensipresentasi="<?= $row['absensi_presentasi'] ?? '' ?>"
-                                            data-statusakhir="<?= $row['status_akhir'] ?? 'Pending' ?>">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                                </td>
+                                <td class="text-slate-500 py-4 px-4 font-semibold"><?= htmlspecialchars($row['stambuk']) ?></td>
+                                <td class="text-center py-4 px-4"><?= renderStatusBadge($row['absensi_tes_tertulis']) ?></td>
+                                <td class="text-center py-4 px-4"><?= renderStatusBadge($row['absensi_presentasi']) ?></td>
+                                <td class="text-center py-4 px-4"><?= renderStatusBadge($row['absensi_wawancara_I']) ?></td>
+                                <td class="text-center py-4 px-4"><?= renderStatusBadge($row['absensi_wawancara_II']) ?></td>
+                                <td class="text-center py-4 px-4">
+                                    <?php
+                                        $statusAkhir = $row['status_akhir'] ?? 'Pending';
+                                        $badgeClass = 'text-amber-700 bg-amber-50 border border-amber-100';
+                                        if($statusAkhir === 'Lulus') $badgeClass = 'text-emerald-700 bg-emerald-50 border border-emerald-100';
+                                        elseif($statusAkhir === 'Tidak Lulus') $badgeClass = 'text-red-700 bg-red-50 border border-red-100';
+                                    ?>
+                                    <span class="inline-block px-3 py-1.5 text-xs font-semibold rounded-lg status-akhir-badge <?= $badgeClass ?>">
+                                        <?= strtoupper($statusAkhir) ?>
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-cyan-50 hover:bg-cyan-100 text-cyan-600 open-rekap"
+                                                title="Detail Rekap"
+                                                data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
+                                                data-stambuk="<?= $row['stambuk'] ?>"
+                                                data-foto="<?= !empty($row['berkas_foto']) ? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . htmlspecialchars($row['berkas_foto']) : '' ?>"
+                                                data-berkas="<?= $row['berkas_status'] ?? '0' ?>"
+                                                data-tes="<?= $row['absensi_tes_tertulis'] ?>"
+                                                data-nilai="<?= $row['nilai_akhir'] ?? '' ?>"
+                                                data-presentasi="<?= $row['absensi_presentasi'] ?>"
+                                                data-wawancara1="<?= $row['absensi_wawancara_I'] ?>"
+                                                data-wawancara2="<?= $row['absensi_wawancara_II'] ?>"
+                                                data-statusakhir="<?= $row['status_akhir'] ?? 'Pending' ?>">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-amber-50 hover:bg-amber-100 text-amber-600 open-detail"
+                                                title="Edit"
+                                                data-id="<?= $row['id'] ?>"
+                                                data-mhsid="<?= $row['id_mahasiswa'] ?>"
+                                                data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
+                                                data-stambuk="<?= $row['stambuk'] ?>"
+                                                data-absensiwawancarai="<?= $row['absensi_wawancara_I'] ?? '' ?>"
+                                                data-absensiwawancaraii="<?= $row['absensi_wawancara_II'] ?? '' ?>"
+                                                data-absensitestertulis="<?= $row['absensi_tes_tertulis'] ?? '' ?>"
+                                                data-absensipresentasi="<?= $row['absensi_presentasi'] ?? '' ?>"
+                                                data-statusakhir="<?= $row['status_akhir'] ?? 'Pending' ?>">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         <?php endif; ?>
     </div>
@@ -205,7 +129,7 @@ $mahasiswaList = $mahasiswaList ?? [];
 function renderStatusBadge($val) {
     // Handle empty/null values
     if (!$val || trim($val) === '' || $val === '-') {
-        return '<span class="badge bg-light text-secondary border">Belum Ada</span>';
+        return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-50 text-slate-400 border border-slate-200">Belum Ada</span>';
     }
 
     // Sanitize input first
@@ -214,246 +138,230 @@ function renderStatusBadge($val) {
 
     // Case-insensitive status matching
     $statusMap = [
-        'hadir' => ['class' => 'bg-success', 'label' => 'Hadir'],
-        'alpha' => ['class' => 'bg-danger', 'label' => 'Alpha'],
-        'tidak hadir' => ['class' => 'bg-danger', 'label' => 'Tidak Hadir'],
-        'izin' => ['class' => 'bg-warning text-dark', 'label' => 'Izin'],
-        'sakit' => ['class' => 'bg-warning text-dark', 'label' => 'Sakit'],
-        'process' => ['class' => 'bg-info text-dark', 'label' => 'Process']
+        'hadir' => ['class' => 'bg-emerald-50 text-emerald-700 border border-emerald-100', 'label' => 'Hadir'],
+        'alpha' => ['class' => 'bg-red-50 text-red-700 border border-red-100', 'label' => 'Alpha'],
+        'tidak hadir' => ['class' => 'bg-red-50 text-red-700 border border-red-100', 'label' => 'Tidak Hadir'],
+        'izin' => ['class' => 'bg-amber-50 text-amber-700 border border-amber-100', 'label' => 'Izin'],
+        'sakit' => ['class' => 'bg-amber-50 text-amber-700 border border-amber-100', 'label' => 'Sakit'],
+        'process' => ['class' => 'bg-blue-50 text-blue-700 border border-blue-100', 'label' => 'Process']
     ];
 
     // Find matching status
     if (isset($statusMap[$v])) {
         $status = $statusMap[$v];
-        return '<span class="badge ' . $status['class'] . '">' . $status['label'] . '</span>';
+        return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg ' . $status['class'] . '">' . $status['label'] . '</span>';
     }
 
     // Unknown status - show as info
-    return '<span class="badge bg-info text-dark">' . ucfirst($sanitized) . '</span>';
+    return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 border border-blue-100">' . ucfirst($sanitized) . '</span>';
 }
 ?>
 
 <!-- MODAL ADD -->
-<div class="modal fade modal-kehadiran" id="addMahasiswaModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="addMahasiswaModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-person-plus"></i>
+        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+                <h5 class="modal-title font-bold flex items-center gap-2">
+                    <i class="bi bi-person-plus text-lg"></i>
                     Tambah Data Kehadiran
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <form id="addJadwalForm">
-                    <div class="form-group">
-                        <label>Pilih Mahasiswa</label>
-                        <div class="input-group">
-                            <select class="form-select form-select-custom" id="mahasiswa">
+            <div class="p-6">
+                <form id="addJadwalForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Pilih Mahasiswa</label>
+                        <div class="flex gap-2">
+                            <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="mahasiswa">
                                 <option value="" disabled selected>-- Pilih Mahasiswa --</option>
                                 <?php foreach ($mahasiswaList as $m): ?>
                                     <option value="<?= $m['id'] ?>"><?= $m['stambuk'] ?> - <?= htmlspecialchars($m['nama_lengkap']) ?></option>
                                 <?php endforeach; ?>
                             </select>
-                            <button class="btn btn-primary" type="button" id="addMahasiswaButton">
+                            <button class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition flex-shrink-0" type="button" id="addMahasiswaButton">
                                 <i class="bi bi-plus"></i>
                             </button>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Mahasiswa Terpilih:</label>
-                        <div class="multi-select-container" id="selectedMahasiswaList">
-                            <div class="empty-msg text-center text-muted py-3">
-                                <i class="bi bi-inbox"></i>
-                                <p class="mb-0 mt-2">Belum ada mahasiswa dipilih</p>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Mahasiswa Terpilih:</label>
+                        <div class="max-h-52 overflow-y-auto border border-slate-200 rounded-xl p-3 bg-white space-y-2" id="selectedMahasiswaList">
+                            <div class="empty-msg text-center text-slate-400 py-6">
+                                <i class="bi bi-inbox text-3xl mb-2 block"></i>
+                                <p class="text-xs font-semibold">Belum ada mahasiswa dipilih</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="text-muted small fw-bold mb-2">STATUS KEHADIRAN</label>
-                        </div>
-                        <div class="col-md-6">
-                            <select class="form-select form-select-custom" id="absensiTesTertulis">
-                                <option value="" selected>Tes Tertulis...</option>
-                                <option value="Hadir">Hadir</option>
-                                <option value="Alpha">Alpha</option>
-                                <option value="Izin">Izin</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <select class="form-select form-select-custom" id="absensiPresentasi">
-                                <option value="" selected>Presentasi...</option>
-                                <option value="Hadir">Hadir</option>
-                                <option value="Alpha">Alpha</option>
-                                <option value="Izin">Izin</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-select form-select-custom" id="absensiWawancara1">
-                                <option value="" selected>Wawancara I...</option>
-                                <option value="Hadir">Hadir</option>
-                                <option value="Alpha">Alpha</option>
-                                <option value="Izin">Izin</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-select form-select-custom" id="absensiWawancara2">
-                                <option value="" selected>Wawancara II...</option>
-                                <option value="Hadir">Hadir</option>
-                                <option value="Alpha">Alpha</option>
-                                <option value="Izin">Izin</option>
-                            </select>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">STATUS KEHADIRAN</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-xs text-slate-500 font-semibold mb-1">Tes Tertulis</label>
+                                <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="absensiTesTertulis">
+                                    <option value="" selected>Pilih...</option>
+                                    <option value="Hadir">Hadir</option>
+                                    <option value="Alpha">Alpha</option>
+                                    <option value="Izin">Izin</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 font-semibold mb-1">Presentasi</label>
+                                <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="absensiPresentasi">
+                                    <option value="" selected>Pilih...</option>
+                                    <option value="Hadir">Hadir</option>
+                                    <option value="Alpha">Alpha</option>
+                                    <option value="Izin">Izin</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 font-semibold mb-1">Wawancara I</label>
+                                <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="absensiWawancara1">
+                                    <option value="" selected>Pilih...</option>
+                                    <option value="Hadir">Hadir</option>
+                                    <option value="Alpha">Alpha</option>
+                                    <option value="Izin">Izin</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 font-semibold mb-1">Wawancara II</label>
+                                <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="absensiWawancara2">
+                                    <option value="" selected>Pilih...</option>
+                                    <option value="Hadir">Hadir</option>
+                                    <option value="Alpha">Alpha</option>
+                                    <option value="Izin">Izin</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="addJadwalForm" class="btn btn-primary">
+            <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3">
+                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" form="addJadwalForm" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-blue-500/10 flex items-center gap-2">
                     <i class="bi bi-check-lg"></i> Simpan Data
-                </button>
+                  </button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- MODAL REKAP DETAIL -->
-<div class="modal fade modal-kehadiran" id="rekapDetailModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="rekapDetailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header" style="background: linear-gradient(135deg, #0f172a 0%, #334155 100%);">
-                <h5 class="modal-title">
-                    <i class="bi bi-card-checklist"></i>
+        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-slate-800 to-slate-900 px-6 py-4 flex justify-between items-center text-white">
+                <h5 class="modal-title font-bold flex items-center gap-2">
+                    <i class="bi bi-card-checklist text-lg"></i>
                     Rekap Peserta
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-0">
-                <div class="p-4 text-center bg-light border-bottom">
-                    <img id="rekapFoto" src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png" alt="Foto Profil" class="rounded-circle mx-auto mb-3" style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #e5e7eb; display: none;" onerror="this.style.display='none'; document.getElementById('rekapAvatar').parentElement.style.display='flex';">
-                    <div class="avatar-placeholder-large mx-auto mb-3" id="rekapAvatarContainer" style="width:70px; height:70px; font-size:1.75rem; display: flex;">
+            <div class="p-0">
+                <div class="p-6 text-center bg-slate-50 border-b border-slate-100 flex flex-col items-center">
+                    <img id="rekapFoto" src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png" alt="Foto Profil" class="rounded-full w-20 h-20 object-cover border-4 border-white shadow-sm mb-3" style="display: none;" onerror="this.style.display='none'; document.getElementById('rekapAvatarContainer').style.display='flex';">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-2xl shadow-sm mb-3" id="rekapAvatarContainer">
                         <span id="rekapAvatar">U</span>
                     </div>
-                    <h5 class="fw-bold mb-1" id="rekapNama">Nama Peserta</h5>
-                    <p class="text-muted mb-0" id="rekapStambuk">Stambuk</p>
+                    <h5 class="text-lg font-bold text-slate-800 mb-1" id="rekapNama">Nama Peserta</h5>
+                    <p class="text-slate-400 font-semibold text-xs uppercase tracking-wider" id="rekapStambuk">Stambuk</p>
                 </div>
                 
-                <div class="p-4">
-                    <h6 class="text-uppercase text-muted small fw-bold mb-3 ls-1">Tahapan Seleksi</h6>
+                <div class="p-6 space-y-4">
+                    <h6 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tahapan Seleksi</h6>
                     
-                    <div class="d-flex flex-column gap-3">
+                    <div class="space-y-3">
                         <!-- Berkas -->
-                        <div class="d-flex justify-content-between align-items-center pb-2 border-bottom border-light">
+                        <div class="flex justify-between items-center pb-3 border-b border-slate-100">
                             <div>
-                                <h6 class="mb-0 fw-bold">1. Kelengkapan Berkas</h6>
-                                <small class="text-muted">Administrasi Awal</small>
+                                <h6 class="text-sm font-bold text-slate-800 mb-0.5">1. Kelengkapan Berkas</h6>
+                                <small class="text-slate-400 text-xs font-medium">Administrasi Awal</small>
                             </div>
                             <span id="statusBerkas"></span>
                         </div>
 
                         <!-- Tes Tertulis -->
-                        <div class="d-flex justify-content-between align-items-center pb-2 border-bottom border-light">
+                        <div class="flex justify-between items-center pb-3 border-b border-slate-100">
                             <div>
-                                <h6 class="mb-0 fw-bold">2. Tes Tertulis</h6>
-                                <small class="text-muted" id="scoreTes">Nilai: -</small>
+                                <h6 class="text-sm font-bold text-slate-800 mb-0.5">2. Tes Tertulis</h6>
+                                <small class="text-slate-400 text-xs font-medium" id="scoreTes">Nilai: -</small>
                             </div>
                             <span id="statusTes"></span>
                         </div>
 
                         <!-- Presentasi -->
-                        <div class="d-flex justify-content-between align-items-center pb-2 border-bottom border-light">
+                        <div class="flex justify-between items-center pb-3 border-b border-slate-100">
                             <div>
-                                <h6 class="mb-0 fw-bold">3. Presentasi</h6>
-                                <small class="text-muted">Status Kehadiran</small>
+                                <h6 class="text-sm font-bold text-slate-800 mb-0.5">3. Presentasi</h6>
+                                <small class="text-slate-400 text-xs font-medium">Status Kehadiran</small>
                             </div>
                             <span id="statusPresentasi"></span>
                         </div>
 
                         <!-- Wawancara -->
-                        <div class="d-flex justify-content-between align-items-center pb-2 border-bottom border-light">
+                        <div class="flex justify-between items-center pb-3 border-b border-slate-100">
                             <div>
-                                <h6 class="mb-0 fw-bold">4. Wawancara</h6>
-                                <small class="text-muted">Wawancara I & II</small>
+                                <h6 class="text-sm font-bold text-slate-800 mb-0.5">4. Wawancara</h6>
+                                <small class="text-slate-400 text-xs font-medium">Wawancara I & II</small>
                             </div>
-                            <div class="d-flex gap-2">
+                            <div class="flex gap-2">
                                 <span id="statusWawancara1"></span>
                                 <span id="statusWawancara2"></span>
                             </div>
                         </div>
 
                         <!-- FINAL RESULT -->
-                        <div class="mt-2 p-3 rounded" id="finalResultBox" style="background: #f1f5f9;">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0 fw-bold">HASIL AKHIR</h6>
-                                <span class="badge bg-secondary" id="finalStatus" style="font-size: 0.9rem; padding: 6px 12px;">PENDING</span>
-                            </div>
+                        <div class="mt-4 p-4 rounded-xl flex justify-between items-center transition" id="finalResultBox">
+                            <h6 class="text-sm font-bold text-slate-700">HASIL AKHIR</h6>
+                            <span class="inline-block px-3.5 py-1.5 text-xs font-bold rounded-lg" id="finalStatus">PENDING</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer bg-light">
-                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Tutup</button>
+            <div class="bg-slate-50 px-6 py-4">
+                <button type="button" class="w-full py-2.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- MODAL EDIT -->
-<div class="modal fade modal-kehadiran" id="detailAbsensiModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="detailAbsensiModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-pencil-square"></i>
+        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+                <h5 class="modal-title font-bold flex items-center gap-2">
+                    <i class="bi bi-pencil-square text-lg"></i>
                     Edit Data Kehadiran
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="text-center mb-4">
-                    <div class="avatar-placeholder-large">
+            <div class="p-6 space-y-4">
+                <div class="text-center flex flex-col items-center pb-4 border-b border-slate-100">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-2xl shadow-sm mb-3">
                         <span id="avatarInitial">U</span>
                     </div>
-                    <h5 class="fw-bold mb-1" id="detailNama">Name</h5>
-                    <p class="text-muted small mb-0" id="detailStambuk">Stambuk</p>
+                    <h5 class="text-lg font-bold text-slate-800 mb-1" id="detailNama">Name</h5>
+                    <p class="text-slate-400 font-semibold text-xs uppercase tracking-wider mb-0" id="detailStambuk">Stambuk</p>
                 </div>
                 <input type="hidden" id="detailUserId">
                 <input type="hidden" id="detailMhsId">
 
-                <div class="row g-3">
-                    <div class="col-6">
-                        <label class="small text-muted mb-1">Tes Tertulis</label>
-                        <select id="tesTertulis" class="form-select form-select-custom">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-slate-500 font-semibold mb-1.5">Tes Tertulis</label>
+                        <select id="tesTertulis" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition">
                             <option value="">-</option>
                             <option value="Hadir">Hadir</option>
                             <option value="Alpha">Alpha</option>
                             <option value="Izin">Izin</option>
                         </select>
                     </div>
-                    <div class="col-6">
-                        <label class="small text-muted mb-1">Presentasi</label>
-                        <select id="presentasi" class="form-select form-select-custom">
-                            <option value="">-</option>
-                            <option value="Hadir">Hadir</option>
-                            <option value="Alpha">Alpha</option>
-                            <option value="Izin">Izin</option>
-                        </select>
-                    </div>
-                    <div class="col-4">
-                        <label class="small text-muted mb-1">Wawancara I</label>
-                        <select id="wawancaraI" class="form-select form-select-custom">
-                            <option value="">-</option>
-                            <option value="Hadir">Hadir</option>
-                            <option value="Alpha">Alpha</option>
-                            <option value="Izin">Izin</option>
-                        </select>
-                    </div>
-                    <div class="col-4">
-                        <label class="small text-muted mb-1">Wawancara II</label>
-                        <select id="wawancaraII" class="form-select form-select-custom">
+                    <div>
+                        <label class="block text-xs text-slate-500 font-semibold mb-1.5">Presentasi</label>
+                        <select id="presentasi" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition">
                             <option value="">-</option>
                             <option value="Hadir">Hadir</option>
                             <option value="Alpha">Alpha</option>
@@ -462,10 +370,28 @@ function renderStatusBadge($val) {
                     </div>
                 </div>
                 
-                <div class="row g-3 mt-1">
-                    <div class="col-12">
-                        <label class="small text-muted mb-1">Status Akhir</label>
-                        <select id="detailStatusAkhir" class="form-select form-select-custom">
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="col-span-1">
+                        <label class="block text-xs text-slate-500 font-semibold mb-1.5">Wawancara I</label>
+                        <select id="wawancaraI" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xs bg-white transition">
+                            <option value="">-</option>
+                            <option value="Hadir">Hadir</option>
+                            <option value="Alpha">Alpha</option>
+                            <option value="Izin">Izin</option>
+                        </select>
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-xs text-slate-500 font-semibold mb-1.5">Wawancara II</label>
+                        <select id="wawancaraII" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xs bg-white transition">
+                            <option value="">-</option>
+                            <option value="Hadir">Hadir</option>
+                            <option value="Alpha">Alpha</option>
+                            <option value="Izin">Izin</option>
+                        </select>
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-xs text-slate-500 font-semibold mb-1.5">Status Akhir</label>
+                        <select id="detailStatusAkhir" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xs bg-white transition">
                             <option value="Pending">Pending</option>
                             <option value="Lulus">Lulus</option>
                             <option value="Tidak Lulus">Tidak Lulus</option>
@@ -473,9 +399,9 @@ function renderStatusBadge($val) {
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" id="saveDetailAbsensi" class="btn btn-primary">
+            <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3">
+                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Batal</button>
+                <button type="button" id="saveDetailAbsensi" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-blue-500/10 flex items-center gap-2">
                     <i class="bi bi-check-lg"></i> Simpan Perubahan
                 </button>
             </div>
@@ -483,19 +409,19 @@ function renderStatusBadge($val) {
     </div>
 </div>
 
-<!-- Toast Container -->
-
-
 <script>
 $(document).ready(function() {
     const APP_URL = '<?= APP_URL ?>';
-    
-    // Handle Status Akhir Dropdown Change (REMOVED - TABLE IS READ ONLY)
-
-
-
     const selectedContainer = $('#selectedMahasiswaList');
     let selectedMahasiswa = [];
+
+    // Search filter
+    $('#searchKehadiran').on('keyup', function() {
+        const value = $(this).val().toLowerCase();
+        $('#monitoringTable tbody tr').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
 
     $('#addMahasiswaButton').click(function() {
         const sel = $('#mahasiswa');
@@ -516,10 +442,10 @@ $(document).ready(function() {
         selectedMahasiswa.push(id);
 
         selectedContainer.append(`
-            <div class="multi-select-item selected" data-id="${id}">
-                <i class="bi bi-person-check"></i>
-                <span style="flex: 1;">${txt}</span>
-                <button type="button" class="btn btn-sm text-danger p-0 border-0 remove-item">
+            <div class="multi-select-item selected flex items-center gap-3 p-3 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 text-sm" data-id="${id}">
+                <i class="bi bi-person-check text-blue-600 text-lg"></i>
+                <span class="flex-grow font-semibold">${txt}</span>
+                <button type="button" class="text-red-500 hover:text-red-700 remove-item">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
@@ -529,15 +455,15 @@ $(document).ready(function() {
 
     $(document).on('click', '.remove-item', function() {
         const item = $(this).closest('.multi-select-item');
-        const id = item.data('id');
+        const id = item.data('id').toString();
         selectedMahasiswa = selectedMahasiswa.filter(i => i != id);
         item.remove();
 
         if (selectedMahasiswa.length === 0) {
             selectedContainer.html(`
-                <div class="empty-msg text-center text-muted py-3">
-                    <i class="bi bi-inbox"></i>
-                    <p class="mb-0 mt-2">Belum ada mahasiswa dipilih</p>
+                <div class="empty-msg text-center text-slate-400 py-6">
+                    <i class="bi bi-inbox text-3xl mb-2 block"></i>
+                    <p class="text-xs font-semibold">Belum ada mahasiswa dipilih</p>
                 </div>
             `);
         }
@@ -566,7 +492,6 @@ $(document).ready(function() {
             data: JSON.stringify(data),
             success: function(res) {
                 if(res.status === 'success') {
-                    // Flash Message for Add
                     sessionStorage.setItem('pendingToast', JSON.stringify({ 
                         message: 'Data kehadiran berhasil disimpan!', 
                         isSuccess: true 
@@ -576,48 +501,8 @@ $(document).ready(function() {
                     showAlert(res.message || 'Terjadi kesalahan', false);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function() {
                 showAlert('Gagal menghubungi server', false);
-            }
-        });
-    });
-
-    // --- DELETE LOGIC ---
-    $(document).on('click', '.btn-delete-attendance', function() {
-        const btn = $(this);
-        const id = btn.data('id');
-        const nama = btn.data('nama');
-
-        showDeleteConfirmation({
-            message: `Apakah Anda yakin ingin menghapus data kehadiran "${nama}"?`,
-            id: id,
-            type: 'attendance',
-            onConfirm: function(deleteId) {
-                $.ajax({
-                    url: APP_URL + "/deleteabsensi",
-                    method: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({ id: id }),
-                    success: function(res) {
-                        if(res.status === 'success') {
-                            showAlert('Data kehadiran berhasil dihapus!', true);
-                            
-                            // Real-time update: Remove row
-                            const btn = $(`.btn-delete[data-id="${id}"]`);
-                            const tr = btn.closest('tr');
-                            if (tr.length) {
-                                tr.fadeOut(300, function() {
-                                    $(this).remove();
-                                });
-                            }
-                        } else {
-                            showAlert(res.message || 'Gagal menghapus data', false);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        showAlert('Gagal menghubungi server', false);
-                    }
-                });
             }
         });
     });
@@ -670,17 +555,17 @@ $(document).ready(function() {
                     if (tr.length) {
                         const getBadge = (val) => {
                             if(!val || typeof val !== 'string' || val.trim() === '' || val === '-') {
-                                return '<span class="badge bg-light text-secondary border">Belum Ada</span>';
+                                return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-50 text-slate-400 border border-slate-200">Belum Ada</span>';
                             }
                             const v = val.toLowerCase().trim();
                             
-                            if(v === 'hadir') return '<span class="badge bg-success">Hadir</span>';
-                            if(v === 'alpha') return '<span class="badge bg-danger">Alpha</span>';
-                            if(v === 'tidak hadir') return '<span class="badge bg-danger">Tidak Hadir</span>';
-                            if(v === 'izin') return '<span class="badge bg-warning text-dark">Izin</span>';
-                            if(v === 'sakit') return '<span class="badge bg-warning text-dark">Sakit</span>';
+                            if(v === 'hadir') return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100">Hadir</span>';
+                            if(v === 'alpha') return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-red-50 text-red-700 border border-red-100">Alpha</span>';
+                            if(v === 'tidak hadir') return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-red-50 text-red-700 border border-red-100">Tidak Hadir</span>';
+                            if(v === 'izin') return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-amber-50 text-amber-700 border border-amber-100">Izin</span>';
+                            if(v === 'sakit') return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-amber-50 text-amber-700 border border-amber-100">Sakit</span>';
                             
-                            return `<span class="badge bg-info text-dark">${val}</span>`;
+                            return `<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 border border-blue-100">${val}</span>`;
                         };
 
                         // 1. Update Edit Button Data Attributes (for next edit)
@@ -690,7 +575,7 @@ $(document).ready(function() {
                         editBtn.data('absensiwawancaraii', data.wawancaraII);
                         editBtn.data('statusakhir', data.statusAkhir);
 
-                        // 2. Update Recap (Eye) Button Data Attributes (Crucial for Recap Modal)
+                        // 2. Update Recap (Eye) Button Data Attributes
                         const rekapBtn = tr.find('.open-rekap');
                         if (rekapBtn.length) {
                             rekapBtn.data('tes', data.tesTertulis);
@@ -698,43 +583,39 @@ $(document).ready(function() {
                             rekapBtn.data('wawancara1', data.wawancaraI);
                             rekapBtn.data('wawancara2', data.wawancaraII);
                             rekapBtn.data('statusakhir', data.statusAkhir);
-                            // Note: 'nilai' and 'berkas' are not updated here as they are not editable in this modal
                         }
 
                         // 3. Update Table Columns
-                        // 3: Tes Tertulis, 4: Presentasi, 5: Wawancara I, 6: Wawancara II
                         tr.find('td:eq(3)').html(getBadge(data.tesTertulis));
                         tr.find('td:eq(4)').html(getBadge(data.presentasi));
                         tr.find('td:eq(5)').html(getBadge(data.wawancaraI));
                         tr.find('td:eq(6)').html(getBadge(data.wawancaraII));
                         
-                        // 4. Update Status Akhir Badge (Index 7)
+                        // 4. Update Status Akhir Badge
                         const statusBadge = tr.find('.status-akhir-badge');
                         if(statusBadge.length) {
                             const s = data.statusAkhir;
                             statusBadge.text(s.toUpperCase());
                             
-                            // Remove old classes
-                            statusBadge.removeClass('bg-success bg-danger bg-warning text-dark text-white text-success text-danger text-warning bg-opacity-10');
+                            statusBadge.removeClass('text-emerald-700 bg-emerald-50 border border-emerald-100 text-red-700 bg-red-50 border border-red-100 text-amber-700 bg-amber-50 border border-amber-100');
                             
-                            // Add new classes
-                            if(s === 'Lulus') statusBadge.addClass('text-success bg-success bg-opacity-10');
-                            else if(s === 'Tidak Lulus') statusBadge.addClass('text-danger bg-danger bg-opacity-10');
-                            else statusBadge.addClass('text-warning bg-warning bg-opacity-10');
+                            if(s === 'Lulus') statusBadge.addClass('text-emerald-700 bg-emerald-50 border border-emerald-100');
+                            else if(s === 'Tidak Lulus') statusBadge.addClass('text-red-700 bg-red-50 border border-red-100');
+                            else statusBadge.addClass('text-amber-700 bg-amber-50 border border-amber-100');
                         }
                     }
                     
-                    // Close Modal
                     $('#detailAbsensiModal').modal('hide'); 
                 } else {
                     showAlert(res.message || 'Terjadi kesalahan', false);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function() {
                 showAlert('Gagal menghubungi server', false);
             }
         });
     });
+
     // --- REKAP DETAIL LOGIC ---
     $('.open-rekap').click(function() {
         const btn = $(this);
@@ -751,12 +632,10 @@ $(document).ready(function() {
         const avatarContainer = $('#rekapAvatarContainer');
 
         if (fotoUrl && fotoUrl.trim() !== '') {
-            // Show photo with cache busting
             fotoImg.attr('src', fotoUrl + '?v=' + new Date().getTime());
             fotoImg.show();
             avatarContainer.hide();
         } else {
-            // Show avatar placeholder
             fotoImg.hide();
             avatarContainer.show();
         }
@@ -764,22 +643,22 @@ $(document).ready(function() {
         // Helper to create badge
         const createBadge = (status, type = 'attendance') => {
             if(!status || status === '-' || status === '') 
-                return '<span class="badge bg-light text-secondary border">Belum Ada</span>';
+                return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-50 text-slate-400 border border-slate-200">Belum Ada</span>';
             
             const s = status.toString().toLowerCase();
             
             if(type === 'berkas') {
-                if(s === '1') return '<span class="badge bg-success">Diterima</span>';
-                if(s === '0') return '<span class="badge bg-warning text-dark">Pending</span>'; // Assuming 0 is pending/not user action
-                return '<span class="badge bg-secondary">Ditolak</span>';
+                if(s === '1') return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100">Diterima</span>';
+                if(s === '0') return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-amber-50 text-amber-700 border border-amber-100">Pending</span>';
+                return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-red-50 text-red-700 border border-red-100">Ditolak</span>';
             }
             
             // Attendance
-            if(s === 'hadir') return '<span class="badge bg-success">Hadir</span>';
-            if(s === 'alpha' || s === 'tidak hadir') return '<span class="badge bg-danger">Alpha</span>';
-            if(s === 'izin' || s === 'sakit') return '<span class="badge bg-warning text-dark">Izin</span>';
+            if(s === 'hadir') return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100">Hadir</span>';
+            if(s === 'alpha' || s === 'tidak hadir') return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-red-50 text-red-700 border border-red-100">Alpha</span>';
+            if(s === 'izin' || s === 'sakit') return '<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-amber-50 text-amber-700 border border-amber-100">Izin</span>';
             
-            return `<span class="badge bg-info text-dark">${status}</span>`;
+            return `<span class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 border border-blue-100">${status}</span>`;
         };
 
         // 1. Berkas
@@ -787,13 +666,13 @@ $(document).ready(function() {
 
         // 2. Tes Tertulis
         const nilai = btn.data('nilai');
-        const tesStatus = btn.data('tes'); // Hadir/Alpha
+        const tesStatus = btn.data('tes');
         
         let tesBadge = createBadge(tesStatus);
         if(nilai !== '') {
             $('#scoreTes').text(`Nilai: ${nilai}`);
-            if(nilai >= 70) tesBadge += ' <span class="badge bg-success ms-1">Lulus</span>';
-            else tesBadge += ' <span class="badge bg-danger ms-1">Gagal</span>';
+            if(nilai >= 70) tesBadge += ' <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-emerald-100 text-emerald-800 ml-1">Lulus</span>';
+            else tesBadge += ' <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-red-100 text-red-800 ml-1">Gagal</span>';
         } else {
             $('#scoreTes').text('Nilai: Belum keluar');
         }
@@ -806,29 +685,27 @@ $(document).ready(function() {
         $('#statusWawancara1').html(createBadge(btn.data('wawancara1')));
         $('#statusWawancara2').html(createBadge(btn.data('wawancara2')));
 
-        // 5. Final Result - Use status_akhir from database instead of auto-calculation
+        // 5. Final Result
         const box = $('#finalResultBox');
         const badge = $('#finalStatus');
 
-        box.removeClass('bg-success-subtle bg-danger-subtle bg-light bg-warning-subtle');
-        badge.removeClass('bg-success bg-danger bg-secondary bg-warning');
+        box.removeClass('bg-emerald-50 text-emerald-700 border border-emerald-100 bg-red-50 text-red-700 border border-red-100 bg-slate-50 text-slate-600 border border-slate-200 bg-amber-50 text-amber-700 border border-amber-100');
+        badge.removeClass('bg-emerald-600 hover:bg-emerald-700 text-white bg-red-600 hover:bg-red-700 text-white bg-slate-600 text-white bg-amber-500 text-white border border-emerald-100 border-red-100 border-slate-200 border-amber-100');
 
-        // Get status_akhir from database
         const statusAkhir = btn.data('statusakhir') || 'Pending';
 
         if(statusAkhir === 'Lulus') {
-            box.addClass('bg-success-subtle'); // Light green
-            badge.addClass('bg-success').text('LULUS');
+            box.addClass('bg-emerald-50 text-emerald-700 border border-emerald-100');
+            badge.addClass('bg-emerald-600 text-white').text('LULUS');
         } else if (statusAkhir === 'Tidak Lulus') {
-            box.addClass('bg-danger-subtle'); // Light red
-            badge.addClass('bg-danger').text('TIDAK LULUS');
+            box.addClass('bg-red-50 text-red-700 border border-red-100');
+            badge.addClass('bg-red-600 text-white').text('TIDAK LULUS');
         } else {
-            box.addClass('bg-warning-subtle');
-            badge.addClass('bg-warning').text('PENDING');
+            box.addClass('bg-amber-50 text-amber-700 border border-amber-100');
+            badge.addClass('bg-amber-500 text-white').text('PENDING');
         }
 
         modal.modal('show');
     });
-
 });
 </script>

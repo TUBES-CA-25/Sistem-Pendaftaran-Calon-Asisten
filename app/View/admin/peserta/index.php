@@ -19,152 +19,113 @@ $result = $result ?? [];
 ?>
 
 <!-- Main Content -->
-<!-- Main Content -->
-<div class="container-fluid px-4 mt-3">
-    <!-- Table Controls -->
-    <!-- Main Container (Clean Layout) -->
-    <div class="">
-        <div class="">
-            <!-- Table Controls -->
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
-                <div class="position-relative" style="width: 280px; max-width: 100%;">
-                    <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-                    <input type="text" id="searchPeserta" class="form-control ps-5 rounded-3 border bg-light" placeholder="Cari peserta...">
-                </div>
-                <button class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold shadow-sm d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addNotification">
-                    <i class="bi bi-send-fill"></i> Kirim Notifikasi
-                </button>
-            </div>
-            
-            <!-- Custom CSS to match Reference Image (Perfect Grid) -->
-            <style>
-                #daftarPesertaTable {
-                    border-collapse: collapse !important; /* Ensures shared borders for perfect 1px thickness */
-                    width: 100%;
-                    border: 1px solid #E5E7EB; /* Outer Border */
-                }
-                
-                #daftarPesertaTable thead,
-                #daftarPesertaTable tbody,
-                #daftarPesertaTable tr {
-                    border-style: none !important; /* Reset default container borders */
-                }
+<div class="max-w-7xl mx-auto px-4 py-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <div class="relative w-full sm:w-72">
+            <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input type="text" id="searchPeserta" class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm" placeholder="Cari peserta...">
+        </div>
+        <button class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition flex items-center gap-2 shadow-md shadow-blue-500/10" data-bs-toggle="modal" data-bs-target="#addNotification">
+            <i class="bi bi-send-fill"></i> Kirim Notifikasi
+        </button>
+    </div>
 
-                #daftarPesertaTable th, 
-                #daftarPesertaTable td {
-                    border: 1px solid #E5E7EB !important; /* Uniform 1px grid for ALL cells */
-                    padding: 12px 16px; /* Match spacing */
-                }
-
-                /* Ensure blue header text persists */
-                #daftarPesertaTable thead th {
-                    color: #2563EB !important;
-                    font-weight: 700;
-                    text-transform: uppercase;
-                    font-size: 0.875rem;
-                }
-            </style>
-    
     <!-- Table Container -->
-            <div class="table-responsive">
-                <table id="daftarPesertaTable" class="table table-hover align-middle mb-0" style="width:100%;">
-                    <thead style="background-color: #ffffff;">
-                        <tr>
-                            <th class="text-center fw-bold py-2 px-2" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase;">NO</th>
-                            <th class="fw-bold py-2 px-2" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase;">NAMA LENGKAP</th>
-                            <th class="text-center fw-bold py-2 px-2" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 140px;">STAMBUK</th>
-                            <th class="fw-bold py-2 px-2" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 180px;">JURUSAN</th>
-                            <th class="text-center fw-bold py-2 px-2" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 130px;">STATUS</th>
-                            <th class="text-center fw-bold py-2 px-2" style="font-size: 0.875rem; color: #2563EB; text-transform: uppercase; width: 120px;">AKSI</th>
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
+        <div class="overflow-x-auto">
+            <table id="daftarPesertaTable" class="w-full text-left border-collapse text-sm">
+                <thead>
+                    <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                        <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center w-[60px]">NO</th>
+                        <th class="font-bold text-xs uppercase tracking-wider py-4 px-4">NAMA LENGKAP</th>
+                        <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center w-[140px]">STAMBUK</th>
+                        <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 w-[180px]">JURUSAN</th>
+                        <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center w-[130px]">STATUS</th>
+                        <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center w-[120px]">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <?php $i = 1; ?>
+                    <?php foreach ($result as $row): ?>
+                        <?php if (empty($row['id'])) continue; // Show ONLY Mahasiswa ?>
+                        <tr class="hover:bg-slate-50/85 transition" data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
+                            <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $i ?></td>
+                            <td class="py-4 px-4">
+                                <div class="flex items-center gap-3">
+                                    <img src="<?= $row['photoPath'] ?>" alt="Avatar" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 flex-shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
+                                    <div class="flex flex-col">
+                                        <span class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></span>
+                                        <span class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-0.5">Mahasiswa</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center text-slate-600 py-4 px-4 font-semibold">
+                                <?= htmlspecialchars($row['stambuk'] ?? '-') ?>
+                            </td>
+                            <td class="text-slate-500 py-4 px-4 font-medium">
+                                <?= htmlspecialchars($row['jurusan'] ?? '-') ?>
+                            </td>
+                            <td class="text-center py-4 px-4">
+                                <span class="<?= $row['statusBadge']['class'] ?> inline-block px-3 py-1.5 text-xs font-semibold rounded-lg">
+                                    <?= $row['statusBadge']['text'] ?>
+                                </span>
+                            </td>
+                            <td class="py-4 px-4">
+                                <div class="flex items-center justify-center gap-2">
+                                    <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-blue-50 hover:bg-blue-100 text-blue-600 btn-view" 
+                                            title="Lihat Detail"
+                                            data-id="<?= $row['id'] ?>"
+                                            data-userid="<?= $row['idUser'] ?>"
+                                            data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>"
+                                            data-stambuk="<?= htmlspecialchars($row['stambuk'] ?? '') ?>"
+                                            data-jurusan="<?= htmlspecialchars($row['jurusan'] ?? '') ?>"
+                                            data-kelas="<?= htmlspecialchars($row['kelas'] ?? '') ?>"
+                                            data-alamat="<?= htmlspecialchars($row['alamat'] ?? '') ?>"
+                                            data-tempat_lahir="<?= htmlspecialchars($row['tempat_lahir'] ?? '') ?>"
+                                            data-notelp="<?= htmlspecialchars($row['notelp'] ?? '') ?>"
+                                            data-tanggal_lahir="<?= htmlspecialchars($row['tanggal_lahir'] ?? '') ?>"
+                                            data-jenis_kelamin="<?= htmlspecialchars($row['jenis_kelamin'] ?? '') ?>"
+                                            data-judul_presentasi="<?= htmlspecialchars($row['judul_presentasi'] ?? '') ?>"
+                                            data-foto="<?= $row['berkas']['foto'] ?? '' ?>"
+                                            data-cv="<?= $row['berkas']['cv'] ?? '' ?>"
+                                            data-transkrip="<?= $row['berkas']['transkrip_nilai'] ?? '' ?>"
+                                            data-surat="<?= $row['berkas']['surat_pernyataan'] ?? '' ?>"
+                                            data-berkas_accepted="<?= $row['berkas']['accepted'] ?? '' ?>"
+                                            data-makalah="<?= $row['presentasi']['makalah'] ?? '' ?>"
+                                            data-ppt="<?= $row['presentasi']['ppt'] ?? ''?>">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-red-50 hover:bg-red-100 text-red-600 btn-delete" 
+                                            title="Hapus"
+                                            data-id="<?= $row['id'] ?>"
+                                            data-userid="<?= $row['idUser'] ?>">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php $i = 1; ?>
-                        <?php foreach ($result as $row): ?>
-                            <?php if (empty($row['id'])) continue; // Show ONLY Mahasiswa ?>
-                            <tr class="border-bottom" data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>" style="background-color: <?= $i % 2 == 0 ? '#f9fafb' : '#ffffff' ?>;">
-                                <td class="text-center py-2 px-2" style="color: #6b7280; font-weight: 500;"><?= $i ?></td>
-                                <td class="py-2 px-2">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <img src="<?= $row['photoPath'] ?>" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid #e5e7eb;" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
-                                        <div class="d-flex flex-column">
-                                            <span class="fw-semibold" style="color: #111827; font-size: 0.9rem;"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></span>
-                                            <span class="" style="color: #6b7280; font-size: 0.75rem;">Mahasiswa</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-center py-2 px-2">
-                                    <span style="color: #4b5563; font-size: 0.875rem;"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></span>
-                                </td>
-                                <td class="py-2 px-2">
-                                    <span style="color: #6b7280; font-size: 0.875rem;"><?= htmlspecialchars($row['jurusan'] ?? '-') ?></span>
-                                </td>
-                                <td class="text-center py-2 px-2">
-                                    <span class="badge rounded-pill px-3 py-2 <?= $row['statusBadge']['class'] ?>" style="font-size: 0.75rem; font-weight: 500;">
-                                        <?= $row['statusBadge']['text'] ?>
-                                    </span>
-                                </td>
-                                <td class="text-center py-2 px-2">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center btn-view" 
-                                                title="Lihat Detail"
-                                                style="width: 36px; height: 36px; background-color: #dbeafe; border: none; color: #1e40af;"
-                                                data-id="<?= $row['id'] ?>"
-                                                data-userid="<?= $row['idUser'] ?>"
-                                                data-nama="<?= htmlspecialchars($row['nama_lengkap'] ?? '') ?>"
-                                                data-stambuk="<?= htmlspecialchars($row['stambuk'] ?? '') ?>"
-                                                data-jurusan="<?= htmlspecialchars($row['jurusan'] ?? '') ?>"
-                                                data-kelas="<?= htmlspecialchars($row['kelas'] ?? '') ?>"
-                                                data-alamat="<?= htmlspecialchars($row['alamat'] ?? '') ?>"
-                                                data-tempat_lahir="<?= htmlspecialchars($row['tempat_lahir'] ?? '') ?>"
-                                                data-notelp="<?= htmlspecialchars($row['notelp'] ?? '') ?>"
-                                                data-tanggal_lahir="<?= htmlspecialchars($row['tanggal_lahir'] ?? '') ?>"
-                                                data-jenis_kelamin="<?= htmlspecialchars($row['jenis_kelamin'] ?? '') ?>"
-                                                data-judul_presentasi="<?= htmlspecialchars($row['judul_presentasi'] ?? '') ?>"
-                                                data-foto="<?= $row['berkas']['foto'] ?? '' ?>"
-                                                data-cv="<?= $row['berkas']['cv'] ?? '' ?>"
-                                                data-transkrip="<?= $row['berkas']['transkrip_nilai'] ?? '' ?>"
-                                                data-surat="<?= $row['berkas']['surat_pernyataan'] ?? '' ?>"
-                                                data-berkas_accepted="<?= $row['berkas']['accepted'] ?? '' ?>"
-                                                data-makalah="<?= $row['presentasi']['makalah'] ?? '' ?>"
-                                                data-ppt="<?= $row['presentasi']['ppt'] ?? ''?>">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center btn-delete" 
-                                                title="Hapus"
-                                                style="width: 36px; height: 36px; background-color: #fee2e2; border: none; color: #dc2626;"
-                                                data-id="<?= $row['id'] ?>"
-                                                data-userid="<?= $row['idUser'] ?>">
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <?php $i++; ?>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                        <?php $i++; ?>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-
-
 <!-- Modal Kirim Notifikasi -->
 <div class="modal fade" id="addNotification" tabindex="-1" aria-labelledby="addNotificationLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="addNotificationLabel">
-                    <i class="bi bi-send me-2"></i>Kirim Notifikasi ke Peserta
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+                <h5 class="modal-title font-bold flex items-center gap-2" id="addNotificationLabel">
+                    <i class="bi bi-send text-lg"></i>Kirim Notifikasi ke Peserta
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <form id="addNotificationForm">
+            <div class="p-6">
+                <form id="addNotificationForm" class="space-y-4">
                     <!-- Hidden Select for Logic Compatibility -->
-                    <div style="display: none;">
+                    <div class="hidden">
                         <select class="form-select" id="mahasiswa">
                             <option value="" disabled selected>-- Pilih Peserta --</option>
                             <?php foreach ($mahasiswaList as $mahasiswa): ?>
@@ -177,28 +138,28 @@ $result = $result ?? [];
                         <span id="selectedCount"></span>
                     </div>
 
-                    <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
-                        <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3 text-blue-700">
+                        <i class="bi bi-info-circle-fill text-xl flex-shrink-0 mt-0.5"></i>
                         <div>
-                            <strong>Broadcast Notifikasi</strong>
-                            <div class="small">Pesan yang Anda tulis di bawah ini akan dikirimkan kepada <u>seluruh peserta</u> yang terdaftar dalam sistem.</div>
+                            <strong class="text-sm block mb-0.5">Broadcast Notifikasi</strong>
+                            <span class="text-xs text-blue-600 font-medium">Pesan yang Anda tulis di bawah ini akan dikirimkan kepada <u>seluruh peserta</u> yang terdaftar dalam sistem.</span>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="notifMessage" class="form-label fw-semibold">
+                    <div>
+                        <label for="notifMessage" class="block text-sm font-semibold text-slate-700 mb-2">
                             <i class="bi bi-chat-text me-1"></i>Pesan Broadcast
                         </label>
-                        <textarea class="form-control" id="notifMessage" rows="5" placeholder="Tulis pesan pengumuman atau informasi penting di sini..." required></textarea>
+                        <textarea class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="notifMessage" rows="5" placeholder="Tulis pesan pengumuman atau informasi penting di sini..." required></textarea>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i>Batal
+            <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3">
+                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition flex items-center justify-center gap-2" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i>Batal
                 </button>
-                <button type="submit" class="btn btn-primary" form="addNotificationForm">
-                    <i class="bi bi-send me-1"></i>Kirim Notifikasi
+                <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-blue-500/10 flex items-center gap-2" form="addNotificationForm">
+                    <i class="bi bi-send"></i>Kirim Notifikasi
                 </button>
             </div>
         </div>
@@ -208,82 +169,69 @@ $result = $result ?? [];
 <!-- Modal Detail Peserta -->
 <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0" style="border-radius: var(--bs-border-radius-2xl); overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
             <!-- Header dengan Background Gradient -->
-            <div class="position-relative" style="background: var(--bs-primary-dark); padding: 25px 30px;">
-                <button type="button" class="btn-close btn-close-white position-absolute" style="top: 15px; right: 15px; opacity: 0.8; z-index: 20;" data-bs-dismiss="modal" aria-label="Close"></button>
-                
+            <div class="relative bg-slate-900 px-8 py-6 text-white overflow-hidden flex-shrink-0">
                 <!-- Decorative Elements -->
-                <div class="position-absolute" style="top: -40px; right: -40px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
-                <div class="position-absolute" style="bottom: 30px; left: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
-                <div class="position-absolute" style="top: 20px; left: 30%; width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                <div class="absolute -top-10 -right-10 w-36 h-36 bg-white/10 rounded-full"></div>
+                <div class="absolute bottom-5 -left-10 w-24 h-24 bg-white/5 rounded-full"></div>
+                
+                <button type="button" class="btn-close btn-close-white absolute top-4 right-4 opacity-80 z-20" data-bs-dismiss="modal" aria-label="Close"></button>
                 
                 <!-- Title -->
-                <h5 class="text-white fw-semibold mb-0 position-relative" style="z-index: 10;">
-                    <i class="bi bi-person-badge me-2"></i>Detail Peserta
+                <h5 class="text-white font-bold text-lg flex items-center gap-2 relative z-10">
+                    <i class="bi bi-person-badge text-xl"></i>Detail Peserta
                 </h5>
             </div>
             
             <!-- Profile Card yang Overlap -->
-            <div class="px-4 mt-4" style="position: relative; z-index: 10;">
-                <div class="bg-white rounded-4 shadow p-4" style="border: 1px solid rgba(0,0,0,0.05);">
-                    <div class="row align-items-center">
+            <div class="px-6 -mt-6 relative z-10 flex-shrink-0">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                    <div class="flex flex-col md:flex-row items-center gap-6">
                         <!-- Photo Column -->
-                        <div class="col-md-3 text-center mb-3 mb-md-0">
-                            <div class="position-relative d-inline-block">
-                                <img id="modalFoto" src="" alt="Foto Peserta" 
-                                     class="rounded-circle shadow-lg"
-                                     style="width: 130px; height: 130px; object-fit: cover; border: 5px solid white; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
-                                <span id="modalStatusIcon" class="position-absolute bottom-0 end-0 rounded-circle shadow" 
-                                      style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
-                                </span>
-                            </div>
+                        <div class="relative flex-shrink-0">
+                            <img id="modalFoto" src="" alt="Foto Peserta" 
+                                 class="rounded-full w-32 h-32 object-cover border-4 border-white shadow-md bg-slate-100">
+                            <span id="modalStatusIcon" class="absolute bottom-0 right-0 w-8 h-8 rounded-full shadow-md flex items-center justify-center text-sm text-white font-bold">
+                            </span>
                         </div>
                         
                         <!-- Info Column -->
-                        <div class="col-md-9">
-                            <div class="d-flex flex-wrap align-items-start justify-content-between">
+                        <div class="flex-grow w-full">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                                 <div>
-                                    <h3 class="fw-bold mb-1" id="modalNamaHeader" style="color: #1f2937; font-size: 1.5rem;">Nama Peserta</h3>
-                                    <p class="text-muted mb-2" style="font-size: 0.95rem;">
-                                        <i class="bi bi-credit-card-2-front me-1"></i>
+                                    <h3 class="text-xl font-bold text-slate-800 mb-1" id="modalNamaHeader">Nama Peserta</h3>
+                                    <p class="text-slate-400 text-sm font-semibold flex items-center gap-1.5 mb-2">
+                                        <i class="bi bi-credit-card-2-front text-base"></i>
                                         <span id="modalStambukHeader">-</span>
                                     </p>
-                                    <span id="modalStatusBadge" class="badge rounded-pill px-4 py-2" style="font-size: 0.85rem; font-weight: 500;">
+                                    <span id="modalStatusBadge" class="inline-block rounded-full px-4 py-1.5 text-xs font-semibold">
                                         Status
                                     </span>
                                 </div>
                             </div>
                             
                             <!-- Quick Stats Row -->
-                            <div class="row g-2 mt-3">
-                                <div class="col-6 col-lg-3">
-                                    <div class="rounded-3 p-2 text-center info-card-jurusan">
-                                        <i class="bi bi-mortarboard-fill d-block mb-1" style="font-size: 1.2rem;"></i>
-                                        <p class="text-muted mb-0" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px;">Jurusan</p>
-                                        <p class="fw-semibold mb-0 text-truncate" id="modalJurusan" style="font-size: 0.8rem; color: #374151;" title="">-</p>
-                                    </div>
+                            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                                <div class="bg-blue-50/50 border border-blue-100/60 rounded-xl p-3 text-center transition hover:bg-blue-50">
+                                    <i class="bi bi-mortarboard-fill text-blue-500 mb-1.5 text-lg block"></i>
+                                    <span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">Jurusan</span>
+                                    <span class="font-bold text-xs text-slate-700 truncate block" id="modalJurusan" title="">-</span>
                                 </div>
-                                <div class="col-6 col-lg-3">
-                                    <div class="rounded-3 p-2 text-center" style="background: linear-gradient(135deg, #10b98115 0%, #059b7015 100%); border: 1px solid #10b98120;">
-                                        <i class="bi bi-door-open-fill d-block mb-1" style="font-size: 1.2rem; color: #10b981;"></i>
-                                        <p class="text-muted mb-0" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px;">Kelas</p>
-                                        <p class="fw-semibold mb-0" id="modalKelas" style="font-size: 0.8rem; color: #374151;">-</p>
-                                    </div>
+                                <div class="bg-emerald-50/50 border border-emerald-100/60 rounded-xl p-3 text-center transition hover:bg-emerald-50">
+                                    <i class="bi bi-door-open-fill text-emerald-500 mb-1.5 text-lg block"></i>
+                                    <span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">Kelas</span>
+                                    <span class="font-bold text-xs text-slate-700 block" id="modalKelas">-</span>
                                 </div>
-                                <div class="col-6 col-lg-3">
-                                    <div class="rounded-3 p-2 text-center" style="background: linear-gradient(135deg, #8b5cf615 0%, #7c3aed15 100%); border: 1px solid #8b5cf620;">
-                                        <i class="bi bi-gender-ambiguous d-block mb-1" style="font-size: 1.2rem; color: #8b5cf6;"></i>
-                                        <p class="text-muted mb-0" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px;">Gender</p>
-                                        <p class="fw-semibold mb-0" id="modalJenis_kelamin" style="font-size: 0.8rem; color: #374151;">-</p>
-                                    </div>
+                                <div class="bg-purple-50/50 border border-purple-100/60 rounded-xl p-3 text-center transition hover:bg-purple-50">
+                                    <i class="bi bi-gender-ambiguous text-purple-500 mb-1.5 text-lg block"></i>
+                                    <span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">Gender</span>
+                                    <span class="font-bold text-xs text-slate-700 block" id="modalJenis_kelamin">-</span>
                                 </div>
-                                <div class="col-6 col-lg-3">
-                                    <div class="rounded-3 p-2 text-center" style="background: linear-gradient(135deg, #f59e0b15 0%, #d9770615 100%); border: 1px solid #f59e0b20;">
-                                        <i class="bi bi-telephone-fill d-block mb-1" style="font-size: 1.2rem; color: #f59e0b;"></i>
-                                        <p class="text-muted mb-0" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px;">Telepon</p>
-                                        <p class="fw-semibold mb-0 text-truncate" id="modalNoTelp" style="font-size: 0.8rem; color: #374151;">-</p>
-                                    </div>
+                                <div class="bg-amber-50/50 border border-amber-100/60 rounded-xl p-3 text-center transition hover:bg-amber-50">
+                                    <i class="bi bi-telephone-fill text-amber-500 mb-1.5 text-lg block"></i>
+                                    <span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">Telepon</span>
+                                    <span class="font-bold text-xs text-slate-700 truncate block" id="modalNoTelp">-</span>
                                 </div>
                             </div>
                         </div>
@@ -292,151 +240,125 @@ $result = $result ?? [];
             </div>
             
             <!-- Body Content -->
-            <div class="modal-body px-4 pb-4 pt-3">
-                <div class="row g-3">
+            <div class="modal-body px-6 pb-6 pt-3">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Left Column -->
-                    <div class="col-lg-6">
-                        <!-- Biodata Section -->
-                        <div class="bg-white rounded-4 p-4 h-100 shadow-sm" style="border: 1px solid #e5e7eb;">
-                            <div class="d-flex align-items-center mb-4">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3 biodata-icon" style="width: 42px; height: 42px;">
-                                    <i class="bi bi-person-vcard text-white" style="font-size: 1.1rem;"></i>
-                                </div>
-                                <div>
-                                    <h6 class="fw-bold mb-0" style="color: #1f2937;">Biodata Peserta</h6>
-                                    <small class="text-muted">Informasi personal</small>
-                                </div>
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
+                        <div class="flex items-center mb-5 mr-3">
+                            <div class="rounded-xl flex items-center justify-content-center mr-3 w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex-shrink-0">
+                                <i class="bi bi-person-vcard text-base"></i>
                             </div>
+                            <div>
+                                <h6 class="font-bold text-slate-800 mb-0.5">Biodata Peserta</h6>
+                                <small class="text-slate-400 text-xs font-semibold">Informasi personal</small>
+                            </div>
+                        </div>
 
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <div class="p-3 rounded-3" style="background: #f8fafc; border-left: 3px solid #3dc2ec;">
-                                        <label class="text-muted d-block mb-1" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Nama Lengkap</label>
-                                        <p class="fw-semibold mb-0" id="modalNama" style="color: #1f2937; font-size: 1rem;">-</p>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="p-3 rounded-3" style="background: #f8fafc;">
-                                        <label class="text-muted d-block mb-1" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Stambuk/NIM</label>
-                                        <p class="fw-medium mb-0" id="modalStambuk" style="color: #374151; font-size: 0.9rem;">-</p>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="p-3 rounded-3" style="background: #f8fafc;">
-                                        <label class="text-muted d-block mb-1" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Tempat Lahir</label>
-                                        <p class="fw-medium mb-0" id="modalTempat_lahir" style="color: #374151; font-size: 0.9rem;">-</p>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="p-3 rounded-3" style="background: #f8fafc;">
-                                        <label class="text-muted d-block mb-1" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Tanggal Lahir</label>
-                                        <p class="fw-medium mb-0" id="modalTanggal_lahir" style="color: #374151; font-size: 0.9rem;">-</p>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="p-3 rounded-3" style="background: #f8fafc;">
-                                        <label class="text-muted d-block mb-1" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Jenis Kelamin</label>
-                                        <p class="fw-medium mb-0" id="modalJenisKelaminDetail" style="color: #374151; font-size: 0.9rem;">-</p>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="p-3 rounded-3" style="background: #f8fafc;">
-                                        <label class="text-muted d-block mb-1" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                                            <i class="bi bi-geo-alt me-1"></i>Alamat
-                                        </label>
-                                        <p class="fw-medium mb-0" id="modalAlamat" style="color: #374151; font-size: 0.9rem; line-height: 1.5;">-</p>
-                                    </div>
-                                </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="sm:col-span-2 p-3 bg-slate-50 border-l-4 border-blue-500 rounded-xl">
+                                <label class="text-slate-400 font-bold uppercase tracking-wider text-[10px] block mb-1">Nama Lengkap</label>
+                                <p class="font-bold text-slate-800 mb-0" id="modalNama">-</p>
+                            </div>
+                            <div class="p-3 bg-slate-50/50 rounded-xl border border-slate-100">
+                                <label class="text-slate-400 font-bold uppercase tracking-wider text-[10px] block mb-1">Stambuk/NIM</label>
+                                <p class="font-semibold text-slate-700 text-sm mb-0" id="modalStambuk">-</p>
+                            </div>
+                            <div class="p-3 bg-slate-50/50 rounded-xl border border-slate-100">
+                                <label class="text-slate-400 font-bold uppercase tracking-wider text-[10px] block mb-1">Tempat Lahir</label>
+                                <p class="font-semibold text-slate-700 text-sm mb-0" id="modalTempat_lahir">-</p>
+                            </div>
+                            <div class="p-3 bg-slate-50/50 rounded-xl border border-slate-100">
+                                <label class="text-slate-400 font-bold uppercase tracking-wider text-[10px] block mb-1">Tanggal Lahir</label>
+                                <p class="font-semibold text-slate-700 text-sm mb-0" id="modalTanggal_lahir">-</p>
+                            </div>
+                            <div class="p-3 bg-slate-50/50 rounded-xl border border-slate-100">
+                                <label class="text-slate-400 font-bold uppercase tracking-wider text-[10px] block mb-1">Jenis Kelamin</label>
+                                <p class="font-semibold text-slate-700 text-sm mb-0" id="modalJenisKelaminDetail">-</p>
+                            </div>
+                            <div class="sm:col-span-2 p-3 bg-slate-50/50 rounded-xl border border-slate-100">
+                                <label class="text-slate-400 font-bold uppercase tracking-wider text-[10px] block mb-1 flex items-center gap-1">
+                                    <i class="bi bi-geo-alt"></i>Alamat
+                                </label>
+                                <p class="font-semibold text-slate-700 text-sm mb-0 leading-relaxed" id="modalAlamat">-</p>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Right Column -->
-                    <div class="col-lg-6">
-                        <!-- Berkas Section -->
-                        <div class="bg-white rounded-4 p-4 shadow-sm" style="border: 1px solid #e5e7eb;">
-                            <div class="d-flex align-items-center mb-4">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 42px; height: 42px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                                    <i class="bi bi-folder2-open text-white" style="font-size: 1.1rem;"></i>
-                                </div>
-                                <div>
-                                    <h6 class="fw-bold mb-0" style="color: #1f2937;">Berkas Pendaftaran</h6>
-                                    <small class="text-muted">Dokumen yang diunggah</small>
-                                </div>
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
+                        <div class="flex items-center mb-5 mr-3">
+                            <div class="rounded-xl flex items-center justify-content-center mr-3 w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 text-white flex-shrink-0">
+                                <i class="bi bi-folder2-open text-base"></i>
                             </div>
-                            
-                            <div class="row g-3">
-                                <!-- Foto -->
-                                <div class="col-12">
-                                    <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background: #f8fafc; border: 1px solid #e5e7eb;">
-                                        <div class="d-flex align-items-center gap-3 flex-grow-1">
-                                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background: #dbeafe;">
-                                                <i class="bi bi-image" style="color: #2563eb; font-size: 1.1rem;"></i>
-                                            </div>
-                                            <div>
-                                                <p class="mb-0 fw-medium" style="font-size: 0.9rem; color: #374151;">Foto</p>
-                                                <small class="text-muted" style="font-size: 0.75rem;">Pas foto mahasiswa</small>
-                                            </div>
-                                        </div>
-                                        <button type="button" class="btn btn-sm btn-download-berkas" id="downloadFotoButton" data-download-url="" style="background: #e0f2fe; color: #0284c7; border: none; border-radius: 6px; padding: 6px 12px;">
-                                            <i class="bi bi-download"></i>
-                                        </button>
+                            <div>
+                                <h6 class="font-bold text-slate-800 mb-0.5">Berkas Pendaftaran</h6>
+                                <small class="text-slate-400 text-xs font-semibold">Dokumen yang diunggah</small>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <!-- Foto -->
+                            <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-200/80 rounded-xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm transition duration-200">
+                                <div class="flex items-center gap-3 flex-grow min-w-0">
+                                    <div class="rounded-xl flex items-center justify-content-center w-10 h-10 bg-blue-100 text-blue-600 flex-shrink-0">
+                                        <i class="bi bi-image text-lg"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="mb-0 text-sm font-semibold text-slate-700 truncate">Foto</p>
+                                        <small class="text-slate-400 text-xs block truncate">Pas foto mahasiswa</small>
                                     </div>
                                 </div>
+                                <button type="button" class="btn-download-berkas w-9 h-9 rounded-xl flex items-center justify-center transition bg-sky-50 hover:bg-sky-100 text-sky-600" id="downloadFotoButton" data-download-url="">
+                                    <i class="bi bi-download text-sm"></i>
+                                </button>
+                            </div>
 
-                                <!-- CV -->
-                                <div class="col-12">
-                                    <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background: #f8fafc; border: 1px solid #e5e7eb;">
-                                        <div class="d-flex align-items-center gap-3 flex-grow-1">
-                                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background: #ede9fe;">
-                                                <i class="bi bi-file-person" style="color: #7c3aed; font-size: 1.1rem;"></i>
-                                            </div>
-                                            <div>
-                                                <p class="mb-0 fw-medium" style="font-size: 0.9rem; color: #374151;">CV</p>
-                                                <small class="text-muted" style="font-size: 0.75rem;">Curriculum Vitae</small>
-                                            </div>
-                                        </div>
-                                        <button type="button" class="btn btn-sm btn-download-berkas" id="downloadCVButton" data-download-url="" style="background: #e0f2fe; color: #0284c7; border: none; border-radius: 6px; padding: 6px 12px;">
-                                            <i class="bi bi-download"></i>
-                                        </button>
+                            <!-- CV -->
+                            <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-200/80 rounded-xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm transition duration-200">
+                                <div class="flex items-center gap-3 flex-grow min-w-0">
+                                    <div class="rounded-xl flex items-center justify-content-center w-10 h-10 bg-purple-100 text-purple-600 flex-shrink-0">
+                                        <i class="bi bi-file-person text-lg"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="mb-0 text-sm font-semibold text-slate-700 truncate">CV</p>
+                                        <small class="text-slate-400 text-xs block truncate">Curriculum Vitae</small>
                                     </div>
                                 </div>
+                                <button type="button" class="btn-download-berkas w-9 h-9 rounded-xl flex items-center justify-center transition bg-sky-50 hover:bg-sky-100 text-sky-600" id="downloadCVButton" data-download-url="">
+                                    <i class="bi bi-download text-sm"></i>
+                                </button>
+                            </div>
 
-                                <!-- Transkrip -->
-                                <div class="col-12">
-                                    <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background: #f8fafc; border: 1px solid #e5e7eb;">
-                                        <div class="d-flex align-items-center gap-3 flex-grow-1">
-                                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background: #d1fae5;">
-                                                <i class="bi bi-file-text" style="color: #059669; font-size: 1.1rem;"></i>
-                                            </div>
-                                            <div>
-                                                <p class="mb-0 fw-medium" style="font-size: 0.9rem; color: #374151;">Transkrip Nilai</p>
-                                                <small class="text-muted" style="font-size: 0.75rem;">Transkrip nilai akademik</small>
-                                            </div>
-                                        </div>
-                                        <button type="button" class="btn btn-sm btn-download-berkas" id="downloadTranskripButton" data-download-url="" style="background: #e0f2fe; color: #0284c7; border: none; border-radius: 6px; padding: 6px 12px;">
-                                            <i class="bi bi-download"></i>
-                                        </button>
+                            <!-- Transkrip -->
+                            <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-200/80 rounded-xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm transition duration-200">
+                                <div class="flex items-center gap-3 flex-grow min-w-0">
+                                    <div class="rounded-xl flex items-center justify-content-center w-10 h-10 bg-emerald-100 text-emerald-600 flex-shrink-0">
+                                        <i class="bi bi-file-text text-lg"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="mb-0 text-sm font-semibold text-slate-700 truncate">Transkrip Nilai</p>
+                                        <small class="text-slate-400 text-xs block truncate">Transkrip nilai akademik</small>
                                     </div>
                                 </div>
+                                <button type="button" class="btn-download-berkas w-9 h-9 rounded-xl flex items-center justify-center transition bg-sky-50 hover:bg-sky-100 text-sky-600" id="downloadTranskripButton" data-download-url="">
+                                    <i class="bi bi-download text-sm"></i>
+                                </button>
+                            </div>
 
-                                <!-- Surat Pernyataan -->
-                                <div class="col-12">
-                                    <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background: #f8fafc; border: 1px solid #e5e7eb;">
-                                        <div class="d-flex align-items-center gap-3 flex-grow-1">
-                                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background: #fef3c7;">
-                                                <i class="bi bi-file-earmark-check" style="color: #d97706; font-size: 1.1rem;"></i>
-                                            </div>
-                                            <div>
-                                                <p class="mb-0 fw-medium" style="font-size: 0.9rem; color: #374151;">Surat Pernyataan</p>
-                                                <small class="text-muted" style="font-size: 0.75rem;">Surat pernyataan bermaterai</small>
-                                            </div>
-                                        </div>
-                                        <button type="button" class="btn btn-sm btn-download-berkas" id="downloadSuratButton" data-download-url="" style="background: #e0f2fe; color: #0284c7; border: none; border-radius: 6px; padding: 6px 12px;">
-                                            <i class="bi bi-download"></i>
-                                        </button>
+                            <!-- Surat Pernyataan -->
+                            <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-200/80 rounded-xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm transition duration-200">
+                                <div class="flex items-center gap-3 flex-grow min-w-0">
+                                    <div class="rounded-xl flex items-center justify-content-center w-10 h-10 bg-amber-100 text-amber-600 flex-shrink-0">
+                                        <i class="bi bi-file-earmark-check text-lg"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="mb-0 text-sm font-semibold text-slate-700 truncate">Surat Pernyataan</p>
+                                        <small class="text-slate-400 text-xs block truncate">Surat pernyataan bermaterai</small>
                                     </div>
                                 </div>
+                                <button type="button" class="btn-download-berkas w-9 h-9 rounded-xl flex items-center justify-center transition bg-sky-50 hover:bg-sky-100 text-sky-600" id="downloadSuratButton" data-download-url="">
+                                    <i class="bi bi-download text-sm"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -444,36 +366,32 @@ $result = $result ?? [];
             </div>
             
             <!-- Footer -->
-            <div class="modal-footer border-top px-4 py-3" style="background: #f8fafc;">
+            <div class="bg-slate-50 px-8 py-5 border-t border-slate-200/60 flex-shrink-0">
                 <input type="hidden" id="modalMahasiswaId" value="">
                 <input type="hidden" id="modalUserId" value="">
                 
-                <div class="d-flex justify-content-between align-items-center w-100 gap-2">
-                    <button type="button" class="btn px-4 py-2" data-bs-dismiss="modal" style="background: white; border: 1px solid #e5e7eb; border-radius: 10px; color: #6b7280;">
-                        <i class="bi bi-x-lg me-2"></i>Tutup
+                <div class="flex flex-col sm:flex-row justify-between items-center w-full gap-4">
+                    <button type="button" class="w-full sm:w-auto px-5 py-2.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 font-semibold text-sm rounded-xl transition flex items-center justify-center gap-2" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg"></i>Tutup
                     </button>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn px-4 py-2 btn-send-message" id="btnSendMessageToUser">
-                            <i class="bi bi-envelope-fill me-2"></i>Kirim Pesan
+                    <div class="flex flex-wrap gap-3 w-full sm:w-auto justify-end">
+                        <button type="button" class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold text-sm rounded-xl transition flex items-center justify-center gap-2 shadow-sm btn-send-message" id="btnSendMessageToUser">
+                            <i class="bi bi-envelope-fill"></i>Kirim Pesan
                         </button>
                         
-                        <!-- ACCEPT BUTTON FOR BELUM UPLOAD STATUS -->
-                        <button type="button" class="btn px-4 py-2" id="btnTerimaModal" onclick="acceptParticipant()" style="background: linear-gradient(135deg, #10b981 0%, #059b70 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3); display: none;">
-                            <i class="bi bi-check-circle me-2"></i>Verifikasi Berkas
+                        <button type="button" class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold text-sm rounded-xl transition flex items-center justify-center gap-2 shadow-md shadow-emerald-500/10" id="btnTerimaModal" onclick="acceptParticipant()" style="display: none;">
+                            <i class="bi bi-check-circle"></i>Verifikasi Berkas
                         </button>
                         
-                        <!-- REJECT BUTTON FOR BELUM UPLOAD STATUS -->
-                        <button type="button" class="btn px-4 py-2" id="btnTolakModal" onclick="rejectParticipant()" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3); display: none;">
-                            <i class="bi bi-x-circle me-2"></i>Batalkan Verifikasi Berkas
+                        <button type="button" class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-semibold text-sm rounded-xl transition flex items-center justify-center gap-2 shadow-md shadow-red-500/10" id="btnTolakModal" onclick="rejectParticipant()" style="display: none;">
+                            <i class="bi bi-x-circle"></i>Batalkan Verifikasi Berkas
                         </button>
                         
-                        <!-- VERIFICATION BUTTON WITH POPUP -->
-                        <button type="button" class="btn px-4 py-2" id="btnVerifikasiModal" onclick="triggerVerificationFromModal()" style="background: linear-gradient(135deg, #10b981 0%, #059b70 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);">
-                            <i class="bi bi-check-circle me-2"></i>Verifikasi Berkas
+                        <button type="button" class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold text-sm rounded-xl transition flex items-center justify-center gap-2 shadow-md shadow-emerald-500/10" id="btnVerifikasiModal" onclick="triggerVerificationFromModal()">
+                            <i class="bi bi-check-circle"></i>Verifikasi Berkas
                         </button>
-                        <!-- REJECT BUTTON - HIDDEN BY DEFAULT -->
-                        <button type="button" class="btn px-4 py-2" id="btnBatalkanModal" onclick="cancelVerification()" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3); display: none;">
-                            <i class="bi bi-x-circle me-2"></i>Batalkan Verifikasi
+                        <button type="button" class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-semibold text-sm rounded-xl transition flex items-center justify-center gap-2 shadow-md shadow-red-500/10" id="btnBatalkanModal" onclick="cancelVerification()" style="display: none;">
+                            <i class="bi bi-x-circle"></i>Batalkan Verifikasi
                         </button>
                     </div>
                 </div>
@@ -482,200 +400,31 @@ $result = $result ?? [];
     </div>
 </div>
 
-<style>
-    /* Detail Modal Styles */
-    #detailModal .modal-content {
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    }
-    
-    #detailModal .modal-footer .btn:hover {
-        transform: translateY(-2px);
-        transition: all 0.2s ease;
-    }
-    
-    #detailModal #btnVerifikasiModal:hover {
-        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4) !important;
-    }
-    
-    #detailModal #btnBatalkanModal:hover {
-        box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4) !important;
-    }
-    
-    /* Send Message Button Styling */
-    .btn-send-message {
-        background: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(61, 194, 236, 0.2);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .btn-send-message::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-        transition: left 0.5s ease;
-    }
-
-    .btn-send-message:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(61, 194, 236, 0.4) !important;
-        background: linear-gradient(135deg, #2ab5d9 0%, #1e4fd4 100%);
-    }
-
-    .btn-send-message:hover::before {
-        left: 100%;
-    }
-
-    .btn-send-message:active {
-        transform: translateY(0);
-    }
-
-    .btn-send-message i {
-        transition: transform 0.3s ease;
-    }
-
-    .btn-send-message:hover i {
-        transform: scale(1.1);
-    }
-    
-    /* Ensure modal body is scrollable */
-    #detailModal .modal-body {
-        max-height: calc(100vh - 300px);
-        overflow-y: auto;
-    }
-    
-    
-    #detailModal .berkas-btn:hover {
-        background: #f1f5f9 !important;
-        border-color: #cbd5e1 !important;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-    
-    #detailModal .berkas-btn:hover .bi-download {
-        color: #3dc2ec !important;
-    }
-
-    /* Biodata Icon Styling */
-    .biodata-icon {
-        background: linear-gradient(135deg, #3dc2ec 0%, #2563eb 100%);
-        transition: all 0.3s ease;
-    }
-
-
-    /* Info Card Jurusan */
-    .info-card-jurusan {
-        background: linear-gradient(135deg, rgba(61, 194, 236, 0.08) 0%, rgba(37, 99, 235, 0.08) 100%);
-        border: 1px solid rgba(61, 194, 236, 0.12);
-        transition: all 0.3s ease;
-    }
-
-    .info-card-jurusan i {
-        color: #3dc2ec;
-        transition: all 0.3s ease;
-    }
-
-    .info-card-jurusan:hover {
-        background: linear-gradient(135deg, rgba(61, 194, 236, 0.12) 0%, rgba(37, 99, 235, 0.12) 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(61, 194, 236, 0.15);
-    }
-
-    .info-card-jurusan:hover i {
-        transform: scale(1.1);
-        color: #2563eb;
-    }
-    
-    #detailModal .rounded-4 {
-        border-radius: 16px !important;
-    }
-    
-    #detailModal .modal-body::-webkit-scrollbar {
-        width: 6px;
-    }
-    
-    #detailModal .modal-body::-webkit-scrollbar-track {
-        background: #f1f5f9;
-        border-radius: 3px;
-    }
-    
-    #detailModal .modal-body::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 3px;
-    }
-    
-    #detailModal .modal-body::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-    }
-    
-    /* Status Icon Styles */
-    .status-icon-verified {
-        background: #10b981;
-        color: white;
-    }
-
-    .status-icon-pending {
-        background: #f59e0b;
-        color: white;
-    }
-
-    .status-icon-none {
-        background: #6b7280;
-        color: white;
-    }
-    
-    /* Animation */
-    #detailModal .modal-dialog {
-        animation: modalSlideIn 0.3s ease-out;
-    }
-    
-    @keyframes modalSlideIn {
-        from {
-            opacity: 0;
-            transform: translateY(-30px) scale(0.95);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
-</style>
-
 <!-- Modal Kirim Pesan Individual -->
-<!-- Modal Kirim Pesan Individual (Styled like Presentation) -->
 <div class="modal fade" id="sendMessageModal" tabindex="-1" aria-labelledby="sendMessageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow rounded-4">
-            <div class="modal-header bg-gradient-header text-white border-0 rounded-top-4">
-                <h5 class="modal-title fw-semibold" id="sendMessageModalLabel">
-                    <i class="bi bi-chat-dots me-2"></i>Kirim Pesan
+        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+                <h5 class="modal-title font-bold flex items-center gap-2" id="sendMessageModalLabel">
+                    <i class="bi bi-chat-dots text-lg"></i>Kirim Pesan
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4">
-                 <div class="mb-3">
-                    <label class="form-label fw-semibold text-secondary">Kepada:</label>
-                    <p class="mb-0 text-dark fw-medium" id="messageRecipient">-</p>
+            <div class="p-6 space-y-4">
+                 <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kepada:</label>
+                    <p class="text-slate-800 font-semibold mb-0" id="messageRecipient">-</p>
                 </div>
-                <div class="mb-3">
-                    <label for="individualMessage" class="form-label fw-semibold text-secondary">Pesan untuk Mahasiswa:</label>
-                    <textarea class="form-control rounded-3 border-2" id="individualMessage" rows="4" required
-                              placeholder="Tuliskan pesan..."></textarea>
+                <div>
+                    <label for="individualMessage" class="block text-sm font-semibold text-slate-700 mb-2">Pesan untuk Mahasiswa:</label>
+                    <textarea class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="individualMessage" rows="4" required placeholder="Tuliskan pesan..."></textarea>
                 </div>
             </div>
-            <div class="modal-footer border-top border-light">
+            <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3">
                 <input type="hidden" id="messageUserId" value="">
                 <input type="hidden" id="messageMahasiswaId" value="">
-                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary bg-gradient-primary border-0 rounded-3 fw-semibold d-inline-flex align-items-center gap-2" id="sendIndividualMessage">
+                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-blue-500/10 flex items-center gap-2" id="sendIndividualMessage">
                     <i class="bi bi-send"></i> Kirim
                 </button>
             </div>
@@ -683,10 +432,5 @@ $result = $result ?? [];
     </div>
 </div>
 
-<!-- Bootstrap Bundle JS -->
-
-
 <!-- Load Custom JavaScript -->
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/participants.js"></script>
-
-

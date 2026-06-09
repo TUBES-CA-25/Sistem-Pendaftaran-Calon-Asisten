@@ -31,81 +31,81 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="container-fluid px-4 pb-4">
-
-    <div class="row g-4">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Upload Form Card -->
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-transparent border-0 p-4">
-                    <h5 class="fw-bold mb-0">
-                        <i class="bi bi-cloud-upload me-2 text-primary"></i>Upload Dokumen
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-full flex flex-col">
+                <div class="flex items-center gap-2 mb-6">
+                    <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="bi bi-cloud-upload text-blue-600"></i>Upload Dokumen
                     </h5>
                 </div>
-                <div class="card-body p-4 pt-0">
+                
+                <div class="flex-1">
                     <?php if (!$biodataStatus): ?>
-                        <div class="alert alert-warning d-flex align-items-center gap-2 rounded-3" role="alert">
+                        <div class="flex items-center gap-2.5 p-4 rounded-xl bg-amber-50 border border-amber-100 text-amber-800 text-sm" role="alert">
                             <i class="bi bi-exclamation-triangle-fill"></i>
-                            <div>Lengkapi biodata terlebih dahulu</div>
+                            <div class="font-semibold">Lengkapi biodata terlebih dahulu</div>
                         </div>
 
                     <?php elseif ($isAccepted): ?>
-                        <div class="alert alert-success d-flex align-items-center gap-2 rounded-3" role="alert">
-                            <i class="bi bi-check-circle-fill fs-4"></i>
+                        <div class="flex items-start gap-3 p-5 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-800" role="alert">
+                            <i class="bi bi-check-circle-fill text-xl shrink-0"></i>
                             <div>
-                                <h6 class="fw-bold mb-0">Berkas Telah Diterima!</h6>
-                                <p class="mb-0 small">Seluruh berkas persyaratan Anda telah diverifikasi dan disetujui. Anda tidak perlu mengunggah ulang.</p>
+                                <h6 class="font-bold mb-1">Berkas Telah Diterima!</h6>
+                                <p class="text-xs opacity-90 leading-relaxed">Seluruh berkas persyaratan Anda telah diverifikasi dan disetujui. Anda tidak perlu mengunggah ulang.</p>
                             </div>
                         </div>
 
                     <?php else: ?>
-                        <form id="berkasForm" enctype="multipart/form-data">
-                            <div class="mb-4">
-                                <label for="foto" class="form-label fw-semibold">
-                                    <i class="bi bi-image me-1"></i>Foto 3x4
+                        <form id="berkasForm" enctype="multipart/form-data" class="space-y-5">
+                            <div>
+                                <label for="foto" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
+                                    <i class="bi bi-image text-blue-600"></i>Foto 3x4
                                 </label>
-                                <input class="form-control form-control-lg rounded-3" type="file" id="foto" name="foto" accept="image/png, image/jpeg, image/jpg" required>
-                                <small class="text-muted">Format: PNG, JPG, JPEG</small>
+                                <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150" type="file" id="foto" name="foto" accept="image/png, image/jpeg, image/jpg" required>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PNG, JPG, JPEG</span>
                             </div>
 
-                            <div class="mb-4">
-                                <label for="cv" class="form-label fw-semibold">
-                                    <i class="bi bi-file-earmark-text me-1"></i>CV
+                            <div>
+                                <label for="cv" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
+                                    <i class="bi bi-file-earmark-text text-blue-600"></i>CV
                                 </label>
-                                <input class="form-control form-control-lg rounded-3" type="file" id="cv" name="cv" accept="application/pdf" required>
-                                <small class="text-muted">Format: PDF</small>
+                                <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150" type="file" id="cv" name="cv" accept="application/pdf" required>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF</span>
                             </div>
 
-                            <div class="mb-4">
-                                <label for="transkrip" class="form-label fw-semibold">
-                                    <i class="bi bi-file-earmark-bar-graph me-1"></i>Transkrip Nilai
+                            <div>
+                                <label for="transkrip" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
+                                    <i class="bi bi-file-earmark-bar-graph text-blue-600"></i>Transkrip Nilai
                                 </label>
-                                <input class="form-control form-control-lg rounded-3" type="file" id="transkrip" name="transkrip" accept="application/pdf" required>
-                                <small class="text-muted">Format: PDF</small>
+                                <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150" type="file" id="transkrip" name="transkrip" accept="application/pdf" required>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF</span>
                             </div>
 
-                            <div class="mb-4">
-                                <label for="suratpernyataan" class="form-label fw-semibold">
-                                    <i class="bi bi-file-earmark-check me-1"></i>Surat Pernyataan
+                            <div>
+                                <label for="suratpernyataan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
+                                    <i class="bi bi-file-earmark-check text-blue-600"></i>Surat Pernyataan
                                 </label>
-                                <input class="form-control form-control-lg rounded-3" type="file" id="suratpernyataan" name="suratpernyataan" accept="application/pdf" required>
-                                <small class="text-muted">Format: PDF</small>
+                                <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150" type="file" id="suratpernyataan" name="suratpernyataan" accept="application/pdf" required>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF</span>
                             </div>
 
-                            <div class="p-3 rounded-3 mb-4" style="background: #f0f9ff;">
-                                <a id="downloadFile1" href="#" download class="d-flex align-items-center gap-3 text-decoration-none">
-                                    <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 48px; height: 48px; background: var(--gradient-primary);">
-                                        <i class="bx bx-file text-white fs-4"></i>
+                            <div class="p-4 rounded-xl bg-blue-50 border border-blue-100/50 hover:bg-blue-100/70 transition duration-200 mb-6">
+                                <a id="downloadFile1" href="#" download class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
+                                        <i class="bx bx-file text-white text-lg"></i>
                                     </div>
                                     <div>
-                                        <span class="fw-semibold text-primary d-block">Download Template CV</span>
-                                        <small class="text-muted">Gunakan template yang disediakan</small>
+                                        <span class="font-bold text-blue-800 text-sm block">Download Template CV</span>
+                                        <span class="text-[10px] text-slate-400 block font-medium">Gunakan template yang disediakan</span>
                                     </div>
                                 </a>
                             </div>
 
-                            <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3">
-                                <i class="bi bi-upload me-2"></i>Submit Berkas
+                            <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition duration-200 flex items-center justify-center gap-2">
+                                <i class="bi bi-upload"></i>Submit Berkas
                             </button>
                         </form>
                     <?php endif; ?>
@@ -114,55 +114,53 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
         </div>
 
         <!-- History Table Card -->
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-transparent border-0 p-4">
-                    <h5 class="fw-bold mb-0">
-                        <i class="bi bi-clock-history me-2 text-primary"></i>Riwayat Submit Berkas
+        <div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-full flex flex-col">
+                <div class="flex items-center gap-2 mb-6">
+                    <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="bi bi-clock-history text-blue-600"></i>Riwayat Submit Berkas
                     </h5>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered align-middle mb-0">
-                            <thead>
-                                <tr> 
-                                    <th>No</th>                                   
-                                    <th>Tanggal</th>
-                                    <th>Nama</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!$isBerkasEmpty && !empty($res)): $nomor = 0; $nomor++;?>
-                                    <?php foreach ($res as $result): ?>                                    
-                                        <tr>                                    
-                                            <td class="small text-muted"><?= $nomor ?></td>
-                                            <td class="small text-muted"><?= $result['created_at'] ?></td>
-                                            <td><?= htmlspecialchars($nama) ?></td>
-                                            <td>
-                                                <?php if ($result['accepted'] == 1): ?>
-                                                    <span class="badge badge-success-subtle rounded-pill px-3 py-2">
-                                                        <i class="bi bi-check-circle-fill me-1"></i>Terverifikasi
-                                                    </span>
-                                                <?php else: ?>
-                                                    <span class="badge badge-warning-subtle rounded-pill px-3 py-2">
-                                                        <i class="bi bi-clock-fill me-1"></i>Menunggu
-                                                    </span>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="4" class="text-center py-5">
-                                            <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
-                                            <span class="text-muted">Belum ada data berkas</span>
+                <div class="overflow-x-auto rounded-xl border border-slate-100">
+                    <table class="min-w-full divide-y divide-slate-100 text-sm">
+                        <thead class="bg-slate-50">
+                            <tr> 
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">No</th>                                   
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Tanggal</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Nama</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 bg-white">
+                            <?php if (!$isBerkasEmpty && !empty($res)): $nomor = 0; ?>
+                                <?php foreach ($res as $result): $nomor++; ?>                                    
+                                    <tr>                                    
+                                        <td class="px-4 py-3 text-slate-500 font-medium text-xs"><?= $nomor ?></td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-slate-500 font-medium text-xs"><?= $result['created_at'] ?></td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-slate-700 font-semibold text-xs"><?= htmlspecialchars($nama) ?></td>
+                                        <td class="px-4 py-3 whitespace-nowrap">
+                                            <?php if ($result['accepted'] == 1): ?>
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-100">
+                                                    <i class="bi bi-check-circle-fill"></i>Terverifikasi
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-100">
+                                                    <i class="bi bi-clock-fill"></i>Menunggu
+                                                </span>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="4" class="px-4 py-8 text-center text-slate-400">
+                                        <i class="bi bi-inbox text-4xl mb-2 block opacity-50"></i>
+                                        <span class="text-xs font-medium">Belum ada data berkas</span>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
