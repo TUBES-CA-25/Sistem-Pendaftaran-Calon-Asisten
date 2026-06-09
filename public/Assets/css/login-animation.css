@@ -1,11 +1,17 @@
-*{
+/* ============================================================
+   BASE RESET
+   ============================================================ */
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
 
-body{
+/* ============================================================
+   BODY
+   ============================================================ */
+body {
     background-color: #f0f2f5;
     background-image: url("../Img/wave.svg");
     background-repeat: no-repeat;
@@ -15,55 +21,29 @@ body{
     justify-content: center;
     min-height: 100vh;
     padding: 20px 0;
+    overflow-x: hidden;
 }
 
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
 h1 {
     font-weight: 700 !important;
 }
-.logo-container-register{
-    width: 90%;
-    height: 20%;
-    display: flex;
-    
-}
-.logo{
-    width: 150px; 
-    height:auto;
-    padding: 3%;
-    margin-right: 0;
+
+p {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.5;
 }
 
-.logo-container-login{
-    width: 100%;
-    height: 20%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-.input-group {
-    position: relative;
-    width: 100%;
-}
-
-.input-group .form-control {
-    padding-right: 20px;
-}
-
-.input-group-text {
-    position: absolute;
-    right: 3px;
-    top: 40%;
-    transform: translateY(-50%);
-    border: none;
-    background: transparent;
-    cursor: pointer;
-}
-
-.container{
+/* ============================================================
+   MAIN CONTAINER  (desktop: 768px wide card)
+   ============================================================ */
+.container {
     background-color: #fff;
     border-radius: 30px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0,35);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
     position: relative;
     overflow: hidden;
     width: 768px;
@@ -71,7 +51,198 @@ h1 {
     min-height: 520px;
 }
 
-/* Tablet: Show simplified layout */
+/* ============================================================
+   FORM CONTAINERS  (desktop: absolute 50% each side)
+   ============================================================ */
+.container p {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: 20px 0;
+}
+
+.container form {
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    height: 100%;
+}
+
+.form-control {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+}
+
+.sign-in {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+}
+
+.container.active .sign-in {
+    transform: translateX(100%);
+}
+
+.sign-up {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+}
+
+.container.active .sign-up {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: move 0.6s;
+}
+
+@keyframes move {
+    0%, 49.99% {
+        opacity: 0;
+        z-index: 1;
+    }
+    50%, 100% {
+        opacity: 1;
+        z-index: 5;
+    }
+}
+
+/* ============================================================
+   TOGGLE CONTAINER  (desktop: right-side coloured panel)
+   ============================================================ */
+.toggle-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: all 0.6s ease-in-out;
+    border-radius: 150px 0 0 100px;
+    z-index: 1000;
+}
+
+.container.active .toggle-container {
+    transform: translateX(-100%);
+    border-radius: 0 150px 100px 0;
+}
+
+.toggle {
+    background: linear-gradient(to left bottom, #3DC2EC, #4B70F5);
+    color: #fff;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: all 0.6s ease-in-out;
+}
+
+.container.active .toggle {
+    transform: translateX(50%);
+}
+
+.toggle-panel {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 30px;
+    text-align: center;
+    top: 0;
+    transform: translateX(0);
+    transition: all 0.6s ease-in-out;
+}
+
+.toggle-left {
+    transform: translateX(-200%);
+}
+
+.container.active .toggle-left {
+    transform: translateX(0);
+}
+
+.toggle-right {
+    right: 0;
+    transform: translateX(0);
+}
+
+.container.active .toggle-right {
+    transform: translateX(200%);
+}
+
+.container button {
+    cursor: pointer;
+}
+
+.container button.hidden {
+    background-color: transparent;
+    color: #fff;
+    font-size: 13px;
+    padding: 10px 48px;
+    border: 1px solid #ffffff;
+    border-radius: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.container button.hidden:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Legacy logo helpers (kept for compatibility) */
+.logo-container-register {
+    width: 90%;
+    height: 20%;
+    display: flex;
+}
+
+.logo-container-login {
+    width: 100%;
+    height: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    width: 150px;
+    height: auto;
+    padding: 3%;
+    margin-right: 0;
+}
+
+/* ============================================================
+   TABLET  769px – 991px  (keep side-by-side, slightly narrower)
+   ============================================================ */
 @media screen and (min-width: 769px) and (max-width: 991.98px) {
     .container {
         width: 90%;
@@ -95,350 +266,8 @@ h1 {
         padding: 8px 35px;
         font-size: 12px;
     }
-}
 
-/* Mobile devices: Stack forms */
-@media screen and (max-width: 768px) {
-    .logo {
-        width: 60px;
-        height: auto;
-    }
-
-    .container {
-        width: 95%;
-        max-width: 100%;
-        min-height: auto;
-        height: auto;
-        border-radius: 20px;
-        padding-bottom: 20px;
-        overflow-y: hidden; /* Prevent double scrollbar if body handles it, or auto if needed */
-    }
-
-    /* Stack form containers */
-    .form-container {
-        width: 100% !important;
-        position: relative !important;
-        transform: none !important;
-    }
-
-    .sign-in {
-        width: 100%;
-        position: relative;
-        z-index: 2;
-    }
-
-    .sign-up {
-        width: 100%;
-        position: relative;
-        opacity: 1;
-        z-index: 1;
-    }
-
-    .container.active .sign-in {
-        transform: none;
-        display: none;
-    }
-
-    .container.active .sign-up {
-        transform: none;
-        display: block;
-    }
-
-    /* Hide toggle panel on mobile */
-    .toggle-container {
-        display: none !important;
-    }
-
-    .container form {
-        padding: 0 25px;
-    }
-
-    .logo-container-register,
-    .logo-container-login {
-        height: auto;
-        padding: 15px 0;
-    }
-
-    .container p {
-        font-size: 13px;
-        margin: 15px 0;
-    }
-
-    .form-control {
-        margin-bottom: 12px;
-        padding: 9px;
-        font-size: 14px;
-    }
-
-    .btn {
-        padding: 9px;
-        font-size: 15px;
-    }
-
-    h1 {
-        font-size: 24px;
-    }
-}
-
-/* Small phones */
-@media screen and (max-width: 480px) {
-    .logo {
-        width: 50px;
-        height: auto;
-    }
-
-    .container {
-        width: 100%;
-        padding: 1rem;
-        border-radius: 0;
-        min-height: auto;
-        height: auto;
-    }
-
-    .container form {
-        padding: 0 20px;
-    }
-
-    .form-control {
-        margin-bottom: 10px;
-        padding: 8px;
-        font-size: 13px;
-    }
-
-    .input-group .form-control {
-        padding-right: 35px;
-    }
-
-    .btn {
-        padding: 8px;
-        font-size: 14px;
-    }
-
-    .container p {
-        font-size: 12px;
-        margin: 12px 0;
-    }
-
-    h1 {
-        font-size: 20px;
-    }
-
-    .logo-container-register,
-    .logo-container-login {
-        padding: 10px 0;
-    }
-
-    .container button.hidden {
-        padding: 8px 30px;
-        font-size: 11px;
-        margin-top: 10px;
-    }
-}
-
-/* Extra small devices */
-@media screen and (max-width: 374.98px) {
-    .logo {
-        width: 40px;
-    }
-
-    h1 {
-        font-size: 18px;
-    }
-
-    .container {
-        min-height: auto;
-        height: auto;
-    }
-
-    .container form {
-        padding: 0 15px;
-    }
-
-    .form-control {
-        padding: 7px;
-        font-size: 12px;
-    }
-
-    .btn {
-        padding: 7px;
-        font-size: 13px;
-    }
-
-    .container p {
-        font-size: 11px;
-    }
-}
-
-.container p{
-    font-size: 14px;
-    line-height: 20px;
-    letter-spacing: 0,3px;
-    margin:20px 0;
-}
-
-.container form{
-    background-color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 0 40px;
-    height: 100%;
-}
-.form-control {
-    margin-bottom: 15px;
-    padding: 10px;
-    border-radius: 8px;
-}
-.btn {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.form-container{
-    position: absolute;
-    top: 0;
-    height: 100%;
-    transition: all 0.6s ease-in-out;
-}
-.sign-in{
-    left: 0;
-    width: 50%;
-    z-index: 2;
-}
-.container.active .sign-in{
-    transform: translateX(100%);
-}
-.sign-up{
-    left: 0;
-    width: 50%;
-    opacity: 0;
-    z-index: 1;
-}
-.container.active .sign-up{
-    transform: translateX(100%);
-    opacity: 1;
-    z-index : 5;
-    animation: move 0.6s;
-}
-
-@keyframes move{
-    0%, 49.99%{
-        opacity: 0;
-        z-index: 1;
-    }
-    50%, 100%{
-        opacity: 1;
-        z-index: 5;
-    }
-}
-
-.toggle-container{
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 50%;
-    height: 100%;
-    overflow: hidden;
-    transition: all 0.6s ease-in-out;
-    border-radius: 150px 0 0 100px;
-    z-index: 1000;
-}
-
-.container.active .toggle-container{
-    transform: translateX(-100%);
-    border-radius: 0 150px 100px 0;
-
-}
-p {
-    font-weight: 500; 
-    font-size: 16px; 
-    line-height: 1.5; 
-}
-
-.toggle{
-    background-color:#4B70F5;
-    height: 100%;
-    background: linear-gradient(to left bottom,#3DC2EC,#4B70F5);
-    color: #fff;
-    position: relative;
-    left: -100%;
-    height: 100%;
-    width: 200%;
-    transform: translateX(0);
-    transition: all 0.6s ease-in-out;
-}
-
-.container.active .toggle{
-    transform: translateX(50%);
-}
-
-.toggle-panel{
-    position: absolute;
-    width: 50%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 0 30px;
-    text-align: center;
-    top: 0;
-    transform: translateX(0);
-    transition: all 0.6s ease-in-out;
-}
-.toggle-panel .toggle-right p {
-    font-weight: 500; 
-}
-
-.toggle-left{
-    transform: translateX(-200%);
-}
-.container.active .toggle-left{
-    transform: translateX(0);
-}
-.container button{
-   
-    cursor: pointer;
-}
-
-.container button.hidden{
-    background-color: transparent;
-    color: #fff;
-    font-size: 13px;
-    padding: 10px 48px;
-    border: 1px solid #ffffff;
-    border-radius: 12px;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    margin-top: 15px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.container button.hidden:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-}
-.toggle-right{
-    right: 0;
-    transform: translateX(0);
-}
-
-.container.active .toggle-right{
-    transform: translateX(200%);
-}
-
-/* ==============================
-   RESPONSIVE AUTH PAGE IMPROVEMENTS
-   Additional responsive styles for auth page elements
-   ============================== */
-
-/* Tablet optimizations */
-@media screen and (min-width: 769px) and (max-width: 991.98px) {
+    /* Component overrides for tablet */
     .logo-section img {
         width: 60px !important;
     }
@@ -462,21 +291,232 @@ p {
     }
 }
 
-/* Mobile devices */
+/* ============================================================
+   MOBILE  ≤ 768px
+   Strategy: container becomes a flex-column card.
+   - toggle-container moves to TOP as a coloured banner (kept visible).
+   - form-container stacks below it.
+   - toggle between login/register with display block/none.
+   ============================================================ */
 @media screen and (max-width: 768px) {
+
+    body {
+        padding: 20px 16px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Card: flex-column, centered, no gap between items */
+    .container {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        width: 95%;
+        max-width: 440px;
+        margin: auto;
+        min-height: unset;
+        height: auto;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    /* ── Toggle panel becomes top banner ── */
+    .toggle-container {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        width: 100% !important;
+        /* Sedikit lebih tinggi agar ada ruang untuk lengkungan bawah */
+        height: 140px !important;
+        order: 0;
+        flex-shrink: 0;
+        /* Datar di atas, melengkung di bawah → menyatu dengan form putih */
+        border-radius: 0 0 28px 28px !important;
+        transform: none !important;
+        transition: none !important;
+        /* overflow: visible agar lengkungan bawah terlihat di luar batas container */
+        overflow: hidden;
+        z-index: 10;
+    }
+
+    /* The .toggle inner div: reset desktop left:-100% / width:200% */
+    .container .toggle,
+    .container.active .toggle {
+        left: 0 !important;
+        width: 100% !important;
+        height: 100%;
+        transform: none !important;
+        transition: none !important;
+        position: relative;
+        display: flex;      /* so panels sit side-by-side in the strip */
+    }
+
+    /* Each panel takes half the .toggle width on mobile too;
+       we just show/hide them via display */
+    .toggle-panel {
+        position: absolute !important;
+        width: 100% !important;
+        height: 100%;
+        left: 0 !important;
+        right: auto !important;
+        transform: none !important;
+        transition: none !important;
+        padding: 16px 24px !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 4px;
+    }
+
+    .toggle-panel h1 {
+        font-size: 1.1rem !important;
+        margin-bottom: 4px !important;
+        color: #fff;
+    }
+
+    .toggle-panel p {
+        font-size: 12px !important;
+        margin: 0 0 8px !important;
+        color: rgba(255,255,255,0.9);
+        line-height: 1.4;
+    }
+
+    /* Default (login active): show right panel, hide left */
+    .toggle-right {
+        display: flex !important;
+        transform: none !important;
+    }
+
+    .toggle-left {
+        display: none !important;
+        transform: none !important;
+    }
+
+    /* When register active: show left panel, hide right */
+    .container.active .toggle-right {
+        display: none !important;
+    }
+
+    .container.active .toggle-left {
+        display: flex !important;
+        transform: none !important;
+    }
+
+    /* Button inside panel: smaller on mobile */
+    .container button.hidden {
+        padding: 7px 28px;
+        font-size: 11px;
+        margin-top: 6px;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       FORM ANIMATION — CSS Grid Trick
+       grid-template-rows: 0fr → 1fr menganimasikan tinggi AKTUAL
+       konten, bukan perkiraan seperti max-height.
+       Hasilnya: pergerakan yang benar-benar smooth & natural.
+       ══════════════════════════════════════════════════════════ */
+
+    /* Grid wrapper: setiap form-container adalah grid 1-kolom */
+    .form-container {
+        display: grid !important;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        width: 100% !important;
+        height: auto !important;
+        transform: none !important;
+        order: 1;
+        /* Naik ke bawah lengkungan toggle agar menyatu */
+        margin-top: -28px;
+        background-color: #fff;
+        border-radius: 0;
+        z-index: 5;
+        /* Animasi grid-row-height + opacity */
+        transition:
+            grid-template-rows 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+            opacity            0.45s ease;
+    }
+
+    /* Form (grid child) harus punya overflow:hidden & min-height:0
+       agar grid bisa memaksanya mengecil sampai 0 */
+    .container form {
+        overflow: hidden;
+        min-height: 0;
+        padding: 36px 24px 24px; /* top +36px = kompensasi overlap 28px */
+        height: auto;
+        background-color: #fff;
+        /* Animasi slide atas-bawah pada konten form */
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ── Default (login aktif) ── */
+
+    /* Sign-in: terbuka penuh */
+    .sign-in {
+        grid-template-rows: 1fr;
+        opacity: 1;
+        pointer-events: auto;
+        z-index: 2;
+    }
+    .sign-in form {
+        transform: translateY(0);
+    }
+
+    /* Sign-up: tertutup (tinggi 0), posisi "di bawah" */
+    .sign-up {
+        grid-template-rows: 0fr;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+    .sign-up form {
+        transform: translateY(16px);
+    }
+
+    /* ── Active state (register aktif) ── */
+
+    /* Sign-in: menutup dan bergerak naik */
+    .container.active .sign-in {
+        grid-template-rows: 0fr;
+        opacity: 0;
+        pointer-events: none;
+    }
+    .container.active .sign-in form {
+        transform: translateY(-16px);
+    }
+
+    /* Sign-up: membuka dan bergerak ke posisi normal */
+    .container.active .sign-up {
+        grid-template-rows: 1fr;
+        opacity: 1;
+        pointer-events: auto;
+        z-index: 5;
+    }
+    .container.active .sign-up form {
+        transform: translateY(0);
+    }
+
+
+    /* Typography & component tweaks */
+    h1 {
+        font-size: 1.4rem;
+    }
+
     .logo-section {
         gap: 8px !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 16px !important;
     }
 
     .logo-section img {
-        width: 50px !important;
+        width: 52px !important;
     }
 
     .input-wrapper {
         height: 46px !important;
         padding: 0 12px !important;
-        margin-bottom: 15px !important;
+        margin-bottom: 14px !important;
     }
 
     .input-wrapper .input-icon {
@@ -496,13 +536,9 @@ p {
 
     .helper-links {
         font-size: 13px !important;
-        margin-bottom: 15px !important;
+        margin-bottom: 14px !important;
         flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .helper-links .form-check {
-        font-size: 13px !important;
+        gap: 8px;
     }
 
     .btn-submit {
@@ -514,7 +550,7 @@ p {
         font-size: 12px !important;
     }
 
-    /* Modal responsive */
+    /* Modal */
     .modal-dialog {
         margin: 1rem !important;
     }
@@ -526,17 +562,42 @@ p {
     #modalMessage {
         font-size: 1.1rem !important;
     }
+
+    /* Unused mobile-switch links (fallback hidden) */
+    .d-block.d-md-none {
+        display: none !important;
+    }
 }
 
-/* Small phones */
+/* ============================================================
+   SMALL PHONES  ≤ 480px
+   ============================================================ */
 @media screen and (max-width: 480px) {
+
+    .container {
+        width: 96%;
+        border-radius: 20px;
+    }
+
+    .toggle-container {
+        height: 120px !important;
+    }
+
+    .container form {
+        padding: 20px 18px;
+    }
+
+    h1 {
+        font-size: 1.25rem;
+    }
+
     .logo-section {
         gap: 6px !important;
-        margin-bottom: 18px !important;
+        margin-bottom: 14px !important;
     }
 
     .logo-section img {
-        width: 42px !important;
+        width: 44px !important;
     }
 
     .input-wrapper {
@@ -574,15 +635,7 @@ p {
         font-size: 12px !important;
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
-    }
-
-    .helper-links .form-check {
-        font-size: 12px !important;
-    }
-
-    .helper-links a {
-        font-size: 12px !important;
+        gap: 6px;
     }
 
     .btn-submit {
@@ -591,13 +644,8 @@ p {
         border-radius: 8px !important;
     }
 
-    .btn-submit i {
-        font-size: 13px !important;
-    }
-
     .error-msg {
         font-size: 11px !important;
-        margin-top: 3px !important;
     }
 
     .modal-dialog {
@@ -617,20 +665,34 @@ p {
     }
 }
 
-/* Extra small devices */
+/* ============================================================
+   EXTRA SMALL  ≤ 374px
+   ============================================================ */
 @media screen and (max-width: 374.98px) {
-    .logo-section {
-        gap: 5px !important;
-        margin-bottom: 15px !important;
+
+    .toggle-container {
+        height: 110px !important;
+    }
+
+    .toggle-panel h1 {
+        font-size: 1rem !important;
+    }
+
+    .toggle-panel p {
+        font-size: 11px !important;
+    }
+
+    .container button.hidden {
+        padding: 5px 20px;
+        font-size: 10px;
+    }
+
+    h1 {
+        font-size: 1.15rem !important;
     }
 
     .logo-section img {
         width: 36px !important;
-    }
-
-    h1 {
-        font-size: 18px !important;
-        margin-bottom: 1rem !important;
     }
 
     .input-wrapper {
@@ -653,35 +715,9 @@ p {
         font-size: 12px !important;
     }
 
-    .input-wrapper .toggle-password {
-        width: 24px !important;
-        height: 24px !important;
-    }
-
-    .input-wrapper .toggle-password i {
-        font-size: 13px !important;
-    }
-
-    .helper-links {
-        font-size: 11px !important;
-    }
-
-    .helper-links .form-check {
-        font-size: 11px !important;
-    }
-
-    .helper-links a {
-        font-size: 11px !important;
-    }
-
     .btn-submit {
         padding: 8px !important;
         font-size: 12px !important;
-    }
-
-    .btn-submit i {
-        font-size: 12px !important;
-        margin-right: 4px !important;
     }
 
     .error-msg {
@@ -695,26 +731,39 @@ p {
     #modalMessage {
         font-size: 0.9rem !important;
     }
-
-    .modal-content .btn {
-        font-size: 13px !important;
-        padding: 8px 16px !important;
-    }
 }
 
-/* Landscape optimization for mobile */
+/* ============================================================
+   LANDSCAPE MOBILE
+   ============================================================ */
 @media screen and (max-width: 768px) and (orientation: landscape) {
-    .logo-section {
-        margin-bottom: 10px !important;
+
+    .toggle-container {
+        height: 90px !important;
     }
 
-    .logo-section img {
-        width: 35px !important;
+    .toggle-panel h1 {
+        font-size: 0.95rem !important;
+        margin-bottom: 2px !important;
+    }
+
+    .toggle-panel p {
+        display: none !important; /* hide description in landscape to save space */
+    }
+
+    .container button.hidden {
+        margin-top: 4px;
+        padding: 5px 22px;
+        font-size: 10px;
+    }
+
+    .container form {
+        padding: 16px 20px !important;
     }
 
     h1 {
-        font-size: 18px !important;
-        margin-bottom: 0.75rem !important;
+        font-size: 1.15rem !important;
+        margin-bottom: 0.5rem !important;
     }
 
     .input-wrapper {
@@ -730,7 +779,54 @@ p {
         padding: 8px !important;
     }
 
-    .container form {
-        padding: 1.5rem 25px !important;
+    .logo-section {
+        margin-bottom: 10px !important;
     }
+
+    .logo-section img {
+        width: 36px !important;
+    }
+}
+
+/* ============================================================
+   MOBILE FORM-SWITCH ANIMATIONS  — arah ATAS ↕ BAWAH
+   • Masuk  → form login  muncul dari ATAS  (turun ke bawah)
+   • Daftar → form register muncul dari BAWAH (naik ke atas)
+   Nilai translateY kecil (20px) agar tidak terpotong overflow container.
+   ============================================================ */
+
+/* Login keluar ke ATAS saat beralih ke Register */
+@keyframes mobileSlideOutUp {
+    0%   { opacity: 1; transform: translateY(0);    }
+    100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* Register keluar ke BAWAH saat beralih ke Login */
+@keyframes mobileSlideOutDown {
+    0%   { opacity: 1; transform: translateY(0);   }
+    100% { opacity: 0; transform: translateY(20px); }
+}
+
+/* Register masuk dari BAWAH (tombol Daftar diklik) */
+@keyframes mobileSlideInFromBottom {
+    0%   { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0);    }
+}
+
+/* Login masuk dari ATAS (tombol Masuk diklik) */
+@keyframes mobileSlideInFromTop {
+    0%   { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0);     }
+}
+
+/* Toggle banner: fade-out panel aktif */
+@keyframes mobilePanelFadeOut {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Toggle banner: fade-in panel baru */
+@keyframes mobilePanelFadeIn {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
 }

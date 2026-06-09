@@ -120,31 +120,33 @@ function validatePasswordLogin(password) {
 
 }
 
-registerBtn.addEventListener("click", () => {
-  container.classList.add("active");
-});
 
-loginBtn.addEventListener("click", () => {
-  container.classList.remove("active");
-});
+// ── Toggle Login / Register ───────────────────────────────────
+// Animasi FULL CSS via max-height + opacity + transform transition.
+// JS hanya menambah/hapus class 'active' pada container.
+// ─────────────────────────────────────────────────────────────
 
-// Mobile Toggles
+registerBtn.addEventListener('click', () => container.classList.add('active'));
+loginBtn.addEventListener('click',    () => container.classList.remove('active'));
+
+// Fallback mobile links (jika ada di HTML)
 const mobileRegisterBtn = document.getElementById('mobile-register-btn');
-const mobileLoginBtn = document.getElementById('mobile-login-btn');
+const mobileLoginBtn    = document.getElementById('mobile-login-btn');
 
 if (mobileRegisterBtn) {
     mobileRegisterBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        container.classList.add("active");
+        container.classList.add('active');
     });
 }
 
 if (mobileLoginBtn) {
     mobileLoginBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        container.classList.remove("active");
+        container.classList.remove('active');
     });
 }
+
 
 togglePassword.addEventListener("click", function () {
   const type =
