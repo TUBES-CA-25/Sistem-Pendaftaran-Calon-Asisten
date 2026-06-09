@@ -29,7 +29,7 @@ $results = $results ?? [];
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" crossorigin="anonymous">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?=APP_URL?>/Assets/css/exam.css" />
-    <link rel="icon" href="<?=APP_URL?>/Assets/Img/iclabs.png">
+    <link class="suppress-error" rel="icon" href="<?=APP_URL?>/Assets/Img/iclabs.png">
     <script>
         // Suppress tracking prevention warnings in console
         (function() {

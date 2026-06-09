@@ -35,4 +35,4 @@
             <i class='bx bx-time'></i> 2 days ago
         </div>
     </div>
-</div>
+</main>

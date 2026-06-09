@@ -66,7 +66,7 @@ class TesTulisController extends Controller {
                 $photo = APP_URL . '/Assets/Img/default-avatar.png';
             }
 
-            View::render('index', 'ujian', [
+            View::render('soal', 'user/ujian', [
                 'results' => $soal,
                 'bank' => $activeBank,
                 'stambuk' => $stambuk,
@@ -75,7 +75,7 @@ class TesTulisController extends Controller {
             ]);
 
         } catch (\Exception $e) {
-            View::render('error', 'ujian', ['message' => $e->getMessage()]);
+            View::render('error', 'user/ujian', ['message' => $e->getMessage()]);
         }
     }
 

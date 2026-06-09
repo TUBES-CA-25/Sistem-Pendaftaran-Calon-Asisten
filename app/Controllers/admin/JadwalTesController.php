@@ -52,7 +52,7 @@ class JadwalTesController extends Controller
         $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 
         if ($isAjax) {
-             $this->view('admin/ujian/schedule', $data);
+             $this->view('admin/jadwaltes/index', $data);
         } else {
              $sidebarData = [
                  'role' => 'Admin',

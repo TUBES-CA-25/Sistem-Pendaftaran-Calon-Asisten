@@ -412,8 +412,8 @@ $dokumen = $dokumen ?? [];
                     <p class="text-muted mb-3 small">Calon Asisten Lab</p>
 
                     <!-- Edit Button -->
-                    <button class="btn btn-sm btn-outline-primary w-100" onclick="loadPage('profile')">
-                        <i class="bi bi-pencil me-2"></i>Lihat Profil
+                    <button class="btn btn-sm btn-outline-primary w-100" onclick="loadPage('biodata')">
+                        <i class="bi bi-pencil me-2"></i>Lihat Biodata
                     </button>
                 </div>
             </div>

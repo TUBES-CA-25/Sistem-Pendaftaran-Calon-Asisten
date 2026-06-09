@@ -48,9 +48,9 @@
             'tesTulis' => 'user/ujian/index.php',
             'presentasi' => 'user/presentasi/index.php',
             'wawancara' => 'user/wawancara/index.php',
-            'profile' => 'user/profil/index.php',
-            'editprofile' => 'user/profil/edit.php',
-            'pengumuman' => 'user/pengumuman/index.php',
+            'profile' => 'user/biodata/index.php',
+            'editprofile' => 'user/biodata/index.php',
+            'pengumuman' => 'user/dashboard/pengumuman.php',
             'notification' => 'user/notifikasi/index.php',
         ];
         $viewFile = $pageViewMap[$initialPage] ?? 'user/dashboard/index.php';

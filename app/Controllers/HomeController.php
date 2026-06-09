@@ -166,11 +166,11 @@ class HomeController extends Controller
                     break;
                 case 'pengajuanJudul':
                     $data = array_merge($sidebarData, $this->getPengajuanJudulData());
-                    View::render('titles', 'admin/presentasi', $data);
+                    View::render('index', 'admin/judul', $data);
                     break;
                 case 'jadwalPresentasi':
                     $data = array_merge($sidebarData, $this->getJadwalPresentasiData());
-                    View::render('schedule', 'admin/presentasi', $data);
+                    View::render('index', 'admin/presentasi', $data);
                     break;
                 case 'tesTulis':
                 case 'bankSoal':
@@ -179,7 +179,7 @@ class HomeController extends Controller
                     break;
                 case 'importSoal':
                     $data = array_merge($sidebarData, $this->getTesTulisAdminData());
-                    View::render('importPage', 'admin/ujian', $data);
+                    View::render('index', 'admin/impor', $data);
                     break;
                 case 'wawancara':
                     $data = array_merge($sidebarData, $this->getWawancaraAdminData());
@@ -215,7 +215,7 @@ class HomeController extends Controller
                     break;
                 case 'pengumuman':
                     // Pengumuman might not return data array, so just pass sidebarData
-                    View::render('index', 'user/pengumuman', $sidebarData);
+                    View::render('pengumuman', 'user/dashboard', $sidebarData);
                     break;
                 case 'presentasi':
                     $data = array_merge($sidebarData, $this->getPresentasiData());
@@ -234,12 +234,9 @@ class HomeController extends Controller
                     View::render('index', 'user/wawancara', $data);
                     break;
                 case 'profile':
-                    $data = array_merge($sidebarData, $this->getProfileData());
-                    View::render('index', 'user/profil', $data);
-                    break;
                 case 'editprofile':
-                    $data = array_merge($sidebarData, $this->getProfileData());
-                    View::render('edit', 'user/profil', $data);
+                    $data = array_merge($sidebarData, $this->getBiodataData());
+                    View::render('index', 'user/biodata', $data);
                     break;
                 case 'notification':
                     View::render('index', 'user/notifikasi', $sidebarData);
@@ -406,6 +403,12 @@ class HomeController extends Controller
     {
         $biodata = ProfilController::viewBiodata();
         $user = ProfilController::viewUser();
+        
+        $mahasiswaModel = new \App\Model\Mahasiswa();
+        $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id'] ?? 1);
+        $photoName = $mahasiswa['foto_profil'] ?? 'default.png';
+        $photoPath = $this->getUserPhotoPath($photoName);
+
         return [
             'nama' => $biodata['namaLengkap'] ?? 'Nama Lengkap',
             'stambuk' => $user['stambuk'] ?? '',
@@ -416,6 +419,7 @@ class HomeController extends Controller
             'tempatLahir' => $biodata['tempatLahir'] ?? 'Tempat Lahir',
             'tanggalLahir' => $biodata['tanggalLahir'] ?? 'Tanggal Lahir',
             'noHp' => $biodata['noHp'] ?? 'No Telephone',
+            'photo' => $photoPath,
             'isBiodataEmpty' => BiodataController::isEmpty()
         ];
     }
