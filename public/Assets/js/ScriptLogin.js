@@ -45,16 +45,7 @@ window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
     const modal = new bootstrap.Modal(modalEl);
     modal.show();
 
-    // Handle close callback
-    const closeBtn = document.getElementById("closeModal");
-    if (closeBtn && onCloseCallback) {
-        // Remove previous listeners to avoid stacking
-        const newBtn = closeBtn.cloneNode(true);
-        closeBtn.parentNode.replaceChild(newBtn, closeBtn);
-        newBtn.addEventListener('click', onCloseCallback);
-    }
-    
-    // Also handle modal hidden event
+    // Handle close callback exactly once when the modal finishes hiding
     if (onCloseCallback) {
         modalEl.addEventListener('hidden.bs.modal', function handler() {
             onCloseCallback();
@@ -112,8 +103,8 @@ function validateEmail(email) {
   }
   const domain = email.split("@")[1];
 
-  if (domain !== "umi.ac.id" && domain !== "student.umi.ac.id") {
-    return { success: false, message: "Email harus menggunakan domain UMI." };
+  if (domain !== "student.umi.ac.id") {
+    return { success: false, message: "Email harus menggunakan domain student.umi.ac.id." };
   }
   return { success: true, message: "Email Valid" };
 }
@@ -233,6 +224,43 @@ confirmPasswordInput.addEventListener('input', function () {
 });
 
 $(document).ready(function () {
+    let expiryTimer = null;
+
+    function startOtpExpiryCountdown(durationSeconds) {
+        if (expiryTimer) clearInterval(expiryTimer);
+        
+        const timerSpan = $('#otpExpiryTimer');
+        const btnVerify = $('#btnVerifyOtp');
+        const otpInputs = $('.otp-input');
+        
+        btnVerify.prop('disabled', false);
+        otpInputs.prop('disabled', false);
+        
+        let timeLeft = durationSeconds;
+        
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+            const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+            timerSpan.text(`${formattedMinutes}:${formattedSeconds}`);
+        }
+        
+        updateDisplay();
+        
+        expiryTimer = setInterval(function() {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                clearInterval(expiryTimer);
+                timerSpan.text('Waktu habis! Silakan kirim ulang OTP.');
+                btnVerify.prop('disabled', true);
+                otpInputs.prop('disabled', true);
+            } else {
+                updateDisplay();
+            }
+        }, 1000);
+    }
+
     $('#registerForm').submit(function (e) {
         console.log('Form submit initiated'); 
         e.preventDefault();
@@ -278,24 +306,211 @@ $(document).ready(function () {
         }
     
         console.log('Form validation passed, submitting...');
+        const btnRegister = $('#registerForm button[type="submit"]');
+        const originalBtnText = btnRegister.html();
+        btnRegister.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Loading...');
+        
         $.ajax({
             url: '/Sistem-Pendaftaran-Calon-Asisten/public/register/authenticate',
             type: 'post',
             data: $('#registerForm').serialize(),
             dataType: 'json',
             success: function (response) {
+                btnRegister.prop('disabled', false).html(originalBtnText);
                 if (response.status === 'success') {
                     showModal('Register Berhasil', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/registergif.gif');
                     document.getElementById('login').click();
+                } else if (response.status === 'otp_required') {
+                    $('#otpEmailSpan').text(response.email);
+                    $('.otp-input').val('');
+                    $('#otpCode').val('');
+                    
+                    const otpModalEl = document.getElementById('otpModal');
+                    const otpModal = new bootstrap.Modal(otpModalEl);
+                    otpModal.show();
+                    
+                    startOtpExpiryCountdown(300); // Start the 5-minute countdown (300 seconds)
+                    
+                    setTimeout(() => {
+                        $('.otp-input').first().focus();
+                    }, 500);
                 } else {
-                    showModal('Register Gagal stambuk sudah digunakan', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif');
-                    console.log(response.message);
+                    showModal(response.message || 'Register Gagal', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif');
                 }
             },
             error: function (xhr, status, error) {
+                btnRegister.prop('disabled', false).html(originalBtnText);
                 console.log('Terjadi kesalahan: ' + error);
+                showModal('Terjadi kesalahan koneksi server', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif');
             },
         });
+    });
+
+    // ── OTP Autofocus & Key Handling ──────────────────────────
+    const $otpInputs = $('.otp-input');
+    $otpInputs.each(function(index) {
+        $(this).on('keyup', function(e) {
+            const val = $(this).val();
+            if (val && /^[0-9]$/.test(val)) {
+                if (index < $otpInputs.length - 1) {
+                    $otpInputs.eq(index + 1).focus();
+                }
+            }
+        });
+        
+        $(this).on('keydown', function(e) {
+            if (e.key === 'Backspace') {
+                if (!$(this).val() && index > 0) {
+                    $otpInputs.eq(index - 1).focus();
+                }
+            }
+        });
+
+        $(this).on('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    });
+
+    // ── OTP Submission ────────────────────────────────────────
+    $('#otpForm').submit(function(e) {
+        e.preventDefault();
+        
+        let combinedOtp = '';
+        $otpInputs.each(function() {
+            combinedOtp += $(this).val();
+        });
+        
+        $('#otpCode').val(combinedOtp);
+        
+        const btnVerify = $('#btnVerifyOtp');
+        const originalText = btnVerify.html();
+        btnVerify.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Memverifikasi...');
+        
+        $.ajax({
+            url: '/Sistem-Pendaftaran-Calon-Asisten/public/register/verify-otp',
+            type: 'post',
+            data: { otp: combinedOtp },
+            dataType: 'json',
+            success: function(response) {
+                btnVerify.prop('disabled', false).html(originalText);
+                if (response.status === 'success') {
+                    const modalEl = document.getElementById('otpModal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                    
+                    showModal('Registrasi Berhasil', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/registergif.gif');
+                    document.getElementById('login').click();
+                } else {
+                    // Hide OTP modal to prevent background overlay stacking bug
+                    const modalEl = document.getElementById('otpModal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                    
+                    showModal(response.message || 'Verifikasi Gagal', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif', function() {
+                        // Re-show OTP modal, clear incorrect inputs, and focus first input
+                        if (modal) modal.show();
+                        $('.otp-input').val('');
+                        setTimeout(() => {
+                            $('.otp-input').first().focus();
+                        }, 500);
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                btnVerify.prop('disabled', false).html(originalText);
+                console.log('Terjadi kesalahan: ' + error);
+                
+                const modalEl = document.getElementById('otpModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+
+                showModal('Terjadi kesalahan koneksi server', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif', function() {
+                    if (modal) modal.show();
+                });
+            }
+        });
+    });
+
+    // ── Resend OTP Cooldown Timer ──────────────────────────────
+    let cooldownTimer = null;
+    $('#btnResendOtp').click(function(e) {
+        e.preventDefault();
+        
+        const btnResend = $(this);
+        const timerSpan = $('#otpTimer');
+        
+        btnResend.addClass('pointer-events-none opacity-50');
+        
+        $.ajax({
+            url: '/Sistem-Pendaftaran-Calon-Asisten/public/register/resend-otp',
+            type: 'post',
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    const modalEl = document.getElementById('otpModal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+
+                    showModal(response.message, '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/registergif.gif', function() {
+                        if (modal) modal.show();
+                        $otpInputs.val('');
+                        setTimeout(() => {
+                            $otpInputs.first().focus();
+                        }, 500);
+                    });
+                    
+                    startOtpExpiryCountdown(300); // Restart the 5-minute countdown
+                    
+                    let secondsLeft = 60;
+                    timerSpan.text(`(${secondsLeft}s)`).removeClass('d-none');
+                    
+                    if (cooldownTimer) clearInterval(cooldownTimer);
+                    cooldownTimer = setInterval(function() {
+                        secondsLeft--;
+                        if (secondsLeft <= 0) {
+                            clearInterval(cooldownTimer);
+                            timerSpan.addClass('d-none');
+                            btnResend.removeClass('pointer-events-none opacity-50');
+                        } else {
+                            timerSpan.text(`(${secondsLeft}s)`);
+                        }
+                    }, 1000);
+                } else {
+                    btnResend.removeClass('pointer-events-none opacity-50');
+                    
+                    const modalEl = document.getElementById('otpModal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+
+                    showModal(response.message || 'Gagal mengirim ulang OTP', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif', function() {
+                        if (modal) modal.show();
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                btnResend.removeClass('pointer-events-none opacity-50');
+                console.log('Terjadi kesalahan: ' + error);
+                
+                const modalEl = document.getElementById('otpModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+
+                showModal('Terjadi kesalahan koneksi server', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif', function() {
+                    if (modal) modal.show();
+                });
+            }
+        });
+    });
+
+    $('#otpModal').on('hidden.bs.modal', function () {
+        if (cooldownTimer) {
+            clearInterval(cooldownTimer);
+        }
+        if (expiryTimer) {
+            clearInterval(expiryTimer);
+        }
+        $('#otpTimer').addClass('d-none');
+        $('#btnResendOtp').removeClass('pointer-events-none opacity-50');
     });
     
 

@@ -56,6 +56,8 @@ Router::get('/{page}', [new HomeController, 'loadContent']);
 
 Router::post('/login/authenticate', [new AuthController, 'authenticate']);
 Router::post('/register/authenticate', [new AuthController, 'register']);
+Router::post('/register/verify-otp', [new AuthController, 'verifyOTP']);
+Router::post('/register/resend-otp', [new AuthController, 'resendOTP']);
 Router::post('/lupa-password/send', [new ForgotPasswordController, 'sendResetLink']);
 Router::post('/reset-password/update', [new ForgotPasswordController, 'updatePassword']);
 Router::post('/logout', [new AuthController, 'logout']);

@@ -29,8 +29,17 @@ class Mailer
             $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // Enable implicit TLS encryption
             $this->mail->Port       = Env::get('MAIL_PORT', 465);
 
+            // Set Hostname and Return-Path (Sender) to match sending domain to prevent spam filters
+            $mailUsername = Env::get('MAIL_USERNAME');
+            $domain = substr(strrchr($mailUsername, "@"), 1);
+            $this->mail->Hostname   = $domain ?: 'gmail.com';
+            $this->mail->Sender     = $mailUsername;
+
             // Default sender
             $this->mail->setFrom(Env::get('MAIL_FROM_ADDRESS'), Env::get('MAIL_FROM_NAME'));
+            
+            // Add automatic submission headers to signify transactional notifications
+            $this->mail->addCustomHeader('Auto-Submitted', 'auto-generated');
         } catch (Exception $e) {
             // Handle setup errors if needed
             error_log("Mailer Error: {$this->mail->ErrorInfo}");
@@ -40,10 +49,14 @@ class Mailer
     public function send($to, $subject, $body)
     {
         try {
+            $this->mail->clearAddresses(); // Clear recipient addresses from previous sends
             $this->mail->addAddress($to);
             $this->mail->isHTML(true);
             $this->mail->Subject = $subject;
             $this->mail->Body    = $body;
+            
+            // Set text fallback to prevent spam filters from penalizing the email
+            $this->mail->AltBody = strip_tags(str_replace(['<br>', '<br/>', '</p>', '</div>'], ["\n", "\n", "\n\n", "\n\n"], $body));
 
             $this->mail->send();
             return true;

@@ -72,7 +72,7 @@
 
                 <div class="input-wrapper">
                     <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/profile.svg" alt="Email" class="input-icon">
-                    <input type="email" class="form-control" id="email" name="email" placeholder="email@umi.ac.id" required>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="email@student.umi.ac.id" required>
                 </div>
                 <div id="emailError" class="error-msg"></div>
 
@@ -131,6 +131,53 @@
                     <img id="modalGif" src="" alt="Animation" class="mb-3 mx-auto" style="width: 100px; display: none;">
                     <p id="modalMessage" class="fs-5 mb-3">Pesan akan ditampilkan di sini.</p>
                     <button type="button" id="closeModal" class="btn btn-primary rounded-3 px-4" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Verifikasi OTP -->
+    <div class="modal fade" id="otpModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0 pb-0 justify-content-between p-4">
+                    <h5 class="modal-title fw-bold" id="otpModalLabel">Verifikasi OTP</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center px-4 pb-4 pt-0">
+                    <div class="mb-3 mt-2">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle w-[70px] h-[70px] bg-[#e0f2fe] text-[#0284c7]">
+                            <i class="bi bi-shield-lock-fill text-[2.2rem]"></i>
+                        </div>
+                    </div>
+                    <p class="mb-4 text-secondary text-sm">Masukkan 6 digit kode OTP yang telah dikirimkan ke email <strong id="otpEmailSpan" class="text-dark"></strong></p>
+                    <div class="mb-4 text-danger fw-semibold text-sm">
+                        Sisa waktu verifikasi: <span id="otpExpiryTimer">05:00</span>
+                    </div>
+                    
+                    <form id="otpForm" class="mx-auto max-w-[340px]">
+                        <div class="d-flex justify-content-between gap-2 mb-4">
+                            <input type="text" class="form-control text-center fs-3 fw-bold otp-input p-0 w-[45px] h-[50px] rounded-[10px]" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                            <input type="text" class="form-control text-center fs-3 fw-bold otp-input p-0 w-[45px] h-[50px] rounded-[10px]" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                            <input type="text" class="form-control text-center fs-3 fw-bold otp-input p-0 w-[45px] h-[50px] rounded-[10px]" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                            <input type="text" class="form-control text-center fs-3 fw-bold otp-input p-0 w-[45px] h-[50px] rounded-[10px]" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                            <input type="text" class="form-control text-center fs-3 fw-bold otp-input p-0 w-[45px] h-[50px] rounded-[10px]" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                            <input type="text" class="form-control text-center fs-3 fw-bold otp-input p-0 w-[45px] h-[50px] rounded-[10px]" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                        </div>
+                        <input type="hidden" id="otpCode" name="otp">
+                        
+                        <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-semibold shadow-sm bg-[#0097d9] border-[#0097d9] hover:bg-[#0086c2] hover:border-[#0086c2]" id="btnVerifyOtp">
+                            Verifikasi Akun
+                        </button>
+                    </form>
+                    
+                    <div class="mt-4 text-secondary text-sm">
+                        Tidak menerima email? 
+                        <button type="button" class="btn btn-link p-0 align-baseline text-decoration-none fw-semibold text-[#0097d9] hover:text-[#0086c2]" id="btnResendOtp">
+                            Kirim Ulang
+                        </button>
+                        <span id="otpTimer" class="ms-1 text-muted d-none">(60s)</span>
+                    </div>
                 </div>
             </div>
         </div>
