@@ -154,7 +154,7 @@
                     <div class="mb-4 text-danger fw-semibold text-sm">
                         Sisa waktu verifikasi: <span id="otpExpiryTimer">05:00</span>
                     </div>
-                    
+                        
                     <form id="otpForm" class="mx-auto max-w-[340px]">
                         <div class="d-flex justify-content-between gap-2 mb-4">
                             <input type="text" class="form-control text-center fs-3 fw-bold otp-input p-0 w-[45px] h-[50px] rounded-[10px]" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
