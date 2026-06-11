@@ -47,6 +47,33 @@ class BiodataController extends Controller
                 exit;
             }
 
+            $genderLower = strtolower($gender);
+            $kelas = strtoupper(trim($kelas));
+            
+            if ($genderLower === 'wanita' && !preg_match('/^B[0-9]+$/', $kelas)) {
+                echo json_encode(['status' => 'error', 'message' => 'Kelas untuk wanita harus diawali dengan karakter B lalu diikuti angka.']);
+                exit;
+            }
+            if (($genderLower === 'pria' || $genderLower === 'laki-laki' || $genderLower === 'pria') && !preg_match('/^A[0-9]+$/', $kelas)) {
+                echo json_encode(['status' => 'error', 'message' => 'Kelas untuk pria harus diawali dengan karakter A lalu diikuti angka.']);
+                exit;
+            }
+
+            if (!preg_match('/^[A-Za-z\s]+$/', trim($nama))) {
+                echo json_encode(['status' => 'error', 'message' => 'Nama Lengkap tidak boleh kosong dan tidak boleh mengandung angka atau karakter spesial.']);
+                exit;
+            }
+
+            if (!preg_match('/^[A-Za-z\s]+$/', trim($tempatLahir))) {
+                echo json_encode(['status' => 'error', 'message' => 'Kota Asal/Tempat Lahir tidak boleh kosong dan tidak boleh mengandung angka atau karakter spesial.']);
+                exit;
+            }
+
+            if (!preg_match('/^[A-Za-z0-9\s]+$/', trim($alamat))) {
+                echo json_encode(['status' => 'error', 'message' => 'Alamat tidak boleh kosong dan tidak boleh mengandung karakter spesial.']);
+                exit;
+            }
+
             $biodata = new BiodataUser(
                 $idUser,
                 $jurusan,

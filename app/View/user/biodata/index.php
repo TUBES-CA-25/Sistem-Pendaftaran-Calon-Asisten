@@ -122,25 +122,37 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
                             <div>
                                 <label for="kelas" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Kelas</label>
                                 <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold transition bg-white" id="floatingSelect" name="kelas" required>
-                                    <option selected disabled>Pilih Kelas Anda</option>
-                                    <option value="<?php echo htmlspecialchars($kelas) ?>" selected><?= htmlspecialchars($kelas) ?></option>                                
-                                    <?php if ($kelas !== 'Kelas'): ?>
-                                        <?php 
-                                            $kelasOptions = [];
-                                            if ($jenisKelamin === "wanita") {
-                                                $kelasOptions = ["B1", "B2", "B3", "B4", "B5"];
-                                            } else if ($jenisKelamin === "pria" || $jenisKelamin === "laki-laki") {
-                                                $kelasOptions = ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"];
-                                            }
-                                            ?>
-                                        <option value="<?php echo htmlspecialchars($kelas) ?>" selected><?= htmlspecialchars($kelas) ?></option>
-                                         <?php foreach ($kelasOptions as $kelasOps) : ?>
-                                            <option value="<?= htmlspecialchars($kelasOps) ?>" <?= ($kelas === $kelasOps) ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($kelasOps) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
+                                    <option disabled <?= ($kelas === 'Kelas' || empty($kelas)) ? 'selected' : '' ?>>Pilih Kelas Anda</option>
+                                    <?php 
+                                    $genderLower = strtolower($jenisKelamin);
+                                    
+                                    $initialKelasOptions = [];
+                                    if ($genderLower === 'wanita') {
+                                        $initialKelasOptions = ["B1", "B2", "B3", "B4", "B5"];
+                                    } else if ($genderLower === 'pria' || $genderLower === 'laki-laki') {
+                                        $initialKelasOptions = ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"];
+                                    } else {
+                                        $initialKelasOptions = [
+                                            "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9",
+                                            "B1", "B2", "B3", "B4", "B5"
+                                        ];
+                                    }
+
+                                    $isCustomKelas = ($kelas !== 'Kelas' && !empty($kelas) && !in_array($kelas, $initialKelasOptions));
+
+                                    foreach ($initialKelasOptions as $kelasOps) : 
+                                    ?>
+                                        <option value="<?= htmlspecialchars($kelasOps) ?>" <?= ($kelas === $kelasOps) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($kelasOps) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                    <option value="Lainnya" <?= $isCustomKelas ? 'selected' : '' ?>>Lainnya (Input Manual)</option>
                                 </select>
+                            </div>
+                            
+                            <div id="kelasManualContainer" style="display: <?= $isCustomKelas ? 'block' : 'none' ?>;" class="mt-3">
+                                <label for="kelasManual" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Input Kelas Manual</label>
+                                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold transition" id="kelasManual" placeholder="Contoh: A10 atau B7" value="<?= $isCustomKelas ? htmlspecialchars($kelas) : '' ?>">
                             </div>
                         </div>
 
@@ -246,6 +258,7 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
 </main>
 
 <script>
+const dbClasses = <?= json_encode(\App\Model\BiodataUser::getAllKelas()) ?>;
 function enableEditMode() {
     document.getElementById('displaySection').style.display = 'none';
     document.getElementById('formSection').style.display = 'block';

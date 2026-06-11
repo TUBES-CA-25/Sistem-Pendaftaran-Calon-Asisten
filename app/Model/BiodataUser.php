@@ -131,15 +131,29 @@ class BiodataUser extends Model
     }
     private function getIdKelas($namaKelas)
     {
+        $namaKelas = strtoupper(trim($namaKelas));
         $query = "SELECT id FROM " . static::$tabelKelas . " WHERE nama = ?";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(1, $namaKelas);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $result = [
-            "id" => $result['id']
-        ];
-        return $result;
+        if ($result) {
+            return [
+                "id" => $result['id']
+            ];
+        }
+
+        // If not found, insert the new class!
+        $queryInsert = "INSERT INTO " . static::$tabelKelas . " (nama) VALUES (?)";
+        $stmtInsert = self::getDB()->prepare($queryInsert);
+        $stmtInsert->bindParam(1, $namaKelas);
+        if ($stmtInsert->execute()) {
+            return [
+                "id" => self::getDB()->lastInsertId()
+            ];
+        }
+
+        return null;
     }
     public function isEmpty($idUser)
     {
@@ -277,4 +291,13 @@ class BiodataUser extends Model
         throw new \Exception("Gagal mengupdate biodata: " . $e->getMessage());
     }
 }
+
+    public static function getAllKelas()
+    {
+        $query = "SELECT nama FROM " . static::$tabelKelas . " ORDER BY nama ASC";
+        $stmt = self::getDB()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
 }
+
