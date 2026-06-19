@@ -52,7 +52,7 @@ $result = $result ?? [];
                             <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $i ?></td>
                             <td class="py-4 px-4">
                                 <div class="flex items-center gap-3">
-                                    <img src="<?= $row['photoPath'] ?>" alt="Avatar" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 flex-shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
+                                    <img src="<?= $row['photoPath'] ?>" alt="Avatar" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
                                     <div class="flex flex-col">
                                         <span class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></span>
                                         <span class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-0.5">Mahasiswa</span>
@@ -139,7 +139,7 @@ $result = $result ?? [];
                     </div>
 
                     <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3 text-blue-700">
-                        <i class="bi bi-info-circle-fill text-xl flex-shrink-0 mt-0.5"></i>
+                        <i class="bi bi-info-circle-fill text-xl shrink-0 mt-0.5"></i>
                         <div>
                             <strong class="text-sm block mb-0.5">Broadcast Notifikasi</strong>
                             <span class="text-xs text-blue-600 font-medium">Pesan yang Anda tulis di bawah ini akan dikirimkan kepada <u>seluruh peserta</u> yang terdaftar dalam sistem.</span>
@@ -171,7 +171,7 @@ $result = $result ?? [];
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
             <!-- Header dengan Background Gradient -->
-            <div class="relative bg-slate-900 px-8 py-6 text-white overflow-hidden flex-shrink-0">
+            <div class="relative bg-gradient-to-r from-[#1d4ed8] via-[#2563eb] to-[#3dc2ec] px-8 py-6 text-white overflow-hidden shrink-0">
                 <!-- Decorative Elements -->
                 <div class="absolute -top-10 -right-10 w-36 h-36 bg-white/10 rounded-full"></div>
                 <div class="absolute bottom-5 -left-10 w-24 h-24 bg-white/5 rounded-full"></div>
@@ -185,11 +185,11 @@ $result = $result ?? [];
             </div>
             
             <!-- Profile Card yang Overlap -->
-            <div class="px-6 -mt-6 relative z-10 flex-shrink-0">
+            <div class="px-6 -mt-6 relative z-10 shrink-0">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
                     <div class="flex flex-col md:flex-row items-center gap-6">
                         <!-- Photo Column -->
-                        <div class="relative flex-shrink-0">
+                        <div class="relative shrink-0">
                             <img id="modalFoto" src="" alt="Foto Peserta" 
                                  class="rounded-full w-32 h-32 object-cover border-4 border-white shadow-md bg-slate-100">
                             <span id="modalStatusIcon" class="absolute bottom-0 right-0 w-8 h-8 rounded-full shadow-md flex items-center justify-center text-sm text-white font-bold">
@@ -245,7 +245,7 @@ $result = $result ?? [];
                     <!-- Left Column -->
                     <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
                         <div class="flex items-center mb-5 mr-3">
-                            <div class="rounded-xl flex items-center justify-content-center mr-3 w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex-shrink-0">
+                            <div class="rounded-xl flex items-center justify-center mr-3 w-10 h-10 bg-gradient-to-br from-[#1d4ed8] to-[#2563eb] text-white shrink-0">
                                 <i class="bi bi-person-vcard text-base"></i>
                             </div>
                             <div>
@@ -287,7 +287,7 @@ $result = $result ?? [];
                     <!-- Right Column -->
                     <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
                         <div class="flex items-center mb-5 mr-3">
-                            <div class="rounded-xl flex items-center justify-content-center mr-3 w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 text-white flex-shrink-0">
+                            <div class="rounded-xl flex items-center justify-center mr-3 w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 text-white shrink-0">
                                 <i class="bi bi-folder2-open text-base"></i>
                             </div>
                             <div>
@@ -300,7 +300,7 @@ $result = $result ?? [];
                             <!-- Foto -->
                             <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-200/80 rounded-xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm transition duration-200">
                                 <div class="flex items-center gap-3 flex-grow min-w-0">
-                                    <div class="rounded-xl flex items-center justify-content-center w-10 h-10 bg-blue-100 text-blue-600 flex-shrink-0">
+                                    <div class="rounded-xl flex items-center justify-center w-10 h-10 bg-blue-100 text-blue-600 shrink-0">
                                         <i class="bi bi-image text-lg"></i>
                                     </div>
                                     <div class="min-w-0">
@@ -316,7 +316,7 @@ $result = $result ?? [];
                             <!-- CV -->
                             <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-200/80 rounded-xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm transition duration-200">
                                 <div class="flex items-center gap-3 flex-grow min-w-0">
-                                    <div class="rounded-xl flex items-center justify-content-center w-10 h-10 bg-purple-100 text-purple-600 flex-shrink-0">
+                                    <div class="rounded-xl flex items-center justify-center w-10 h-10 bg-purple-100 text-purple-600 shrink-0">
                                         <i class="bi bi-file-person text-lg"></i>
                                     </div>
                                     <div class="min-w-0">
@@ -332,7 +332,7 @@ $result = $result ?? [];
                             <!-- Transkrip -->
                             <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-200/80 rounded-xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm transition duration-200">
                                 <div class="flex items-center gap-3 flex-grow min-w-0">
-                                    <div class="rounded-xl flex items-center justify-content-center w-10 h-10 bg-emerald-100 text-emerald-600 flex-shrink-0">
+                                    <div class="rounded-xl flex items-center justify-center w-10 h-10 bg-emerald-100 text-emerald-600 shrink-0">
                                         <i class="bi bi-file-text text-lg"></i>
                                     </div>
                                     <div class="min-w-0">
@@ -348,7 +348,7 @@ $result = $result ?? [];
                             <!-- Surat Pernyataan -->
                             <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-200/80 rounded-xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm transition duration-200">
                                 <div class="flex items-center gap-3 flex-grow min-w-0">
-                                    <div class="rounded-xl flex items-center justify-content-center w-10 h-10 bg-amber-100 text-amber-600 flex-shrink-0">
+                                    <div class="rounded-xl flex items-center justify-center w-10 h-10 bg-amber-100 text-amber-600 shrink-0">
                                         <i class="bi bi-file-earmark-check text-lg"></i>
                                     </div>
                                     <div class="min-w-0">
@@ -366,7 +366,7 @@ $result = $result ?? [];
             </div>
             
             <!-- Footer -->
-            <div class="bg-slate-50 px-8 py-5 border-t border-slate-200/60 flex-shrink-0">
+            <div class="bg-slate-50 px-8 py-5 border-t border-slate-200/60 shrink-0">
                 <input type="hidden" id="modalMahasiswaId" value="">
                 <input type="hidden" id="modalUserId" value="">
                 

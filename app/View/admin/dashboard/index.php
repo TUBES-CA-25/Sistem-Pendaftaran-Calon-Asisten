@@ -62,11 +62,11 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
         ?>
         <div>
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 flex items-center gap-4 hover:shadow-md transition duration-200">
-                <div class="rounded-xl d-flex align-items-center justify-content-center text-white flex-shrink-0" 
+                <div class="rounded-xl flex items-center justify-content-center text-white shrink-0" 
                      style="width: 52px; height: 52px; font-size: 1.75rem; background-color: <?= $stat['icon_bg'] ?>;">
                     <i class='<?= $stat['icon'] ?>'></i>
                 </div>
-                <div class="flex-grow-1">
+                <div class="flex-grow">
                     <p class="text-slate-400 font-bold uppercase tracking-wider text-[10px]"><?= $stat['label'] ?></p>
                     <h2 class="text-2xl font-black text-slate-800"><?= $stat['value'] ?></h2>
                 </div>
@@ -221,7 +221,7 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                 </div>
                 <form id="editDeadlineForm" class="space-y-4">
                     <input type="hidden" id="editDeadlineJenis" name="jenis">
-                    <small class="text-slate-400 font-medium d-block" id="editDeadlineLabelName"></small>
+                    <small class="text-slate-400 font-medium block" id="editDeadlineLabelName"></small>
                     <input type="date" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" id="editDeadlineDate" name="tanggal" required>
                     <div class="pt-2">
                         <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition">Update</button>

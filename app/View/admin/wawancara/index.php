@@ -53,7 +53,7 @@ $colors = ['#2f66f6'];
                     <?php if (empty($wawancara)): ?>
                         <tr>
                             <td colspan="8" class="text-center py-16 text-slate-400">
-                                <i class="bi bi-inbox text-5xl d-block mb-3 opacity-55"></i>
+                                <i class="bi bi-inbox text-5xl block mb-3 opacity-55"></i>
                                 <span class="font-semibold text-sm">Belum ada data jadwal wawancara</span>
                             </td>
                         </tr>
@@ -485,7 +485,7 @@ $colors = ['#2f66f6'];
                     $("#table-body").append(`
                         <tr id="noResultsRow">
                             <td colspan="8" class="text-center py-16 text-slate-400">
-                                <i class="bi bi-search text-5xl d-block mb-3 opacity-55"></i>
+                                <i class="bi bi-search text-5xl block mb-3 opacity-55"></i>
                                 <span class="font-semibold text-sm">Data yang Anda cari tidak ditemukan</span>
                             </td>
                         </tr>
@@ -515,7 +515,7 @@ $colors = ['#2f66f6'];
                             tableBody.append(`
                                 <tr>
                                     <td colspan="8" class="text-center py-16 text-slate-400">
-                                        <i class="bi bi-inbox text-5xl d-block mb-3 opacity-55"></i>
+                                        <i class="bi bi-inbox text-5xl block mb-3 opacity-55"></i>
                                         <span class="font-semibold text-sm">Belum ada data jadwal wawancara di ruangan ini</span>
                                     </td>
                                 </tr>

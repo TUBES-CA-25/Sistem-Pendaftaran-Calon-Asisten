@@ -220,7 +220,7 @@ $(document).ready(function() {
         setTimeout(() => {
             showActionConfirmation({
                 title: 'Terima Judul',
-                message: `Anda akan menerima judul untuk:<br><strong class="text-lg text-slate-800 font-bold d-block my-2">${nama}</strong><span class="text-emerald-600 small font-semibold"><i class="bi bi-check-circle me-1"></i>Judul memenuhi kriteria</span>`,
+                message: `Anda akan menerima judul untuk:<br><strong class="text-lg text-slate-800 font-bold block my-2">${nama}</strong><span class="text-emerald-600 small font-semibold"><i class="bi bi-check-circle me-1"></i>Judul memenuhi kriteria</span>`,
                 btnText: 'Terima Judul',
                 type: 'success', // Green
                 onConfirm: function() {
@@ -249,7 +249,7 @@ $(document).ready(function() {
         setTimeout(() => {
             showActionConfirmation({
                 title: 'Tolak Judul',
-                message: `Anda akan menolak judul untuk:<br><strong class="text-lg text-slate-800 font-bold d-block my-2">${nama}</strong><span class="text-red-600 small font-semibold"><i class="bi bi-exclamation-triangle me-1"></i>Mahasiswa akan diminta mengajukan ulang</span>`,
+                message: `Anda akan menolak judul untuk:<br><strong class="text-lg text-slate-800 font-bold block my-2">${nama}</strong><span class="text-red-600 small font-semibold"><i class="bi bi-exclamation-triangle me-1"></i>Mahasiswa akan diminta mengajukan ulang</span>`,
                 btnText: 'Tolak Judul',
                 type: 'danger', // Red
                 onConfirm: function() {

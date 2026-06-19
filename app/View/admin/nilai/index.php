@@ -258,7 +258,7 @@ $(document).ready(function() {
         $('#nilaiAkhir').val(total || '');
 
         // Loading State for Questions
-        $('#soalJawabanList').html('<div class="col-12"><p class="text-slate-400">Memuat data...</p></div>');
+        $('#soalJawabanList').html('<div class="w-full"><p class="text-slate-400">Memuat data...</p></div>');
 
         // Fetch Questions
         $.ajax({
@@ -378,7 +378,7 @@ $(document).ready(function() {
 
                     $('#soalJawabanList').html(html);
                 } else {
-                    $('#soalJawabanList').html('<div class="col-12"><p class="text-slate-450">Tidak ada data soal dan jawaban.</p></div>');
+                    $('#soalJawabanList').html('<div class="w-full"><p class="text-slate-450">Tidak ada data soal dan jawaban.</p></div>');
                     $('#statTotal').text(0);
                     $('#statBenar').text(0);
                     $('#statSalah').text(0);
@@ -386,19 +386,19 @@ $(document).ready(function() {
                 }
             },
             error: function() {
-                $('#soalJawabanList').html('<div class="col-12"><p class="text-red-500">Gagal memuat data.</p></div>');
+                $('#soalJawabanList').html('<div class="w-full"><p class="text-red-500">Gagal memuat data.</p></div>');
             }
         });
 
-        $('#view-list').addClass('d-none');
-        $('#view-detail').removeClass('d-none');
+        $('#view-list').addClass('hidden');
+        $('#view-detail').removeClass('hidden');
         window.scrollTo(0, 0);
     });
 
     // Back Button Logic
     $('#btnBack').on('click', function() {
-        $('#view-detail').addClass('d-none');
-        $('#view-list').removeClass('d-none');
+        $('#view-detail').addClass('hidden');
+        $('#view-list').removeClass('hidden');
         currentMahasiswaId = null;
     });
 

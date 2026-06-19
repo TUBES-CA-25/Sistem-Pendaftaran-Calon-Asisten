@@ -26,7 +26,7 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                                 <div class="lg:col-span-7">
                                     <div class="flex items-center mb-6">
-                                        <div class="rounded-2xl flex items-center justify-content-center mr-4 shadow-sm w-14 h-14 bg-blue-600 flex-shrink-0 text-white">
+                                        <div class="rounded-2xl flex items-center justify-center mr-4 shadow-sm w-14 h-14 bg-blue-600 shrink-0 text-white">
                                             <i class='bx bx-import text-2xl'></i>
                                         </div>
                                         <div>
@@ -70,9 +70,9 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                                         <div>
                                             <h6 class="font-bold text-slate-800 mb-4 flex items-center gap-1.5"><i class='bx bx-info-circle text-blue-600 text-lg'></i> Panduan Import</h6>
                                             <ul class="space-y-3 text-xs text-slate-600 mb-6">
-                                                <li class="flex items-start gap-2"><i class='bx bx-check text-emerald-500 text-lg flex-shrink-0'></i> <span>Gunakan format kolom template yang disediakan.</span></li>
-                                                <li class="flex items-start gap-2"><i class='bx bx-check text-emerald-500 text-lg flex-shrink-0'></i> <span>Kolom wajib: Deskripsi, Tipe (PG/Essay), Jawaban.</span></li>
-                                                <li class="flex items-start gap-2"><i class='bx bx-check text-emerald-500 text-lg flex-shrink-0'></i> <span>Untuk PG, isi kolom Pilihan A sampai E.</span></li>
+                                                <li class="flex items-start gap-2"><i class='bx bx-check text-emerald-500 text-lg shrink-0'></i> <span>Gunakan format kolom template yang disediakan.</span></li>
+                                                <li class="flex items-start gap-2"><i class='bx bx-check text-emerald-500 text-lg shrink-0'></i> <span>Kolom wajib: Deskripsi, Tipe (PG/Essay), Jawaban.</span></li>
+                                                <li class="flex items-start gap-2"><i class='bx bx-check text-emerald-500 text-lg shrink-0'></i> <span>Untuk PG, isi kolom Pilihan A sampai E.</span></li>
                                             </ul>
                                         </div>
                                         
@@ -98,7 +98,7 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                                 <div class="lg:col-span-7">
                                     <div class="flex items-center mb-6">
-                                        <div class="rounded-2xl flex items-center justify-content-center mr-4 shadow-sm w-14 h-14 bg-emerald-600 flex-shrink-0 text-white">
+                                        <div class="rounded-2xl flex items-center justify-center mr-4 shadow-sm w-14 h-14 bg-emerald-600 shrink-0 text-white">
                                             <i class='bx bx-export text-2xl'></i>
                                         </div>
                                         <div>

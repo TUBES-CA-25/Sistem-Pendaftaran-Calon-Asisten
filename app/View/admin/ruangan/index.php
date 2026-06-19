@@ -67,7 +67,7 @@ $ruanganList = $ruanganList ?? [];
                                 </div>
 
                                 <!-- Action Buttons -->
-                                <div class="flex gap-2 mt-4 flex-shrink-0">
+                                <div class="flex gap-2 mt-4 shrink-0">
                                     <button class="flex-grow py-2 px-3 border border-blue-600 text-blue-600 hover:bg-blue-50 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 btn-edit-room"
                                             data-id="<?= $ruangan['id'] ?>"
                                             data-name="<?= htmlspecialchars($ruangan['nama']) ?>"

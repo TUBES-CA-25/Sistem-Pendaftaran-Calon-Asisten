@@ -187,7 +187,7 @@ $essayCount = $stats['essay_count'];
     </div>
 
     <!-- Bank Detail View -->
-    <div class="bank-detail-view d-none" id="bankDetailView">
+    <div class="bank-detail-view hidden" id="bankDetailView">
         <div class="flex items-center mb-6 gap-4 flex-wrap">
             <button class="w-10 h-10 flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full transition border-0" onclick="closeBankDetail()">
                 <i class='bx bx-arrow-back text-xl'></i>
@@ -409,7 +409,7 @@ $essayCount = $stats['essay_count'];
                                 <div class="font-bold text-sm text-slate-700">Pilihan Ganda</div>
                             </div>
                             <div class="type-option p-4 rounded-2xl border-2 border-slate-200 cursor-pointer relative w-40 transition-all hover:border-blue-500 hover:bg-blue-50/20" data-type="essay" id="editTypeEssay">
-                                <div class="check-icon absolute top-2 right-2 text-blue-600 d-none">
+                                <div class="check-icon absolute top-2 right-2 text-blue-600 hidden">
                                     <i class='bx bxs-check-circle text-xl'></i>
                                 </div>
                                 <i class='bx bx-align-left text-4xl text-amber-500 mb-2'></i>

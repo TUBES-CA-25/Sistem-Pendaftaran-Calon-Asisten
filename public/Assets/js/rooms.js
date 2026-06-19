@@ -16,8 +16,8 @@
             currentRoomId = id;
             currentRoomName = name;
 
-            $('#ruanganListSection').addClass('d-none');
-            $('#ruanganDetailSection').removeClass('d-none');
+            $('#ruanganListSection').addClass('hidden');
+            $('#ruanganDetailSection').removeClass('hidden');
 
             // Update title
             $('#detailRoomTitle').text(name);
@@ -36,8 +36,8 @@
 
         function showListView() {
             currentRoomId = null;
-            $('#ruanganDetailSection').addClass('d-none');
-            $('#ruanganListSection').removeClass('d-none');
+            $('#ruanganDetailSection').addClass('hidden');
+            $('#ruanganListSection').removeClass('hidden');
         }
 
         $('#backToListBtn').click(showListView);
@@ -99,7 +99,7 @@
                     <tr>
                         <td colspan="4" class="text-center py-5">
                             <div class="text-muted">
-                                <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
+                                <i class="bi bi-inbox fs-1 block mb-3 opacity-50"></i>
                                 <h6 class="fw-semibold">Belum ada peserta</h6>
                                 <p class="small mb-0">Peserta akan muncul di sini setelah ditambahkan</p>
                             </div>

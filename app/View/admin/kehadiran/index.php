@@ -60,7 +60,7 @@ $mahasiswaList = $mahasiswaList ?? [];
                                                 $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . htmlspecialchars($row['berkas_foto']) . '?v=' . time();
                                             }
                                         ?>
-                                        <img src="<?= $photoUrl ?>" alt="Foto" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 flex-shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
+                                        <img src="<?= $photoUrl ?>" alt="Foto" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
                                         <div>
                                             <div class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
                                             <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Mahasiswa</div>
@@ -179,7 +179,7 @@ function renderStatusBadge($val) {
                                     <option value="<?= $m['id'] ?>"><?= $m['stambuk'] ?> - <?= htmlspecialchars($m['nama_lengkap']) ?></option>
                                 <?php endforeach; ?>
                             </select>
-                            <button class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition flex-shrink-0" type="button" id="addMahasiswaButton">
+                            <button class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition shrink-0" type="button" id="addMahasiswaButton">
                                 <i class="bi bi-plus"></i>
                             </button>
                         </div>

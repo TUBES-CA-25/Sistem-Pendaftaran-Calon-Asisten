@@ -16,15 +16,15 @@ if (typeof window.serverData !== 'undefined') {
 // Open Bank Detail
 window.openBankDetail = function(bankId, bankName) {
     window.currentBankId = bankId;
-    document.getElementById('bankListView').classList.add('d-none');
+    document.getElementById('bankListView').classList.add('hidden');
     document.getElementById('bankListView').classList.add('hidden'); // legacy
-    document.getElementById('bankDetailView').classList.remove('d-none');
+    document.getElementById('bankDetailView').classList.remove('hidden');
     document.getElementById('bankDetailView').classList.add('active'); // legacy
     document.getElementById('detailBankTitle').textContent = bankName;
     
     // Hide Create Bank Button (Keep Tabs Visible)
     const btnCreate = document.getElementById('btnCreateBank');
-    if(btnCreate) btnCreate.classList.add('d-none');
+    if(btnCreate) btnCreate.classList.add('hidden');
 
     // Load questions for this bank
     window.loadBankQuestions(bankId);
@@ -33,14 +33,14 @@ window.openBankDetail = function(bankId, bankName) {
 // Close Bank Detail
 window.closeBankDetail = function() {
     window.currentBankId = null;
-    document.getElementById('bankDetailView').classList.add('d-none');
+    document.getElementById('bankDetailView').classList.add('hidden');
     document.getElementById('bankDetailView').classList.remove('active'); // legacy
-    document.getElementById('bankListView').classList.remove('d-none');
+    document.getElementById('bankListView').classList.remove('hidden');
     document.getElementById('bankListView').classList.remove('hidden'); // legacy
     
     // Show Create Bank Button
     const btnCreate = document.getElementById('btnCreateBank');
-    if(btnCreate) btnCreate.classList.remove('d-none');
+    if(btnCreate) btnCreate.classList.remove('hidden');
 }
 
 // Load questions for specific bank
@@ -330,9 +330,9 @@ window.deleteBank = function(bankId) {
 window.closeBankDetail = function() {
     window.currentBankId = null;
     window.currentBankSoal = [];
-    document.getElementById('bankDetailView').classList.add('d-none');
+    document.getElementById('bankDetailView').classList.add('hidden');
     document.getElementById('bankDetailView').classList.remove('active');
-    document.getElementById('bankListView').classList.remove('d-none');
+    document.getElementById('bankListView').classList.remove('hidden');
     document.getElementById('bankListView').classList.remove('hidden');
 }
 
@@ -846,12 +846,12 @@ window.deleteSoal = function(id) {
             // Remove selected class from all options
             typeOptions.forEach(opt => {
                 opt.classList.remove('selected');
-                opt.querySelector('.check-icon').classList.add('d-none');
+                opt.querySelector('.check-icon').classList.add('hidden');
             });
             
             // Add selected class to clicked option
             this.classList.add('selected');
-            this.querySelector('.check-icon').classList.remove('d-none');
+            this.querySelector('.check-icon').classList.remove('hidden');
             
             // Update hidden input
             if (soalTypeInput) {

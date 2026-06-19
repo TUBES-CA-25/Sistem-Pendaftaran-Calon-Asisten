@@ -54,13 +54,14 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
 }
 ?>
 
-<nav class="navbar <?= $navbarClass ?>">
+<nav class="sticky top-4 z-40 w-[96%] lg:w-[98%] max-w-[1400px] mx-auto my-4 bg-gradient-to-r from-[#1d4ed8] via-[#2563eb] to-[#3dc2ec] rounded-2xl shadow-lg shadow-blue-500/10 border border-white/10 relative overflow-hidden transition-all duration-300 py-5 px-4 md:py-7 md:px-6">
     <!-- Background Decoration Container -->
-    <div class="navbar-decoration"></div>
+    <div class="absolute -top-16 -right-16 w-80 h-80 bg-white/10 rounded-full pointer-events-none"></div>
+    <div class="absolute -bottom-20 left-8 w-52 h-52 bg-white/5 rounded-full pointer-events-none"></div>
     
-    <div class="container-fluid px-4">
+    <div class="container-fluid relative z-1 px-4 flex items-center justify-between">
         <!-- Left: Burger Menu + Icon + Title -->
-        <div class="navbar-brand d-flex align-items-center gap-3">
+        <div class="flex items-center gap-3">
             <!-- Burger Menu Button (visible on tablet/mobile) -->
             <button class="burger-menu-btn" id="burgerMenuBtn" type="button" aria-label="Toggle Sidebar">
                 <span></span>
@@ -69,68 +70,64 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
             </button>
 
             <?php if (!empty($icon)): ?>
-                <div class="navbar-icon">
+                <div class="w-10 h-10 md:w-11 md:h-11 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-lg md:text-xl text-white shrink-0 shadow-inner">
                     <i class='<?= $icon ?>'></i>
                 </div>
             <?php endif; ?>
             <div>
-                <h1 class="navbar-title"><?= $title ?? 'Judul Halaman' ?></h1>
+                <h1 class="text-base md:text-xl font-bold text-white m-0 leading-tight tracking-wide truncate max-w-[180px] md:max-w-xs"><?= $title ?? 'Judul Halaman' ?></h1>
                 <?php if (!empty($subtitle)): ?>
-                    <p class="navbar-subtitle"><?= $subtitle ?></p>
+                    <p class="text-[10px] md:text-xs text-blue-100 m-0 mt-0.5 opacity-90 leading-none"><?= $subtitle ?></p>
                 <?php endif; ?>
             </div>
         </div>
 
-        <!-- Spacer -->
-        <div class="flex-grow-1"></div>
-
         <!-- Right: Actions -->
-        <div class="d-flex align-items-center gap-2">
+        <div class="flex items-center gap-3">
             <?php if ($role !== 'Admin'): ?>
                 <!-- Notification Icon (User only) -->
                 <div class="dropdown">
-                    <button class="btn navbar-action-btn position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class='bx bx-bell fs-5'></i>
+                    <button class="w-10 h-10 md:w-11 md:h-11 bg-white/10 hover:bg-white/20 active:scale-95 border border-white/10 rounded-full text-white flex items-center justify-center relative transition-all duration-200" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class='bx bx-bell text-lg md:text-xl'></i>
                         <?php if (isset($notificationCount) && $notificationCount > 0): ?>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem; padding: 0.2rem 0.4rem;">
+                        <span class="absolute -top-1 -right-1 bg-red-500 border-2 border-[#2563eb] text-white font-bold rounded-full text-[9px] w-5 h-5 flex items-center justify-center">
                             <?= $notificationCount ?>
-                            <span class="visually-hidden">unread notifications</span>
                         </span>
                         <?php endif; ?>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end navbar-notification-dropdown border-0 shadow-lg rounded-4 p-0 overflow-hidden" style="width: 320px; max-width: 90vw;">
-                        <li class="dropdown-header d-flex justify-content-between align-items-center bg-light px-3 py-2 border-bottom">
-                            <span class="fw-bold text-dark">Notifikasi</span>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-2xl rounded-2xl p-0 overflow-hidden bg-white w-[340px] max-w-[90vw] mt-2">
+                        <li class="dropdown-header flex justify-between items-center bg-gray-50/85 backdrop-blur-md px-4 py-3 border-b border-gray-100">
+                            <span class="font-bold text-gray-800">Notifikasi</span>
                             <?php if (isset($notificationCount) && $notificationCount > 0): ?>
-                                <span class="badge bg-primary rounded-pill"><?= $notificationCount ?></span>
+                                <span class="badge bg-blue-600 text-white rounded-full px-2 py-1 text-xs"><?= $notificationCount ?></span>
                             <?php endif; ?>
                         </li>
                         <li class="list-group list-group-flush">
                         <?php if (isset($notifikasi) && !empty($notifikasi)): ?>
                             <?php foreach (array_slice($notifikasi, 0, 5) as $notif): ?>
-                                <a class="list-group-item list-group-item-action p-3 notification-item border-bottom-0 border-top-0" href="#" data-page="notification">
-                                    <div class="d-flex gap-3 align-items-start">
-                                        <div class="notification-icon flex-shrink-0 mt-1">
-                                            <i class='bx bx-info-circle text-primary fs-5'></i>
+                                <a class="block px-4 py-3 hover:bg-blue-50/40 transition-colors border-b border-gray-100 last:border-0 notification-item text-decoration-none" href="#" data-page="notification">
+                                    <div class="flex gap-3 items-start">
+                                        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0 mt-0.5">
+                                            <i class='bx bx-info-circle text-lg'></i>
                                         </div>
-                                        <div class="flex-grow-1" style="min-width: 0;">
-                                            <p class="mb-1 small text-dark fw-medium lh-sm text-wrap text-break">
+                                        <div class="flex-grow min-w-0">
+                                            <p class="mb-1 text-xs text-gray-700 font-medium leading-normal text-wrap break-all">
                                                 <?= htmlspecialchars($notif['pesan'] ?? 'Notifikasi baru') ?>
                                             </p>
-                                            <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                            <small class="text-gray-400 block text-[10px]">
                                                 <?= isset($notif['created_at']) ? date('d M, H:i', strtotime($notif['created_at'])) : '' ?>
                                             </small>
                                         </div>
                                     </div>
                                 </a>
                             <?php endforeach; ?>
-                            <a class="list-group-item list-group-item-action text-center small text-primary fw-semibold py-2 bg-light border-top" href="#" data-page="notification">
+                            <a class="block text-center text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50/50 font-semibold py-2.5 bg-gray-50/80 border-t border-gray-100 text-decoration-none" href="#" data-page="notification">
                                 Lihat Semua Notifikasi
                             </a>
                         <?php else: ?>
-                            <div class="text-center text-muted py-4">
-                                <i class='bx bx-bell-off fs-3 d-block mb-2 text-secondary'></i>
-                                <small>Tidak ada notifikasi</small>
+                            <div class="text-center text-gray-400 py-6 px-4">
+                                <i class='bx bx-bell-off text-3xl block mb-2 text-gray-300'></i>
+                                <small class="text-xs">Tidak ada notifikasi</small>
                             </div>
                         <?php endif; ?>
                         </li>
@@ -141,15 +138,15 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
             <!-- Profile Section -->
             <?php if ($role === 'Admin'): ?>
                 <!-- Admin: Simple static display without dropdown -->
-                <div class="d-flex align-items-center gap-2">
-                    <img src="<?= $photo ?>" alt="Profile" class="navbar-profile-img" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/Rectangle.png'">
-                    <span class="navbar-profile-name d-none d-sm-inline"><?= htmlspecialchars($userName) ?></span>
+                <div class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full py-1.5 px-3 md:px-4 transition-all duration-200">
+                    <img src="<?= $photo ?>" alt="Profile" class="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover border-2 border-white/60 bg-white" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/Rectangle.png'">
+                    <span class="text-white text-xs md:text-sm font-semibold tracking-wide truncate max-w-[100px] md:max-w-[150px] d-none d-sm-inline"><?= htmlspecialchars($userName) ?></span>
                 </div>
             <?php else: ?>
                 <!-- User: Simple static display without dropdown -->
-                <div class="d-flex align-items-center gap-2">
-                    <img src="<?= $photo ?>" alt="Profile" class="navbar-profile-img" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
-                    <span class="navbar-profile-name d-none d-sm-inline"><?= htmlspecialchars($userName) ?></span>
+                <div class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full py-1.5 px-3 md:px-4 transition-all duration-200">
+                    <img src="<?= $photo ?>" alt="Profile" class="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover border-2 border-white/60 bg-white" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
+                    <span class="text-white text-xs md:text-sm font-semibold tracking-wide truncate max-w-[100px] md:max-w-[150px] d-none d-sm-inline"><?= htmlspecialchars($userName) ?></span>
                 </div>
             <?php endif; ?>
         </div>
