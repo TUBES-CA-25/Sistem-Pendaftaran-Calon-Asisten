@@ -32,6 +32,7 @@
     $(document).off('click', '#btnSendMessageToUser');
     $(document).off('click', '#sendIndividualMessage');
     $(document).off('click', '.btn-download-berkas, #downloadMakalahButton, #downloadPptButton');
+    $(document).off('click', '.tab-btn');
     
     // ============================================
     // SEND MESSAGE FUNCTIONS (Inside jQuery Ready)
@@ -156,6 +157,23 @@
             document.getElementById('modalJenis_kelamin').textContent = data.jenis_kelamin || '-';
             document.getElementById('modalJenisKelaminDetail').textContent = data.jenis_kelamin || '-';
             document.getElementById('modalNoTelp').textContent = data.notelp || '-';
+
+            // Populate tab fields if exist
+            if (document.getElementById('modalJurusanTab')) {
+                document.getElementById('modalJurusanTab').textContent = data.jurusan || '-';
+            }
+            if (document.getElementById('modalKelasTab')) {
+                document.getElementById('modalKelasTab').textContent = data.kelas || '-';
+            }
+            if (document.getElementById('modalNoTelpTab')) {
+                document.getElementById('modalNoTelpTab').textContent = data.notelp || '-';
+            }
+
+            // Reset tab visibility when opening modal
+            $('.tab-btn').removeClass('active text-blue-600 border-blue-600').addClass('text-slate-500 border-transparent');
+            $('.tab-btn[data-tab="tab-profil"]').addClass('active text-blue-600 border-blue-600').removeClass('text-slate-500 border-transparent');
+            $('.tab-panel').addClass('hidden');
+            $('#tab-profil').removeClass('hidden');
             
             // Judul Presentasi
             var judulPresentasi = data.judul_presentasi;
@@ -197,26 +215,26 @@
             if (btnTolak) btnTolak.style.display = 'none';
             
             if (berkasAccepted == '1') {
-                statusBadge.className = 'inline-block rounded-full px-4 py-1.5 text-xs font-semibold bg-emerald-500 text-white';
+                statusBadge.className = 'inline-block rounded-full px-3 py-1 text-[10px] font-semibold bg-emerald-500 text-white';
                 statusBadge.innerHTML = '<i class="bi bi-check-circle me-1"></i>Berkas Terverifikasi';
-                statusIcon.className = 'absolute bottom-0 right-0 w-8 h-8 rounded-full shadow-md flex items-center justify-center text-sm text-white font-bold bg-emerald-500 border-2 border-white';
+                statusIcon.className = 'absolute bottom-0 right-0 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-[10px] text-white font-bold bg-emerald-500 border-2 border-white';
                 statusIcon.style.width = '';
                 statusIcon.style.height = '';
                 statusIcon.innerHTML = '<i class="bi bi-check-lg"></i>';
                 btnBatalkan.style.display = 'inline-block';
             } else if (berkasAccepted == '0') {
-                statusBadge.className = 'inline-block rounded-full px-4 py-1.5 text-xs font-semibold bg-blue-500 text-white';
+                statusBadge.className = 'inline-block rounded-full px-3 py-1 text-[10px] font-semibold bg-blue-500 text-white';
                 statusBadge.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Menunggu Verifikasi';
-                statusIcon.className = 'absolute bottom-0 right-0 w-8 h-8 rounded-full shadow-md flex items-center justify-center text-sm text-white font-bold bg-blue-500 border-2 border-white';
+                statusIcon.className = 'absolute bottom-0 right-0 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-[10px] text-white font-bold bg-blue-500 border-2 border-white';
                 statusIcon.style.width = '';
                 statusIcon.style.height = '';
                 statusIcon.innerHTML = '<i class="bi bi-clock"></i>';
                 btnVerifikasi.style.display = 'inline-block';
                 btnVerifikasi.disabled = false;
             } else {
-                statusBadge.className = 'inline-block rounded-full px-4 py-1.5 text-xs font-semibold bg-slate-500 text-white';
+                statusBadge.className = 'inline-block rounded-full px-3 py-1 text-[10px] font-semibold bg-slate-500 text-white';
                 statusBadge.innerHTML = '<i class="bi bi-file-earmark-x me-1"></i>Belum Upload Berkas';
-                statusIcon.className = 'absolute bottom-0 right-0 w-8 h-8 rounded-full shadow-md flex items-center justify-center text-sm text-white font-bold bg-slate-500 border-2 border-white';
+                statusIcon.className = 'absolute bottom-0 right-0 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-[10px] text-white font-bold bg-slate-500 border-2 border-white';
                 statusIcon.style.width = '';
                 statusIcon.style.height = '';
                 statusIcon.innerHTML = '<i class="bi bi-x-lg"></i>';
@@ -274,6 +292,17 @@
             console.error('Error opening detail modal:', error);
             showAlert('Terjadi kesalahan saat membuka detail peserta: ' + error.message, false);
         }
+    });
+
+    // Tab switching handler
+    $(document).on('click', '.tab-btn', function() {
+        var tabId = $(this).data('tab');
+        
+        $('.tab-btn').removeClass('active text-blue-600 border-blue-600').addClass('text-slate-500 border-transparent');
+        $(this).addClass('active text-blue-600 border-blue-600').removeClass('text-slate-500 border-transparent');
+        
+        $('.tab-panel').addClass('hidden');
+        $('#' + tabId).removeClass('hidden');
     });
 
     // Handle download button click (Event Delegation)
