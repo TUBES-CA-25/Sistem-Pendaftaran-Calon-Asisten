@@ -36,23 +36,94 @@
     </script>
 
     <title>IC-ASSIST</title>
-            <style type="text/tailwindcss">
+                <style type="text/tailwindcss">
         @layer components {
-            /* DataTables Premium Tailwind Styling */
-            .dataTables_wrapper {
-                @apply w-full;
+
+            /* ============================================================
+               TABLE WRAPPER & CARD
+               ============================================================ */
+            .dt-table-card {
+                @apply bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden;
             }
-            .dataTables_filter label {
-                @apply flex items-center gap-2 text-sm font-medium text-slate-600 m-0;
-            }
-            .dataTables_filter input {
-                @apply border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all w-full sm:w-64 shadow-sm bg-slate-50 focus:bg-white font-normal;
+
+            /* ============================================================
+               TOP BAR: Length + Search
+               ============================================================ */
+            div.dt-top-wrapper {
+                @apply flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 bg-white;
             }
             .dataTables_length label {
-                @apply flex items-center gap-2 text-sm font-medium text-slate-600 m-0;
+                @apply flex items-center gap-2 text-sm text-slate-500 font-medium m-0 cursor-pointer;
             }
             .dataTables_length select {
-                @apply border border-slate-200 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500/20 outline-none transition-all shadow-sm bg-slate-50 cursor-pointer font-normal;
+                @apply border border-slate-200 rounded-lg px-3 py-1.5 text-sm text-slate-700 bg-white
+                       hover:border-blue-400 focus:ring-2 focus:ring-blue-100 focus:border-blue-500
+                       outline-none transition-all cursor-pointer shadow-sm;
+            }
+            .dataTables_filter {
+                @apply m-0;
+            }
+            .dataTables_filter label {
+                @apply flex items-center text-sm text-slate-500 font-medium m-0;
+            }
+            .dataTables_filter input {
+                @apply border border-slate-200 rounded-lg pl-10 pr-4 py-2 text-sm text-slate-700 bg-slate-50 w-64
+                       hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:bg-white
+                       outline-none transition-all shadow-sm;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: left 0.75rem center;
+                background-size: 1rem 1rem;
+                padding-left: 2.25rem !important;
+            }
+
+            /* ============================================================
+               TABLE HEAD
+               ============================================================ */
+            .dt-head-cell {
+                @apply text-left text-xs font-semibold text-slate-500 uppercase tracking-wider
+                       bg-slate-50 px-4 py-3.5 border-b border-slate-200 whitespace-nowrap;
+            }
+            table.dataTable thead th,
+            table.dataTable thead td {
+                @apply bg-slate-50 border-b border-slate-200 !important;
+            }
+
+            /* ============================================================
+               TABLE BODY ROW
+               ============================================================ */
+            .dt-body-row {
+                @apply border-b border-slate-100 transition-colors duration-150 cursor-default;
+            }
+            .dt-body-row:hover {
+                @apply bg-blue-50/40 !important;
+            }
+            .dt-body-row:last-child {
+                @apply border-b-0;
+            }
+            /* Odd row subtle stripe */
+            .dt-body-row:nth-child(odd) {
+                @apply bg-slate-50/40;
+            }
+            .dt-body-row:nth-child(even) {
+                @apply bg-white;
+            }
+
+            /* ============================================================
+               TABLE BODY CELL
+               ============================================================ */
+            .dt-body-cell {
+                @apply px-4 py-3.5 text-sm text-slate-600 align-middle;
+            }
+            table.dataTable tbody td {
+                @apply px-4 py-3.5 text-sm text-slate-600 align-middle border-b border-slate-100;
+            }
+
+            /* ============================================================
+               BOTTOM BAR: Info + Pagination
+               ============================================================ */
+            div.dt-bottom-wrapper {
+                @apply flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 border-t border-slate-100 bg-white;
             }
             .dataTables_info {
                 @apply text-sm text-slate-500 font-medium;
@@ -61,13 +132,37 @@
                 @apply flex items-center gap-1;
             }
             .dataTables_paginate .paginate_button {
-                @apply px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 cursor-pointer transition-all bg-white shadow-sm ml-1;
+                @apply inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm font-semibold
+                       text-slate-600 border border-slate-200 bg-white shadow-sm
+                       hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300
+                       cursor-pointer transition-all duration-150 select-none;
             }
             .dataTables_paginate .paginate_button.current {
-                @apply bg-blue-600 text-white border-transparent hover:text-white hover:bg-blue-700 shadow-md shadow-blue-500/30 font-bold !important;
+                @apply bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/25
+                       hover:bg-blue-700 hover:text-white hover:border-blue-700 !important;
             }
             .dataTables_paginate .paginate_button.disabled {
-                @apply opacity-50 cursor-not-allowed hover:bg-white hover:text-slate-600 hover:border-slate-200 shadow-none;
+                @apply opacity-40 cursor-not-allowed hover:bg-white hover:text-slate-600
+                       hover:border-slate-200 shadow-none pointer-events-none;
+            }
+            .dataTables_paginate .paginate_button.previous,
+            .dataTables_paginate .paginate_button.next,
+            .dataTables_paginate .paginate_button.first,
+            .dataTables_paginate .paginate_button.last {
+                @apply text-base font-bold;
+            }
+            .dataTables_paginate .ellipsis {
+                @apply px-2 text-slate-400 select-none;
+            }
+
+            /* ============================================================
+               REMOVE DataTables default ugly border
+               ============================================================ */
+            table.dataTable.no-footer {
+                @apply border-b-0;
+            }
+            div.dataTables_scrollBody {
+                @apply overflow-x-auto;
             }
         }
     </style>
@@ -159,6 +254,7 @@
     
 </body>
 </html>
+
 
 
 

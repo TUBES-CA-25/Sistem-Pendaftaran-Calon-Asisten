@@ -589,45 +589,52 @@ function showActionConfirmation(options) {
 // Initialize global DataTables for all tables
 function initGlobalTables() {
     $('#content').find('table:not(#calendarTable)').each(function() {
-        // Apply Tailwind UI clean table template
-        $(this).removeClass('border-collapse border border-slate-200 w-full text-sm text-left')
-               .addClass('min-w-full divide-y divide-slate-200 align-middle shadow ring-1 ring-black ring-opacity-5 rounded-lg');
-               
-        $(this).find('thead').addClass('bg-slate-50');
-        
-        // Remove existing heavy gradients and text-white from tr/th in header
-        $(this).find('thead tr').removeClass('bg-gradient-to-r from-blue-600 to-indigo-600 text-white');
-        $(this).find('th').removeClass('border border-slate-200 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-wider py-4 px-4')
-                          .addClass('py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 border-b border-slate-200');
-                          
-        $(this).find('tbody').addClass('divide-y divide-slate-200 bg-white');
-        $(this).find('td').removeClass('border border-slate-200 py-4 px-4')
-                          .addClass('whitespace-nowrap py-4 pl-4 pr-3 text-sm text-slate-600');
-                          
-        $(this).find('tbody tr').removeClass('hover:bg-slate-50/85').addClass('hover:bg-slate-50 transition-colors');
+        var $table = $(this);
+
+        // Reset existing heavy gradient headers to clean slate style
+        $table.find('thead tr').removeClass('bg-gradient-to-r from-blue-600 to-indigo-600 text-white');
+        $table.find('th')
+            .removeClass('font-bold text-xs uppercase tracking-wider py-4 px-4 text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white')
+            .addClass('dt-head-cell');
+        $table.find('tbody tr')
+            .removeClass('hover:bg-slate-50/85')
+            .addClass('dt-body-row');
+        $table.find('tbody td')
+            .removeClass('py-4 px-4')
+            .addClass('dt-body-cell');
 
         if (!$.fn.DataTable.isDataTable(this)) {
-            $(this).DataTable({
-                scrollX: true,
+            $table.DataTable({
+                scrollX: false,
+                autoWidth: false,
+                pageLength: 10,
+                dom: '<"dt-top-wrapper"lf>t<"dt-bottom-wrapper"ip>',
                 language: {
-                    search: "Cari:",
-                    lengthMenu: "Tampilkan _MENU_ data",
-                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                    infoEmpty: "Menampilkan 0 sampai 0 dari 0 data",
-                    infoFiltered: "(disaring dari _MAX_ total data)",
-                    zeroRecords: "Tidak ada data yang cocok",
+                    search: '',
+                    searchPlaceholder: "🔍  Cari data...",
+                    lengthMenu: "Tampilkan _MENU_ baris",
+                    info: "Menampilkan <strong>_START_</strong> – <strong>_END_</strong> dari <strong>_TOTAL_</strong> data",
+                    infoEmpty: "Tidak ada data",
+                    infoFiltered: "(difilter dari _MAX_ total data)",
+                    zeroRecords: "<div class='text-center py-10 text-slate-400'>Tidak ada data yang cocok</div>",
                     paginate: {
-                        first: "Pertama",
-                        last: "Terakhir",
-                        next: "Selanjutnya",
-                        previous: "Sebelumnya"
+                        first: '«',
+                        last: '»',
+                        next: '›',
+                        previous: '‹'
                     }
+                },
+                initComplete: function() {
+                    var $wrapper = $table.closest('.dt-parent-wrapper');
+                    if ($wrapper.length === 0) {
+                        $wrapper = $table.closest('.overflow-x-auto, .overflow-hidden');
+                    }
+                    // Style the search input nicely
+                    var $searchInput = $table.closest('.dataTables_wrapper').find('.dataTables_filter input');
+                    $searchInput.css({'outline': 'none', 'box-shadow': 'none'});
                 }
             });
         }
     });
 }
-
-
-
 
