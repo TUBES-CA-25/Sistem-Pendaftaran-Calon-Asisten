@@ -3,8 +3,15 @@
  * Handles navigation, URL routing with History API, and page loading
  */
 
+// Track current page to prevent unnecessary reloads
+var _currentPage = null;
+
 // Global function untuk load halaman
 function loadPage(page, updateUrl = true) {
+    // ✅ Prevent reload if already on this page
+    if (_currentPage === page) return;
+    _currentPage = page;
+
     // Cleanup DataTables before replacing content
     if ($.fn.DataTable) {
         $('#content').find('table.dataTable').each(function() {
@@ -29,15 +36,28 @@ function loadPage(page, updateUrl = true) {
         history.pushState({ page: page }, '', `${APP_URL}/${page}`);
     }
 
+    // ✅ Fade out smoothly before loading new content
+    var $content = $('#content');
+    $content.css({ opacity: 0, transition: 'opacity 0.15s ease' });
+
     // Load content via AJAX
     $.ajax({
         url: `${APP_URL}/${page}`,
         method: 'GET',
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
         success: function(response) {
-            $('#content').html(response);
-            // Initialize tables globally
-            initGlobalTables();
+            $content.html(response);
+
+            // ✅ Fade in after content is set
+            requestAnimationFrame(function() {
+                $content.css({ opacity: 1 });
+            });
+
+            // ✅ Delay initGlobalTables so the browser finishes rendering first
+            setTimeout(function() {
+                initGlobalTables();
+            }, 50);
+
             // Scroll to top after page load
             window.scrollTo(0, 0);
             
@@ -50,18 +70,22 @@ function loadPage(page, updateUrl = true) {
             }
         },
         error: function(xhr, status, error) {
+            $content.css({ opacity: 1 });
+            _currentPage = null; // reset so user can retry
             console.error("Error loading page:", error);
-            $('#content').html('<div class="container-fluid p-4"><div class="alert alert-danger"><i class="bx bx-error-circle me-2"></i>Halaman tidak ditemukan atau terjadi kesalahan.</div></div>');
+            $content.html('<div class="container-fluid p-4"><div class="alert alert-danger"><i class="bx bx-error-circle me-2"></i>Halaman tidak ditemukan atau terjadi kesalahan.</div></div>');
         }
     });
 }
+
 
 $(document).ready(function () {
     // Get initial page from server or localStorage
     var initialPage = window.INITIAL_PAGE || localStorage.getItem('activePage') || 'dashboard';
 
     // Initialize tables on first load
-    setTimeout(initGlobalTables, 500);
+    _currentPage = initialPage;
+    setTimeout(initGlobalTables, 100);
 
     // Set initial history state (replaceState, not pushState)
     history.replaceState({ page: initialPage }, '', `${APP_URL}/${initialPage}`);
@@ -114,8 +138,8 @@ $(document).ready(function () {
         loadPage(page);
     });
 
-    // Handle browser back/forward button
     window.addEventListener('popstate', function(e) {
+        _currentPage = null; // allow popstate to always navigate
         if (e.state && e.state.page) {
             loadPage(e.state.page, false);
         } else {
