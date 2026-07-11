@@ -589,9 +589,22 @@ function showActionConfirmation(options) {
 // Initialize global DataTables for all tables
 function initGlobalTables() {
     $('#content').find('table:not(#calendarTable)').each(function() {
-        // Add Tailwind border classes for table styling
-        $(this).addClass('border border-slate-200');
-        $(this).find('th, td').addClass('border border-slate-200');
+        // Apply Tailwind UI clean table template
+        $(this).removeClass('border-collapse border border-slate-200 w-full text-sm text-left')
+               .addClass('min-w-full divide-y divide-slate-200 align-middle shadow ring-1 ring-black ring-opacity-5 rounded-lg');
+               
+        $(this).find('thead').addClass('bg-slate-50');
+        
+        // Remove existing heavy gradients and text-white from tr/th in header
+        $(this).find('thead tr').removeClass('bg-gradient-to-r from-blue-600 to-indigo-600 text-white');
+        $(this).find('th').removeClass('border border-slate-200 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-wider py-4 px-4')
+                          .addClass('py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 border-b border-slate-200');
+                          
+        $(this).find('tbody').addClass('divide-y divide-slate-200 bg-white');
+        $(this).find('td').removeClass('border border-slate-200 py-4 px-4')
+                          .addClass('whitespace-nowrap py-4 pl-4 pr-3 text-sm text-slate-600');
+                          
+        $(this).find('tbody tr').removeClass('hover:bg-slate-50/85').addClass('hover:bg-slate-50 transition-colors');
 
         if (!$.fn.DataTable.isDataTable(this)) {
             $(this).DataTable({
@@ -614,4 +627,5 @@ function initGlobalTables() {
         }
     });
 }
+
 

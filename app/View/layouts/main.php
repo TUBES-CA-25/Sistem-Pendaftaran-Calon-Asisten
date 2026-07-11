@@ -23,12 +23,10 @@
     <link rel="stylesheet" href="<?= APP_URL ?>/Assets/css/theme.css">
     <link rel="stylesheet" href="<?= APP_URL ?>/Assets/css/style.css">
 
-    <!-- DataTables Tailwind CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.tailwindcss.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.tailwindcss.min.js"></script>
     <!-- Bootstrap 5.3.3 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -38,23 +36,23 @@
     </script>
 
     <title>IC-ASSIST</title>
-    <style type="text/tailwindcss">
+        <style type="text/tailwindcss">
         @layer components {
             /* DataTables Premium Tailwind Styling */
             .dataTables_wrapper {
-                @apply w-full mt-2;
+                @apply w-full mt-4;
             }
             .dataTables_filter {
-                @apply mb-4 float-right;
+                @apply mb-4 mr-6 float-right;
             }
             .dataTables_filter label {
                 @apply flex items-center gap-2 text-sm font-medium text-slate-600;
             }
             .dataTables_filter input {
-                @apply border border-slate-200 rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all w-64 shadow-sm bg-slate-50 focus:bg-white;
+                @apply border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all w-64 shadow-sm bg-slate-50 focus:bg-white;
             }
             .dataTables_length {
-                @apply mb-4 float-left;
+                @apply mb-4 ml-6 float-left;
             }
             .dataTables_length label {
                 @apply flex items-center gap-2 text-sm font-medium text-slate-600;
@@ -63,35 +61,19 @@
                 @apply border border-slate-200 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500/20 outline-none transition-all shadow-sm bg-slate-50 cursor-pointer;
             }
             .dataTables_info {
-                @apply text-sm text-slate-500 font-medium pt-4 float-left clear-both;
+                @apply text-sm text-slate-500 font-medium pt-4 pb-6 ml-6 float-left clear-both;
             }
             .dataTables_paginate {
-                @apply pt-4 float-right flex items-center gap-1 clear-none;
+                @apply pt-4 pb-6 mr-6 float-right flex items-center gap-1 clear-none;
             }
             .dataTables_paginate .paginate_button {
-                @apply px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 cursor-pointer transition-all bg-white shadow-sm ml-1;
+                @apply px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 cursor-pointer transition-all bg-white shadow-sm ml-1;
             }
             .dataTables_paginate .paginate_button.current {
-                @apply bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent hover:text-white shadow-md shadow-blue-500/30 font-bold !important;
+                @apply bg-blue-600 text-white border-transparent hover:text-white hover:bg-blue-700 shadow-md shadow-blue-500/30 font-bold !important;
             }
             .dataTables_paginate .paginate_button.disabled {
                 @apply opacity-50 cursor-not-allowed hover:bg-white hover:text-slate-600 hover:border-slate-200 shadow-none;
-            }
-            
-            table.dataTable {
-                @apply border-collapse w-full !mt-0 !mb-0;
-            }
-            table.dataTable thead th, table.dataTable thead td {
-                @apply border-b-2 border-slate-200 p-4 font-semibold tracking-wide text-xs uppercase;
-            }
-            table.dataTable tbody th, table.dataTable tbody td {
-                @apply border-b border-slate-100 p-4 text-sm text-slate-600 transition-colors;
-            }
-            table.dataTable tbody tr:hover td {
-                @apply bg-blue-50/50 text-blue-900;
-            }
-            table.dataTable.no-footer {
-                @apply border-b border-slate-200;
             }
         }
     </style>
