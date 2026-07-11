@@ -18,7 +18,22 @@ const emailinput = document.getElementById('email');
 const passwordinput = document.getElementById('password');
 const stambukInput = document.getElementById('stambukregister');
 
-// Dependencies: common.js untuk showModal()
+// ── Modal Helper (Tailwind Implementation) ──────────────────
+function showModalUI(modalId) {
+    const modal = document.getElementById(modalId);
+    if(modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+}
+function hideModalUI(modalId) {
+    const modal = document.getElementById(modalId);
+    if(modal) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }
+}
+
 // Define showModal function for login page (global scope)
 window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
     const modalEl = document.getElementById("customModal");
@@ -42,17 +57,28 @@ window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
         }
     }
 
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
+    showModalUI("customModal");
 
-    // Handle close callback exactly once when the modal finishes hiding
-    if (onCloseCallback) {
-        modalEl.addEventListener('hidden.bs.modal', function handler() {
-            onCloseCallback();
-            modalEl.removeEventListener('hidden.bs.modal', handler);
-        }, { once: true });
+    const closeBtn = document.getElementById("closeModal");
+    if (closeBtn) {
+        const handler = function() {
+            hideModalUI("customModal");
+            closeBtn.removeEventListener('click', handler);
+            if (onCloseCallback) onCloseCallback();
+        };
+        closeBtn.addEventListener('click', handler);
     }
 };
+
+// Close modals when clicking outside
+window.addEventListener('click', function(e) {
+    if (e.target.id === 'customModal') {
+        document.getElementById('closeModal')?.click();
+    }
+});
+document.getElementById('closeOtpModal')?.addEventListener('click', function() {
+    hideModalUI("otpModal");
+});
 
 function validateStambuk(stambuk) {
   if (stambuk.length !== 11) {
@@ -141,14 +167,9 @@ function validatePasswordLogin(password) {
 
 
 // ── Toggle Login / Register ───────────────────────────────────
-// Animasi FULL CSS via max-height + opacity + transform transition.
-// JS hanya menambah/hapus class 'active' pada container.
-// ─────────────────────────────────────────────────────────────
-
 registerBtn.addEventListener('click', () => container.classList.add('active'));
 loginBtn.addEventListener('click',    () => container.classList.remove('active'));
 
-// Fallback mobile links (jika ada di HTML)
 const mobileRegisterBtn = document.getElementById('mobile-register-btn');
 const mobileLoginBtn    = document.getElementById('mobile-login-btn');
 
@@ -225,6 +246,7 @@ confirmPasswordInput.addEventListener('input', function () {
 
 $(document).ready(function () {
     let expiryTimer = null;
+    let cooldownTimer = null;
 
     function startOtpExpiryCountdown(durationSeconds) {
         if (expiryTimer) clearInterval(expiryTimer);
@@ -308,7 +330,7 @@ $(document).ready(function () {
         console.log('Form validation passed, submitting...');
         const btnRegister = $('#registerForm button[type="submit"]');
         const originalBtnText = btnRegister.html();
-        btnRegister.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Loading...');
+        btnRegister.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-2"></span>Loading...');
         
         $.ajax({
             url: '/Sistem-Pendaftaran-Calon-Asisten/public/register/authenticate',
@@ -325,9 +347,7 @@ $(document).ready(function () {
                     $('.otp-input').val('');
                     $('#otpCode').val('');
                     
-                    const otpModalEl = document.getElementById('otpModal');
-                    const otpModal = new bootstrap.Modal(otpModalEl);
-                    otpModal.show();
+                    showModalUI("otpModal");
                     
                     startOtpExpiryCountdown(300); // Start the 5-minute countdown (300 seconds)
                     
@@ -384,7 +404,7 @@ $(document).ready(function () {
         
         const btnVerify = $('#btnVerifyOtp');
         const originalText = btnVerify.html();
-        btnVerify.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Memverifikasi...');
+        btnVerify.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-2"></span>Memverifikasi...');
         
         $.ajax({
             url: '/Sistem-Pendaftaran-Calon-Asisten/public/register/verify-otp',
@@ -394,21 +414,15 @@ $(document).ready(function () {
             success: function(response) {
                 btnVerify.prop('disabled', false).html(originalText);
                 if (response.status === 'success') {
-                    const modalEl = document.getElementById('otpModal');
-                    const modal = bootstrap.Modal.getInstance(modalEl);
-                    if (modal) modal.hide();
+                    hideModalUI("otpModal");
                     
                     showModal('Registrasi Berhasil', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/registergif.gif');
                     document.getElementById('login').click();
                 } else {
-                    // Hide OTP modal to prevent background overlay stacking bug
-                    const modalEl = document.getElementById('otpModal');
-                    const modal = bootstrap.Modal.getInstance(modalEl);
-                    if (modal) modal.hide();
+                    hideModalUI("otpModal");
                     
                     showModal(response.message || 'Verifikasi Gagal', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif', function() {
-                        // Re-show OTP modal, clear incorrect inputs, and focus first input
-                        if (modal) modal.show();
+                        showModalUI("otpModal");
                         $('.otp-input').val('');
                         setTimeout(() => {
                             $('.otp-input').first().focus();
@@ -420,19 +434,16 @@ $(document).ready(function () {
                 btnVerify.prop('disabled', false).html(originalText);
                 console.log('Terjadi kesalahan: ' + error);
                 
-                const modalEl = document.getElementById('otpModal');
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) modal.hide();
+                hideModalUI("otpModal");
 
                 showModal('Terjadi kesalahan koneksi server', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif', function() {
-                    if (modal) modal.show();
+                    showModalUI("otpModal");
                 });
             }
         });
     });
 
     // ── Resend OTP Cooldown Timer ──────────────────────────────
-    let cooldownTimer = null;
     $('#btnResendOtp').click(function(e) {
         e.preventDefault();
         
@@ -447,12 +458,10 @@ $(document).ready(function () {
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                    const modalEl = document.getElementById('otpModal');
-                    const modal = bootstrap.Modal.getInstance(modalEl);
-                    if (modal) modal.hide();
+                    hideModalUI("otpModal");
 
                     showModal(response.message, '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/registergif.gif', function() {
-                        if (modal) modal.show();
+                        showModalUI("otpModal");
                         $otpInputs.val('');
                         setTimeout(() => {
                             $otpInputs.first().focus();
@@ -462,14 +471,14 @@ $(document).ready(function () {
                     startOtpExpiryCountdown(300); // Restart the 5-minute countdown
                     
                     let secondsLeft = 60;
-                    timerSpan.text(`(${secondsLeft}s)`).removeClass('d-none');
+                    timerSpan.text(`(${secondsLeft}s)`).removeClass('hidden');
                     
                     if (cooldownTimer) clearInterval(cooldownTimer);
                     cooldownTimer = setInterval(function() {
                         secondsLeft--;
                         if (secondsLeft <= 0) {
                             clearInterval(cooldownTimer);
-                            timerSpan.addClass('d-none');
+                            timerSpan.addClass('hidden');
                             btnResend.removeClass('pointer-events-none opacity-50');
                         } else {
                             timerSpan.text(`(${secondsLeft}s)`);
@@ -478,12 +487,10 @@ $(document).ready(function () {
                 } else {
                     btnResend.removeClass('pointer-events-none opacity-50');
                     
-                    const modalEl = document.getElementById('otpModal');
-                    const modal = bootstrap.Modal.getInstance(modalEl);
-                    if (modal) modal.hide();
+                    hideModalUI("otpModal");
 
                     showModal(response.message || 'Gagal mengirim ulang OTP', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif', function() {
-                        if (modal) modal.show();
+                        showModalUI("otpModal");
                     });
                 }
             },
@@ -491,28 +498,22 @@ $(document).ready(function () {
                 btnResend.removeClass('pointer-events-none opacity-50');
                 console.log('Terjadi kesalahan: ' + error);
                 
-                const modalEl = document.getElementById('otpModal');
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) modal.hide();
+                hideModalUI("otpModal");
 
                 showModal('Terjadi kesalahan koneksi server', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif', function() {
-                    if (modal) modal.show();
+                    showModalUI("otpModal");
                 });
             }
         });
     });
 
-    $('#otpModal').on('hidden.bs.modal', function () {
-        if (cooldownTimer) {
-            clearInterval(cooldownTimer);
-        }
-        if (expiryTimer) {
-            clearInterval(expiryTimer);
-        }
-        $('#otpTimer').addClass('d-none');
+    // Listen to close otp modal manually to clear timers
+    document.getElementById('closeOtpModal')?.addEventListener('click', function() {
+        if (cooldownTimer) clearInterval(cooldownTimer);
+        if (expiryTimer) clearInterval(expiryTimer);
+        $('#otpTimer').addClass('hidden');
         $('#btnResendOtp').removeClass('pointer-events-none opacity-50');
     });
-    
 
   $("#loginForm").submit(function (e) {
     e.preventDefault();

@@ -40,7 +40,7 @@
 <body>
     <?php require_once __DIR__ . "/../templates/sidebar.php"?>
 
-    <div class="main-content" id="content">
+    <div class="min-h-screen bg-[#f8fafc] w-full md:w-[calc(100%-240px)] md:ml-[240px] p-2 sm:p-3 md:p-4 transition-all duration-300 ease-in-out" id="content">
         <?php
         // Load initial page content based on URL or default to dashboard
         $initialPage = $initialPage ?? 'dashboard';

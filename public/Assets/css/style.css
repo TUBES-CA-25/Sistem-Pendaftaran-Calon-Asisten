@@ -104,14 +104,7 @@ img {
 /* ==============================
    MAIN CONTENT AREA
    ============================== */
-.main-content {
-  margin-left: var(--sidebar-width);
-  width: calc(100% - var(--sidebar-width));
-  min-height: 100vh;
-  padding: var(--section-padding); /* Removed 80px calculation, just use section padding */
-  padding-top: var(--section-padding); 
-  background-color: var(--bs-body-bg);
-}
+
 
 
 /* ==============================
@@ -360,17 +353,11 @@ img {
    RESPONSIVE
    ============================== */
 @media (max-width: 1200px) {
-  .main-content {
-    padding: 1rem;
-  }
+  
 }
 
 @media (max-width: 768px) {
-  .main-content {
-    margin-left: 0;
-    width: 100%;
-    padding: 0.75rem;
-  }
+  
 
   .sidebar {
     transform: translateX(-100%);
@@ -658,10 +645,7 @@ body.sidebar-open {
     transform: translateX(0);
   }
 
-  .main-content {
-    margin-left: 0;
-    width: 100%;
-  }
+  
 
   /* Table ensure scrollable */
   .table-responsive {
@@ -866,9 +850,7 @@ body.sidebar-open {
   }
 
   /* Main content tighter padding */
-  .main-content {
-    padding: 0.5rem;
-  }
+  
 
   /* Hide less important columns on mobile */
   .mobile-hide {
@@ -1051,11 +1033,10 @@ body.sidebar-open {
 
 /* Landscape phone optimization */
 @media (max-width: 767.98px) and (orientation: landscape) {
-  .main-content {
-    padding: 0.5rem 1rem;
-  }
+  
 
   .modal-dialog {
     max-width: 90%;
   }
 }
+
