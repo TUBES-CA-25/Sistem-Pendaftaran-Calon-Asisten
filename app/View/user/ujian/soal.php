@@ -25,6 +25,7 @@ $results = $results ?? [];
     <title>ICLabs - Tes Tertulis</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="<?= APP_URL ?>/Assets/js/tailwind-config.js"></script>
     <!-- Icon Libraries -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" crossorigin="anonymous">
@@ -49,57 +50,6 @@ $results = $results ?? [];
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
-        }
-
-        /* Active/Answered States for Navigation Buttons */
-        .nav-btn-soal.active {
-            background-color: #2563eb !important; /* bg-blue-600 */
-            border-color: #2563eb !important;
-            color: white !important;
-            font-weight: 700;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
-        }
-        .nav-btn-soal.answered {
-            background-color: #0ea5e9 !important; /* bg-sky-500 */
-            border-color: #0ea5e9 !important;
-            color: white !important;
-        }
-        .nav-btn-soal.answered.active {
-            background-color: #2563eb !important;
-            border-color: #2563eb !important;
-        }
-        .nav-btn-soal.answered.active::after {
-            content: '✓';
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background-color: #0ea5e9;
-            color: white;
-            border-radius: 9999px;
-            width: 14px;
-            height: 14px;
-            font-size: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1.5px solid white;
-            font-weight: 900;
-        }
-
-        /* Answer Option Checked State styling */
-        .option-label-container {
-            transition: all 0.15s ease-in-out;
-        }
-        .option-label-container:hover {
-            background-color: rgb(241 245 249);
-            border-color: rgb(59 130 246);
-            transform: translateX(4px);
-        }
-        .option-label-container:has(input[type="radio"]:checked) {
-            background-color: rgb(239 246 255);
-            border-color: rgb(37 99 235);
-            border-width: 2px;
-            font-weight: 600;
         }
     </style>
     
@@ -187,7 +137,7 @@ $results = $results ?? [];
                 <h6 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">NAVIGASI SOAL</h6>
                 <div class="grid grid-cols-5 gap-2" id="examNavButtons">
                     <?php for ($i = 1; $i <= count($results); $i++): ?>
-                        <button class="relative w-10 h-10 rounded-xl border border-slate-200 hover:border-blue-600 hover:bg-blue-50 text-slate-600 hover:text-blue-600 font-bold text-xs flex items-center justify-center transition nav-btn-soal"
+                        <button class="relative w-10 h-10 rounded-xl border border-slate-200 hover:border-blue-600 hover:bg-blue-50 text-slate-600 hover:text-blue-600 font-bold text-xs flex items-center justify-center transition-all nav-btn-soal [&.active]:bg-blue-600 [&.active]:border-blue-600 [&.active]:text-white [&.active]:font-bold [&.active]:ring-4 [&.active]:ring-blue-500/40 [&.answered]:bg-sky-500 [&.answered]:border-sky-500 [&.answered]:text-white [&.answered.active]:bg-blue-600 [&.answered.active]:border-blue-600 [&.answered.active]:after:content-['?'] [&.answered.active]:after:absolute [&.answered.active]:after:-top-1 [&.answered.active]:after:-right-1 [&.answered.active]:after:bg-sky-500 [&.answered.active]:after:text-white [&.answered.active]:after:rounded-full [&.answered.active]:after:w-3.5 [&.answered.active]:after:h-3.5 [&.answered.active]:after:text-[8px] [&.answered.active]:after:flex [&.answered.active]:after:items-center [&.answered.active]:after:justify-center [&.answered.active]:after:border-[1.5px] [&.answered.active]:after:border-white [&.answered.active]:after:font-black"
                                 data-index="<?= $i - 1 ?>">
                             <?= $i ?>
                         </button>
@@ -260,7 +210,7 @@ $results = $results ?? [];
                                         foreach ($options as $optionIndex => $option):
                                             $label = $optionLabels[$optionIndex] ?? ($optionIndex + 1);
                                     ?>
-                                            <label class="flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-blue-600 hover:bg-blue-50/50 cursor-pointer transition option-label-container">
+                                            <label class="flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-blue-500 hover:bg-slate-100 hover:translate-x-1 has-[:checked]:bg-blue-50 has-[:checked]:border-blue-600 has-[:checked]:border-2 has-[:checked]:font-semibold cursor-pointer transition-all duration-150 ease-in-out option-label-container">
                                                 <input class="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500 flex-shrink-0"
                                                        type="radio"
                                                        name="answer[<?= htmlspecialchars($result['id']) ?>]"
@@ -488,3 +438,4 @@ $results = $results ?? [];
 </body>
 
 </html>
+
