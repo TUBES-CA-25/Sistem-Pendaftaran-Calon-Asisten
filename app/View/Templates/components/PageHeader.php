@@ -54,7 +54,7 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
 }
 ?>
 
-<nav class="sticky top-4 z-40 w-[96%] lg:w-[98%] max-w-[1400px] mx-auto my-4 bg-gradient-to-r from-[#1d4ed8] via-[#2563eb] to-[#3dc2ec] rounded-2xl shadow-lg shadow-blue-500/10 border border-white/10 relative overflow-hidden transition-all duration-300 py-5 px-4 md:py-7 md:px-6">
+<nav class="w-[96%] lg:w-[98%] max-w-[1400px] mx-auto my-4 bg-gradient-to-r from-[#1d4ed8] via-[#2563eb] to-[#3dc2ec] rounded-2xl shadow-lg shadow-blue-500/10 border border-white/10 relative overflow-hidden transition-all duration-300 py-5 px-4 md:py-7 md:px-6">
     <!-- Background Decoration Container -->
     <div class="absolute -top-16 -right-16 w-80 h-80 bg-white/10 rounded-full pointer-events-none"></div>
     <div class="absolute -bottom-20 left-8 w-52 h-52 bg-white/5 rounded-full pointer-events-none"></div>
@@ -163,3 +163,4 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
     </div>
   </div>
 </div>
+
