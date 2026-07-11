@@ -29,35 +29,29 @@
     <!-- jQuery (Must be loaded before body for inline scripts) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-        <style type="text/tailwindcss">
+            <style type="text/tailwindcss">
         @layer components {
             /* DataTables Premium Tailwind Styling */
             .dataTables_wrapper {
-                @apply w-full mt-4;
-            }
-            .dataTables_filter {
-                @apply mb-4 mr-6 float-right;
+                @apply w-full;
             }
             .dataTables_filter label {
-                @apply flex items-center gap-2 text-sm font-medium text-slate-600;
+                @apply flex items-center gap-2 text-sm font-medium text-slate-600 m-0;
             }
             .dataTables_filter input {
-                @apply border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all w-64 shadow-sm bg-slate-50 focus:bg-white;
-            }
-            .dataTables_length {
-                @apply mb-4 ml-6 float-left;
+                @apply border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all w-full sm:w-64 shadow-sm bg-slate-50 focus:bg-white font-normal;
             }
             .dataTables_length label {
-                @apply flex items-center gap-2 text-sm font-medium text-slate-600;
+                @apply flex items-center gap-2 text-sm font-medium text-slate-600 m-0;
             }
             .dataTables_length select {
-                @apply border border-slate-200 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500/20 outline-none transition-all shadow-sm bg-slate-50 cursor-pointer;
+                @apply border border-slate-200 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500/20 outline-none transition-all shadow-sm bg-slate-50 cursor-pointer font-normal;
             }
             .dataTables_info {
-                @apply text-sm text-slate-500 font-medium pt-4 pb-6 ml-6 float-left clear-both;
+                @apply text-sm text-slate-500 font-medium;
             }
             .dataTables_paginate {
-                @apply pt-4 pb-6 mr-6 float-right flex items-center gap-1 clear-none;
+                @apply flex items-center gap-1;
             }
             .dataTables_paginate .paginate_button {
                 @apply px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 cursor-pointer transition-all bg-white shadow-sm ml-1;
@@ -248,6 +242,7 @@
     <script src="<?= APP_URL ?>/Assets/js/ScriptSidebar.js?v=<?= time() ?>"></script>
 </body>
 </html>
+
 
 
 
