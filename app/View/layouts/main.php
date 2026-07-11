@@ -8,8 +8,9 @@
     <!-- Bootstrap 5.3.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS CDN & Config -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="<?= APP_URL ?>/Assets/js/tailwind-config.js"></script>
 
     <!-- Icon Libraries -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -123,3 +124,4 @@
     
 </body>
 </html>
+

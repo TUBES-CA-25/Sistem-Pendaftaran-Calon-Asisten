@@ -16,26 +16,7 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: '#3DC2EC',
-                        secondary: '#4B70F5',
-                    }
-                }
-            },
-            plugins: [
-                function({ addVariant }) {
-                    addVariant('group-active', '.group.active &');
-                }
-            ]
-        }
-    </script>
+    <script src="<?= APP_URL ?>/Assets/js/tailwind-config.js"></script>
     
     <style type="text/tailwindcss">
         @layer utilities {
@@ -265,3 +246,4 @@
 </body>
 
 </html>
+

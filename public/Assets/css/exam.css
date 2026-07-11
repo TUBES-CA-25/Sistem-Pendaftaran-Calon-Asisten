@@ -21,8 +21,8 @@ body {
    ============================== */
 
 .nav-btn-soal.active {
-    background-color: var(--bs-primary) !important;
-    border-color: var(--bs-primary) !important;
+    background-color: #3dc2ec !important;
+    border-color: #3dc2ec !important;
     color: white !important;
     font-weight: 600;
     box-shadow: 0 0 0 0.2rem rgba(0, 188, 212, 0.5);
@@ -35,8 +35,8 @@ body {
 }
 
 .nav-btn-soal.answered.active {
-    background-color: var(--bs-primary) !important;
-    border-color: var(--bs-primary) !important;
+    background-color: #3dc2ec !important;
+    border-color: #3dc2ec !important;
     position: relative;
 }
 
@@ -204,3 +204,4 @@ body {
 * {
     -webkit-tap-highlight-color: transparent;
 }
+
