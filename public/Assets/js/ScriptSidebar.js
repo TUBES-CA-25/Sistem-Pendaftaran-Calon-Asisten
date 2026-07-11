@@ -6,9 +6,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const overlayElement = document.getElementById('sidebarOverlay');
 
         if (sidebarElement && overlayElement) {
-            sidebarElement.classList.toggle('show');
-            overlayElement.classList.toggle('show');
+            sidebarElement.classList.toggle('-translate-x-full');
+            sidebarElement.classList.toggle('translate-x-0');
+            
+            overlayElement.classList.toggle('opacity-0');
+            overlayElement.classList.toggle('invisible');
+            overlayElement.classList.toggle('opacity-100');
+            overlayElement.classList.toggle('visible');
+            overlayElement.classList.toggle('pointer-events-none');
+            overlayElement.classList.toggle('pointer-events-auto');
+            
             document.body.classList.toggle('sidebar-open');
+            document.body.classList.toggle('overflow-hidden');
         }
     }
 
@@ -18,9 +27,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const overlayElement = document.getElementById('sidebarOverlay');
 
         if (sidebarElement && overlayElement) {
-            sidebarElement.classList.remove('show');
-            overlayElement.classList.remove('show');
-            document.body.classList.remove('sidebar-open');
+            sidebarElement.classList.add('-translate-x-full');
+            sidebarElement.classList.remove('translate-x-0');
+            
+            overlayElement.classList.add('opacity-0', 'invisible', 'pointer-events-none');
+            overlayElement.classList.remove('opacity-100', 'visible', 'pointer-events-auto');
+            
+            document.body.classList.remove('sidebar-open', 'overflow-hidden');
         }
     }
 
@@ -30,9 +43,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const overlayElement = document.getElementById('sidebarOverlay');
 
         if (sidebarElement && overlayElement) {
-            sidebarElement.classList.add('show');
-            overlayElement.classList.add('show');
-            document.body.classList.add('sidebar-open');
+            sidebarElement.classList.remove('-translate-x-full');
+            sidebarElement.classList.add('translate-x-0');
+            
+            overlayElement.classList.remove('opacity-0', 'invisible', 'pointer-events-none');
+            overlayElement.classList.add('opacity-100', 'visible', 'pointer-events-auto');
+            
+            document.body.classList.add('sidebar-open', 'overflow-hidden');
         }
     }
 
@@ -48,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!overlay) {
             const newOverlay = document.createElement('div');
             newOverlay.id = 'sidebarOverlay';
-            newOverlay.className = 'sidebar-overlay';
+            newOverlay.className = 'fixed inset-0 bg-black/40 z-[1035] opacity-0 invisible transition-all duration-300 backdrop-blur-sm pointer-events-none lg:hidden';
             document.body.appendChild(newOverlay);
             overlay = newOverlay;
         }

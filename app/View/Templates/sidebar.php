@@ -101,19 +101,4 @@ if (isset($photo) && is_array($photo) && !empty($photo)) {
     .sidebar a.active i {
         @apply text-white !important;
     }
-
-    /* Responsive visibility matching the native stylesheet breakpoints */
-    @media (min-width: 992px) {
-        .sidebar {
-            @apply translate-x-0 !important;
-        }
-    }
-    @media (max-width: 991.98px) {
-        .sidebar {
-            @apply -translate-x-full !important;
-        }
-        .sidebar.show {
-            @apply translate-x-0 !important;
-        }
-    }
 </style>

@@ -166,44 +166,5 @@ $userName = $userName ?? 'Admin';
     .sidebar .dropdown-toggle.show::after {
         @apply rotate-180;
     }
-
-    /* Burger Menu Button & Sidebar Overlay defined locally for Tailwind runtime */
-    .burger-menu-btn {
-        @apply flex w-10 h-10 bg-transparent border-0 cursor-pointer p-0 relative z-[1051] flex-col justify-center items-center gap-1 transition-all duration-300 lg:hidden;
-    }
-    .burger-menu-btn span {
-        @apply block w-6 h-[2.5px] bg-[#1f2937] rounded-full transition-all duration-300;
-    }
-    .sidebar-open .burger-menu-btn span:nth-child(1) {
-        @apply translate-y-[6.5px] rotate-45 bg-white;
-    }
-    .sidebar-open .burger-menu-btn span:nth-child(2) {
-        @apply opacity-0;
-    }
-    .sidebar-open .burger-menu-btn span:nth-child(3) {
-        @apply -translate-y-[6.5px] -rotate-45 bg-white;
-    }
-
-    .sidebar-overlay {
-        @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-[1035] opacity-0 invisible transition-all duration-300 pointer-events-none;
-    }
-    .sidebar-overlay.show {
-        @apply opacity-100 visible pointer-events-auto;
-    }
-
-    /* Responsive visibility matching the native stylesheet breakpoints */
-    @media (min-width: 992px) {
-        .sidebar {
-            @apply translate-x-0 !important;
-        }
-    }
-    @media (max-width: 991.98px) {
-        .sidebar {
-            @apply -translate-x-full !important;
-            z-index: 1050 !important;
-        }
-        .sidebar.show {
-            @apply translate-x-0 !important;
-        }
-    }
 </style>
+
