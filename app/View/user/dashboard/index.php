@@ -25,51 +25,7 @@ $photo = $photo ?? 'default.png';
 $dokumen = $dokumen ?? [];
 ?>
 
-<style>
-    /* Inline helper classes for dynamically generated items in JavaScript */
-    .calendar-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 4px;
-    }
-    .calendar-date {
-        aspect-ratio: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.85rem;
-        border-radius: 8px;
-        position: relative;
-    }
-    .calendar-date.other-month {
-        opacity: 0.3;
-    }
-    .calendar-date.today {
-        background-color: rgb(219 234 254);
-        color: rgb(37 99 235);
-        font-weight: 700;
-    }
-    .calendar-date.has-activity {
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    .calendar-date.has-activity:hover {
-        background-color: rgb(241 245 249);
-        transform: scale(1.05);
-    }
-    .activity-dots {
-        display: flex;
-        justify-content: center;
-        gap: 2px;
-        margin-top: 2px;
-    }
-    .dot {
-        width: 4px;
-        height: 4px;
-        border-radius: 9999px;
-    }
-</style>
+
 
 <!-- Page Header -->
 <?php
@@ -503,3 +459,4 @@ $dokumen = $dokumen ?? [];
 
 <!-- Load Dashboard JavaScript -->
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/dashboard.js"></script>
+

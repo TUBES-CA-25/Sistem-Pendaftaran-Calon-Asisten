@@ -21,7 +21,7 @@ function generateCalendar(year, month, activities = []) {
 
     // Empty cells before first day of month
     for (let i = 0; i < firstDay; i++) {
-        html += '<div class="calendar-date other-month"></div>';
+        html += '<div class="flex flex-col items-center justify-center text-sm rounded-lg relative aspect-square transition-all duration-200 opacity-30"></div>';
     }
 
     // Days of the month
@@ -40,14 +40,18 @@ function generateCalendar(year, month, activities = []) {
             tooltiptxt = dayActivities.map(act => `${act.jenis}: ${act.judul}`).join('\n');
         }
 
-        let classes = `calendar-date ${isToday ? 'today' : ''} ${hasActivity ? 'has-activity' : ''}`;
+        let baseClasses = 'flex flex-col items-center justify-center text-sm rounded-lg relative aspect-square transition-all duration-200';
+        let stateClasses = isToday ? 'bg-blue-100 text-blue-600 font-bold' : '';
+        let interactiveClasses = hasActivity ? 'cursor-pointer hover:bg-slate-100 hover:scale-105' : '';
+        
+        let classes = `${baseClasses} ${stateClasses} ${interactiveClasses}`.trim();
         
         let activityDots = '';
         if (hasActivity) {
-            activityDots = '<div class="activity-dots">';
+            activityDots = '<div class="flex justify-center gap-[2px] mt-[2px]">';
             dayActivities.slice(0, 3).forEach(act => {
-                const colorClass = act.jenis === 'Wawancara' ? 'bg-primary' : (act.jenis === 'Presentasi' ? 'bg-info' : 'bg-warning');
-                activityDots += `<span class="dot ${colorClass}"></span>`;
+                const colorClass = act.jenis === 'Wawancara' ? 'bg-blue-600' : (act.jenis === 'Presentasi' ? 'bg-cyan-600' : 'bg-amber-500');
+                activityDots += `<span class="w-1 h-1 rounded-full ${colorClass}"></span>`;
             });
             activityDots += '</div>';
         }
@@ -69,7 +73,7 @@ function generateCalendar(year, month, activities = []) {
     const remainingCells = 7 - (totalCells % 7);
     if (remainingCells < 7) {
         for (let i = 0; i < remainingCells; i++) {
-            html += '<div class="calendar-date other-month"></div>';
+            html += '<div class="flex flex-col items-center justify-center text-sm rounded-lg relative aspect-square transition-all duration-200 opacity-30"></div>';
         }
     }
 
