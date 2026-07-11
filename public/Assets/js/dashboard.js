@@ -212,47 +212,36 @@ function initializeNavigation() {
  * Update Upcoming Events section with real data from current month
  */
 function updateUpcomingSection() {
-    // Find upcoming body by looking for a card header that contains "Upcoming"
-    let upcomingBody = null;
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        const header = card.querySelector('.card-header');
-        if (header && header.textContent.includes('Upcoming')) {
-            upcomingBody = card.querySelector('.card-body');
-        }
-    });
-
+    let upcomingBody = document.getElementById('upcomingEventsList');
     if (!upcomingBody) return;
 
-    // Filter future activities
     const today = new Date().toISOString().split('T')[0];
-    const upcoming = calendarActivities
+    const upcoming = window.initialActivities || [];
+    const upcomingFuture = upcoming
         .filter(act => act.tanggal >= today)
         .sort((a, b) => a.tanggal.localeCompare(b.tanggal))
         .slice(0, 1);
 
-    if (upcoming.length === 0) {
-        // Keep original PHP content or show empty state if no activities found
-        // For now, let's only update if we have new data to avoid flashing
-        return;
-    }
+    if (upcomingFuture.length === 0) return;
 
     let html = '';
-    upcoming.forEach(act => {
+    upcomingFuture.forEach(act => {
         const icon = act.jenis === 'Wawancara' ? 'bi-people' : (act.jenis === 'Presentasi' ? 'bi-display' : 'bi-calendar-event');
-        const colorClass = act.jenis === 'Wawancara' ? 'bg-primary' : (act.jenis === 'Presentasi' ? 'bg-info' : 'bg-warning');
+        const colorClass = act.jenis === 'Wawancara' ? 'bg-blue-50 text-blue-600' : (act.jenis === 'Presentasi' ? 'bg-cyan-50 text-cyan-600' : 'bg-amber-50 text-amber-600');
         
         html += `
-            <div class="d-flex gap-3 mb-3 pb-3 border-bottom last-child-no-border">
-                <div class="rounded-circle ${colorClass} d-flex align-items-center justify-content-center flex-shrink-0"
-                     style="width:42px; height:42px">
-                    <i class="bi ${icon} text-white"></i>
+            <div class="flex gap-3">
+                <div class="w-10 h-10 rounded-full ${colorClass} flex items-center justify-center shrink-0">
+                    <i class="bi ${icon} text-lg"></i>
                 </div>
-                <div class="flex-grow-1">
-                    <p class="mb-0 fw-semibold small">${act.judul}</p>
-                    <small class="text-muted" style="font-size: 0.7rem;">
+                <div>
+                    <p class="font-semibold text-slate-800 text-sm mb-0.5">${act.judul}</p>
+                    <span class="text-slate-400 text-xs block mb-0.5">
                         <i class="bi bi-calendar3 me-1"></i>${formatDate(act.tanggal)}
-                    </small>
+                    </span>
+                    <span class="text-slate-400 text-xs block">
+                        <i class="bi bi-folder me-1"></i>${act.jenis}
+                    </span>
                 </div>
             </div>`;
     });
@@ -265,31 +254,31 @@ function updateUpcomingSection() {
  */
 window.showAllUpcoming = function() {
     const today = new Date().toISOString().split('T')[0];
-    const upcoming = calendarActivities
+    const upcoming = window.initialActivities || [];
+    const upcomingFuture = upcoming
         .filter(act => act.tanggal >= today)
         .sort((a, b) => a.tanggal.localeCompare(b.tanggal));
 
     let html = '';
-    if (upcoming.length === 0) {
+    if (upcomingFuture.length === 0) {
         html = `
-            <div class="text-center py-5">
-                <i class="bi bi-calendar-x fs-1 text-muted d-block mb-3"></i>
-                <p class="text-muted fw-semibold mb-0">No upcoming activities found</p>
+            <div class="text-center py-8 text-slate-400">
+                <i class="bi bi-calendar-x text-5xl mb-3 block opacity-60"></i>
+                <p class="text-sm">Tidak ada jadwal</p>
             </div>`;
     } else {
-        upcoming.forEach(act => {
+        upcomingFuture.forEach(act => {
             const icon = act.jenis === 'Wawancara' ? 'bi-people' : (act.jenis === 'Presentasi' ? 'bi-display' : 'bi-calendar-event');
-            const colorClass = act.jenis === 'Wawancara' ? 'bg-primary' : (act.jenis === 'Presentasi' ? 'bg-info' : 'bg-warning');
+            const colorClass = act.jenis === 'Wawancara' ? 'bg-blue-50 text-blue-600' : (act.jenis === 'Presentasi' ? 'bg-cyan-50 text-cyan-600' : 'bg-amber-50 text-amber-600');
             
             html += `
-                <div class="d-flex gap-3 mb-3 pb-3 border-bottom last-child-no-border">
-                    <div class="rounded-circle ${colorClass} d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width:48px; height:48px">
-                        <i class="bi ${icon} text-white fs-5"></i>
+                <div class="flex gap-3 mb-4 pb-4 border-b border-slate-100 last:border-0 last:mb-0 last:pb-0">
+                    <div class="w-12 h-12 rounded-full ${colorClass} flex items-center justify-center shrink-0">
+                        <i class="bi ${icon} text-xl"></i>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="mb-1 fw-bold">${act.judul}</p>
-                        <div class="d-flex gap-3 small text-muted">
+                    <div>
+                        <p class="font-bold text-slate-800 text-sm mb-1">${act.judul}</p>
+                        <div class="flex gap-3 text-xs text-slate-500">
                             <span><i class="bi bi-calendar3 me-1"></i>${formatDate(act.tanggal)}</span>
                             <span><i class="bi bi-folder me-1"></i>${act.jenis}</span>
                         </div>
@@ -298,12 +287,9 @@ window.showAllUpcoming = function() {
         });
     }
 
-    const modalBody = document.getElementById('upcomingActivitiesBody');
-    if (modalBody) {
-        modalBody.innerHTML = html;
-        const modal = new bootstrap.Modal(document.getElementById('upcomingActivitiesModal'));
-        modal.show();
-    }
+    document.getElementById('upcomingActivitiesBody').innerHTML = html;
+    const modal = new bootstrap.Modal(document.getElementById('upcomingActivitiesModal'));
+    modal.show();
 };
 
 function formatDate(dateStr) {

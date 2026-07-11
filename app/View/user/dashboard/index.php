@@ -410,7 +410,7 @@ $dokumen = $dokumen ?? [];
                     <a href="javascript:void(0)" onclick="navigateTo('wawancara')" class="text-xs text-blue-600 hover:text-blue-700 font-bold transition">View All</a>
                 </div>
                 
-                <div>
+                <div id="upcomingEventsList">
                     <?php if ($jadwalPresentasiUser): ?>
                         <div class="flex gap-3">
                             <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-content-center shrink-0">

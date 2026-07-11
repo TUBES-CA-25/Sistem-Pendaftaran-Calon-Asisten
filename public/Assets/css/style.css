@@ -3,254 +3,6 @@
 
 
 /* ==============================
-   GLOBAL STYLES
-   ============================== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  font-size: 95%;
-  overflow-y: scroll; /* Force scrollbar to always be visible to prevent layout shift */
-}
-
-body {
-  font-family: var(--bs-body-font-family);
-  background-color: var(--bs-body-bg);
-  color: var(--bs-body-color);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* Responsive images */
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Prevent text overflow */
-* {
-  word-wrap: break-word;
-}
-
-/* ==============================
-   BOOTSTRAP OVERRIDES
-   ============================== */
-
-/* Primary Button */
-.btn-primary {
-  --bs-btn-bg: var(--bs-primary);
-  --bs-btn-border-color: var(--bs-primary);
-  --bs-btn-hover-bg: var(--bs-primary-hover);
-  --bs-btn-hover-border-color: var(--bs-primary-hover);
-  --bs-btn-active-bg: var(--bs-primary-dark);
-  --bs-btn-active-border-color: var(--bs-primary-dark);
-}
-
-/* Gradient Primary Button */
-.btn-gradient-primary {
-  background: var(--gradient-primary);
-  border: none;
-  color: #fff;
-  transition: all 0.3s ease;
-}
-
-.btn-gradient-primary:hover {
-  background: var(--gradient-header);
-  color: #fff;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-/* Gradient Success Button */
-.btn-gradient-success {
-  background: var(--gradient-success);
-  border: none;
-  color: #fff;
-  transition: all 0.3s ease;
-}
-
-.btn-gradient-success:hover {
-  background: linear-gradient(135deg, #218838 0%, #155724 100%);
-  color: #fff;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-/* Info variants */
-.btn-info {
-  --bs-btn-bg: var(--bs-info);
-  --bs-btn-border-color: var(--bs-info);
-  --bs-btn-color: #fff;
-  --bs-btn-hover-bg: var(--bs-primary-hover);
-  --bs-btn-hover-border-color: var(--bs-primary-hover);
-  --bs-btn-hover-color: #fff;
-}
-
-/* Form Controls */
-.form-control:focus,
-.form-select:focus {
-  border-color: var(--bs-primary);
-  box-shadow: 0 0 0 0.2rem rgba(61, 194, 236, 0.25);
-}
-
-/* ==============================
-   SIDEBAR STYLES
-   ============================== */
-/* Native CSS Sidebar Styles removed in favor of Tailwind CSS */
-
-/* ==============================
-   MAIN CONTENT AREA
-   ============================== */
-
-
-
-/* ==============================
-   CARD STYLES
-   ============================== */
-.card {
-  border: none;
-  border-radius: var(--border-radius-card);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-  word-wrap: break-word;
-}
-
-.card-gradient-header {
-  background: var(--gradient-header);
-  color: #fff;
-}
-
-/* ==============================
-   TABLE STYLES
-   ============================== */
-.table > thead {
-  background: linear-gradient(135deg, #e0f2fe 0%, #e0e7ff 100%);
-}
-
-.table > thead th {
-  font-weight: 600;
-  color: var(--bs-primary-dark);
-  border-bottom: none;
-}
-
-.table > tbody tr:hover {
-  background-color: #f8fafc;
-}
-
-/* ==============================
-   BADGE STYLES
-   ============================== */
-.badge-success-subtle {
-  background-color: #dcfce7;
-  color: #16a34a;
-}
-
-.badge-warning-subtle {
-  background-color: #fef3c7;
-  color: #d97706;
-}
-
-.badge-danger-subtle {
-  background-color: #fee2e2;
-  color: #dc2626;
-}
-
-.badge-info-subtle {
-  background-color: #e0f2fe;
-  color: #0284c7;
-}
-
-.badge-primary-subtle {
-  background-color: #e0f7ff;
-  color: #0891b2;
-}
-
-/* ==============================
-   PAGE NAVBAR COMPONENT (Migrated to Tailwind CSS)
-   ============================== */
-
-/* Legacy page-header support */
-.page-header {
-  background: var(--gradient-header);
-  border-radius: var(--border-radius-card);
-  padding: 2rem 1.5rem;
-  margin-bottom: 1.5rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.page-header::before,
-.page-header::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.page-header::before {
-  width: 200px;
-  height: 200px;
-  top: -100px;
-  right: -50px;
-}
-
-.page-header::after {
-  width: 150px;
-  height: 150px;
-  bottom: -75px;
-  left: -50px;
-}
-
-.page-header-content {
-  position: relative;
-  z-index: 1;
-}
-
-/* ==============================
-   STAT CARDS
-   ============================== */
-.stat-card {
-  transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
-
-.stat-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.stat-icon-primary {
-  background: linear-gradient(135deg, rgba(61, 194, 236, 0.15) 0%, rgba(37, 99, 235, 0.15) 100%);
-  color: var(--bs-primary);
-}
-
-.stat-icon-success {
-  background: rgba(76, 175, 80, 0.15);
-  color: var(--bs-success);
-}
-
-.stat-icon-warning {
-  background: rgba(255, 193, 7, 0.15);
-  color: var(--bs-warning);
-}
-
-.stat-icon-danger {
-  background: rgba(255, 119, 130, 0.15);
-  color: var(--bs-danger);
-}
-
-/* ==============================
    MODAL STYLES
    ============================== */
 .modal-content {
@@ -452,13 +204,9 @@ img {
 }
 
 /* Profile Image Hover Effect */
-.card-body img.rounded-circle {
-    transition: transform 0.3s ease;
-}
 
-.card-body img.rounded-circle:hover {
-    transform: scale(1.05);
-}
+
+
 
 /* Biodata Icon Box Hover */
 .rounded-3.bg-primary.bg-opacity-10,
@@ -524,9 +272,7 @@ img {
     }
 
     /* Biodata cards stack better */
-    .card-body .col-md-6 {
-        margin-bottom: 1rem;
-    }
+    
 
     /* Greeting text smaller */
     .display-6 {
@@ -648,10 +394,7 @@ body.sidebar-open {
   
 
   /* Table ensure scrollable */
-  .table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+  
 
   /* Progress ring adjustment */
   .progress-ring {
@@ -716,19 +459,11 @@ body.sidebar-open {
   }
 
   /* Stat cards adjustments */
-  .stat-card {
-    padding: 1rem;
-  }
+  
 
-  .stat-card .stat-icon {
-    width: 50px !important;
-    height: 50px !important;
-    font-size: 1.5rem !important;
-  }
+  
 
-  .stat-card .stat-value {
-    font-size: 1.5rem;
-  }
+  
 
   /* Form adjustments */
   .form-group {
@@ -858,23 +593,13 @@ body.sidebar-open {
   }
 
   /* Stat cards compact */
-  .stat-card {
-    padding: 0.75rem;
-  }
+  
 
-  .stat-card .stat-icon {
-    width: 40px !important;
-    height: 40px !important;
-    font-size: 1.25rem !important;
-  }
+  
 
-  .stat-card .stat-value {
-    font-size: 1.25rem;
-  }
+  
 
-  .stat-card .stat-label {
-    font-size: 0.7rem;
-  }
+  
 
   /* Form compact */
   .form-control,
@@ -993,9 +718,7 @@ body.sidebar-open {
     font-size: 1rem;
   }
 
-  .stat-card .stat-value {
-    font-size: 1.1rem;
-  }
+  
 
   .btn {
     padding: 0.4rem 0.7rem;
@@ -1039,4 +762,6 @@ body.sidebar-open {
     max-width: 90%;
   }
 }
+
+
 
