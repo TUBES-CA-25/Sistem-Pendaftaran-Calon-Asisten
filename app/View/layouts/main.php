@@ -23,10 +23,12 @@
     <link rel="stylesheet" href="<?= APP_URL ?>/Assets/css/theme.css">
     <link rel="stylesheet" href="<?= APP_URL ?>/Assets/css/style.css">
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <!-- DataTables Tailwind CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.tailwindcss.min.css">
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.tailwindcss.min.js"></script>
     <!-- Bootstrap 5.3.3 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -124,4 +126,5 @@
     
 </body>
 </html>
+
 

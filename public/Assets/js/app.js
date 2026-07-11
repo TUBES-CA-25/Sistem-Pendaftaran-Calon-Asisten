@@ -36,6 +36,8 @@ function loadPage(page, updateUrl = true) {
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
         success: function(response) {
             $('#content').html(response);
+            // Initialize tables globally
+            initGlobalTables();
             // Scroll to top after page load
             window.scrollTo(0, 0);
             
@@ -57,6 +59,9 @@ function loadPage(page, updateUrl = true) {
 $(document).ready(function () {
     // Get initial page from server or localStorage
     var initialPage = window.INITIAL_PAGE || localStorage.getItem('activePage') || 'dashboard';
+
+    // Initialize tables on first load
+    setTimeout(initGlobalTables, 500);
 
     // Set initial history state (replaceState, not pushState)
     history.replaceState({ page: initialPage }, '', `${APP_URL}/${initialPage}`);
@@ -580,3 +585,33 @@ function showActionConfirmation(options) {
     const modal = new bootstrap.Modal(modalEl);
     modal.show();
 }
+
+// Initialize global DataTables for all tables
+function initGlobalTables() {
+    $('#content').find('table:not(#calendarTable)').each(function() {
+        // Add Tailwind border classes for table styling
+        $(this).addClass('border border-slate-200');
+        $(this).find('th, td').addClass('border border-slate-200');
+
+        if (!$.fn.DataTable.isDataTable(this)) {
+            $(this).DataTable({
+                scrollX: true,
+                language: {
+                    search: "Cari:",
+                    lengthMenu: "Tampilkan _MENU_ data",
+                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                    infoEmpty: "Menampilkan 0 sampai 0 dari 0 data",
+                    infoFiltered: "(disaring dari _MAX_ total data)",
+                    zeroRecords: "Tidak ada data yang cocok",
+                    paginate: {
+                        first: "Pertama",
+                        last: "Terakhir",
+                        next: "Selanjutnya",
+                        previous: "Sebelumnya"
+                    }
+                }
+            });
+        }
+    });
+}
+
