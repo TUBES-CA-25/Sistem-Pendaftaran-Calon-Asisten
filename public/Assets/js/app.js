@@ -612,7 +612,7 @@ function showActionConfirmation(options) {
 
 // Initialize global DataTables â€” accepts optional callback fired after all tables are ready
 function initGlobalTables(onReady) {
-    var $tables = $('#content').find('table:not(#calendarTable)');
+    var $tables = $('#content').find('table:not(#calendarTable):not(.no-datatable)');
 
     // If no tables on this page, reveal immediately
     if ($tables.length === 0) {

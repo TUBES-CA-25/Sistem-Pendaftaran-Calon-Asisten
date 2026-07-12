@@ -218,7 +218,7 @@ $nilai = $nilai ?? [];
                 </div>
                 
                 <div class="overflow-x-auto bg-white rounded-2xl border border-slate-200 shadow-sm">
-                    <table class="w-full text-left border-collapse" id="soalJawabanTable">
+                    <table class="w-full text-left border-collapse no-datatable" id="soalJawabanTable">
                         <thead>
                             <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
                                 <th class="p-4 font-semibold w-16 text-center">No</th>
