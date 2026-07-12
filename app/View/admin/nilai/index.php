@@ -108,92 +108,121 @@ $nilai = $nilai ?? [];
         </div>
 
         <!-- View Detail (Inline) -->
-        <div id="view-detail" class="hidden pt-6">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                    <i class="bi bi-person-badge text-blue-600"></i> Detail Nilai Mahasiswa
-                </h2>
-                <button class="px-4 py-2.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition flex items-center gap-2" id="btnBack">
-                    <i class="bi bi-arrow-left"></i> Kembali
-                </button>
-            </div>
-
-            <div class="bg-slate-50 rounded-2xl border border-slate-100 shadow-sm p-6 space-y-6">
-                <!-- Info Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-5 rounded-2xl border-l-4 border-blue-600 shadow-sm border border-slate-100 flex flex-col justify-center">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Lengkap</span>
-                        <div class="text-lg font-bold text-slate-800" id="detailNama">-</div>
+        <!-- View Detail (Inline) -->
+        <div id="view-detail" class="hidden">
+            <!-- Header Section with vibrant gradient -->
+            <div class="relative bg-gradient-to-r from-blue-600 to-indigo-700 rounded-b-3xl sm:rounded-3xl shadow-lg mb-8 overflow-hidden -mx-4 sm:mx-0 px-6 py-8 sm:p-10 mt-0 sm:mt-6">
+                <!-- Decorative background elements -->
+                <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white opacity-10 blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-indigo-500 opacity-20 blur-3xl"></div>
+                
+                <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div>
+                        <button class="mb-5 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold text-sm rounded-xl transition flex items-center gap-2 border border-white/20" id="btnBack">
+                            <i class="bi bi-arrow-left"></i> Kembali ke Daftar
+                        </button>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3 flex items-center gap-3">
+                            <span id="detailNama">Nama Mahasiswa</span>
+                        </h2>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold rounded-lg border border-white/10">
+                                <i class="bi bi-person-badge"></i> <span id="detailStambuk">Stambuk</span>
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/80 backdrop-blur-md text-white text-xs font-bold rounded-lg border border-emerald-400/50 shadow-sm">
+                                Nilai Akhir: <span id="detailTotalNilai">-</span>
+                            </span>
+                        </div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border-l-4 border-blue-600 shadow-sm border border-slate-100 flex flex-col justify-center">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Stambuk</span>
-                        <div class="text-lg font-bold text-slate-800" id="detailStambuk">-</div>
-                    </div>
-                    <div class="bg-white p-5 rounded-2xl border-l-4 border-blue-600 shadow-sm border border-slate-100 flex flex-col justify-center">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nilai Akhir</span>
-                        <div class="text-lg font-bold text-slate-800" id="detailTotalNilai">-</div>
+                    
+                    <!-- Quick Score Input Form in Header -->
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl shadow-xl w-full md:w-auto mt-4 md:mt-0">
+                        <h5 class="font-bold text-white mb-3 text-sm flex items-center gap-2">
+                            <i class="bi bi-pencil-square text-blue-200"></i> Input Nilai Akhir
+                        </h5>
+                        <form id="formNilaiAkhir" class="flex items-center gap-3">
+                            <div class="relative">
+                                <input type="number"
+                                     id="nilaiAkhir"
+                                     class="w-full sm:w-32 px-4 py-2.5 rounded-xl border border-white/30 bg-white/20 text-white placeholder-blue-100 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/30 font-bold text-center transition"
+                                     placeholder="0-100"
+                                     min="0"
+                                     max="100">
+                            </div>
+                            <button type="submit" class="px-5 py-2.5 bg-white text-blue-700 hover:bg-blue-50 font-bold text-sm rounded-xl transition flex items-center gap-2 shadow-lg hover:-translate-y-0.5">
+                                <i class="bi bi-check-lg"></i> Simpan
+                            </button>
+                        </form>
                     </div>
                 </div>
+            </div>
 
-                <!-- Statistik Jawaban -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-white p-5 rounded-2xl border-l-4 border-slate-400 shadow-sm border border-slate-100 flex flex-col justify-center">
-                        <div class="text-2xl font-bold text-slate-800" id="statTotal">0</div>
-                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Total Soal</div>
+            <!-- Main Content Container -->
+            <div class="space-y-8 pb-10">
+                <!-- Statistik Jawaban - Premium Grid -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl sm:text-2xl shadow-inner">
+                            <i class="bi bi-list-task"></i>
+                        </div>
+                        <div>
+                            <div class="text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-0.5">Total Soal</div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="statTotal">0</div>
+                        </div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border-l-4 border-emerald-500 shadow-sm border border-slate-100 flex flex-col justify-center">
-                        <div class="text-2xl font-bold text-emerald-600" id="statBenar">0</div>
-                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Benar</div>
+                    <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl sm:text-2xl shadow-inner">
+                            <i class="bi bi-check-lg"></i>
+                        </div>
+                        <div>
+                            <div class="text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-0.5">Benar</div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="statBenar">0</div>
+                        </div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border-l-4 border-red-500 shadow-sm border border-slate-100 flex flex-col justify-center">
-                        <div class="text-2xl font-bold text-red-600" id="statSalah">0</div>
-                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Salah</div>
+                    <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-xl sm:text-2xl shadow-inner">
+                            <i class="bi bi-x-lg"></i>
+                        </div>
+                        <div>
+                            <div class="text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-0.5">Salah</div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="statSalah">0</div>
+                        </div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border-l-4 border-slate-350 shadow-sm border border-slate-100 flex flex-col justify-center">
-                        <div class="text-2xl font-bold text-slate-400" id="statTidakDijawab">0</div>
-                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">Tidak Dijawab</div>
+                    <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center text-xl sm:text-2xl shadow-inner">
+                            <i class="bi bi-dash-lg"></i>
+                        </div>
+                        <div>
+                            <div class="text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-0.5">Kosong</div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="statTidakDijawab">0</div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Soal Jawaban Section -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b border-slate-100 mb-6 gap-4">
-                        <h5 class="font-bold text-slate-800 flex items-center gap-2 text-base">
-                            <i class="bi bi-list-check text-blue-600"></i> Soal dan Jawaban
-                        </h5>
-                        <div class="flex flex-wrap gap-2">
-                            <button class="filter-btn px-4 py-2 bg-blue-600 border border-blue-600 text-white text-sm font-semibold rounded-xl transition cursor-pointer" data-filter="semua">
-                                <i class="bi bi-grid-3x3-gap"></i> Semua
+                <div>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <h3 class="font-bold text-xl text-slate-800 flex items-center gap-2">
+                            <i class="bi bi-journal-text text-blue-600"></i> Review Pekerjaan
+                        </h3>
+                        <div class="bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm inline-flex">
+                            <button class="filter-btn px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg transition" data-filter="semua">
+                                Semua
                             </button>
-                            <button class="filter-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 text-sm font-semibold rounded-xl transition cursor-pointer" data-filter="pilihan_ganda">
-                                <i class="bi bi-ui-checks"></i> Pilihan Ganda
+                            <button class="filter-btn px-4 py-2 bg-transparent text-slate-600 hover:text-blue-600 text-sm font-semibold rounded-lg transition" data-filter="pilihan_ganda">
+                                Pil. Ganda
                             </button>
-                            <button class="filter-btn px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 text-sm font-semibold rounded-xl transition cursor-pointer" data-filter="essay">
-                                <i class="bi bi-pencil-square"></i> Essay
+                            <button class="filter-btn px-4 py-2 bg-transparent text-slate-600 hover:text-blue-600 text-sm font-semibold rounded-lg transition" data-filter="essay">
+                                Essay
                             </button>
                         </div>
                     </div>
-                    <div id="soalJawabanList" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <p class="text-slate-400">Memuat data...</p>
+                    
+                    <div id="soalJawabanList" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                        <div class="col-span-full flex flex-col items-center justify-center py-12 bg-white rounded-3xl border border-slate-100 border-dashed">
+                            <i class="bi bi-hourglass-split text-4xl text-slate-300 mb-3"></i>
+                            <p class="text-slate-500 font-medium">Memuat data pekerjaan...</p>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Nilai Form -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                    <h5 class="font-bold text-slate-800 mb-4 flex items-center gap-2 text-base">
-                        <i class="bi bi-pencil-square text-blue-600"></i> Input Nilai Akhir
-                    </h5>
-                    <form id="formNilaiAkhir" class="flex items-center gap-3 flex-wrap">
-                        <input type="number"
-                               id="nilaiAkhir"
-                               class="w-full sm:w-48 px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition"
-                               placeholder="Masukkan nilai (0-100)"
-                               min="0"
-                               max="100">
-                        <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl transition flex items-center gap-2 shadow-md shadow-emerald-500/10">
-                            <i class="bi bi-check-lg"></i> Simpan Nilai
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
@@ -278,19 +307,19 @@ $(document).ready(function() {
 
                         if (!isAnswered) {
                             tidakDijawabCount++;
-                            cardClass = 'border-l-4 border-slate-400 bg-slate-50/50 rounded-2xl border border-slate-100 p-5 shadow-sm';
-                            icon = '<i class="bi bi-question-circle-fill text-slate-400"></i>';
-                            statusBadge = 'bg-slate-100 text-slate-600';
+                            cardClass = 'bg-white rounded-3xl border border-slate-200 p-6 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-colors h-full flex flex-col';
+                            icon = '<div class="absolute top-0 right-0 w-14 h-14 bg-slate-100 rounded-bl-3xl flex items-center justify-center opacity-80"><i class="bi bi-dash-circle-fill text-slate-400 text-lg ml-1 mt-1"></i></div>';
+                            statusBadge = 'bg-slate-100 text-slate-600 border border-slate-200';
                         } else if (isCorrect) {
                             benarCount++;
-                            cardClass = 'border-l-4 border-emerald-500 bg-white rounded-2xl border border-slate-100 p-5 shadow-sm';
-                            icon = '<i class="bi bi-check-circle-fill text-emerald-500"></i>';
-                            statusBadge = 'bg-emerald-50 text-emerald-700';
+                            cardClass = 'bg-white rounded-3xl border-2 border-emerald-100 p-6 shadow-sm relative overflow-hidden group hover:border-emerald-300 transition-colors h-full flex flex-col';
+                            icon = '<div class="absolute top-0 right-0 w-14 h-14 bg-emerald-50 rounded-bl-3xl flex items-center justify-center opacity-80"><i class="bi bi-check-circle-fill text-emerald-500 text-lg ml-1 mt-1"></i></div>';
+                            statusBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
                         } else {
                             salahCount++;
-                            cardClass = 'border-l-4 border-red-500 bg-white rounded-2xl border border-slate-100 p-5 shadow-sm';
-                            icon = '<i class="bi bi-x-circle-fill text-red-500"></i>';
-                            statusBadge = 'bg-red-50 text-red-700';
+                            cardClass = 'bg-white rounded-3xl border-2 border-red-100 p-6 shadow-sm relative overflow-hidden group hover:border-red-300 transition-colors h-full flex flex-col';
+                            icon = '<div class="absolute top-0 right-0 w-14 h-14 bg-red-50 rounded-bl-3xl flex items-center justify-center opacity-80"><i class="bi bi-x-circle-fill text-red-500 text-lg ml-1 mt-1"></i></div>';
+                            statusBadge = 'bg-red-50 text-red-700 border border-red-200';
                         }
 
                         // Format options for display
@@ -318,45 +347,48 @@ $(document).ready(function() {
                         }
 
                         const tipeBadge = isPilihanGanda
-                            ? '<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-blue-50 text-blue-700 border border-blue-100 ml-2"><i class="bi bi-ui-checks"></i> PG</span>'
-                            : '<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-amber-50 text-amber-700 border border-amber-100 ml-2"><i class="bi bi-pencil-square"></i> Essay</span>';
+                            ? '<span class="inline-block px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg bg-blue-50 text-blue-700 border border-blue-100 ml-2"><i class="bi bi-ui-checks mr-1"></i> PG</span>'
+                            : '<span class="inline-block px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg bg-amber-50 text-amber-700 border border-amber-100 ml-2"><i class="bi bi-pencil-square mr-1"></i> Essay</span>';
 
                         const hasImage = item.image_url && item.image_url.trim() !== '';
 
                         html += `
-                            <div class="soal-item" data-tipe="${tipeSoal}">
+                            <div class="soal-item h-full" data-tipe="${tipeSoal}">
                                 <div class="${cardClass}">
-                                    <div class="flex justify-between items-start mb-4">
-                                        <div class="flex items-center">
-                                            <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg flex items-center justify-center font-bold text-sm shadow-sm">${index + 1}</div>
-                                            ${tipeBadge}
-                                        </div>
-                                        <div class="text-xl">${icon}</div>
+                                    ${icon}
+                                    <div class="flex items-center mb-5">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-xl flex items-center justify-center font-extrabold text-sm shadow-md">${index + 1}</div>
+                                        ${tipeBadge}
                                     </div>
                                     ${hasImage ? `
-                                    <div class="mb-4">
-                                        <img src="${getImageUrl(item.image_url)}" alt="Gambar Soal ${index + 1}" class="max-w-full h-auto max-h-60 rounded-xl border border-slate-200">
+                                    <div class="mb-5">
+                                        <img src="${getImageUrl(item.image_url)}" alt="Gambar Soal ${index + 1}" class="max-w-full h-auto max-h-60 rounded-2xl border border-slate-200 object-cover shadow-sm">
                                     </div>
                                     ` : ''}
-                                    <div class="mb-4">
-                                        <span class="font-bold text-slate-800 leading-relaxed text-sm block">${item.deskripsi}</span>
+                                    <div class="mb-6 flex-grow">
+                                        <span class="font-bold text-slate-800 leading-relaxed text-[15px] block">${item.deskripsi}</span>
                                     </div>
-                                    <div class="text-xs space-y-3">
+                                    
+                                    <div class="bg-slate-50/70 rounded-2xl border border-slate-100 p-4 mt-auto">
                                         ${isPilihanGanda ? `
-                                        <div class="space-y-1.5 text-slate-600 bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                                        <div class="space-y-1.5 text-slate-600 text-sm mb-4">
                                             ${pilihanHTML}
                                         </div>
+                                        <div class="w-full h-px bg-slate-200/60 my-4"></div>
                                         ` : ''}
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Jawaban Benar:</span>
-                                            <span class="inline-block px-2 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 font-semibold rounded">${item.jawaban}</span>
-                                        </div>
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Jawaban Mahasiswa:</span>
-                                            ${isAnswered
-                                                ? `<span class="inline-block px-2 py-1 ${statusBadge} font-semibold rounded">${item.jawaban_user}</span>`
-                                                : '<span class="inline-block px-2 py-1 bg-slate-100 text-slate-600 font-semibold rounded">Tidak menjawab</span>'
-                                            }
+                                        
+                                        <div class="flex flex-col sm:flex-row gap-4">
+                                            <div class="flex-1">
+                                                <div class="text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-2 flex items-center gap-1.5"><i class="bi bi-shield-check text-blue-400"></i> Kunci Jawaban</div>
+                                                <div class="inline-block px-3 py-1.5 bg-white text-slate-700 border border-slate-200 font-bold text-sm rounded-lg shadow-sm w-full">${item.jawaban}</div>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-2 flex items-center gap-1.5"><i class="bi bi-person-fill text-indigo-400"></i> Jawaban Peserta</div>
+                                                ${isAnswered
+                                                    ? `<div class="inline-block px-3 py-1.5 ${statusBadge} font-bold text-sm rounded-lg shadow-sm w-full">${item.jawaban_user}</div>`
+                                                    : '<div class="inline-block px-3 py-1.5 bg-slate-100/50 text-slate-400 font-bold text-sm rounded-lg border border-slate-200 border-dashed w-full">KOSONG</div>'
+                                                }
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
