@@ -306,17 +306,17 @@ $(document).ready(function() {
 
                         if (!isAnswered) {
                             tidakDijawabCount++;
-                            cardClass = 'bg-white rounded-3xl border border-slate-200 p-6 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-colors h-full flex flex-col';
+                            cardClass = 'bg-white rounded-3xl border border-slate-200 p-6 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-colors';
                             icon = '<div class="absolute top-0 right-0 w-14 h-14 bg-slate-100 rounded-bl-3xl flex items-center justify-center opacity-80"><i class="bi bi-dash-circle-fill text-slate-400 text-lg ml-1 mt-1"></i></div>';
                             statusBadge = 'bg-slate-100 text-slate-600 border border-slate-200';
                         } else if (isCorrect) {
                             benarCount++;
-                            cardClass = 'bg-white rounded-3xl border-2 border-emerald-100 p-6 shadow-sm relative overflow-hidden group hover:border-emerald-300 transition-colors h-full flex flex-col';
+                            cardClass = 'bg-white rounded-3xl border-2 border-emerald-100 p-6 shadow-sm relative overflow-hidden group hover:border-emerald-300 transition-colors';
                             icon = '<div class="absolute top-0 right-0 w-14 h-14 bg-emerald-50 rounded-bl-3xl flex items-center justify-center opacity-80"><i class="bi bi-check-circle-fill text-emerald-500 text-lg ml-1 mt-1"></i></div>';
                             statusBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
                         } else {
                             salahCount++;
-                            cardClass = 'bg-white rounded-3xl border-2 border-red-100 p-6 shadow-sm relative overflow-hidden group hover:border-red-300 transition-colors h-full flex flex-col';
+                            cardClass = 'bg-white rounded-3xl border-2 border-red-100 p-6 shadow-sm relative overflow-hidden group hover:border-red-300 transition-colors';
                             icon = '<div class="absolute top-0 right-0 w-14 h-14 bg-red-50 rounded-bl-3xl flex items-center justify-center opacity-80"><i class="bi bi-x-circle-fill text-red-500 text-lg ml-1 mt-1"></i></div>';
                             statusBadge = 'bg-red-50 text-red-700 border border-red-200';
                         }
@@ -329,7 +329,7 @@ $(document).ready(function() {
                                 .map(([key, value]) => {
                                     if (value && (value.includes('.jpg') || value.includes('.jpeg') || value.includes('.png') || value.includes('.gif') || value.includes('.webp'))) {
                                         return `
-                                            <div class="mb-2 flex items-start gap-2">
+                                            <div class="mb-2 flex items-start gap-2 bg-white p-3 border border-slate-200 rounded-xl shadow-sm">
                                                 <strong class="text-slate-700">${key}.</strong>
                                                 <div>
                                                     <img src="${getImageUrl(value)}" alt="Pilihan ${key}" class="max-w-full h-auto max-h-40 rounded-lg border border-slate-200">
@@ -337,12 +337,17 @@ $(document).ready(function() {
                                             </div>
                                         `;
                                     } else {
-                                        return `<div class="mb-1 text-slate-700"><strong class="text-slate-800">${key}.</strong> ${value}</div>`;
+                                        return `<div class="mb-2 text-slate-700 bg-white px-4 py-2.5 border border-slate-200 rounded-xl shadow-sm"><strong class="text-slate-800">${key}.</strong> ${value}</div>`;
                                     }
                                 })
                                 .join('');
                         } catch (e) {
-                            pilihanHTML = item.pilihan;
+                            if (typeof item.pilihan === 'string' && /,\s*(?=[A-E]\.)/.test(item.pilihan)) {
+                                const opts = item.pilihan.split(/,\s*(?=[A-E]\.)/);
+                                pilihanHTML = opts.map(opt => `<div class="mb-2 text-slate-700 bg-white px-4 py-2.5 border border-slate-200 rounded-xl shadow-sm">${opt}</div>`).join('');
+                            } else {
+                                pilihanHTML = `<div class="text-slate-700 bg-white px-4 py-2.5 border border-slate-200 rounded-xl shadow-sm">${item.pilihan}</div>`;
+                            }
                         }
 
                         const tipeBadge = isPilihanGanda
@@ -352,7 +357,7 @@ $(document).ready(function() {
                         const hasImage = item.image_url && item.image_url.trim() !== '';
 
                         html += `
-                            <div class="soal-item h-full" data-tipe="${tipeSoal}">
+                            <div class="soal-item self-start" data-tipe="${tipeSoal}">
                                 <div class="${cardClass}">
                                     ${icon}
                                     <div class="flex items-center mb-5">
@@ -364,11 +369,11 @@ $(document).ready(function() {
                                         <img src="${getImageUrl(item.image_url)}" alt="Gambar Soal ${index + 1}" class="max-w-full h-auto max-h-60 rounded-2xl border border-slate-200 object-cover shadow-sm">
                                     </div>
                                     ` : ''}
-                                    <div class="mb-6 flex-grow">
+                                    <div class="mb-6">
                                         <span class="font-bold text-slate-800 leading-relaxed text-[15px] block">${item.deskripsi}</span>
                                     </div>
                                     
-                                    <div class="bg-slate-50/70 rounded-2xl border border-slate-100 p-4 mt-auto">
+                                    <div class="bg-slate-50/70 rounded-2xl border border-slate-100 p-4">
                                         ${isPilihanGanda ? `
                                         <div class="space-y-1.5 text-slate-600 text-sm mb-4">
                                             ${pilihanHTML}
