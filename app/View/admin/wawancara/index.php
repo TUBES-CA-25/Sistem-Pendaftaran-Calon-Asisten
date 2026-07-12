@@ -33,14 +33,14 @@ $colors = ['#2f66f6'];
             <table id="wawancaraMahasiswa" class="min-w-full align-middle text-sm text-left">
                 <thead>
                     <tr class="">
-                        <th class="py-4 px-4 text-center font-bold uppercase tracking-wider" style="width: 5%;">NO</th>
-                        <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 25%;">NAMA LENGKAP</th>
-                        <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 15%;">STAMBUK</th>
-                        <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 20%;">KEGIATAN</th>
-                        <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 10%;">RUANGAN</th>
-                        <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 10%;">TANGGAL</th>
-                        <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 10%;">WAKTU</th>
-                        <th class="py-4 px-4 text-center font-bold uppercase tracking-wider" style="width: 5%;">AKSI</th>
+                        <th class="dt-head-cell text-center" style="width: 5%;">No</th>
+                        <th class="dt-head-cell" style="width: 25%;">Nama Lengkap</th>
+                        <th class="dt-head-cell" style="width: 15%;">Stambuk</th>
+                        <th class="dt-head-cell" style="width: 20%;">Kegiatan</th>
+                        <th class="dt-head-cell" style="width: 10%;">Ruangan</th>
+                        <th class="dt-head-cell" style="width: 10%;">Tanggal</th>
+                        <th class="dt-head-cell" style="width: 10%;">Waktu</th>
+                        <th class="dt-head-cell text-center" style="width: 5%;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="table-body" class="bg-white divide-y divide-slate-100">
@@ -54,16 +54,16 @@ $colors = ['#2f66f6'];
                     <?php else: ?>
                         <?php $i = 1; ?>
                         <?php foreach ($wawancara as $row): ?>
-                            <tr data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>" class="hover:bg-slate-50 transition duration-150">
-                                <td class="py-4 px-4 text-center font-bold text-slate-500"><?= $i ?></td>
+                            <tr class="dt-body-row border-b border-slate-100 hover:bg-slate-50 transition" data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
+                                <td class="text-center py-4 px-4"><?= $i ?></td>
                                 <td class="py-4 px-4">
-                                    <div class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
+                                    <div><?= htmlspecialchars($row['nama_lengkap']) ?></div>
                                 </td>
-                                <td class="py-4 px-4 font-semibold text-slate-600"><?= htmlspecialchars($row['stambuk']) ?></td>
-                                <td class="py-4 px-4 font-medium text-slate-705"><?= htmlspecialchars($row['jenis_wawancara']) ?></td>
-                                <td class="py-4 px-4 font-medium text-slate-705"><?= htmlspecialchars($row['ruangan']) ?></td>
-                                <td class="py-4 px-4 text-slate-600"><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
-                                <td class="py-4 px-4 text-slate-600 font-semibold"><?= htmlspecialchars($row['waktu']) ?></td>
+                                <td class="py-4 px-4"><?= htmlspecialchars($row['stambuk']) ?></td>
+                                <td class="py-4 px-4"><?= htmlspecialchars($row['jenis_wawancara']) ?></td>
+                                <td class="py-4 px-4"><?= htmlspecialchars($row['ruangan']) ?></td>
+                                <td class="py-4 px-4"><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
+                                <td class="py-4 px-4"><?= htmlspecialchars($row['waktu']) ?></td>
                                 <td class="py-4 px-4 text-center">
                                     <div class="flex justify-center gap-2">
                                         <button class="p-2 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg transition-colors border-0 open-update" 
@@ -517,16 +517,16 @@ $colors = ['#2f66f6'];
                         } else {
                             response.data.forEach(row => {
                                 tableBody.append(`
-                                    <tr data-id="${row.id}" data-userid="${row.id_mahasiswa}" class="hover:bg-slate-50 transition duration-150">
-                                        <td class="py-4 px-4 text-center font-bold text-slate-500">${i}</td>
+                                    <tr class="dt-body-row border-b border-slate-100 hover:bg-slate-50 transition" data-id="${row.id}" data-userid="${row.idUser}">
+                                        <td class="text-center py-4 px-4">${i}</td>
                                         <td class="py-4 px-4">
-                                            <div class="font-bold text-slate-800">${row.nama_lengkap}</div>
+                                            <div>${row.nama_lengkap}</div>
                                         </td>
-                                        <td class="py-4 px-4 font-semibold text-slate-600">${row.stambuk}</td>
-                                        <td class="py-4 px-4 font-medium text-slate-700">${row.jenis_wawancara}</td>
-                                        <td class="py-4 px-4 font-medium text-slate-700">${row.ruangan}</td>
-                                        <td class="py-4 px-4 text-slate-600">${formatDate(row.tanggal)}</td>
-                                        <td class="py-4 px-4 text-slate-600 font-semibold">${row.waktu}</td>
+                                        <td class="py-4 px-4">${row.stambuk}</td>
+                                        <td class="py-4 px-4">${row.jenis_wawancara}</td>
+                                        <td class="py-4 px-4">${row.ruangan}</td>
+                                        <td class="py-4 px-4">${formatDate(row.tanggal)}</td>
+                                        <td class="py-4 px-4">${row.waktu}</td>
                                         <td class="py-4 px-4 text-center">
                                             <div class="flex justify-center gap-2">
                                                 <button class="p-2 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg transition-colors border-0 open-update" 

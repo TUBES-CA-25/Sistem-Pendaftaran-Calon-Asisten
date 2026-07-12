@@ -44,7 +44,7 @@ $mahasiswaList = $mahasiswaList ?? [];
                         <tbody class="dt-tbody">
                             <?php $no = 1; foreach ($absensiList as $row): ?>
                             <tr class="dt-body-row">
-                                <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $no++ ?></td>
+                                <td class="text-center py-4 px-4"><?= $no++ ?></td>
                                 <td class="py-4 px-4">
                                     <div class="flex items-center gap-3">
                                         <?php

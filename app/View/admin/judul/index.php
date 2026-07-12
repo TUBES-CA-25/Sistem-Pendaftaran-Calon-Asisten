@@ -64,10 +64,10 @@ $mahasiswaList = $mahasiswaList ?? [];
                                     }
                                 ?>
                                 <tr class="dt-body-row" data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
-                                    <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $i ?></td>
-                                    <td class="py-4 px-4"><span class="font-bold text-slate-800"><?= htmlspecialchars($row['nama'] ?? '-') ?></span></td>
-                                    <td class="text-slate-500 py-4 px-4 font-medium"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
-                                    <td class="text-slate-600 py-4 px-4 font-medium"><?= htmlspecialchars($row['judul'] ?? '-') ?></td>
+                                    <td class="text-center py-4 px-4"><?= $i ?></td>
+                                    <td class="py-4 px-4"><?= htmlspecialchars($row['nama'] ?? '-') ?></td>
+                                    <td class="py-4 px-4"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
+                                    <td class="py-4 px-4"><?= htmlspecialchars($row['judul'] ?? '-') ?></td>
                                     <td class="text-center py-4 px-4">
                                         <span class="inline-block px-3 py-1 text-xs font-semibold rounded-lg <?= $badgeClass ?>"><?= $badgeText ?></span>
                                     </td>

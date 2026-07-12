@@ -29,14 +29,14 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                 <table class="min-w-full align-middle text-sm text-left" id="jadwalTable">
                     <thead>
                         <tr class="">
-                            <th class="dt-head-cell text-center" style="width: 5%;">NO</th>
-                            <th class="dt-head-cell text-left" style="width: 25%;">NAMA LENGKAP</th>
-                            <th class="dt-head-cell text-left" style="width: 15%;">STAMBUK</th>
-                            <th class="dt-head-cell text-left" style="width: 20%;">KEGIATAN</th>
-                            <th class="dt-head-cell text-left" style="width: 15%;">RUANGAN</th>
-                            <th class="dt-head-cell text-left" style="width: 10%;">TANGGAL</th>
-                            <th class="dt-head-cell text-left" style="width: 10%;">WAKTU</th>
-                            <th class="dt-head-cell text-center" style="width: 5%;">AKSI</th>
+                            <th class="dt-head-cell text-center" style="width: 5%;">No</th>
+                            <th class="dt-head-cell text-left" style="width: 25%;">Nama Lengkap</th>
+                            <th class="dt-head-cell text-left" style="width: 15%;">Stambuk</th>
+                            <th class="dt-head-cell text-left" style="width: 20%;">Kegiatan</th>
+                            <th class="dt-head-cell text-left" style="width: 15%;">Ruangan</th>
+                            <th class="dt-head-cell text-left" style="width: 10%;">Tanggal</th>
+                            <th class="dt-head-cell text-left" style="width: 10%;">Waktu</th>
+                            <th class="dt-head-cell text-center" style="width: 5%;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="table-body" class="dt-tbody">
@@ -47,13 +47,13 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                         <?php else: ?>
                             <?php $i = 1; foreach ($jadwalTesList as $row): ?>
                                 <tr class="dt-body-row" data-id="<?= $row['id'] ?>">
-                                    <td class="text-center font-bold text-slate-400 py-4 px-4"><?= $i++ ?></td>
-                                    <td class="py-4 px-4"><span class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap']) ?></span></td>
-                                    <td class="text-slate-500 py-4 px-4 font-medium"><?= htmlspecialchars($row['stambuk']) ?></td>
-                                    <td class="text-slate-600 py-4 px-4"><?= htmlspecialchars($row['kegiatan']) ?></td>
-                                    <td class="text-slate-600 py-4 px-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold"><?= htmlspecialchars($row['ruangan']) ?></span></td>
-                                    <td class="text-slate-600 py-4 px-4 font-medium"><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
-                                    <td class="text-slate-600 py-4 px-4 font-semibold"><?= htmlspecialchars($row['waktu']) ?></td>
+                                    <td class="text-center py-4 px-4"><?= $i++ ?></td>
+                                    <td class="py-4 px-4"><?= htmlspecialchars($row['nama_lengkap']) ?></td>
+                                    <td class="py-4 px-4"><?= htmlspecialchars($row['stambuk']) ?></td>
+                                    <td class="py-4 px-4"><?= htmlspecialchars($row['kegiatan']) ?></td>
+                                    <td class="py-4 px-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs"><?= htmlspecialchars($row['ruangan']) ?></span></td>
+                                    <td class="py-4 px-4"><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
+                                    <td class="py-4 px-4"><?= htmlspecialchars($row['waktu']) ?></td>
                                     <td class="py-4 px-4">
                                         <div class="flex items-center justify-center gap-2">
                                             <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-amber-50 hover:bg-amber-100 text-amber-600 open-edit" 

@@ -74,7 +74,7 @@
                TABLE HEAD
                ============================================================ */
             .dt-head-cell {
-                @apply text-left text-xs font-semibold text-slate-500 uppercase tracking-wider
+                @apply text-left text-xs font-semibold text-slate-500 tracking-wider
                        bg-slate-50 px-4 py-3.5 border-b border-slate-200 whitespace-nowrap;
             }
             table.dataTable thead th,
@@ -109,7 +109,7 @@
                 @apply px-4 py-3.5 text-sm text-slate-600 align-middle;
             }
             table.dataTable tbody td {
-                @apply px-4 py-3.5 text-sm text-slate-600 align-middle border-b border-slate-100;
+                @apply px-4 py-3.5 text-sm font-medium text-slate-600 align-middle border-b border-slate-100;
             }
 
             /* ============================================================

@@ -70,14 +70,14 @@ $nilai = $nilai ?? [];
                                     }
                                     ?>
                                     <tr class="dt-body-row">
-                                        <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $i ?></td>
+                                        <td class="text-center py-4 px-4"><?= $i ?></td>
                                         <td class="py-4 px-4">
                                             <div class="flex flex-col">
-                                                <span class="font-bold text-slate-800"><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></span>
+                                                <span><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></span>
                                                 <span class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-0.5">Mahasiswa</span>
                                             </div>
                                         </td>
-                                        <td class="text-slate-600 py-4 px-4 font-semibold"><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>
+                                        <td class="py-4 px-4"><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>
                                         <td class="text-center py-4 px-4">
                                             <span class="inline-block px-3 py-1 bg-blue-50 text-blue-700 border border-blue-100 text-xs font-semibold rounded-lg">
                                                 <?= ($displayNilai !== null && $displayNilai !== '') ? $displayNilai : 'Belum ada' ?>

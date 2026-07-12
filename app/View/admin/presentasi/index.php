@@ -43,17 +43,17 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                         <?php else: ?>
                             <?php $i = 1; foreach ($jadwalPresentasi as $row): ?>
                                 <tr class="dt-body-row">
-                                    <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $i ?></td>
-                                    <td class="py-4 px-4"><span class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap'] ?? $row['nama'] ?? '-') ?></span></td>
-                                    <td class="text-slate-500 py-4 px-4 font-semibold"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
-                                    <td class="text-slate-600 py-4 px-4 font-medium leading-relaxed"><?= htmlspecialchars($row['judul'] ?? '-') ?></td>
+                                    <td class="text-center py-4 px-4"><?= $i ?></td>
+                                    <td class="py-4 px-4"><?= htmlspecialchars($row['nama_lengkap'] ?? $row['nama'] ?? '-') ?></td>
+                                    <td class="py-4 px-4"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
+                                    <td class="py-4 px-4"><?= htmlspecialchars($row['judul'] ?? '-') ?></td>
                                     <td class="py-4 px-4">
-                                        <span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold">
+                                        <span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs">
                                             <?= htmlspecialchars($row['ruangan'] ?? $row['nama_ruangan'] ?? '-') ?>
                                         </span>
                                     </td>
-                                    <td class="text-slate-500 py-4 px-4 font-medium"><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
-                                    <td class="text-slate-650 py-4 px-4 font-bold"><?= htmlspecialchars($row['waktu']) ?></td>
+                                    <td class="py-4 px-4"><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
+                                    <td class="py-4 px-4"><?= htmlspecialchars($row['waktu']) ?></td>
                                     <td class="py-4 px-4">
                                         <div class="flex items-center justify-center gap-2">
                                             <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-amber-50 hover:bg-amber-100 text-amber-600 btn-edit-jadwal"
@@ -194,18 +194,18 @@ $(document).ready(function() {
                 if(res.data.length===0) html='<tr><td colspan="8" class="text-center text-slate-400 py-10 font-medium">Belum ada jadwal</td></tr>';
                 else {
                     res.data.forEach((j, i) => {
-                        html += `<tr class="dt-body-row">
-                            <td class="text-center font-semibold text-slate-400 py-4 px-4">${i+1}</td>
-                            <td class="py-4 px-4"><span class="font-bold text-slate-800">${j.nama_lengkap}</span></td>
-                            <td class="text-slate-500 py-4 px-4 font-semibold">${j.stambuk}</td>
-                            <td class="text-slate-650 py-4 px-4 font-medium leading-relaxed">${j.judul||'-'}</td>
+                        html += `<tr class="dt-body-row" data-id="${j.id}">
+                            <td class="text-center py-4 px-4">${i+1}</td>
+                            <td class="py-4 px-4">${j.nama_lengkap}</td>
+                            <td class="py-4 px-4">${j.stambuk}</td>
+                            <td class="py-4 px-4">${j.judul||'-'}</td>
                             <td class="py-4 px-4">
-                                <span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold">
+                                <span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs">
                                     ${j.ruangan}
                                 </span>
                             </td>
-                            <td class="text-slate-500 py-4 px-4 font-medium">${new Date(j.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})}</td>
-                            <td class="text-slate-650 py-4 px-4 font-bold">${j.waktu}</td>
+                            <td class="py-4 px-4">${new Date(j.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})}</td>
+                            <td class="py-4 px-4">${j.waktu}</td>
                             <td class="py-4 px-4">
                                 <div class="flex items-center justify-center gap-2">
                                     <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-amber-50 hover:bg-amber-100 text-amber-600 btn-edit-jadwal"

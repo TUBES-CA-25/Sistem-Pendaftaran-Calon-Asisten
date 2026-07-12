@@ -35,12 +35,12 @@ $result = $result ?? [];
 
                 <thead>
                     <tr class="">
-                        <th class="dt-head-cell text-center">NO</th>
-                        <th class="dt-head-cell">NAMA LENGKAP</th>
-                        <th class="dt-head-cell text-center">STAMBUK</th>
-                        <th class="dt-head-cell">JURUSAN</th>
-                        <th class="dt-head-cell text-center">STATUS</th>
-                        <th class="dt-head-cell text-center">AKSI</th>
+                        <th class="dt-head-cell text-center">No</th>
+                        <th class="dt-head-cell">Nama Lengkap</th>
+                        <th class="dt-head-cell text-center">Stambuk</th>
+                        <th class="dt-head-cell">Jurusan</th>
+                        <th class="dt-head-cell text-center">Status</th>
+                        <th class="dt-head-cell text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="dt-tbody">
@@ -48,20 +48,20 @@ $result = $result ?? [];
                     <?php foreach ($result as $row): ?>
                         <?php if (empty($row['id'])) continue; // Show ONLY Mahasiswa ?>
                         <tr class="dt-body-row" data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
-                            <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $i ?></td>
+                            <td class="text-center py-4 px-4"><?= $i ?></td>
                             <td class="py-4 px-4">
                                 <div class="flex items-center gap-3">
                                     <img src="<?= $row['photoPath'] ?>" alt="Avatar" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
-                                    <div class="flex flex-col">
-                                        <span class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></span>
-                                        <span class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-0.5">Mahasiswa</span>
+                                    <div>
+                                        <div class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap'] ?? '-') ?></div>
+                                        <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mt-0.5">Calon Asisten</div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="text-center text-slate-600 py-4 px-4 font-semibold">
+                            <td class="text-center py-4 px-4">
                                 <?= htmlspecialchars($row['stambuk'] ?? '-') ?>
                             </td>
-                            <td class="text-slate-500 py-4 px-4 font-medium">
+                            <td class="py-4 px-4">
                                 <?= htmlspecialchars($row['jurusan'] ?? '-') ?>
                             </td>
                             <td class="text-center py-4 px-4">
