@@ -102,24 +102,32 @@ $essayCount = $stats['essay_count'];
             <!-- Existing Banks -->
             <?php foreach ($bankSoalList as $bank): ?>
             <!-- Bank Card Item -->
-            <div class="col-span-1" id="bank-card-<?= $bank['id'] ?>">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition duration-200 overflow-hidden flex flex-col h-full">
-                    <!-- Card Cover Pattern -->
-                    <div class="h-20 bg-blue-600 relative shrink-0" style="background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px, transparent 10px);">
-                        <div class="absolute top-3 right-3">
+            <div class="col-span-1 group relative" id="bank-card-<?= $bank['id'] ?>">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col h-full relative cursor-pointer" onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama'] ?? '') ?>')">
+                    
+                    <!-- Cover Section -->
+                    <div class="h-32 relative shrink-0 flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
+                        <div class="absolute inset-0 bg-white/10" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.2) 1px, transparent 0); background-size: 16px 16px;"></div>
+                        <i class='bx bx-book-bookmark text-white/50 text-6xl absolute -bottom-4 -right-4 transform rotate-12 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6'></i>
+                        <span class="absolute top-3 left-3 bg-white/20 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/20 uppercase tracking-wider">
+                            <?= $bank['jumlah_soal'] ?> Pertanyaan
+                        </span>
+                        
+                        <!-- Actions Dropdown -->
+                        <div class="absolute top-3 right-3 z-10" onclick="event.stopPropagation()">
                             <div class="dropdown">
-                                <button class="w-8 h-8 flex items-center justify-center text-white hover:bg-white/20 rounded-lg transition border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class='bx bx-dots-horizontal-rounded text-xl'></i>
+                                <button class="w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white rounded-lg transition border border-white/20" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class='bx bx-dots-vertical-rounded text-lg'></i>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-xl p-1.5 mt-1 bg-white">
+                                <ul class="dropdown-menu dropdown-menu-end border border-slate-100 shadow-xl rounded-xl p-2 mt-1 bg-white">
                                     <li>
-                                        <a class="dropdown-item flex items-center gap-2 px-3 py-2 text-slate-700 hover:bg-slate-50 rounded-lg text-sm transition" href="javascript:void(0)" onclick="window.editBankModal(<?= $bank['id'] ?>)">
-                                            <i class='bx bx-edit text-blue-600 text-base'></i> <span class="font-medium">Edit</span>
+                                        <a class="dropdown-item flex items-center gap-3 px-3 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg text-sm font-semibold transition" href="javascript:void(0)" onclick="window.editBankModal(<?= $bank['id'] ?>)">
+                                            <i class='bx bx-edit text-base'></i> Edit
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg text-sm transition" href="javascript:void(0)" onclick="deleteBank(<?= $bank['id'] ?>)">
-                                            <i class='bx bx-trash text-base'></i> <span class="font-medium">Hapus</span>
+                                        <a class="dropdown-item flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg text-sm font-semibold transition" href="javascript:void(0)" onclick="deleteBank(<?= $bank['id'] ?>)">
+                                            <i class='bx bx-trash text-base'></i> Hapus
                                         </a>
                                     </li>
                                 </ul>
@@ -127,44 +135,38 @@ $essayCount = $stats['essay_count'];
                         </div>
                     </div>
                     
-                    <div class="p-4 flex flex-col flex-grow">
-                        <div class="cursor-pointer flex-grow" onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama'] ?? '') ?>')">
-                            <h3 class="font-bold text-slate-800 text-base mb-1 line-clamp-1" title="<?= htmlspecialchars($bank['nama'] ?? '') ?>">
-                                <?= htmlspecialchars($bank['nama'] ?? '') ?>
-                            </h3>
-                            <p class="text-slate-400 text-xs mb-3 line-clamp-2 h-8 font-medium">
-                                <?= htmlspecialchars($bank['deskripsi'] ?? 'Tidak ada deskripsi') ?>
-                            </p>
-                            
-                            <div class="flex gap-2 flex-wrap mb-3">
-                                <span class="inline-flex items-center text-[10px] font-bold px-2 py-1 rounded-md bg-red-50 text-red-600">
-                                    <i class='bx bx-file mr-1 text-xs'></i> <?= $bank['jumlah_soal'] ?> Soal
-                                </span>
-                                <span class="inline-flex items-center text-[10px] font-bold px-2 py-1 rounded-md bg-blue-50 text-blue-600" title="Pilihan Ganda">
-                                    PG: <?= $bank['pg_count'] ?? 0 ?>
-                                </span>
-                                <span class="inline-flex items-center text-[10px] font-bold px-2 py-1 rounded-md bg-amber-50 text-amber-600" title="Essay">
-                                    Essay: <?= $bank['essay_count'] ?? 0 ?>
-                                </span>
-                            </div>
-                            <div class="mb-3">
-                                <span class="inline-flex items-center text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-50 text-emerald-600">
-                                    <i class='bx bx-key mr-1 text-sm'></i> <?= htmlspecialchars($bank['token'] ?? '') ?>
-                                </span>
-                            </div>
+                    <!-- Content Section -->
+                    <div class="p-5 flex flex-col flex-grow bg-white relative">
+                        <h3 class="font-bold text-slate-800 text-lg mb-1.5 line-clamp-1 group-hover:text-blue-600 transition-colors" title="<?= htmlspecialchars($bank['nama'] ?? '') ?>">
+                            <?= htmlspecialchars($bank['nama'] ?? '') ?>
+                        </h3>
+                        <p class="text-slate-500 text-xs mb-4 line-clamp-2 leading-relaxed flex-grow">
+                            <?= htmlspecialchars($bank['deskripsi'] ?? 'Tidak ada deskripsi') ?>
+                        </p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="inline-flex items-center text-[10px] font-bold px-2 py-1 rounded bg-blue-50 text-blue-600 border border-blue-100">
+                                PG: <?= $bank['pg_count'] ?? 0 ?>
+                            </span>
+                            <span class="inline-flex items-center text-[10px] font-bold px-2 py-1 rounded bg-amber-50 text-amber-600 border border-amber-100">
+                                Essay: <?= $bank['essay_count'] ?? 0 ?>
+                            </span>
+                            <span class="inline-flex items-center text-[10px] font-bold px-2 py-1 rounded bg-emerald-50 text-emerald-600 border border-emerald-100">
+                                <i class='bx bx-key mr-1 text-sm'></i> <?= htmlspecialchars($bank['token'] ?? '') ?>
+                            </span>
                         </div>
                         
-                        <!-- Active Switch -->
+                        <!-- Footer: Active Switch -->
                         <div class="pt-4 border-t border-slate-100 flex justify-between items-center" onclick="event.stopPropagation()">
-                            <span class="text-xs font-bold text-slate-500">Status: 
-                                <span id="statusText_<?= $bank['id'] ?>" class="<?= ($bank['is_active'] ?? 0) == 1 ? 'text-emerald-600' : 'text-red-500' ?>">
-                                    <?= ($bank['is_active'] ?? 0) == 1 ? 'Aktif' : 'Tidak Aktif' ?>
+                            <span class="text-xs font-bold text-slate-500 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full <?= ($bank['is_active'] ?? 0) == 1 ? 'bg-emerald-500' : 'bg-slate-300' ?>" id="statusDot_<?= $bank['id'] ?>"></span>
+                                <span id="statusText_<?= $bank['id'] ?>" class="<?= ($bank['is_active'] ?? 0) == 1 ? 'text-slate-700' : 'text-slate-400' ?>">
+                                    <?= ($bank['is_active'] ?? 0) == 1 ? 'Aktif' : 'Non-Aktif' ?>
                                 </span>
                             </span>
                             <div class="form-check form-switch p-0 m-0 flex items-center">
-                                <input class="form-check-input bank-active-switch cursor-pointer w-9 h-5 bg-slate-200 checked:bg-blue-600 border-0 rounded-full appearance-none transition-colors" type="checkbox" id="activeSwitch_<?= $bank['id'] ?>" 
-                                <?= ($bank['is_active'] ?? 0) == 1 ? 'checked' : '' ?>
-                                onchange="window.activateBank(<?= $bank['id'] ?>)">
+                                <input class="form-check-input bank-active-switch cursor-pointer w-10 h-5 bg-slate-200 checked:bg-blue-600 border-0 rounded-full appearance-none transition-colors" type="checkbox" id="activeSwitch_<?= $bank['id'] ?>" 
+                                    value="<?= $bank['id'] ?>" <?= ($bank['is_active'] ?? 0) == 1 ? 'checked' : '' ?> onchange="window.activateBank(<?= $bank['id'] ?>)">
                             </div>
                         </div>
                     </div>
@@ -174,13 +176,13 @@ $essayCount = $stats['essay_count'];
             
             <!-- Create New Bank Card -->
             <div class="col-span-1">
-                <div class="bg-white rounded-xl border border-dashed border-slate-300 hover:border-blue-500 hover:shadow-md cursor-pointer transition p-4 flex flex-col justify-center items-center text-center h-full min-h-[200px]" 
+                <div class="bg-white rounded-2xl border-2 border-dashed border-slate-200 hover:border-blue-400 hover:bg-blue-50/30 cursor-pointer transition-all duration-300 p-4 flex flex-col justify-center items-center text-center h-full min-h-[280px] group" 
                      data-bs-toggle="modal" data-bs-target="#createBankModal">
-                    <div class="w-12 h-12 rounded-xl mb-3 flex justify-center items-center bg-blue-50 text-blue-600 transition group-hover:scale-105">
-                        <i class='bx bx-plus text-2xl'></i>
+                    <div class="w-16 h-16 rounded-2xl mb-4 flex justify-center items-center bg-blue-100 text-blue-600 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-inner">
+                        <i class='bx bx-plus text-3xl'></i>
                     </div>
-                    <h3 class="font-bold text-slate-800 mb-1 text-sm">Buat Bank Baru</h3>
-                    <p class="text-slate-400 text-xs max-w-[180px] font-medium">Klik untuk menambahkan bank soal baru</p>
+                    <h3 class="font-bold text-slate-700 mb-1.5 text-base group-hover:text-blue-700 transition-colors">Buat Bank Baru</h3>
+                    <p class="text-slate-400 text-xs max-w-[180px] font-medium leading-relaxed">Klik untuk membuat bank soal baru</p>
                 </div>
             </div>
         </div>
