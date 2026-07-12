@@ -56,7 +56,7 @@
                 @apply flex items-center gap-2 text-sm text-slate-500 font-medium m-0 cursor-pointer;
             }
             .dataTables_length select {
-                @apply border border-slate-200 rounded-lg px-3 py-1.5 text-sm text-slate-700 bg-white
+                @apply border border-slate-200 rounded-lg pl-3 pr-8 py-1.5 text-sm text-slate-700 bg-white
                        hover:border-blue-400 focus:ring-2 focus:ring-blue-100 focus:border-blue-500
                        outline-none transition-all cursor-pointer shadow-sm;
             }
