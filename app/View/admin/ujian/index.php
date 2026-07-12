@@ -32,46 +32,46 @@ $essayCount = $stats['essay_count'];
     <!-- Stats Badges -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="col-span-1">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex items-center gap-4 hover:shadow-md transition">
-                <div class="rounded-xl flex justify-center items-center shrink-0 w-12 h-12 bg-blue-50 text-blue-600">
-                    <i class='bx bx-folder text-2xl'></i>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex items-center gap-3 hover:shadow-md transition">
+                <div class="rounded-lg flex justify-center items-center shrink-0 w-10 h-10 bg-blue-50 text-blue-600">
+                    <i class='bx bx-folder text-xl'></i>
                 </div>
                 <div>
-                    <h3 class="text-2xl font-bold text-slate-800" id="stat-count-bank"><?= $bankCount ?></h3>
-                    <div class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Bank Soal</div>
+                    <h3 class="text-xl font-bold text-slate-800" id="stat-count-bank"><?= $bankCount ?></h3>
+                    <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Bank Soal</div>
                 </div>
             </div>
         </div>
         <div class="col-span-1">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex items-center gap-4 hover:shadow-md transition">
-                <div class="rounded-xl flex justify-center items-center shrink-0 w-12 h-12 bg-emerald-50 text-emerald-600">
-                    <i class='bx bx-file text-2xl'></i>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex items-center gap-3 hover:shadow-md transition">
+                <div class="rounded-lg flex justify-center items-center shrink-0 w-10 h-10 bg-emerald-50 text-emerald-600">
+                    <i class='bx bx-file text-xl'></i>
                 </div>
                 <div>
-                    <h3 class="text-2xl font-bold text-slate-800" id="stat-count-total"><?= $totalSoal ?></h3>
-                    <div class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Soal</div>
+                    <h3 class="text-xl font-bold text-slate-800" id="stat-count-total"><?= $totalSoal ?></h3>
+                    <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Total Soal</div>
                 </div>
             </div>
         </div>
         <div class="col-span-1">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex items-center gap-4 hover:shadow-md transition">
-                <div class="rounded-xl flex justify-center items-center shrink-0 w-12 h-12 bg-sky-50 text-sky-600">
-                    <i class='bx bx-list-check text-2xl'></i>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex items-center gap-3 hover:shadow-md transition">
+                <div class="rounded-lg flex justify-center items-center shrink-0 w-10 h-10 bg-sky-50 text-sky-600">
+                    <i class='bx bx-list-check text-xl'></i>
                 </div>
                 <div>
-                    <h3 class="text-2xl font-bold text-slate-800" id="stat-count-pg"><?= $pgCount ?></h3>
-                    <div class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Pilihan Ganda</div>
+                    <h3 class="text-xl font-bold text-slate-800" id="stat-count-pg"><?= $pgCount ?></h3>
+                    <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Pil. Ganda</div>
                 </div>
             </div>
         </div>
         <div class="col-span-1">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex items-center gap-4 hover:shadow-md transition">
-                <div class="rounded-xl flex justify-center items-center shrink-0 w-12 h-12 bg-amber-50 text-amber-600">
-                    <i class='bx bx-edit text-2xl'></i>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex items-center gap-3 hover:shadow-md transition">
+                <div class="rounded-lg flex justify-center items-center shrink-0 w-10 h-10 bg-amber-50 text-amber-600">
+                    <i class='bx bx-edit text-xl'></i>
                 </div>
                 <div>
-                    <h3 class="text-2xl font-bold text-slate-800" id="stat-count-essay"><?= $essayCount ?></h3>
-                    <div class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Essay</div>
+                    <h3 class="text-xl font-bold text-slate-800" id="stat-count-essay"><?= $essayCount ?></h3>
+                    <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Essay</div>
                 </div>
             </div>
         </div>
@@ -103,9 +103,9 @@ $essayCount = $stats['essay_count'];
             <?php foreach ($bankSoalList as $bank): ?>
             <!-- Bank Card Item -->
             <div class="col-span-1" id="bank-card-<?= $bank['id'] ?>">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition duration-200 overflow-hidden flex flex-col h-full">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition duration-200 overflow-hidden flex flex-col h-full">
                     <!-- Card Cover Pattern -->
-                    <div class="h-28 bg-blue-600 relative shrink-0" style="background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px, transparent 10px);">
+                    <div class="h-20 bg-blue-600 relative shrink-0" style="background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 2px, transparent 2px, transparent 10px);">
                         <div class="absolute top-3 right-3">
                             <div class="dropdown">
                                 <button class="w-8 h-8 flex items-center justify-center text-white hover:bg-white/20 rounded-lg transition border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -127,28 +127,28 @@ $essayCount = $stats['essay_count'];
                         </div>
                     </div>
                     
-                    <div class="p-5 flex flex-col flex-grow">
+                    <div class="p-4 flex flex-col flex-grow">
                         <div class="cursor-pointer flex-grow" onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama'] ?? '') ?>')">
-                            <h3 class="font-bold text-slate-800 text-lg mb-1 line-clamp-1" title="<?= htmlspecialchars($bank['nama'] ?? '') ?>">
+                            <h3 class="font-bold text-slate-800 text-base mb-1 line-clamp-1" title="<?= htmlspecialchars($bank['nama'] ?? '') ?>">
                                 <?= htmlspecialchars($bank['nama'] ?? '') ?>
                             </h3>
-                            <p class="text-slate-400 text-xs mb-4 line-clamp-2 h-8 font-medium">
+                            <p class="text-slate-400 text-xs mb-3 line-clamp-2 h-8 font-medium">
                                 <?= htmlspecialchars($bank['deskripsi'] ?? 'Tidak ada deskripsi') ?>
                             </p>
                             
                             <div class="flex gap-2 flex-wrap mb-3">
-                                <span class="inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full bg-red-50 text-red-600">
-                                    <i class='bx bx-file mr-1 text-sm'></i> <?= $bank['jumlah_soal'] ?> Soal
+                                <span class="inline-flex items-center text-[10px] font-bold px-2 py-1 rounded-md bg-red-50 text-red-600">
+                                    <i class='bx bx-file mr-1 text-xs'></i> <?= $bank['jumlah_soal'] ?> Soal
                                 </span>
-                                <span class="inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-600" title="Pilihan Ganda">
+                                <span class="inline-flex items-center text-[10px] font-bold px-2 py-1 rounded-md bg-blue-50 text-blue-600" title="Pilihan Ganda">
                                     PG: <?= $bank['pg_count'] ?? 0 ?>
                                 </span>
-                                <span class="inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600" title="Essay">
+                                <span class="inline-flex items-center text-[10px] font-bold px-2 py-1 rounded-md bg-amber-50 text-amber-600" title="Essay">
                                     Essay: <?= $bank['essay_count'] ?? 0 ?>
                                 </span>
                             </div>
-                            <div class="mb-4">
-                                <span class="inline-flex items-center text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600">
+                            <div class="mb-3">
+                                <span class="inline-flex items-center text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-50 text-emerald-600">
                                     <i class='bx bx-key mr-1 text-sm'></i> <?= htmlspecialchars($bank['token'] ?? '') ?>
                                 </span>
                             </div>
@@ -174,10 +174,10 @@ $essayCount = $stats['essay_count'];
             
             <!-- Create New Bank Card -->
             <div class="col-span-1">
-                <div class="bg-white rounded-2xl border border-dashed border-slate-300 hover:border-blue-500 hover:shadow-md cursor-pointer transition p-6 flex flex-col justify-center items-center text-center h-full min-h-[300px]" 
+                <div class="bg-white rounded-xl border border-dashed border-slate-300 hover:border-blue-500 hover:shadow-md cursor-pointer transition p-4 flex flex-col justify-center items-center text-center h-full min-h-[200px]" 
                      data-bs-toggle="modal" data-bs-target="#createBankModal">
-                    <div class="w-16 h-16 rounded-2xl mb-4 flex justify-center items-center bg-blue-50 text-blue-600 transition group-hover:scale-105">
-                        <i class='bx bx-plus text-3xl'></i>
+                    <div class="w-12 h-12 rounded-xl mb-3 flex justify-center items-center bg-blue-50 text-blue-600 transition group-hover:scale-105">
+                        <i class='bx bx-plus text-2xl'></i>
                     </div>
                     <h3 class="font-bold text-slate-800 mb-1 text-sm">Buat Bank Baru</h3>
                     <p class="text-slate-400 text-xs max-w-[180px] font-medium">Klik untuk menambahkan bank soal baru</p>
