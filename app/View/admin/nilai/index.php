@@ -9,17 +9,17 @@ $nilai = $nilai ?? [];
 ?>
 
 <main>
-    <!-- Page Header -->
-    <?php
-        $title = 'Daftar Nilai Tes Tertulis';
-        $subtitle = 'Kelola dan lihat nilai tes tertulis mahasiswa';
-        $icon = 'bi bi-clipboard-data';
-        require_once __DIR__ . '/../../templates/components/PageHeader.php';
-    ?>
+    <!-- View List -->
+    <div id="view-list">
+        <!-- Page Header -->
+        <?php
+            $title = 'Daftar Nilai Tes Tertulis';
+            $subtitle = 'Kelola dan lihat nilai tes tertulis mahasiswa';
+            $icon = 'bi bi-clipboard-data';
+            require_once __DIR__ . '/../../templates/components/PageHeader.php';
+        ?>
 
-    <div class="max-w-7xl mx-auto px-4 py-6">
-        <!-- View List -->
-        <div id="view-list">
+        <div class="max-w-7xl mx-auto px-4 py-6">
 
 
             <?php if (empty($nilai)): ?>
@@ -106,122 +106,121 @@ $nilai = $nilai ?? [];
                 </div>
             <?php endif; ?>
         </div>
+    </div>
 
-        <!-- View Detail (Inline) -->
-        <!-- View Detail (Inline) -->
-        <div id="view-detail" class="hidden">
-            <!-- Header Section with vibrant gradient -->
-            <div class="relative bg-gradient-to-r from-blue-600 to-indigo-700 rounded-b-3xl sm:rounded-3xl shadow-lg mb-8 overflow-hidden -mx-4 sm:mx-0 px-6 py-8 sm:p-10 mt-0 sm:mt-6">
-                <!-- Decorative background elements -->
-                <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white opacity-10 blur-3xl"></div>
-                <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-indigo-500 opacity-20 blur-3xl"></div>
-                
-                <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                    <div>
-                        <button class="mb-5 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold text-sm rounded-xl transition flex items-center gap-2 border border-white/20" id="btnBack">
-                            <i class="bi bi-arrow-left"></i> Kembali ke Daftar
-                        </button>
-                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3 flex items-center gap-3">
-                            <span id="detailNama">Nama Mahasiswa</span>
-                        </h2>
-                        <div class="flex flex-wrap items-center gap-3">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold rounded-lg border border-white/10">
-                                <i class="bi bi-person-badge"></i> <span id="detailStambuk">Stambuk</span>
-                            </span>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/80 backdrop-blur-md text-white text-xs font-bold rounded-lg border border-emerald-400/50 shadow-sm">
-                                Nilai Akhir: <span id="detailTotalNilai">-</span>
-                            </span>
-                        </div>
+    <!-- View Detail (Inline) -->
+    <div id="view-detail" class="hidden max-w-7xl mx-auto px-4 py-6">
+        <!-- Header Section with vibrant gradient -->
+        <div class="relative bg-gradient-to-r from-blue-600 to-indigo-700 rounded-b-3xl sm:rounded-3xl shadow-lg mb-8 overflow-hidden -mx-4 sm:mx-0 px-6 py-8 sm:p-10 mt-0 sm:mt-6">
+            <!-- Decorative background elements -->
+            <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white opacity-10 blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-indigo-500 opacity-20 blur-3xl"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <button class="mb-5 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold text-sm rounded-xl transition flex items-center gap-2 border border-white/20" id="btnBack">
+                        <i class="bi bi-arrow-left"></i> Kembali ke Daftar
+                    </button>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3 flex items-center gap-3">
+                        <span id="detailNama">Nama Mahasiswa</span>
+                    </h2>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold rounded-lg border border-white/10">
+                            <i class="bi bi-person-badge"></i> <span id="detailStambuk">Stambuk</span>
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/80 backdrop-blur-md text-white text-xs font-bold rounded-lg border border-emerald-400/50 shadow-sm">
+                            Nilai Akhir: <span id="detailTotalNilai">-</span>
+                        </span>
                     </div>
-                    
-                    <!-- Quick Score Input Form in Header -->
-                    <div class="bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl shadow-xl w-full md:w-auto mt-4 md:mt-0">
-                        <h5 class="font-bold text-white mb-3 text-sm flex items-center gap-2">
-                            <i class="bi bi-pencil-square text-blue-200"></i> Input Nilai Akhir
-                        </h5>
-                        <form id="formNilaiAkhir" class="flex items-center gap-3">
-                            <div class="relative">
-                                <input type="number"
-                                     id="nilaiAkhir"
-                                     class="w-full sm:w-32 px-4 py-2.5 rounded-xl border border-white/30 bg-white/20 text-white placeholder-blue-100 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/30 font-bold text-center transition"
-                                     placeholder="0-100"
-                                     min="0"
-                                     max="100">
-                            </div>
-                            <button type="submit" class="px-5 py-2.5 bg-white text-blue-700 hover:bg-blue-50 font-bold text-sm rounded-xl transition flex items-center gap-2 shadow-lg hover:-translate-y-0.5">
-                                <i class="bi bi-check-lg"></i> Simpan
-                            </button>
-                        </form>
+                </div>
+                
+                <!-- Quick Score Input Form in Header -->
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl shadow-xl w-full md:w-auto mt-4 md:mt-0">
+                    <h5 class="font-bold text-white mb-3 text-sm flex items-center gap-2">
+                        <i class="bi bi-pencil-square text-blue-200"></i> Input Nilai Akhir
+                    </h5>
+                    <form id="formNilaiAkhir" class="flex items-center gap-3">
+                        <div class="relative">
+                            <input type="number"
+                                    id="nilaiAkhir"
+                                    class="w-full sm:w-32 px-4 py-2.5 rounded-xl border border-white/30 bg-white/20 text-white placeholder-blue-100 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/30 font-bold text-center transition"
+                                    placeholder="0-100"
+                                    min="0"
+                                    max="100">
+                        </div>
+                        <button type="submit" class="px-5 py-2.5 bg-white text-blue-700 hover:bg-blue-50 font-bold text-sm rounded-xl transition flex items-center gap-2 shadow-lg hover:-translate-y-0.5">
+                            <i class="bi bi-check-lg"></i> Simpan
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Container -->
+        <div class="space-y-8 pb-10">
+            <!-- Statistik Jawaban - Premium Grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl sm:text-2xl shadow-inner">
+                        <i class="bi bi-list-task"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-0.5">Total Soal</div>
+                        <div class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="statTotal">0</div>
+                    </div>
+                </div>
+                <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl sm:text-2xl shadow-inner">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-0.5">Benar</div>
+                        <div class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="statBenar">0</div>
+                    </div>
+                </div>
+                <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-xl sm:text-2xl shadow-inner">
+                        <i class="bi bi-x-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-0.5">Salah</div>
+                        <div class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="statSalah">0</div>
+                    </div>
+                </div>
+                <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center text-xl sm:text-2xl shadow-inner">
+                        <i class="bi bi-dash-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-0.5">Kosong</div>
+                        <div class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="statTidakDijawab">0</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Main Content Container -->
-            <div class="space-y-8 pb-10">
-                <!-- Statistik Jawaban - Premium Grid -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                    <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all">
-                        <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl sm:text-2xl shadow-inner">
-                            <i class="bi bi-list-task"></i>
-                        </div>
-                        <div>
-                            <div class="text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-0.5">Total Soal</div>
-                            <div class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="statTotal">0</div>
-                        </div>
-                    </div>
-                    <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all">
-                        <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl sm:text-2xl shadow-inner">
-                            <i class="bi bi-check-lg"></i>
-                        </div>
-                        <div>
-                            <div class="text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-0.5">Benar</div>
-                            <div class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="statBenar">0</div>
-                        </div>
-                    </div>
-                    <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all">
-                        <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-xl sm:text-2xl shadow-inner">
-                            <i class="bi bi-x-lg"></i>
-                        </div>
-                        <div>
-                            <div class="text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-0.5">Salah</div>
-                            <div class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="statSalah">0</div>
-                        </div>
-                    </div>
-                    <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all">
-                        <div class="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center text-xl sm:text-2xl shadow-inner">
-                            <i class="bi bi-dash-lg"></i>
-                        </div>
-                        <div>
-                            <div class="text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-0.5">Kosong</div>
-                            <div class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="statTidakDijawab">0</div>
-                        </div>
+            <!-- Soal Jawaban Section -->
+            <div>
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <h3 class="font-bold text-xl text-slate-800 flex items-center gap-2">
+                        <i class="bi bi-journal-text text-blue-600"></i> Review Pekerjaan
+                    </h3>
+                    <div class="bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm inline-flex">
+                        <button class="filter-btn px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg transition" data-filter="semua">
+                            Semua
+                        </button>
+                        <button class="filter-btn px-4 py-2 bg-transparent text-slate-600 hover:text-blue-600 text-sm font-semibold rounded-lg transition" data-filter="pilihan_ganda">
+                            Pil. Ganda
+                        </button>
+                        <button class="filter-btn px-4 py-2 bg-transparent text-slate-600 hover:text-blue-600 text-sm font-semibold rounded-lg transition" data-filter="essay">
+                            Essay
+                        </button>
                     </div>
                 </div>
-
-                <!-- Soal Jawaban Section -->
-                <div>
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                        <h3 class="font-bold text-xl text-slate-800 flex items-center gap-2">
-                            <i class="bi bi-journal-text text-blue-600"></i> Review Pekerjaan
-                        </h3>
-                        <div class="bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm inline-flex">
-                            <button class="filter-btn px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg transition" data-filter="semua">
-                                Semua
-                            </button>
-                            <button class="filter-btn px-4 py-2 bg-transparent text-slate-600 hover:text-blue-600 text-sm font-semibold rounded-lg transition" data-filter="pilihan_ganda">
-                                Pil. Ganda
-                            </button>
-                            <button class="filter-btn px-4 py-2 bg-transparent text-slate-600 hover:text-blue-600 text-sm font-semibold rounded-lg transition" data-filter="essay">
-                                Essay
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div id="soalJawabanList" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                        <div class="col-span-full flex flex-col items-center justify-center py-12 bg-white rounded-3xl border border-slate-100 border-dashed">
-                            <i class="bi bi-hourglass-split text-4xl text-slate-300 mb-3"></i>
-                            <p class="text-slate-500 font-medium">Memuat data pekerjaan...</p>
-                        </div>
+                
+                <div id="soalJawabanList" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <div class="col-span-full flex flex-col items-center justify-center py-12 bg-white rounded-3xl border border-slate-100 border-dashed">
+                        <i class="bi bi-hourglass-split text-4xl text-slate-300 mb-3"></i>
+                        <p class="text-slate-500 font-medium">Memuat data pekerjaan...</p>
                     </div>
                 </div>
             </div>
