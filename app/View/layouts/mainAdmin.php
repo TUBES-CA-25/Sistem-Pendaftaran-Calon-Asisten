@@ -29,7 +29,14 @@
     <!-- jQuery (Must be loaded before body for inline scripts) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-                <style type="text/tailwindcss">
+    <style type="text/tailwindcss">
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
         @layer components {
 
             /* ============================================================

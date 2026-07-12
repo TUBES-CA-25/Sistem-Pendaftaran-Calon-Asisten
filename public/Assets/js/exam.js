@@ -87,6 +87,14 @@ window.loadBankQuestions = function(bankId) {
 window.renderSoalList = function(soalArray) {
     const soalList = document.getElementById('soalList');
     
+    // Update Question Count & Points
+    const toggleJawaban = document.getElementById('toggleJawaban') ? document.getElementById('toggleJawaban').checked : true;
+    
+    if(document.getElementById('detailBankQuestionCount')) {
+        document.getElementById('detailBankQuestionCount').innerText = soalArray ? soalArray.length : 0;
+        document.getElementById('detailBankPoints').innerText = soalArray ? soalArray.length * 5 : 0;
+    }
+    
     if (!soalArray || soalArray.length === 0) {
         soalList.innerHTML = `
             <div class="text-center py-12 flex flex-col items-center">
@@ -100,41 +108,51 @@ window.renderSoalList = function(soalArray) {
     let html = '';
     soalArray.forEach((soal, index) => {
         const isPG = (soal.status_soal || '') === 'pilihan_ganda';
-        const optionsHtml = isPG && soal.pilihan ? window.renderOptions(soal.pilihan) : '';
-        const borderColor = isPG ? 'border-blue-500' : 'border-amber-500';
+        
+        // Pass toggle state & actual jawaban
+        const optionsHtml = isPG && soal.pilihan ? window.renderOptions(soal.pilihan, soal.jawaban, toggleJawaban) : '';
+        
+        const questionType = isPG ? 'PILIHAN GANDA' : 'ESSAY';
+        const points = 5; // Default 5 points per question as mock
+        const timeLimit = '45 detik'; // Mock
         
         html += `
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-4 ${borderColor} mb-4 transition-all duration-300 hover:shadow-md" data-id="${soal.id}" data-type="${soal.status_soal || 'essay'}">
-            <div>
-                <div class="flex justify-between items-start mb-4">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-blue-600 text-white rounded-lg text-lg px-3 py-1 font-bold flex items-center justify-center">${index + 1}</div>
-                        <span class="rounded-full text-xs font-semibold px-3 py-1.5 ${isPG ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'}">
-                            ${isPG ? 'Pilihan Ganda' : 'Essay'}
-                        </span>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="p-2 bg-slate-50 hover:bg-blue-50 text-blue-600 rounded-xl transition-colors border-0" onclick="window.editSoal(${soal.id})" title="Edit">
-                            <i class='bx bx-edit text-lg'></i>
-                        </button>
-                        <button class="p-2 bg-slate-50 hover:bg-red-50 text-red-600 rounded-xl transition-colors border-0" onclick="window.deleteSoal(${soal.id})" title="Hapus">
-                            <i class='bx bx-trash text-lg'></i>
-                        </button>
-                    </div>
+        <div class="bg-white border-b border-slate-100 last:border-0 p-6 sm:px-8 hover:bg-slate-50/50 transition duration-300 group" data-id="${soal.id}" data-type="${soal.status_soal || 'essay'}">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-4">
+                <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    ${index + 1}. ${questionType} &bull; ${timeLimit} &bull; ${points} poin
                 </div>
-                ${soal.image_url ? `
-                <div class="mb-4">
-                    <img src="${window.getImageUrl(soal.image_url)}" alt="Gambar Soal" style="max-width: 100%; max-height: 400px; border-radius: 12px; border: 1px solid #e2e8f0;" onerror="this.style.display='none'">
-                </div>` : ''}
-                <div class="mb-4 text-slate-800 text-sm leading-relaxed font-medium condition-render-markdown">${soal.deskripsi ? marked.parse(soal.deskripsi) : ''}</div>
-                ${optionsHtml}
-                ${soal.jawaban ? `
-                <div class="bg-emerald-50 border-l-4 border-emerald-500 text-emerald-800 p-4 rounded-xl flex items-center gap-3 mt-4">
-                    <i class='bx bx-check-circle text-emerald-600 text-xl'></i>
-                    <div>
-                        <div class="text-xs font-semibold uppercase text-emerald-600 tracking-wider">Jawaban Benar</div>
-                        <div class="text-sm font-medium mt-0.5">${window.escapeHtml(soal.jawaban)}</div>
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-200 text-slate-500 transition" onclick="window.editSoal(${soal.id})" title="Edit">
+                        <i class='bx bx-edit'></i>
+                    </button>
+                    <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-200 text-slate-500 transition" onclick="window.deleteSoal(${soal.id})" title="Hapus">
+                        <i class='bx bx-trash'></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Question Content -->
+            <div class="flex flex-col md:flex-row gap-6">
+                <!-- Text -->
+                <div class="flex-1">
+                    <div class="text-slate-800 text-[15px] font-medium leading-relaxed mb-4 condition-render-markdown">
+                        ${soal.deskripsi ? marked.parse(soal.deskripsi) : ''}
                     </div>
+                    ${optionsHtml}
+                    ${(!isPG && toggleJawaban && soal.jawaban) ? `
+                    <div class="mt-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                        <div class="text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1 flex items-center gap-1.5"><i class='bx bxs-check-circle'></i> Jawaban Benar</div>
+                        <div class="text-emerald-800 text-sm font-medium">${window.escapeHtml(soal.jawaban)}</div>
+                    </div>` : ''}
+                </div>
+                
+                <!-- Image if any -->
+                ${soal.image_url ? `
+                <div class="w-full md:w-64 shrink-0">
+                    <img src="${window.getImageUrl(soal.image_url)}" alt="Gambar Soal" class="w-full rounded-xl border border-slate-200 object-cover" onerror="this.style.display='none'">
                 </div>` : ''}
             </div>
         </div>`;
@@ -143,17 +161,15 @@ window.renderSoalList = function(soalArray) {
     soalList.innerHTML = html;
 }
 
-window.renderOptions = function(pilihan) {
+window.renderOptions = function(pilihan, jawaban, showJawaban) {
     if (!pilihan) return '';
 
-    // Handle HTML entities in the string
     const decodedPilihan = new DOMParser().parseFromString(pilihan, "text/html").documentElement.textContent;
 
     let options = [];
     const pattern = /([A-E])\.\s*(.*?)(?=(?:,\s*[A-E]\.)|$)/g;
     let match;
 
-    // Try to parse structured options A. xxx, B. xxx
     while ((match = pattern.exec(decodedPilihan)) !== null) {
         options.push({
             key: match[1],
@@ -161,7 +177,6 @@ window.renderOptions = function(pilihan) {
         });
     }
 
-    // Fallback: simple split if no pattern match
     if (options.length === 0) {
         const parts = decodedPilihan.split(',').map(p => p.trim());
         options = parts.map((part, idx) => ({
@@ -170,26 +185,25 @@ window.renderOptions = function(pilihan) {
         }));
     }
 
-    // Check if any option contains image URL
-    const hasImages = options.some(opt =>
-        opt.value && (
-            opt.value.includes('.jpg') ||
-            opt.value.includes('.jpeg') ||
-            opt.value.includes('.png') ||
-            opt.value.includes('.gif') ||
-            opt.value.includes('.webp')
-        )
-    );
-
-    let html = '<div class="p-4 bg-slate-50/70 rounded-xl mb-4 border border-slate-100/80">';
-
-    // Only show "Pilihan Jawaban" header if not images
-    if (!hasImages) {
-        html += '<div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Pilihan Jawaban</div>';
+    // Determine the correct key
+    let correctKey = null;
+    if (jawaban) {
+        const jwb = jawaban.trim().toUpperCase();
+        options.forEach(opt => {
+            if (jwb === opt.key.toUpperCase() || jwb.startsWith(opt.key.toUpperCase() + '.')) {
+                correctKey = opt.key;
+            }
+        });
+        if (!correctKey) {
+            const matchJawaban = jwb.match(/^([A-E])/);
+            if (matchJawaban) correctKey = matchJawaban[1];
+        }
     }
 
+    let html = '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">';
+
     options.forEach(opt => {
-        // Check if this specific option is an image URL
+        const isCorrect = showJawaban && opt.key === correctKey;
         const isImage = opt.value && (
             opt.value.includes('.jpg') ||
             opt.value.includes('.jpeg') ||
@@ -197,22 +211,23 @@ window.renderOptions = function(pilihan) {
             opt.value.includes('.gif') ||
             opt.value.includes('.webp')
         );
+        
+        // Styling based on correctness
+        const borderClass = isCorrect ? 'border-emerald-500 bg-emerald-50/50' : 'border-slate-200 bg-white';
+        const iconHtml = isCorrect 
+            ? `<div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0"><i class='bx bx-check text-lg'></i></div>`
+            : `<div class="w-6 h-6 rounded-full border-2 border-slate-300 shrink-0"></div>`;
 
-        if (isImage) {
-            html += `
-                <div class="mb-3">
-                    <strong class="text-slate-700">${opt.key}.</strong>
-                    <div class="mt-2">
-                        <img src="${window.getImageUrl(escapeHtml(opt.value))}"
-                             alt="Pilihan ${opt.key}"
-                             style="max-width: 100%; height: auto; max-height: 200px; border-radius: 8px; border: 1px solid #e2e8f0; display: block;"
-                             onerror="this.onerror=null; this.src='https://placehold.co/400x200?text=Gambar+Tidak+Ditemukan'; this.style.border='2px dashed #ff0000';">
-                    </div>
-                </div>
-            `;
-        } else {
-            html += `<div class="py-1.5 text-slate-800 font-medium">${escapeHtml(opt.key + '. ' + opt.value)}</div>`;
-        }
+        html += `
+        <div class="flex items-start gap-3 p-3.5 rounded-xl border ${borderClass} transition-colors">
+            ${iconHtml}
+            <div class="flex-1">
+                ${isImage 
+                    ? `<img src="${window.getImageUrl(escapeHtml(opt.value))}" class="max-w-full h-auto max-h-32 rounded-lg border border-slate-200" onerror="this.onerror=null; this.src='https://placehold.co/400x200?text=Gambar+Tidak+Ditemukan'; this.style.border='2px dashed #ff0000';">` 
+                    : `<div class="text-[14px] text-slate-700 font-medium leading-snug break-words">${escapeHtml(opt.value)}</div>`
+                }
+            </div>
+        </div>`;
     });
 
     html += '</div>';

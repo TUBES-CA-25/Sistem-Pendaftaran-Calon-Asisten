@@ -188,38 +188,113 @@ $essayCount = $stats['essay_count'];
 
     <!-- Bank Detail View -->
     <div class="bank-detail-view hidden" id="bankDetailView">
-        <div class="flex items-center mb-6 gap-4 flex-wrap">
-            <button class="w-10 h-10 flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full transition border-0" onclick="closeBankDetail()">
-                <i class='bx bx-arrow-back text-xl'></i>
-            </button>
-            <div>
-                <h3 class="text-xl font-bold text-slate-800" id="detailBankTitle">Nama Bank Soal</h3>
-                <div class="text-slate-400 text-xs font-semibold">Kelola daftar soal dalam bank ini</div>
-            </div>
-            <div class="ml-auto">
-                <button class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl flex items-center gap-2 transition shadow-sm border-0" data-bs-toggle="modal" data-bs-target="#addSoalModal">
-                    <i class='bx bx-plus text-xl'></i> Tambah Soal
-                </button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <div class="p-4 border-b border-slate-100 bg-slate-50/50">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="relative w-full md:w-80">
-                        <i class='bx bx-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg'></i>
-                        <input type="text" class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" id="searchSoal" placeholder="Cari soal...">
+        <!-- Quizizz Style Header Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 mb-6 overflow-hidden">
+            <div class="p-6 md:p-8 flex flex-col md:flex-row md:items-start gap-6">
+                <!-- Icon/Cover -->
+                <div class="w-24 h-24 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 border border-blue-100">
+                    <i class='bx bx-book-content text-5xl text-blue-400'></i>
+                </div>
+                <!-- Title & Meta -->
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-2">
+                        <h3 class="text-2xl font-bold text-slate-800" id="detailBankTitle">Nama Bank Soal</h3>
+                        <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded border border-slate-200">Draf</span>
                     </div>
-                    <div class="flex gap-2">
-                        <button class="filter-btn active px-3.5 py-1.5 text-xs font-bold rounded-lg transition border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white" data-filter="all">Semua</button>
-                        <button class="filter-btn px-3.5 py-1.5 text-xs font-bold rounded-lg transition border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white" data-filter="pilihan_ganda">Pilihan Ganda</button>
-                        <button class="filter-btn px-3.5 py-1.5 text-xs font-bold rounded-lg transition border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white" data-filter="essay">Essay</button>
+                    
+                    <div class="flex flex-wrap items-center gap-y-2 gap-x-3 text-sm font-medium text-slate-500 mb-4">
+                        <div class="flex items-center gap-1.5 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
+                            <i class='bx bxs-check-circle'></i> Assessment
+                        </div>
+                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class='bx bx-user text-xs text-blue-600'></i>
+                            </div>
+                            <span id="detailBankAuthor">Admin</span>
+                        </div>
+                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                        <span>Universitas</span>
+                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                        <span class="text-red-500 font-semibold" id="detailBankStatus">Sedang</span>
                     </div>
                 </div>
             </div>
-            <div class="p-6 bg-slate-50/40" style="min-height: 400px; max-height: 600px; overflow-y: auto;">
-                <div id="soalList" class="flex flex-col gap-4">
-                    <!-- Soal items rendered by JS -->
+            
+            <!-- Toolbar -->
+            <div class="bg-slate-50 border-t border-slate-100 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <button class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-lg flex items-center gap-2 transition">
+                        <i class='bx bx-folder'></i> Simpan
+                    </button>
+                    <button class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-lg flex items-center gap-2 transition">
+                        <i class='bx bx-share-alt'></i> Sebarkan <i class='bx bx-chevron-down ml-1 text-slate-400'></i>
+                    </button>
+                    <button class="w-10 h-10 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg flex items-center justify-center transition">
+                        <i class='bx bx-dots-vertical-rounded'></i>
+                    </button>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <button class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-lg flex items-center gap-2 transition" onclick="closeBankDetail()">
+                        <i class='bx bx-undo'></i> Batal
+                    </button>
+                    <button class="px-4 py-2 bg-white border border-pink-200 text-pink-600 hover:bg-pink-50 text-sm font-semibold rounded-lg flex items-center gap-2 transition">
+                        <i class='bx bx-edit'></i> Edit
+                    </button>
+                    <button class="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-semibold rounded-lg flex items-center gap-2 transition" data-bs-toggle="modal" data-bs-target="#addSoalModal">
+                        <i class='bx bx-plus'></i> Tambah Soal
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content 2 Columns -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Left Info Panel -->
+            <div class="lg:col-span-4 xl:col-span-3">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 sticky top-6">
+                    <div class="flex items-start gap-3">
+                        <i class='bx bx-info-circle text-slate-400 text-lg mt-0.5'></i>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">Ini adalah rancangan kegiatan</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed">Publikasikan aktivitas ini agar dapat dibagikan kepada peserta tes Anda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Content Panel -->
+            <div class="lg:col-span-8 xl:col-span-9 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <!-- Filter & Controls Header -->
+                <div class="p-4 md:px-6 md:py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
+                    <div class="text-slate-500 font-medium text-sm">
+                        <span id="detailBankQuestionCount">0</span> pertanyaan &bull; <span id="detailBankPoints">0</span> Poin
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-semibold text-slate-600">Tunjukkan jawaban</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggleJawaban" class="sr-only peer" checked onchange="window.renderSoalList(window.currentBankSoal)">
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filters List -->
+                <div class="px-6 py-3 border-b border-slate-100 bg-slate-50/50 flex gap-2 overflow-x-auto hide-scrollbar">
+                    <button class="filter-btn active px-3.5 py-1.5 text-xs font-bold rounded-lg transition border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white whitespace-nowrap" data-filter="all">Semua</button>
+                    <button class="filter-btn px-3.5 py-1.5 text-xs font-bold rounded-lg transition border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white whitespace-nowrap" data-filter="pilihan_ganda">Pilihan Ganda</button>
+                    <button class="filter-btn px-3.5 py-1.5 text-xs font-bold rounded-lg transition border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white whitespace-nowrap" data-filter="essay">Essay</button>
+                </div>
+
+                <!-- Soal List -->
+                <div class="bg-white" style="min-height: 400px; max-height: 800px; overflow-y: auto;">
+                    <div id="soalList" class="flex flex-col">
+                        <!-- Soal items rendered by JS -->
+                    </div>
                 </div>
             </div>
         </div>
