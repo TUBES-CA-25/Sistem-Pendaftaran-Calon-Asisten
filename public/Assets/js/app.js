@@ -1,4 +1,4 @@
-﻿/**
+/**
  * App.js - Main Application Script
  * Handles navigation, URL routing with History API, and page loading
  */
@@ -634,17 +634,17 @@ function initGlobalTables(onReady) {
                 dom: '<"dt-top-wrapper"lf>t<"dt-bottom-wrapper"ip>',
                 language: {
                     search: '',
-                    searchPlaceholder: "Ã°Å¸â€   Cari data...",
+                    searchPlaceholder: "🔍 Cari data...",
                     lengthMenu: "Tampilkan _MENU_ baris",
-                    info: "Menampilkan <strong>_START_</strong> Ã¢â‚¬â€œ <strong>_END_</strong> dari <strong>_TOTAL_</strong> data",
+                    info: "Menampilkan <strong>_START_</strong> – <strong>_END_</strong> dari <strong>_TOTAL_</strong> data",
                     infoEmpty: "Tidak ada data",
                     infoFiltered: "(difilter dari _MAX_ total data)",
                     zeroRecords: "<div class='text-center py-10 text-slate-400'>Tidak ada data yang cocok</div>",
                     paginate: {
-                        first: 'Ã‚Â«',
-                        last: 'Ã‚Â»',
-                        next: 'Ã¢â‚¬Âº',
-                        previous: 'Ã¢â‚¬Â¹'
+                        first: '«',
+                        last: '»',
+                        next: '›',
+                        previous: '‹'
                     }
                 },
                 initComplete: function() {
