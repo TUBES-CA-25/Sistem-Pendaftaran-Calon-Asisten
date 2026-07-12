@@ -1,4 +1,4 @@
-/**
+﻿/**
  * App.js - Main Application Script
  * Handles navigation, URL routing with History API, and page loading
  */
@@ -8,76 +8,75 @@ var _currentPage = null;
 
 // Global function untuk load halaman
 function loadPage(page, updateUrl = true) {
-    // ✅ Prevent reload if already on this page
+    // Prevent reload if already on this page
     if (_currentPage === page) return;
     _currentPage = page;
 
-    // Cleanup DataTables before replacing content
-    if ($.fn.DataTable) {
-        $('#content').find('table.dataTable').each(function() {
-            if ($.fn.DataTable.isDataTable(this)) {
-                $(this).DataTable().destroy();
-            }
-        });
-    }
-
-    // Cleanup dynamic navbar elements (e.g. Search Bar from Participants page)
-    $('#navbarSearchContainer').remove();
-
-    // Save to localStorage
-    localStorage.setItem('activePage', page);
-
-    // Update sidebar active state
-    $('.sidebar a').removeClass('active');
-    $(`.sidebar a[data-page="${page}"]`).addClass('active');
-
-    // Update URL browser dengan History API
-    if (updateUrl) {
-        history.pushState({ page: page }, '', `${APP_URL}/${page}`);
-    }
-
-    // ✅ Fade out smoothly before loading new content
     var $content = $('#content');
+
+    // STEP 1: Fade-out content FIRST (before touching DOM at all)
     $content.css({ opacity: 0, transition: 'opacity 0.15s ease' });
 
-    // Load content via AJAX
-    $.ajax({
-        url: `${APP_URL}/${page}`,
-        method: 'GET',
-        headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        success: function(response) {
-            // Keep content hidden until DataTables fully initializes
-            $content.css({ visibility: 'hidden', opacity: 0 });
-            $content.html(response);
+    // STEP 2: Wait for fade-out to complete, THEN do all DOM work (invisible to user)
+    setTimeout(function() {
 
-            // Scroll to top after page load
-            window.scrollTo(0, 0);
-            
-            // Re-attach listeners for dynamic content
-            if (typeof attachNotificationListeners === 'function') {
-                attachNotificationListeners();
-            }
-            if (typeof window.initSidebar === 'function') {
-                window.initSidebar();
-            }
-
-            // Init tables — callback reveals content AFTER DataTables finishes
-            initGlobalTables(function() {
-                $content.css({ visibility: 'visible' });
-                requestAnimationFrame(function() {
-                    $content.css({ opacity: 1 });
-                });
+        // Now safe to destroy DataTables (content already invisible)
+        if ($.fn.DataTable) {
+            $content.find('table.dataTable').each(function() {
+                if ($.fn.DataTable.isDataTable(this)) {
+                    $(this).DataTable().destroy();
+                }
             });
-        },
-        error: function(xhr, status, error) {
-            $content.css({ opacity: 1 });
-            _currentPage = null; // reset so user can retry
-            console.error("Error loading page:", error);
-            $content.html('<div class="container-fluid p-4"><div class="alert alert-danger"><i class="bx bx-error-circle me-2"></i>Halaman tidak ditemukan atau terjadi kesalahan.</div></div>');
         }
-    });
-}
 
+        // Cleanup dynamic navbar elements
+        $('#navbarSearchContainer').remove();
+
+        // Save to localStorage & update sidebar active state
+        localStorage.setItem('activePage', page);
+        $('.sidebar a').removeClass('active');
+        $(`.sidebar a[data-page="${page}"]`).addClass('active');
+
+        // Update URL browser dengan History API
+        if (updateUrl) {
+            history.pushState({ page: page }, '', `${APP_URL}/${page}`);
+        }
+
+        // STEP 3: Load new content via AJAX
+        $.ajax({
+            url: `${APP_URL}/${page}`,
+            method: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            success: function(response) {
+                // Inject HTML but keep invisible during DataTables init
+                $content.css({ visibility: 'hidden' });
+                $content.html(response);
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+
+                // Re-attach listeners for dynamic content
+                if (typeof attachNotificationListeners === 'function') attachNotificationListeners();
+                if (typeof window.initSidebar === 'function') window.initSidebar();
+
+                // STEP 4: Init DataTables, THEN fade-in via callback
+                initGlobalTables(function() {
+                    $content.css({ visibility: 'visible', opacity: 0 });
+                    requestAnimationFrame(function() {
+                        $content.css({ transition: 'opacity 0.18s ease', opacity: 1 });
+                    });
+                });
+            },
+            error: function(xhr, status, error) {
+                $content.css({ visibility: 'visible', opacity: 1 });
+                _currentPage = null;
+                console.error('Error loading page:', error);
+                $content.html('<div class="container-fluid p-4"><div class="alert alert-danger"><i class="bx bx-error-circle me-2"></i>Halaman tidak ditemukan atau terjadi kesalahan.</div></div>');
+            }
+        });
+
+    }, 160); // matches fade-out transition (0.15s + small buffer)
+}
 
 $(document).ready(function () {
     // Get initial page from server or localStorage
@@ -498,7 +497,7 @@ function showAlert(message, isSuccess = true) {
         bootstrapToast.show();
     } else {
         // Fallback to alert
-        alert((isSuccess ? '✓ ' : '✗ ') + message);
+        alert((isSuccess ? 'âœ“ ' : 'âœ— ') + message);
     }
 }
 
@@ -611,7 +610,7 @@ function showActionConfirmation(options) {
     modal.show();
 }
 
-// Initialize global DataTables — accepts optional callback fired after all tables are ready
+// Initialize global DataTables â€” accepts optional callback fired after all tables are ready
 function initGlobalTables(onReady) {
     var $tables = $('#content').find('table:not(#calendarTable)');
 
@@ -647,17 +646,17 @@ function initGlobalTables(onReady) {
                 dom: '<"dt-top-wrapper"lf>t<"dt-bottom-wrapper"ip>',
                 language: {
                     search: '',
-                    searchPlaceholder: "🔍  Cari data...",
+                    searchPlaceholder: "ðŸ”  Cari data...",
                     lengthMenu: "Tampilkan _MENU_ baris",
-                    info: "Menampilkan <strong>_START_</strong> – <strong>_END_</strong> dari <strong>_TOTAL_</strong> data",
+                    info: "Menampilkan <strong>_START_</strong> â€“ <strong>_END_</strong> dari <strong>_TOTAL_</strong> data",
                     infoEmpty: "Tidak ada data",
                     infoFiltered: "(difilter dari _MAX_ total data)",
                     zeroRecords: "<div class='text-center py-10 text-slate-400'>Tidak ada data yang cocok</div>",
                     paginate: {
-                        first: '«',
-                        last: '»',
-                        next: '›',
-                        previous: '‹'
+                        first: 'Â«',
+                        last: 'Â»',
+                        next: 'â€º',
+                        previous: 'â€¹'
                     }
                 },
                 initComplete: function() {
@@ -680,5 +679,6 @@ function initGlobalTables(onReady) {
         onReady();
     }
 }
+
 
 
