@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Daftar Peserta View
  * 
@@ -33,22 +33,22 @@ $result = $result ?? [];
     <!-- Table Container -->
     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
         <div class="overflow-x-auto">
-            <table id="daftarPesertaTable" class="w-full text-left border-collapse text-sm">
+            <table id="daftarPesertaTable" class="min-w-full align-middle text-sm text-left">
                 <thead>
-                    <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-                        <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center w-[60px]">NO</th>
-                        <th class="font-bold text-xs uppercase tracking-wider py-4 px-4">NAMA LENGKAP</th>
-                        <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center w-[140px]">STAMBUK</th>
-                        <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 w-[180px]">JURUSAN</th>
-                        <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center w-[130px]">STATUS</th>
-                        <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center w-[120px]">AKSI</th>
+                    <tr class="">
+                        <th class="dt-head-cell text-center">NO</th>
+                        <th class="dt-head-cell">NAMA LENGKAP</th>
+                        <th class="dt-head-cell text-center">STAMBUK</th>
+                        <th class="dt-head-cell">JURUSAN</th>
+                        <th class="dt-head-cell text-center">STATUS</th>
+                        <th class="dt-head-cell text-center">AKSI</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="dt-tbody">
                     <?php $i = 1; ?>
                     <?php foreach ($result as $row): ?>
                         <?php if (empty($row['id'])) continue; // Show ONLY Mahasiswa ?>
-                        <tr class="hover:bg-slate-50/85 transition" data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
+                        <tr class="dt-body-row" data-id="<?= $row['id'] ?>" data-userid="<?= $row['idUser'] ?>">
                             <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $i ?></td>
                             <td class="py-4 px-4">
                                 <div class="flex items-center gap-3">
@@ -506,3 +506,4 @@ $result = $result ?? [];
 
 <!-- Load Custom JavaScript -->
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/participants.js?v=<?= time() ?>"></script>
+

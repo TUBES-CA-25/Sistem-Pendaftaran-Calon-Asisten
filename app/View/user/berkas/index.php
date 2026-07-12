@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Upload Berkas View
  *
@@ -123,12 +123,12 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                 </div>
                 <div class="overflow-x-auto rounded-xl border border-slate-100">
                     <table class="min-w-full divide-y divide-slate-100 text-sm">
-                        <thead class="bg-slate-50">
+                        <thead>
                             <tr> 
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">No</th>                                   
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Tanggal</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Nama</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Status</th>
+                                <th class="dt-head-cell">No</th>                                   
+                                <th class="dt-head-cell">Tanggal</th>
+                                <th class="dt-head-cell">Nama</th>
+                                <th class="dt-head-cell">Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 bg-white">
@@ -168,3 +168,5 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
 </main>
 
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/berkas.js"></script>
+
+

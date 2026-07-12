@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Pengajuan Judul Admin View
  *
@@ -35,18 +35,18 @@ $mahasiswaList = $mahasiswaList ?? [];
         <?php else: ?>
             <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm" id="tablePengajuan">
-                        <thead class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                    <table class="min-w-full align-middle text-sm text-left" id="tablePengajuan">
+                        <thead class="">
                             <tr>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 5%;">No</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-start" style="width: 25%;">Nama Lengkap</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-start" style="width: 15%;">Stambuk</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-start" style="width: 35%;">Judul Presentasi</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 10%;">Status</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 10%;">Aksi</th>
+                                <th class="dt-head-cell text-center" style="width: 5%;">No</th>
+                                <th class="dt-head-cell" style="width: 25%;">Nama Lengkap</th>
+                                <th class="dt-head-cell" style="width: 15%;">Stambuk</th>
+                                <th class="dt-head-cell" style="width: 35%;">Judul Presentasi</th>
+                                <th class="dt-head-cell text-center" style="width: 10%;">Status</th>
+                                <th class="dt-head-cell text-center" style="width: 10%;">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100">
+                        <tbody class="dt-tbody">
                             <?php $i = 1; foreach ($mahasiswaList as $row): ?>
                                 <?php
                                     $statusValue = $row['is_accepted'] ?? 0;
@@ -69,7 +69,7 @@ $mahasiswaList = $mahasiswaList ?? [];
                                         $badgeText = 'Menunggu';
                                     }
                                 ?>
-                                <tr class="hover:bg-slate-50/85 transition" data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
+                                <tr class="dt-body-row" data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
                                     <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $i ?></td>
                                     <td class="py-4 px-4"><span class="font-bold text-slate-800"><?= htmlspecialchars($row['nama'] ?? '-') ?></span></td>
                                     <td class="text-slate-500 py-4 px-4 font-medium"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
@@ -286,3 +286,4 @@ $(document).ready(function() {
     });
 });
 </script>
+

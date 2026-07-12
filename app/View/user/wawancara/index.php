@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Wawancara View
  *
@@ -37,13 +37,13 @@ $mySchedule = array_filter($wawancara, function($item) {
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-100 text-sm">
-                <thead class="bg-slate-50">
+                <thead>
                     <tr>
-                        <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">No</th>
-                        <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Jenis Kegiatan</th>
-                        <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Lokasi</th>
-                        <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Tanggal</th>
-                        <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Waktu</th>
+                        <th class="dt-head-cell">No</th>
+                        <th class="dt-head-cell">Jenis Kegiatan</th>
+                        <th class="dt-head-cell">Lokasi</th>
+                        <th class="dt-head-cell">Tanggal</th>
+                        <th class="dt-head-cell">Waktu</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 bg-white">
@@ -159,3 +159,4 @@ $(document).ready(function() {
     });
 });
 </script>
+

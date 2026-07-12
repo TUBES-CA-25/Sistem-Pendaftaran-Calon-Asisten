@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Wawancara Admin View
  *
@@ -36,9 +36,9 @@ $colors = ['#2f66f6'];
     <!-- Data Table -->
     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
         <div class="overflow-x-auto">
-            <table id="wawancaraMahasiswa" class="w-full text-left border-collapse text-sm">
+            <table id="wawancaraMahasiswa" class="min-w-full align-middle text-sm text-left">
                 <thead>
-                    <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                    <tr class="">
                         <th class="py-4 px-4 text-center font-bold uppercase tracking-wider" style="width: 5%;">NO</th>
                         <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 25%;">NAMA LENGKAP</th>
                         <th class="py-4 px-4 font-bold uppercase tracking-wider" style="width: 15%;">STAMBUK</th>
@@ -572,3 +572,4 @@ $colors = ['#2f66f6'];
         });
     });
 </script>
+

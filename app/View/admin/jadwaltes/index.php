@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Written Test Schedule View - Student Based
  * @var array $data
@@ -34,27 +34,27 @@ $bankSoalList = $data['bankSoalList'] ?? [];
         <!-- Student Schedule Table -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm" id="jadwalTable">
+                <table class="min-w-full align-middle text-sm text-left" id="jadwalTable">
                     <thead>
-                        <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-                            <th class="text-center font-bold text-xs uppercase tracking-wider py-4 px-4" style="width: 5%;">NO</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-left" style="width: 25%;">NAMA LENGKAP</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-left" style="width: 15%;">STAMBUK</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-left" style="width: 20%;">KEGIATAN</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-left" style="width: 15%;">RUANGAN</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-left" style="width: 10%;">TANGGAL</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-left" style="width: 10%;">WAKTU</th>
-                            <th class="text-center font-bold text-xs uppercase tracking-wider py-4 px-4" style="width: 5%;">AKSI</th>
+                        <tr class="">
+                            <th class="dt-head-cell text-center" style="width: 5%;">NO</th>
+                            <th class="dt-head-cell text-left" style="width: 25%;">NAMA LENGKAP</th>
+                            <th class="dt-head-cell text-left" style="width: 15%;">STAMBUK</th>
+                            <th class="dt-head-cell text-left" style="width: 20%;">KEGIATAN</th>
+                            <th class="dt-head-cell text-left" style="width: 15%;">RUANGAN</th>
+                            <th class="dt-head-cell text-left" style="width: 10%;">TANGGAL</th>
+                            <th class="dt-head-cell text-left" style="width: 10%;">WAKTU</th>
+                            <th class="dt-head-cell text-center" style="width: 5%;">AKSI</th>
                         </tr>
                     </thead>
-                    <tbody id="table-body" class="divide-y divide-slate-100">
+                    <tbody id="table-body" class="dt-tbody">
                         <?php if (empty($jadwalTesList)): ?>
                             <tr>
                                 <td colspan="8" class="text-center py-10 text-slate-400 font-medium">Kosong</td>
                             </tr>
                         <?php else: ?>
                             <?php $i = 1; foreach ($jadwalTesList as $row): ?>
-                                <tr class="hover:bg-slate-50/85 transition" data-id="<?= $row['id'] ?>">
+                                <tr class="dt-body-row" data-id="<?= $row['id'] ?>">
                                     <td class="text-center font-bold text-slate-400 py-4 px-4"><?= $i++ ?></td>
                                     <td class="py-4 px-4"><span class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap']) ?></span></td>
                                     <td class="text-slate-500 py-4 px-4 font-medium"><?= htmlspecialchars($row['stambuk']) ?></td>
@@ -399,3 +399,4 @@ $(document).ready(function() {
     });
 });
 </script>
+

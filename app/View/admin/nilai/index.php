@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Daftar Nilai Tes Tertulis Admin View
  *
@@ -38,18 +38,18 @@ $nilai = $nilai ?? [];
                 <!-- Clean Table -->
                 <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm" id="tableNilai">
-                            <thead class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                        <table class="min-w-full align-middle text-sm text-left" id="tableNilai">
+                            <thead class="">
                                 <tr>
-                                    <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 60px;">No</th>
-                                    <th class="font-bold text-xs uppercase tracking-wider py-4 px-4">Mahasiswa</th>
-                                    <th class="font-bold text-xs uppercase tracking-wider py-4 px-4">Stambuk</th>
-                                    <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 150px;">Nilai Akhir</th>
-                                    <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 180px;">Status</th>
-                                    <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 120px;">Aksi</th>
+                                    <th class="dt-head-cell text-center" style="width: 60px;">No</th>
+                                    <th class="dt-head-cell">Mahasiswa</th>
+                                    <th class="dt-head-cell">Stambuk</th>
+                                    <th class="dt-head-cell text-center" style="width: 150px;">Nilai Akhir</th>
+                                    <th class="dt-head-cell text-center" style="width: 180px;">Status</th>
+                                    <th class="dt-head-cell text-center" style="width: 120px;">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-100">
+                            <tbody class="dt-tbody">
                                 <?php $i = 1; foreach ($nilai as $value): ?>
                                     <?php
                                     // Raw auto-calculated score
@@ -75,7 +75,7 @@ $nilai = $nilai ?? [];
                                         }
                                     }
                                     ?>
-                                    <tr class="hover:bg-slate-50/85 transition">
+                                    <tr class="dt-body-row">
                                         <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $i ?></td>
                                         <td class="py-4 px-4">
                                             <div class="flex flex-col">
@@ -492,3 +492,4 @@ $(document).ready(function() {
     });
 });
 </script>
+

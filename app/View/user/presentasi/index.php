@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Presentasi View
  *
@@ -121,13 +121,13 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
                 </div>
                 <div class="overflow-x-auto rounded-xl border border-slate-100">
                     <table class="min-w-full divide-y divide-slate-100 text-sm">
-                        <thead class="bg-slate-50">
+                        <thead>
                             <tr>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">No</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Judul</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Status</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Waktu</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Keterangan</th>
+                                <th class="dt-head-cell">No</th>
+                                <th class="dt-head-cell">Judul</th>
+                                <th class="dt-head-cell">Status</th>
+                                <th class="dt-head-cell">Waktu</th>
+                                <th class="dt-head-cell">Keterangan</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 bg-white">
@@ -184,3 +184,5 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
 </main>
 
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/presentasi.js"></script>
+
+

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Daftar Hadir Peserta Admin View - Presentasi Style
  */
@@ -33,23 +33,23 @@ $mahasiswaList = $mahasiswaList ?? [];
         <?php else: ?>
             <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm" id="monitoringTable">
-                        <thead class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                    <table class="min-w-full align-middle text-sm text-left" id="monitoringTable">
+                        <thead class="">
                             <tr>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 50px;">No</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4">Nama Lengkap</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4">Stambuk</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center">Tes Tertulis</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center">Presentasi</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center">Wawancara I</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center">Wawancara II</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center">Status Akhir</th>
-                                <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center">Aksi</th>
+                                <th class="dt-head-cell text-center" style="width: 50px;">No</th>
+                                <th class="dt-head-cell">Nama Lengkap</th>
+                                <th class="dt-head-cell">Stambuk</th>
+                                <th class="dt-head-cell text-center">Tes Tertulis</th>
+                                <th class="dt-head-cell text-center">Presentasi</th>
+                                <th class="dt-head-cell text-center">Wawancara I</th>
+                                <th class="dt-head-cell text-center">Wawancara II</th>
+                                <th class="dt-head-cell text-center">Status Akhir</th>
+                                <th class="dt-head-cell text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100">
+                        <tbody class="dt-tbody">
                             <?php $no = 1; foreach ($absensiList as $row): ?>
-                            <tr class="hover:bg-slate-50/85 transition">
+                            <tr class="dt-body-row">
                                 <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $no++ ?></td>
                                 <td class="py-4 px-4">
                                     <div class="flex items-center gap-3">
@@ -709,3 +709,4 @@ $(document).ready(function() {
     });
 });
 </script>
+

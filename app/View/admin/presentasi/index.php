@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Jadwal Presentasi Admin View
  *
@@ -31,25 +31,25 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm" id="tableJadwal">
+                <table class="min-w-full align-middle text-sm text-left" id="tableJadwal">
                     <thead>
-                        <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 5%;">No</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4" style="width: 20%;">Nama Lengkap</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4" style="width: 15%;">Stambuk</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4" style="width: 25%;">Judul</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4" style="width: 15%;">Ruangan</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4" style="width: 10%;">Tanggal</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4" style="width: 10%;">Waktu</th>
-                            <th class="font-bold text-xs uppercase tracking-wider py-4 px-4 text-center" style="width: 10%;">Aksi</th>
+                        <tr class="">
+                            <th class="dt-head-cell text-center" style="width: 5%;">No</th>
+                            <th class="dt-head-cell" style="width: 20%;">Nama Lengkap</th>
+                            <th class="dt-head-cell" style="width: 15%;">Stambuk</th>
+                            <th class="dt-head-cell" style="width: 25%;">Judul</th>
+                            <th class="dt-head-cell" style="width: 15%;">Ruangan</th>
+                            <th class="dt-head-cell" style="width: 10%;">Tanggal</th>
+                            <th class="dt-head-cell" style="width: 10%;">Waktu</th>
+                            <th class="dt-head-cell text-center" style="width: 10%;">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="jadwalTableBody" class="divide-y divide-slate-100">
+                    <tbody id="jadwalTableBody" class="dt-tbody">
                         <?php if (empty($jadwalPresentasi)): ?>
                             <tr><td colspan="8" class="text-center text-slate-400 py-10 font-medium">Belum ada jadwal presentasi</td></tr>
                         <?php else: ?>
                             <?php $i = 1; foreach ($jadwalPresentasi as $row): ?>
-                                <tr class="hover:bg-slate-50/85 transition">
+                                <tr class="dt-body-row">
                                     <td class="text-center font-semibold text-slate-400 py-4 px-4"><?= $i ?></td>
                                     <td class="py-4 px-4"><span class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap'] ?? $row['nama'] ?? '-') ?></span></td>
                                     <td class="text-slate-500 py-4 px-4 font-semibold"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
@@ -201,7 +201,7 @@ $(document).ready(function() {
                 if(res.data.length===0) html='<tr><td colspan="8" class="text-center text-slate-400 py-10 font-medium">Belum ada jadwal</td></tr>';
                 else {
                     res.data.forEach((j, i) => {
-                        html += `<tr class="hover:bg-slate-50/85 transition">
+                        html += `<tr class="dt-body-row">
                             <td class="text-center font-semibold text-slate-400 py-4 px-4">${i+1}</td>
                             <td class="py-4 px-4"><span class="font-bold text-slate-800">${j.nama_lengkap}</span></td>
                             <td class="text-slate-500 py-4 px-4 font-semibold">${j.stambuk}</td>
@@ -301,3 +301,4 @@ $(document).ready(function() {
     });
 });
 </script>
+
