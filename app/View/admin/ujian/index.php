@@ -29,8 +29,9 @@ $essayCount = $stats['essay_count'];
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
     <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <!-- Stats Badges -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="bank-list-view" id="bankListView">
+        <!-- Stats Badges -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="col-span-1">
             <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex items-center gap-3 hover:shadow-md transition">
                 <div class="rounded-lg flex justify-center items-center shrink-0 w-10 h-10 bg-blue-50 text-blue-600">
@@ -89,8 +90,7 @@ $essayCount = $stats['essay_count'];
         </button>
     </div>
 
-    <!-- Bank Soal List View -->
-    <div class="bank-list-view" id="bankListView">
+    <!-- Bank Soal List Grid -->
         <?php if (empty($bankSoalList)): ?>
         <div class="text-center py-16 flex flex-col items-center justify-center bg-white rounded-2xl border border-slate-100 shadow-sm p-8 mb-6">
             <i class='bx bx-folder-open text-slate-300 text-6xl mb-4'></i>
@@ -253,12 +253,74 @@ $essayCount = $stats['essay_count'];
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <!-- Left Info Panel -->
             <div class="lg:col-span-4 xl:col-span-3">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 sticky top-6">
-                    <div class="flex items-start gap-3">
-                        <i class='bx bx-info-circle text-slate-400 text-lg mt-0.5'></i>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-sm mb-1">Ini adalah rancangan kegiatan</h4>
-                            <p class="text-slate-500 text-xs leading-relaxed">Publikasikan aktivitas ini agar dapat dibagikan kepada peserta tes Anda.</p>
+                <div class="sticky top-6 space-y-4">
+                    <!-- Progress / Status Card -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative group">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
+                        <div class="p-5">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="font-bold text-slate-800 text-sm">Status Bank Soal</h4>
+                                <span class="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-md">AKTIF</span>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-xs font-semibold mb-1.5">
+                                        <span class="text-slate-500">Kesiapan Materi</span>
+                                        <span class="text-blue-600">85%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 rounded-full h-2">
+                                        <div class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-3 pt-2">
+                                    <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 transition hover:border-blue-200">
+                                        <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">Total Poin</div>
+                                        <div class="text-slate-800 font-bold text-lg" id="panelTotalPoints">0</div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 transition hover:border-blue-200">
+                                        <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">Durasi</div>
+                                        <div class="text-slate-800 font-bold text-lg">45<span class="text-xs text-slate-500 font-medium ml-1">m</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions Card -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                        <h4 class="font-bold text-slate-800 text-sm mb-3">Aksi Cepat</h4>
+                        <div class="space-y-2">
+                            <button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition group border border-transparent hover:border-blue-100" data-bs-toggle="modal" data-bs-target="#addSoalModal">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-blue-100 flex items-center justify-center transition">
+                                        <i class='bx bx-plus text-lg'></i>
+                                    </div>
+                                    <span class="text-sm font-semibold">Tambah Soal Baru</span>
+                                </div>
+                                <i class='bx bx-chevron-right text-slate-400 group-hover:text-blue-500'></i>
+                            </button>
+                            
+                            <button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-emerald-50 text-slate-600 hover:text-emerald-600 transition group border border-transparent hover:border-emerald-100">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-emerald-100 flex items-center justify-center transition">
+                                        <i class='bx bx-import text-lg'></i>
+                                    </div>
+                                    <span class="text-sm font-semibold">Import dari Excel</span>
+                                </div>
+                                <i class='bx bx-chevron-right text-slate-400 group-hover:text-emerald-500'></i>
+                            </button>
+
+                            <button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-purple-50 text-slate-600 hover:text-purple-600 transition group border border-transparent hover:border-purple-100">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-purple-100 flex items-center justify-center transition">
+                                        <i class='bx bx-cog text-lg'></i>
+                                    </div>
+                                    <span class="text-sm font-semibold">Pengaturan Ujian</span>
+                                </div>
+                                <i class='bx bx-chevron-right text-slate-400 group-hover:text-purple-500'></i>
+                            </button>
                         </div>
                     </div>
                 </div>

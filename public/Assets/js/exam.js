@@ -91,8 +91,13 @@ window.renderSoalList = function(soalArray) {
     const toggleJawaban = document.getElementById('toggleJawaban') ? document.getElementById('toggleJawaban').checked : true;
     
     if(document.getElementById('detailBankQuestionCount')) {
-        document.getElementById('detailBankQuestionCount').innerText = soalArray ? soalArray.length : 0;
-        document.getElementById('detailBankPoints').innerText = soalArray ? soalArray.length * 5 : 0;
+        const totalSoal = soalArray ? soalArray.length : 0;
+        const totalPoin = totalSoal * 5;
+        document.getElementById('detailBankQuestionCount').innerText = totalSoal;
+        document.getElementById('detailBankPoints').innerText = totalPoin;
+        if(document.getElementById('panelTotalPoints')) {
+            document.getElementById('panelTotalPoints').innerText = totalPoin;
+        }
     }
     
     if (!soalArray || soalArray.length === 0) {
