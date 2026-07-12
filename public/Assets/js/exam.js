@@ -140,9 +140,15 @@ window.renderSoalList = function(soalArray) {
             </div>
             
             <!-- Question Content -->
-            <div class="flex flex-col md:flex-row gap-6">
+            <div class="flex flex-col gap-4">
+                <!-- Image if any -->
+                ${soal.image_url ? `
+                <div class="w-full">
+                    <img src="${window.getImageUrl(soal.image_url)}" alt="Gambar Soal" class="max-w-full lg:max-w-2xl rounded-xl border border-slate-200 object-contain max-h-80" onerror="this.style.display='none'">
+                </div>` : ''}
+                
                 <!-- Text -->
-                <div class="flex-1">
+                <div class="w-full">
                     <div class="text-slate-800 text-[15px] font-medium leading-relaxed mb-4 condition-render-markdown">
                         ${soal.deskripsi ? marked.parse(soal.deskripsi) : ''}
                     </div>
@@ -153,12 +159,6 @@ window.renderSoalList = function(soalArray) {
                         <div class="text-emerald-800 text-sm font-medium">${window.escapeHtml(soal.jawaban)}</div>
                     </div>` : ''}
                 </div>
-                
-                <!-- Image if any -->
-                ${soal.image_url ? `
-                <div class="w-full md:w-64 shrink-0">
-                    <img src="${window.getImageUrl(soal.image_url)}" alt="Gambar Soal" class="w-full rounded-xl border border-slate-200 object-cover" onerror="this.style.display='none'">
-                </div>` : ''}
             </div>
         </div>`;
     });
