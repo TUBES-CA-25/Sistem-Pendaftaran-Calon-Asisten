@@ -46,7 +46,12 @@ window.closeBankDetail = function() {
 // Load questions for specific bank
 window.loadBankQuestions = function(bankId) {
     const soalList = document.getElementById('soalList');
-    soalList.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2">Memuat soal...</p></div>';
+        soalList.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-12">
+                <div class="animate-spin rounded-full h-10 w-10 border-4 border-blue-200 border-t-blue-600 mb-4"></div>
+                <p class="text-slate-500 font-medium">Memuat soal...</p>
+            </div>
+        `;
     
     fetch(baseUrl + '/getBankQuestions', {
         method: 'POST',
@@ -59,12 +64,22 @@ window.loadBankQuestions = function(bankId) {
             window.currentBankSoal = data.data || [];
             renderSoalList(window.currentBankSoal);
         } else {
-            soalList.innerHTML = '<div class="empty-state"><i class="bx bx-error-circle"></i><h4>Gagal memuat soal</h4></div>';
+            soalList.innerHTML = `
+                <div class="bg-red-50 text-red-600 p-6 rounded-2xl border border-red-100 flex flex-col items-center justify-center text-center">
+                    <i class="bx bx-error-circle text-4xl mb-2"></i>
+                    <h4 class="font-bold">Gagal memuat soal</h4>
+                </div>
+            `;
         }
     })
     .catch((err) => {
         console.error('Error loading questions:', err);
-        soalList.innerHTML = '<div class="empty-state"><i class="bx bx-error-circle"></i><h4>Terjadi kesalahan</h4></div>';
+        soalList.innerHTML = `
+            <div class="bg-red-50 text-red-600 p-6 rounded-2xl border border-red-100 flex flex-col items-center justify-center text-center">
+                <i class="bx bx-error-circle text-4xl mb-2"></i>
+                <h4 class="font-bold">Terjadi kesalahan</h4>
+            </div>
+        `;
     });
 }
 
@@ -89,7 +104,7 @@ window.renderSoalList = function(soalArray) {
         const borderColor = isPG ? 'border-blue-500' : 'border-amber-500';
         
         html += `
-        <div class="card bg-white p-6 rounded-2xl shadow-sm border-l-4 ${borderColor} mb-4 transition-all duration-300 hover:shadow-md" data-id="${soal.id}" data-type="${soal.status_soal || 'essay'}">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-4 ${borderColor} mb-4 transition-all duration-300 hover:shadow-md" data-id="${soal.id}" data-type="${soal.status_soal || 'essay'}">
             <div>
                 <div class="flex justify-between items-start mb-4">
                     <div class="flex items-center gap-3">
