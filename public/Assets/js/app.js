@@ -46,17 +46,9 @@ function loadPage(page, updateUrl = true) {
         method: 'GET',
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
         success: function(response) {
+            // Keep content hidden until DataTables fully initializes
+            $content.css({ visibility: 'hidden', opacity: 0 });
             $content.html(response);
-
-            // ✅ Fade in after content is set
-            requestAnimationFrame(function() {
-                $content.css({ opacity: 1 });
-            });
-
-            // ✅ Delay initGlobalTables so the browser finishes rendering first
-            setTimeout(function() {
-                initGlobalTables();
-            }, 50);
 
             // Scroll to top after page load
             window.scrollTo(0, 0);
@@ -68,6 +60,14 @@ function loadPage(page, updateUrl = true) {
             if (typeof window.initSidebar === 'function') {
                 window.initSidebar();
             }
+
+            // Init tables — callback reveals content AFTER DataTables finishes
+            initGlobalTables(function() {
+                $content.css({ visibility: 'visible' });
+                requestAnimationFrame(function() {
+                    $content.css({ opacity: 1 });
+                });
+            });
         },
         error: function(xhr, status, error) {
             $content.css({ opacity: 1 });
@@ -85,7 +85,8 @@ $(document).ready(function () {
 
     // Initialize tables on first load
     _currentPage = initialPage;
-    setTimeout(initGlobalTables, 100);
+    // On first load the content is already visible; no callback needed
+    setTimeout(initGlobalTables, 80);
 
     // Set initial history state (replaceState, not pushState)
     history.replaceState({ page: initialPage }, '', `${APP_URL}/${initialPage}`);
@@ -610,9 +611,19 @@ function showActionConfirmation(options) {
     modal.show();
 }
 
-// Initialize global DataTables for all tables
-function initGlobalTables() {
-    $('#content').find('table:not(#calendarTable)').each(function() {
+// Initialize global DataTables — accepts optional callback fired after all tables are ready
+function initGlobalTables(onReady) {
+    var $tables = $('#content').find('table:not(#calendarTable)');
+
+    // If no tables on this page, reveal immediately
+    if ($tables.length === 0) {
+        if (typeof onReady === 'function') onReady();
+        return;
+    }
+
+    var pendingInits = 0;
+
+    $tables.each(function() {
         var $table = $(this);
 
         // Reset existing heavy gradient headers to clean slate style
@@ -628,6 +639,7 @@ function initGlobalTables() {
             .addClass('dt-body-cell');
 
         if (!$.fn.DataTable.isDataTable(this)) {
+            pendingInits++;
             $table.DataTable({
                 scrollX: false,
                 autoWidth: false,
@@ -649,16 +661,24 @@ function initGlobalTables() {
                     }
                 },
                 initComplete: function() {
-                    var $wrapper = $table.closest('.dt-parent-wrapper');
-                    if ($wrapper.length === 0) {
-                        $wrapper = $table.closest('.overflow-x-auto, .overflow-hidden');
-                    }
                     // Style the search input nicely
                     var $searchInput = $table.closest('.dataTables_wrapper').find('.dataTables_filter input');
                     $searchInput.css({'outline': 'none', 'box-shadow': 'none'});
+
+                    // Count down pending; fire onReady when all tables are done
+                    pendingInits--;
+                    if (pendingInits <= 0 && typeof onReady === 'function') {
+                        onReady();
+                    }
                 }
             });
         }
     });
+
+    // If all tables were already initialized (no new ones), fire onReady immediately
+    if (pendingInits === 0 && typeof onReady === 'function') {
+        onReady();
+    }
 }
+
 
