@@ -217,11 +217,26 @@ $nilai = $nilai ?? [];
                     </div>
                 </div>
                 
-                <div id="soalJawabanList" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                    <div class="col-span-full flex flex-col items-center justify-center py-12 bg-white rounded-3xl border border-slate-100 border-dashed">
-                        <i class="bi bi-hourglass-split text-4xl text-slate-300 mb-3"></i>
-                        <p class="text-slate-500 font-medium">Memuat data pekerjaan...</p>
-                    </div>
+                <div class="overflow-x-auto bg-white rounded-2xl border border-slate-200 shadow-sm">
+                    <table class="w-full text-left border-collapse" id="soalJawabanTable">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
+                                <th class="p-4 font-semibold w-16 text-center">No</th>
+                                <th class="p-4 font-semibold w-28">Tipe</th>
+                                <th class="p-4 font-semibold min-w-[300px]">Soal & Pilihan</th>
+                                <th class="p-4 font-semibold w-40">Kunci & Jawaban</th>
+                                <th class="p-4 font-semibold w-32 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="soalJawabanList" class="divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="5" class="py-12 text-center">
+                                    <i class="bi bi-hourglass-split text-4xl text-slate-300 mb-3 block"></i>
+                                    <p class="text-slate-500 font-medium">Memuat data pekerjaan...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -280,7 +295,7 @@ $(document).ready(function() {
         $('#nilaiAkhir').val(total || '');
 
         // Loading State for Questions
-        $('#soalJawabanList').html('<div class="w-full"><p class="text-slate-400">Memuat data...</p></div>');
+        $('#soalJawabanList').html('<tr><td colspan="5" class="py-12 text-center text-slate-400">Memuat data...</td></tr>');
 
         // Fetch Questions
         $.ajax({
@@ -302,23 +317,20 @@ $(document).ready(function() {
                         const tipeSoal = item.status_soal || 'essay';
                         const isPilihanGanda = tipeSoal === 'pilihan_ganda';
 
-                        let cardClass, borderClass, icon, statusBadge;
+                        let rowBg, statusBadge;
 
                         if (!isAnswered) {
                             tidakDijawabCount++;
-                            cardClass = 'bg-white rounded-3xl border border-slate-200 p-6 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-colors';
-                            icon = '<div class="absolute top-0 right-0 w-14 h-14 bg-slate-100 rounded-bl-3xl flex items-center justify-center opacity-80"><i class="bi bi-dash-circle-fill text-slate-400 text-lg ml-1 mt-1"></i></div>';
-                            statusBadge = 'bg-slate-100 text-slate-600 border border-slate-200';
+                            rowBg = 'bg-slate-50/50';
+                            statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg border border-slate-200"><i class="bi bi-dash-circle"></i> Kosong</span>';
                         } else if (isCorrect) {
                             benarCount++;
-                            cardClass = 'bg-white rounded-3xl border-2 border-emerald-100 p-6 shadow-sm relative overflow-hidden group hover:border-emerald-300 transition-colors';
-                            icon = '<div class="absolute top-0 right-0 w-14 h-14 bg-emerald-50 rounded-bl-3xl flex items-center justify-center opacity-80"><i class="bi bi-check-circle-fill text-emerald-500 text-lg ml-1 mt-1"></i></div>';
-                            statusBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+                            rowBg = 'bg-emerald-50/30';
+                            statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200"><i class="bi bi-check-circle-fill"></i> Benar</span>';
                         } else {
                             salahCount++;
-                            cardClass = 'bg-white rounded-3xl border-2 border-red-100 p-6 shadow-sm relative overflow-hidden group hover:border-red-300 transition-colors';
-                            icon = '<div class="absolute top-0 right-0 w-14 h-14 bg-red-50 rounded-bl-3xl flex items-center justify-center opacity-80"><i class="bi bi-x-circle-fill text-red-500 text-lg ml-1 mt-1"></i></div>';
-                            statusBadge = 'bg-red-50 text-red-700 border border-red-200';
+                            rowBg = 'bg-red-50/30';
+                            statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-700 text-xs font-bold rounded-lg border border-red-200"><i class="bi bi-x-circle-fill"></i> Salah</span>';
                         }
 
                         // Format options for display
@@ -329,74 +341,72 @@ $(document).ready(function() {
                                 .map(([key, value]) => {
                                     if (value && (value.includes('.jpg') || value.includes('.jpeg') || value.includes('.png') || value.includes('.gif') || value.includes('.webp'))) {
                                         return `
-                                            <div class="mb-2 flex items-start gap-2 bg-white p-3 border border-slate-200 rounded-xl shadow-sm">
+                                            <div class="mb-2 flex items-start gap-2 bg-white p-2.5 border border-slate-200 rounded-xl shadow-sm w-fit">
                                                 <strong class="text-slate-700">${key}.</strong>
                                                 <div>
-                                                    <img src="${getImageUrl(value)}" alt="Pilihan ${key}" class="max-w-full h-auto max-h-40 rounded-lg border border-slate-200">
+                                                    <img src="${getImageUrl(value)}" alt="Pilihan ${key}" class="max-w-full h-auto max-h-32 rounded-lg border border-slate-200">
                                                 </div>
                                             </div>
                                         `;
                                     } else {
-                                        return `<div class="mb-2 text-slate-700 bg-white px-4 py-2.5 border border-slate-200 rounded-xl shadow-sm"><strong class="text-slate-800">${key}.</strong> ${value}</div>`;
+                                        return `<div class="mb-1.5 text-slate-700 bg-white px-3 py-2 border border-slate-200 rounded-lg shadow-sm text-sm"><strong class="text-slate-800">${key}.</strong> ${value}</div>`;
                                     }
                                 })
                                 .join('');
                         } catch (e) {
                             if (typeof item.pilihan === 'string' && /,\s*(?=[A-E]\.)/.test(item.pilihan)) {
                                 const opts = item.pilihan.split(/,\s*(?=[A-E]\.)/);
-                                pilihanHTML = opts.map(opt => `<div class="mb-2 text-slate-700 bg-white px-4 py-2.5 border border-slate-200 rounded-xl shadow-sm">${opt}</div>`).join('');
+                                pilihanHTML = opts.map(opt => `<div class="mb-1.5 text-slate-700 bg-white px-3 py-2 border border-slate-200 rounded-lg shadow-sm text-sm">${opt}</div>`).join('');
                             } else {
-                                pilihanHTML = `<div class="text-slate-700 bg-white px-4 py-2.5 border border-slate-200 rounded-xl shadow-sm">${item.pilihan}</div>`;
+                                pilihanHTML = `<div class="text-slate-700 bg-white px-3 py-2 border border-slate-200 rounded-lg shadow-sm text-sm">${item.pilihan}</div>`;
                             }
                         }
 
                         const tipeBadge = isPilihanGanda
-                            ? '<span class="inline-block px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg bg-blue-50 text-blue-700 border border-blue-100 ml-2"><i class="bi bi-ui-checks mr-1"></i> PG</span>'
-                            : '<span class="inline-block px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg bg-amber-50 text-amber-700 border border-amber-100 ml-2"><i class="bi bi-pencil-square mr-1"></i> Essay</span>';
+                            ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg bg-blue-50 text-blue-700 border border-blue-100"><i class="bi bi-ui-checks"></i> PG</span>'
+                            : '<span class="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg bg-amber-50 text-amber-700 border border-amber-100"><i class="bi bi-pencil-square"></i> Essay</span>';
 
                         const hasImage = item.image_url && item.image_url.trim() !== '';
 
                         html += `
-                            <div class="soal-item self-start" data-tipe="${tipeSoal}">
-                                <div class="${cardClass}">
-                                    ${icon}
-                                    <div class="flex items-center mb-5">
-                                        <div class="w-10 h-10 bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-xl flex items-center justify-center font-extrabold text-sm shadow-md">${index + 1}</div>
-                                        ${tipeBadge}
-                                    </div>
+                            <tr class="soal-item hover:bg-slate-50 transition-colors ${rowBg}" data-tipe="${tipeSoal}">
+                                <td class="p-4 align-top text-center">
+                                    <div class="w-8 h-8 mx-auto bg-slate-800 text-white rounded-lg flex items-center justify-center font-bold text-sm shadow-sm">${index + 1}</div>
+                                </td>
+                                <td class="p-4 align-top">
+                                    ${tipeBadge}
+                                </td>
+                                <td class="p-4 align-top">
                                     ${hasImage ? `
-                                    <div class="mb-5">
-                                        <img src="${getImageUrl(item.image_url)}" alt="Gambar Soal ${index + 1}" class="max-w-full h-auto max-h-60 rounded-2xl border border-slate-200 object-cover shadow-sm">
+                                    <div class="mb-3">
+                                        <img src="${getImageUrl(item.image_url)}" alt="Gambar Soal ${index + 1}" class="max-w-xs h-auto max-h-48 rounded-xl border border-slate-200 object-cover shadow-sm">
                                     </div>
                                     ` : ''}
-                                    <div class="mb-6">
-                                        <span class="font-bold text-slate-800 leading-relaxed text-[15px] block">${item.deskripsi}</span>
-                                    </div>
+                                    <div class="font-bold text-slate-800 text-sm mb-3">${item.deskripsi}</div>
                                     
-                                    <div class="bg-slate-50/70 rounded-2xl border border-slate-100 p-4">
-                                        ${isPilihanGanda ? `
-                                        <div class="space-y-1.5 text-slate-600 text-sm mb-4">
-                                            ${pilihanHTML}
-                                        </div>
-                                        <div class="w-full h-px bg-slate-200/60 my-4"></div>
-                                        ` : ''}
-                                        
-                                        <div class="flex flex-col sm:flex-row gap-4">
-                                            <div class="flex-1">
-                                                <div class="text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-2 flex items-center gap-1.5"><i class="bi bi-shield-check text-blue-400"></i> Kunci Jawaban</div>
-                                                <div class="inline-block px-3 py-1.5 bg-white text-slate-700 border border-slate-200 font-bold text-sm rounded-lg shadow-sm w-full">${item.jawaban}</div>
-                                            </div>
-                                            <div class="flex-1">
-                                                <div class="text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-2 flex items-center gap-1.5"><i class="bi bi-person-fill text-indigo-400"></i> Jawaban Peserta</div>
-                                                ${isAnswered
-                                                    ? `<div class="inline-block px-3 py-1.5 ${statusBadge} font-bold text-sm rounded-lg shadow-sm w-full">${item.jawaban_user}</div>`
-                                                    : '<div class="inline-block px-3 py-1.5 bg-slate-100/50 text-slate-400 font-bold text-sm rounded-lg border border-slate-200 border-dashed w-full">KOSONG</div>'
-                                                }
-                                            </div>
-                                        </div>
+                                    ${isPilihanGanda ? `
+                                    <div class="space-y-1.5 mt-3">
+                                        ${pilihanHTML}
                                     </div>
-                                </div>
-                            </div>
+                                    ` : ''}
+                                </td>
+                                <td class="p-4 align-top space-y-4">
+                                    <div>
+                                        <div class="text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-1.5 flex items-center gap-1.5"><i class="bi bi-shield-check text-blue-400"></i> Kunci</div>
+                                        <div class="inline-block px-3 py-1.5 bg-white text-slate-800 border border-slate-200 font-bold text-sm rounded-lg shadow-sm">${item.jawaban}</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-1.5 flex items-center gap-1.5"><i class="bi bi-person-fill text-indigo-400"></i> Jawaban</div>
+                                        ${isAnswered
+                                            ? `<div class="inline-block px-3 py-1.5 bg-white text-slate-800 border border-slate-200 font-bold text-sm rounded-lg shadow-sm">${item.jawaban_user}</div>`
+                                            : '<div class="inline-block px-3 py-1.5 bg-slate-100/50 text-slate-400 font-bold text-sm rounded-lg border border-slate-200 border-dashed">KOSONG</div>'
+                                        }
+                                    </div>
+                                </td>
+                                <td class="p-4 align-top text-center">
+                                    ${statusBadge}
+                                </td>
+                            </tr>
                         `;
                     });
 
@@ -408,7 +418,7 @@ $(document).ready(function() {
 
                     $('#soalJawabanList').html(html);
                 } else {
-                    $('#soalJawabanList').html('<div class="w-full"><p class="text-slate-450">Tidak ada data soal dan jawaban.</p></div>');
+                    $('#soalJawabanList').html('<tr><td colspan="5" class="py-12 text-center text-slate-450">Tidak ada data soal dan jawaban.</td></tr>');
                     $('#statTotal').text(0);
                     $('#statBenar').text(0);
                     $('#statSalah').text(0);
@@ -416,7 +426,7 @@ $(document).ready(function() {
                 }
             },
             error: function() {
-                $('#soalJawabanList').html('<div class="w-full"><p class="text-red-500">Gagal memuat data.</p></div>');
+                $('#soalJawabanList').html('<tr><td colspan="5" class="py-12 text-center text-red-500">Gagal memuat data.</td></tr>');
             }
         });
 
