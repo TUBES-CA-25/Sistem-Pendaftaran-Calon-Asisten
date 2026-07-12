@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Daftar Peserta View
  * 
@@ -511,4 +511,5 @@ $result = $result ?? [];
 
 <!-- Load Custom JavaScript -->
 <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/participants.js?v=<?= time() ?>"></script>
+
 

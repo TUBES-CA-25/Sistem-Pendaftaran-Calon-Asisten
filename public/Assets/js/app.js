@@ -1,4 +1,4 @@
-/**
+﻿/**
  * App.js - Main Application Script
  * Handles navigation, URL routing with History API, and page loading
  */
@@ -497,7 +497,7 @@ function showAlert(message, isSuccess = true) {
         bootstrapToast.show();
     } else {
         // Fallback to alert
-        alert((isSuccess ? 'âœ“ ' : 'âœ— ') + message);
+        alert((isSuccess ? 'Ã¢Å“â€œ ' : 'Ã¢Å“â€” ') + message);
     }
 }
 
@@ -610,7 +610,7 @@ function showActionConfirmation(options) {
     modal.show();
 }
 
-// Initialize global DataTables — accepts optional callback fired after all tables are ready
+// Initialize global DataTables â€” accepts optional callback fired after all tables are ready
 function initGlobalTables(onReady) {
     var $tables = $('#content').find('table:not(#calendarTable)');
 
@@ -634,20 +634,21 @@ function initGlobalTables(onReady) {
                 dom: '<"dt-top-wrapper"lf>t<"dt-bottom-wrapper"ip>',
                 language: {
                     search: '',
-                    searchPlaceholder: "ðŸ”   Cari data...",
+                    searchPlaceholder: "Ã°Å¸â€   Cari data...",
                     lengthMenu: "Tampilkan _MENU_ baris",
-                    info: "Menampilkan <strong>_START_</strong> â€“ <strong>_END_</strong> dari <strong>_TOTAL_</strong> data",
+                    info: "Menampilkan <strong>_START_</strong> Ã¢â‚¬â€œ <strong>_END_</strong> dari <strong>_TOTAL_</strong> data",
                     infoEmpty: "Tidak ada data",
                     infoFiltered: "(difilter dari _MAX_ total data)",
                     zeroRecords: "<div class='text-center py-10 text-slate-400'>Tidak ada data yang cocok</div>",
                     paginate: {
-                        first: 'Â«',
-                        last: 'Â»',
-                        next: 'â€º',
-                        previous: 'â€¹'
+                        first: 'Ã‚Â«',
+                        last: 'Ã‚Â»',
+                        next: 'Ã¢â‚¬Âº',
+                        previous: 'Ã¢â‚¬Â¹'
                     }
                 },
                 initComplete: function() {
+                    $table.trigger('dt.initComplete');
                     // Count down pending; fire onReady when all tables are done
                     pendingInits--;
                     if (pendingInits <= 0 && typeof onReady === 'function') {
@@ -663,3 +664,4 @@ function initGlobalTables(onReady) {
         onReady();
     }
 }
+
