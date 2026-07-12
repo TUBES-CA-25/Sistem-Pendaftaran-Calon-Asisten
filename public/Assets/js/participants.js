@@ -47,7 +47,7 @@
     $(document).off('click', '#sendIndividualMessage');
     $(document).off('click', '.btn-download-berkas, #downloadMakalahButton, #downloadPptButton');
     $(document).off('click', '.tab-btn');
-    
+    // sad
     // ============================================
     // SEND MESSAGE FUNCTIONS (Inside jQuery Ready)
     // ============================================
