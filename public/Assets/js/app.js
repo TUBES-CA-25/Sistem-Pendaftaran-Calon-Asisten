@@ -648,6 +648,18 @@ function initGlobalTables(onReady) {
                     }
                 },
                 initComplete: function() {
+                    // Automatically move custom buttons to the filter area
+                    var $customButtons = $(this).closest('.max-w-7xl').find('.dt-custom-button');
+                    if ($customButtons.length) {
+                        var $filter = $(this).closest('.dataTables_wrapper').find('.dataTables_filter');
+                        $filter.addClass('flex items-center gap-3');
+                        $customButtons.each(function() {
+                            $filter.append($(this));
+                            $(this).removeClass('hidden').css('display', 'inline-flex');
+                        });
+                    }
+
+                    // Trigger custom event so page-specific scripts can hook into the newly created DOM
                     $table.trigger('dt.initComplete');
                     // Count down pending; fire onReady when all tables are done
                     pendingInits--;

@@ -25,7 +25,7 @@ $result = $result ?? [];
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
 
         <!-- Hidden custom buttons for DataTables -->
-        <button id="btnKirimNotifDt" class="hidden items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg transition shadow-sm shadow-blue-500/20" data-bs-toggle="modal" data-bs-target="#addNotification">
+        <button id="btnKirimNotifDt" class="dt-custom-button hidden items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg transition shadow-sm shadow-blue-500/20" data-bs-toggle="modal" data-bs-target="#addNotification">
             <i class="bi bi-send-fill text-xs"></i>
             Kirim Notifikasi
         </button>

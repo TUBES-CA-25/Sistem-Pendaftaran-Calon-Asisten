@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Daftar Hadir Peserta Admin View - Presentasi Style
  */
@@ -16,13 +16,7 @@ $mahasiswaList = $mahasiswaList ?? [];
     ?>
 
     <div class="max-w-7xl mx-auto px-4 py-6">
-        <!-- Table Controls -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-            <div class="relative w-full sm:w-72">
-                <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                <input type="text" id="searchKehadiran" class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm" placeholder="Cari nama atau stambuk...">
-            </div>
-        </div>
+
 
         <?php if (empty($absensiList)): ?>
             <div class="flex flex-col items-center justify-center py-16 text-slate-400 bg-white rounded-2xl border border-slate-100 shadow-sm p-8 text-center">

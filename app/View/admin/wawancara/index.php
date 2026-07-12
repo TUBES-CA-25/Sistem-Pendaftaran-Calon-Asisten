@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Wawancara Admin View
  *
@@ -22,16 +22,10 @@ $colors = ['#2f66f6'];
 
 <div class="max-w-7xl mx-auto px-4 py-6">
 
-    <!-- Table Controls -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <div class="relative w-full sm:w-72">
-            <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-            <input type="text" id="searchInput" class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm" placeholder="Cari nama atau stambuk...">
-        </div>
-        <button class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl flex items-center gap-2 transition shadow-sm border-0" type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
-            <i class="bi bi-plus-circle"></i> Tambah Jadwal
-        </button>
-    </div>
+    <!-- Hidden custom buttons for DataTables -->
+    <button class="dt-custom-button hidden px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl items-center gap-2 transition shadow-sm border-0" type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
+        <i class="bi bi-plus-circle"></i> Tambah Jadwal
+    </button>
 
     <!-- Data Table -->
     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">

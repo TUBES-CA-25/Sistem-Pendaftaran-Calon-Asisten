@@ -25,20 +25,6 @@
     // Store current row data
     var currentRowData = null;
 
-    // Hook into DataTables initialization to move custom buttons
-    $('#daftarPesertaTable').on('dt.initComplete', function() {
-        var $btn = $('#btnKirimNotifDt');
-        if ($btn.length) {
-            var $filter = $('.dataTables_filter');
-            // Make the filter container flex to hold both input and button
-            $filter.addClass('flex items-center gap-3');
-            // Move button into the filter container
-            $filter.append($btn);
-            // Make button visible
-            $btn.removeClass('hidden').addClass('inline-flex');
-        }
-    });
-
     // Clean up existing handlers first to prevent double-binding
     $(document).off('click', '.btn-view');
     $(document).off('click', '.btn-delete');

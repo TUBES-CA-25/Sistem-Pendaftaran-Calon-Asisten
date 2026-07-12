@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Jadwal Presentasi Admin View
  *
@@ -17,17 +17,10 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
     ?>
 
     <div class="max-w-7xl mx-auto px-4 py-6">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-            <div class="relative w-full sm:w-72">
-                <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                <input type="text" id="searchJadwal" class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm" placeholder="Cari mahasiswa...">
-            </div>
-            <div>
-                <button class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition flex items-center gap-2 shadow-md shadow-blue-500/10" id="btnAddJadwal">
-                    <i class="bi bi-plus-circle"></i> Tambah Jadwal
-                </button>
-            </div>
-        </div>
+        <!-- Hidden custom buttons for DataTables -->
+        <button class="dt-custom-button hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10" id="btnAddJadwal">
+            <i class="bi bi-plus-circle"></i> Tambah Jadwal
+        </button>
 
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
             <div class="overflow-x-auto">
