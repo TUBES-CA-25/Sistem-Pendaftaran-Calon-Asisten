@@ -246,29 +246,29 @@ function renderStatusBadge($val) {
 <div class="modal fade" id="rekapDetailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-slate-800 to-slate-900 px-6 py-4 flex justify-between items-center text-white">
-                <h5 class="modal-title font-bold flex items-center gap-2">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 flex justify-between items-center text-white">
+                <h5 class="modal-title font-bold flex items-center gap-2 text-base">
                     <i class="bi bi-card-checklist text-lg"></i>
                     Rekap Peserta
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="p-0">
-                <div class="p-6 text-center bg-slate-50 border-b border-slate-100 flex flex-col items-center">
-                    <img id="rekapFoto" src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png" alt="Foto Profil" class="rounded-full w-20 h-20 object-cover border-4 border-white shadow-sm mb-3" style="display: none;" onerror="this.style.display='none'; document.getElementById('rekapAvatarContainer').style.display='flex';">
-                    <div class="w-20 h-20 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-2xl shadow-sm mb-3" id="rekapAvatarContainer">
+                <div class="p-4 text-center bg-slate-50 border-b border-slate-100 flex flex-col items-center">
+                    <img id="rekapFoto" src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png" alt="Foto Profil" class="rounded-full w-16 h-16 object-cover border-4 border-white shadow-sm mb-2" style="display: none;" onerror="this.style.display='none'; document.getElementById('rekapAvatarContainer').style.display='flex';">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xl shadow-sm mb-2" id="rekapAvatarContainer">
                         <span id="rekapAvatar">U</span>
                     </div>
-                    <h5 class="text-lg font-bold text-slate-800 mb-1" id="rekapNama">Nama Peserta</h5>
-                    <p class="text-slate-400 font-semibold text-xs uppercase tracking-wider" id="rekapStambuk">Stambuk</p>
+                    <h5 class="text-base font-bold text-slate-800 mb-0.5" id="rekapNama">Nama Peserta</h5>
+                    <p class="text-slate-400 font-semibold text-[11px] uppercase tracking-wider" id="rekapStambuk">Stambuk</p>
                 </div>
                 
-                <div class="p-6 space-y-4">
+                <div class="p-5 space-y-2.5">
                     <h6 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tahapan Seleksi</h6>
                     
-                    <div class="space-y-3">
+                    <div class="space-y-2">
                         <!-- Berkas -->
-                        <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                        <div class="flex justify-between items-center pb-2 border-b border-slate-100">
                             <div>
                                 <h6 class="text-sm font-bold text-slate-800 mb-0.5">1. Kelengkapan Berkas</h6>
                                 <small class="text-slate-400 text-xs font-medium">Administrasi Awal</small>
@@ -277,7 +277,7 @@ function renderStatusBadge($val) {
                         </div>
 
                         <!-- Tes Tertulis -->
-                        <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                        <div class="flex justify-between items-center pb-2 border-b border-slate-100">
                             <div>
                                 <h6 class="text-sm font-bold text-slate-800 mb-0.5">2. Tes Tertulis</h6>
                                 <small class="text-slate-400 text-xs font-medium" id="scoreTes">Nilai: -</small>
@@ -286,7 +286,7 @@ function renderStatusBadge($val) {
                         </div>
 
                         <!-- Presentasi -->
-                        <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                        <div class="flex justify-between items-center pb-2 border-b border-slate-100">
                             <div>
                                 <h6 class="text-sm font-bold text-slate-800 mb-0.5">3. Presentasi</h6>
                                 <small class="text-slate-400 text-xs font-medium">Status Kehadiran</small>
@@ -295,7 +295,7 @@ function renderStatusBadge($val) {
                         </div>
 
                         <!-- Wawancara -->
-                        <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                        <div class="flex justify-between items-center pb-2 border-b border-slate-100">
                             <div>
                                 <h6 class="text-sm font-bold text-slate-800 mb-0.5">4. Wawancara</h6>
                                 <small class="text-slate-400 text-xs font-medium">Wawancara I & II</small>
@@ -307,14 +307,14 @@ function renderStatusBadge($val) {
                         </div>
 
                         <!-- FINAL RESULT -->
-                        <div class="mt-4 p-4 rounded-xl flex justify-between items-center transition" id="finalResultBox">
+                        <div class="mt-2 p-3 rounded-xl flex justify-between items-center transition" id="finalResultBox">
                             <h6 class="text-sm font-bold text-slate-700">HASIL AKHIR</h6>
-                            <span class="inline-block px-3.5 py-1.5 text-xs font-bold rounded-lg" id="finalStatus">PENDING</span>
+                            <span class="inline-block px-3 py-1 text-xs font-bold rounded-lg" id="finalStatus">PENDING</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="bg-slate-50 px-6 py-4">
+            <div class="bg-slate-50 px-5 py-3">
                 <button type="button" class="w-full py-2.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
