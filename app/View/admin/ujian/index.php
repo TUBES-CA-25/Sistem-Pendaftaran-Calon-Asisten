@@ -37,41 +37,41 @@ $essayCount = $stats['essay_count'];
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 <div class="bank-list-view" id="bankListView">
         <!-- Stats Bar -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex items-center gap-4 hover:-translate-y-0.5 hover:shadow-md hover:shadow-blue-500/10 transition-all duration-300">
-                <div class="w-12 h-12 rounded-xl flex justify-center items-center shrink-0 bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-sm">
-                    <i class="bi bi-folder-fill text-lg"></i>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 px-4 py-3 flex items-center gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
+                <div class="w-9 h-9 rounded-lg flex justify-center items-center shrink-0 bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-sm">
+                    <i class="bi bi-folder-fill text-sm"></i>
                 </div>
                 <div>
-                    <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">Total Bank Soal</div>
-                    <div class="text-2xl font-extrabold text-slate-800" id="stat-count-bank"><?= $bankCount ?></div>
+                    <div class="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Total Bank Soal</div>
+                    <div class="text-xl font-extrabold text-slate-800 leading-tight" id="stat-count-bank"><?= $bankCount ?></div>
                 </div>
             </div>
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex items-center gap-4 hover:-translate-y-0.5 hover:shadow-md hover:shadow-emerald-500/10 transition-all duration-300">
-                <div class="w-12 h-12 rounded-xl flex justify-center items-center shrink-0 bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-sm">
-                    <i class="bi bi-file-earmark-text-fill text-lg"></i>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 px-4 py-3 flex items-center gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
+                <div class="w-9 h-9 rounded-lg flex justify-center items-center shrink-0 bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-sm">
+                    <i class="bi bi-file-earmark-text-fill text-sm"></i>
                 </div>
                 <div>
-                    <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">Total Soal</div>
-                    <div class="text-2xl font-extrabold text-slate-800" id="stat-count-total"><?= $totalSoal ?></div>
+                    <div class="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Total Soal</div>
+                    <div class="text-xl font-extrabold text-slate-800 leading-tight" id="stat-count-total"><?= $totalSoal ?></div>
                 </div>
             </div>
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex items-center gap-4 hover:-translate-y-0.5 hover:shadow-md hover:shadow-sky-500/10 transition-all duration-300">
-                <div class="w-12 h-12 rounded-xl flex justify-center items-center shrink-0 bg-gradient-to-br from-sky-400 to-sky-600 text-white shadow-sm">
-                    <i class="bi bi-ui-checks-grid text-lg"></i>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 px-4 py-3 flex items-center gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
+                <div class="w-9 h-9 rounded-lg flex justify-center items-center shrink-0 bg-gradient-to-br from-sky-400 to-sky-600 text-white shadow-sm">
+                    <i class="bi bi-ui-checks-grid text-sm"></i>
                 </div>
                 <div>
-                    <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">Pilihan Ganda</div>
-                    <div class="text-2xl font-extrabold text-slate-800" id="stat-count-pg"><?= $pgCount ?></div>
+                    <div class="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Pilihan Ganda</div>
+                    <div class="text-xl font-extrabold text-slate-800 leading-tight" id="stat-count-pg"><?= $pgCount ?></div>
                 </div>
             </div>
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex items-center gap-4 hover:-translate-y-0.5 hover:shadow-md hover:shadow-amber-500/10 transition-all duration-300">
-                <div class="w-12 h-12 rounded-xl flex justify-center items-center shrink-0 bg-gradient-to-br from-amber-400 to-amber-600 text-white shadow-sm">
-                    <i class="bi bi-pencil-square text-lg"></i>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 px-4 py-3 flex items-center gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
+                <div class="w-9 h-9 rounded-lg flex justify-center items-center shrink-0 bg-gradient-to-br from-amber-400 to-amber-600 text-white shadow-sm">
+                    <i class="bi bi-pencil-square text-sm"></i>
                 </div>
                 <div>
-                    <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">Essay</div>
-                    <div class="text-2xl font-extrabold text-slate-800" id="stat-count-essay"><?= $essayCount ?></div>
+                    <div class="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Essay</div>
+                    <div class="text-xl font-extrabold text-slate-800 leading-tight" id="stat-count-essay"><?= $essayCount ?></div>
                 </div>
             </div>
         </div>
