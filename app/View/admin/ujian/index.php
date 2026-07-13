@@ -96,95 +96,162 @@ $essayCount = $stats['essay_count'];
             <p class="text-slate-500 text-sm max-w-sm">Klik tombol "Buat Bank Baru" untuk membuat bank soal pertama</p>
         </div>
         <?php endif; ?>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="bankGrid">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="bankGrid">
+            <?php
+            // Color themes cycling for each card (like reference image variety)
+            $cardThemes = [
+                ['from' => 'from-blue-500',   'to' => 'to-indigo-600',  'via' => 'via-blue-600'],
+                ['from' => 'from-violet-500', 'to' => 'to-purple-700',  'via' => 'via-violet-600'],
+                ['from' => 'from-emerald-500','to' => 'to-teal-700',    'via' => 'via-emerald-600'],
+                ['from' => 'from-rose-500',   'to' => 'to-pink-700',    'via' => 'via-rose-600'],
+                ['from' => 'from-amber-500',  'to' => 'to-orange-600',  'via' => 'via-amber-500'],
+                ['from' => 'from-sky-500',    'to' => 'to-cyan-700',    'via' => 'via-sky-600'],
+            ];
+            $themeIdx = 0;
+            ?>
             <!-- Existing Banks -->
-            <?php foreach ($bankSoalList as $bank): ?>
-            <!-- Bank Card Item (Square) -->
+            <?php foreach ($bankSoalList as $bank):
+                $theme = $cardThemes[$themeIdx % count($cardThemes)];
+                $themeIdx++;
+                $total    = (int)($bank['jumlah_soal'] ?? 0);
+                $pg       = (int)($bank['pg_count'] ?? 0);
+                $essay    = (int)($bank['essay_count'] ?? 0);
+                $pgPct    = $total > 0 ? round($pg / $total * 100) : 0;
+                $essayPct = $total > 0 ? round($essay / $total * 100) : 0;
+            ?>
             <div class="group" id="bank-card-<?= $bank['id'] ?>">
-                <div class="relative aspect-square rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl hover:shadow-blue-500/15 hover:border-blue-300 transition-all duration-300 cursor-pointer transform hover:-translate-y-1 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800">
-                    <!-- Decorative background pattern -->
-                    <div class="absolute inset-0 opacity-[0.07]" style="background-image: repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 1px, transparent 12px);"></div>
-                    <!-- Decorative circles -->
-                    <div class="absolute -bottom-8 -right-8 w-36 h-36 bg-white/10 rounded-full blur-2xl"></div>
-                    <div class="absolute -top-6 -left-6 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 hover:shadow-xl hover:shadow-slate-200/60 hover:border-slate-300 transition-all duration-300 overflow-hidden transform hover:-translate-y-1 flex flex-col">
 
-                    <!-- Top row: icon + menu -->
-                    <div class="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
-                        <div class="w-9 h-9 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-white border border-white/25 shadow-sm">
-                            <i class="bi bi-folder-fill text-sm"></i>
+                    <!-- ── Card Header ── -->
+                    <div class="relative h-32 bg-gradient-to-br <?= $theme['from'] ?> <?= $theme['via'] ?> <?= $theme['to'] ?> overflow-hidden">
+                        <!-- Pattern overlay -->
+                        <div class="absolute inset-0 opacity-[0.08]" style="background-image:radial-gradient(circle at 20% 50%, #fff 1px, transparent 1px), radial-gradient(circle at 80% 20%, #fff 1px, transparent 1px); background-size: 30px 30px;"></div>
+                        <!-- Glow circles -->
+                        <div class="absolute -top-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                        <div class="absolute bottom-0 left-0 w-20 h-20 bg-black/10 rounded-full blur-xl"></div>
+
+                        <!-- Folder icon centered -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30 shadow-lg">
+                                <i class="bi bi-folder-fill text-white text-2xl drop-shadow"></i>
+                            </div>
                         </div>
-                        <!-- 3-dot menu -->
-                        <div class="dropdown" onclick="event.stopPropagation()">
+
+                        <!-- Menu button top-right -->
+                        <div class="absolute top-3 right-3 dropdown" onclick="event.stopPropagation()">
                             <button class="w-7 h-7 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 rounded-lg transition border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-three-dots-vertical text-sm"></i>
+                                <i class="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end border-0 shadow-xl rounded-xl p-2 mt-1 bg-white ring-1 ring-slate-100">
                                 <li>
-                                    <a class="dropdown-item flex items-center gap-3 px-3 py-2 text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-lg text-sm transition font-medium" href="javascript:void(0)" onclick="window.editBankModal(<?= $bank['id'] ?>)">
+                                    <a class="dropdown-item flex items-center gap-3 px-3 py-2 text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-lg text-sm font-medium transition" href="javascript:void(0)" onclick="window.editBankModal(<?= $bank['id'] ?>)">
                                         <i class="bi bi-pencil-square"></i> Edit
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider my-1 border-slate-100"></li>
                                 <li>
-                                    <a class="dropdown-item flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg text-sm transition font-medium" href="javascript:void(0)" onclick="deleteBank(<?= $bank['id'] ?>)">
+                                    <a class="dropdown-item flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium transition" href="javascript:void(0)" onclick="deleteBank(<?= $bank['id'] ?>)">
                                         <i class="bi bi-trash3"></i> Hapus
                                     </a>
                                 </li>
                             </ul>
                         </div>
+
+                        <!-- Status badge top-left -->
+                        <div class="absolute top-3 left-3">
+                            <?php if (($bank['is_active'] ?? 0) == 1): ?>
+                            <span class="bg-emerald-400/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">● AKTIF</span>
+                            <?php else: ?>
+                            <span class="bg-black/30 text-white/80 text-[9px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">○ NON-AKTIF</span>
+                            <?php endif; ?>
+                        </div>
                     </div>
 
-                    <!-- Center: Name & Description — clickable -->
-                    <div class="absolute top-14 left-0 right-0 px-4 cursor-pointer z-0" onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama'] ?? '') ?>')">
-                        <h3 class="font-bold text-white text-[14px] leading-snug line-clamp-2 mb-1 group-hover:opacity-90 transition-opacity" title="<?= htmlspecialchars($bank['nama'] ?? '') ?>">
-                            <?= htmlspecialchars($bank['nama'] ?? '') ?>
-                        </h3>
-                        <p class="text-white/60 text-[11px] leading-relaxed line-clamp-2">
-                            <?= htmlspecialchars($bank['deskripsi'] ?? 'Tidak ada deskripsi') ?>
-                        </p>
-                    </div>
+                    <!-- ── Card Body ── -->
+                    <div class="p-5 flex flex-col flex-grow">
+                        <!-- Title row -->
+                        <div class="flex items-start justify-between gap-3 mb-2">
+                            <h3 class="font-extrabold text-slate-800 text-base leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors cursor-pointer flex-1"
+                                onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama'] ?? '') ?>')"
+                                title="<?= htmlspecialchars($bank['nama'] ?? '') ?>">
+                                <?= htmlspecialchars($bank['nama'] ?? '') ?>
+                            </h3>
+                            <div class="text-right shrink-0">
+                                <div class="text-lg font-extrabold text-blue-600 leading-none"><?= $total ?></div>
+                                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Total Soal</div>
+                            </div>
+                        </div>
 
-                    <!-- Bottom: Token + Badges + Switch -->
-                    <div class="absolute bottom-0 left-0 right-0 px-3 pb-3 z-10">
-                        <!-- Token pill -->
-                        <div class="bg-black/25 backdrop-blur-sm border border-white/15 rounded-lg px-2.5 py-1.5 mb-2 flex items-center gap-1.5">
-                            <i class="bi bi-key-fill text-amber-300 text-[10px] shrink-0"></i>
-                            <span class="text-white text-[11px] font-bold tracking-widest truncate"><?= htmlspecialchars($bank['token'] ?? '') ?></span>
+                        <!-- Token badge -->
+                        <div class="mb-3">
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
+                                <i class="bi bi-key-fill text-[9px]"></i> <?= htmlspecialchars($bank['token'] ?? '') ?>
+                            </span>
                         </div>
-                        <!-- Badges row -->
-                        <div class="flex items-center gap-1 mb-2.5 flex-nowrap overflow-hidden">
-                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-white/20 text-white whitespace-nowrap"><?= $bank['jumlah_soal'] ?> Soal</span>
-                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-sky-400/30 text-sky-100 whitespace-nowrap">PG: <?= $bank['pg_count'] ?? 0 ?></span>
-                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-400/30 text-amber-100 whitespace-nowrap">Essay: <?= $bank['essay_count'] ?? 0 ?></span>
+
+                        <!-- Distribution bar -->
+                        <div class="mb-3">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Distribusi Soal</span>
+                                <span class="text-[10px] font-bold text-slate-600">
+                                    <?php if ($total > 0): ?>
+                                        <?= $pgPct ?>% PG
+                                    <?php else: ?>
+                                        Belum ada soal
+                                    <?php endif; ?>
+                                </span>
+                            </div>
+                            <!-- Multi-segment bar: PG (blue) + Essay (amber) -->
+                            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex">
+                                <div class="h-full bg-blue-500 rounded-l-full transition-all duration-500" style="width: <?= $pgPct ?>%"></div>
+                                <div class="h-full bg-amber-400 rounded-r-full transition-all duration-500" style="width: <?= $essayPct ?>%"></div>
+                            </div>
+                            <!-- Legend -->
+                            <div class="flex gap-3 mt-1.5">
+                                <span class="flex items-center gap-1 text-[9px] font-bold text-slate-500">
+                                    <span class="w-2 h-2 rounded-sm bg-blue-500 inline-block"></span> PG (<?= $pg ?>)
+                                </span>
+                                <span class="flex items-center gap-1 text-[9px] font-bold text-slate-500">
+                                    <span class="w-2 h-2 rounded-sm bg-amber-400 inline-block"></span> Essay (<?= $essay ?>)
+                                </span>
+                            </div>
                         </div>
-                        <!-- Active toggle row -->
-                        <div class="flex items-center justify-between" onclick="event.stopPropagation()">
-                            <span class="text-[10px] font-semibold flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full <?= ($bank['is_active'] ?? 0) == 1 ? 'bg-emerald-400' : 'bg-white/40' ?>"></span>
-                                <span id="statusText_<?= $bank['id'] ?>" class="<?= ($bank['is_active'] ?? 0) == 1 ? 'text-emerald-300' : 'text-white/50' ?>">
+
+                        <!-- Footer row: toggle + CTA button -->
+                        <div class="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between gap-3" onclick="event.stopPropagation()">
+                            <!-- Active toggle -->
+                            <div class="flex items-center gap-2">
+                                <div class="form-check form-switch p-0 m-0">
+                                    <input class="form-check-input bank-active-switch cursor-pointer w-9 h-5 border-0 rounded-full appearance-none transition-colors shadow-inner focus:ring-0 bg-slate-200 checked:bg-emerald-500"
+                                        type="checkbox" id="activeSwitch_<?= $bank['id'] ?>"
+                                        <?= ($bank['is_active'] ?? 0) == 1 ? 'checked' : '' ?>
+                                        onchange="window.activateBank(<?= $bank['id'] ?>)">
+                                </div>
+                                <span id="statusText_<?= $bank['id'] ?>" class="text-[10px] font-semibold <?= ($bank['is_active'] ?? 0) == 1 ? 'text-emerald-600' : 'text-slate-400' ?>">
                                     <?= ($bank['is_active'] ?? 0) == 1 ? 'Aktif' : 'Non-aktif' ?>
                                 </span>
-                            </span>
-                            <div class="form-check form-switch p-0 m-0">
-                                <input class="form-check-input bank-active-switch cursor-pointer w-8 h-4 border-0 rounded-full appearance-none transition-colors shadow-inner focus:ring-0 bg-white/25 checked:bg-emerald-500" type="checkbox" id="activeSwitch_<?= $bank['id'] ?>"
-                                <?= ($bank['is_active'] ?? 0) == 1 ? 'checked' : '' ?>
-                                onchange="window.activateBank(<?= $bank['id'] ?>)">
                             </div>
+
+                            <!-- View Details button -->
+                            <button class="flex items-center gap-1.5 text-[11px] font-bold text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-400 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-all duration-200 bg-transparent"
+                                    onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama'] ?? '') ?>')">
+                                Lihat Detail <i class="bi bi-arrow-right text-[10px]"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
             <?php endforeach; ?>
 
-            <!-- Create New Bank Card (Square) -->
+            <!-- Create New Bank Card -->
             <div>
-                <div class="aspect-square rounded-2xl border-2 border-dashed border-slate-300 hover:border-blue-400 hover:bg-blue-50/50 cursor-pointer transition-all duration-300 flex flex-col justify-center items-center text-center group"
+                <div class="rounded-2xl border-2 border-dashed border-slate-200 hover:border-blue-400 hover:bg-blue-50/40 cursor-pointer transition-all duration-300 flex flex-col justify-center items-center text-center min-h-[260px] group"
                      data-bs-toggle="modal" data-bs-target="#createBankModal">
-                    <div class="w-12 h-12 rounded-xl mb-2.5 flex justify-center items-center bg-white text-blue-500 shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-md border border-slate-100 group-hover:bg-blue-50">
-                        <i class="bi bi-plus-lg text-xl"></i>
+                    <div class="w-14 h-14 rounded-2xl mb-3 flex justify-center items-center bg-white text-blue-500 shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-md border border-slate-100 group-hover:bg-blue-50">
+                        <i class="bi bi-plus-lg text-2xl"></i>
                     </div>
-                    <p class="font-bold text-slate-500 text-xs group-hover:text-blue-600 transition-colors">Buat Bank Baru</p>
-                    <p class="text-slate-400 text-[10px] mt-0.5 max-w-[100px] leading-relaxed">Tambah set soal ujian</p>
+                    <p class="font-bold text-slate-500 text-sm group-hover:text-blue-600 transition-colors">Bank Soal Baru</p>
+                    <p class="text-slate-400 text-[11px] mt-1 max-w-[140px] leading-relaxed">Buat set soal ujian baru dan mulai membangun bank soal</p>
                 </div>
             </div>
         </div>
