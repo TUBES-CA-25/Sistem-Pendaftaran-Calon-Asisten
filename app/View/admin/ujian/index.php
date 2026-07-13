@@ -37,7 +37,7 @@ $essayCount = $stats['essay_count'];
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 <div class="bank-list-view" id="bankListView">
         <!-- Stats Bar -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
             <div class="bg-white rounded-xl shadow-sm border border-slate-100 px-4 py-3 flex items-center gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
                 <div class="w-9 h-9 rounded-lg flex justify-center items-center shrink-0 bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-sm">
                     <i class="bi bi-folder-fill text-sm"></i>
@@ -77,7 +77,7 @@ $essayCount = $stats['essay_count'];
         </div>
 
     <!-- Header & Controls -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
         <div>
             <h2 class="text-lg font-bold text-slate-800">Daftar Bank Soal</h2>
             <p class="text-slate-400 text-sm mt-0.5"><?= count($bankSoalList) ?> bank tersedia &bull; Klik kartu untuk melihat daftar soal</p>
@@ -96,7 +96,7 @@ $essayCount = $stats['essay_count'];
             <p class="text-slate-500 text-sm max-w-sm">Klik tombol "Buat Bank Baru" untuk membuat bank soal pertama</p>
         </div>
         <?php endif; ?>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" id="bankGrid">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2" id="bankGrid">
             <?php
             $cardThemes = [
                 ['from' => 'from-blue-500',   'via' => 'via-blue-600',   'to' => 'to-indigo-600'],
