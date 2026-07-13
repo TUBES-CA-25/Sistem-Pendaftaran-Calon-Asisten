@@ -195,9 +195,13 @@
                 presentasiSection.style.display = 'block';
             }
             
-            // Status Badge and Status Icon
             var statusBadge = document.getElementById('modalStatusBadge');
+            var statusBadgeIcon = document.getElementById('modalStatusBadgeIcon');
+            var statusBadgeText = document.getElementById('modalStatusBadgeText');
+            
             var statusIcon = document.getElementById('modalStatusIcon');
+            var statusIconInner = document.getElementById('modalStatusIconInner');
+            
             var berkasAccepted = data.berkas_accepted;
             
             // Get button elements
@@ -216,28 +220,28 @@
             
             if (berkasAccepted == '1') {
                 statusBadge.className = 'inline-block rounded-full px-3 py-1 text-[10px] font-semibold bg-emerald-500 text-white';
-                statusBadge.innerHTML = '<i class="bi bi-check-circle me-1"></i>Berkas Terverifikasi';
+                if (statusBadgeIcon) statusBadgeIcon.className = 'bi bi-check-circle me-1';
+                if (statusBadgeText) statusBadgeText.textContent = 'Berkas Terverifikasi';
+                
                 statusIcon.className = 'absolute bottom-0 right-0 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-[10px] text-white font-bold bg-emerald-500 border-2 border-white';
-                statusIcon.style.width = '';
-                statusIcon.style.height = '';
-                statusIcon.innerHTML = '<i class="bi bi-check-lg"></i>';
+                if (statusIconInner) statusIconInner.className = 'bi bi-check-lg';
                 btnBatalkan.style.display = 'inline-block';
             } else if (berkasAccepted == '0') {
                 statusBadge.className = 'inline-block rounded-full px-3 py-1 text-[10px] font-semibold bg-blue-500 text-white';
-                statusBadge.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Menunggu Verifikasi';
+                if (statusBadgeIcon) statusBadgeIcon.className = 'bi bi-hourglass-split me-1';
+                if (statusBadgeText) statusBadgeText.textContent = 'Menunggu Verifikasi';
+                
                 statusIcon.className = 'absolute bottom-0 right-0 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-[10px] text-white font-bold bg-blue-500 border-2 border-white';
-                statusIcon.style.width = '';
-                statusIcon.style.height = '';
-                statusIcon.innerHTML = '<i class="bi bi-clock"></i>';
+                if (statusIconInner) statusIconInner.className = 'bi bi-clock';
                 btnVerifikasi.style.display = 'inline-block';
                 btnVerifikasi.disabled = false;
             } else {
                 statusBadge.className = 'inline-block rounded-full px-3 py-1 text-[10px] font-semibold bg-slate-500 text-white';
-                statusBadge.innerHTML = '<i class="bi bi-file-earmark-x me-1"></i>Belum Upload Berkas';
+                if (statusBadgeIcon) statusBadgeIcon.className = 'bi bi-file-earmark-x me-1';
+                if (statusBadgeText) statusBadgeText.textContent = 'Belum Upload Berkas';
+                
                 statusIcon.className = 'absolute bottom-0 right-0 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-[10px] text-white font-bold bg-slate-500 border-2 border-white';
-                statusIcon.style.width = '';
-                statusIcon.style.height = '';
-                statusIcon.innerHTML = '<i class="bi bi-x-lg"></i>';
+                if (statusIconInner) statusIconInner.className = 'bi bi-x-lg';
                 if (btnTerima) btnTerima.style.display = 'inline-block';
                 if (btnTolak) btnTolak.style.display = 'inline-block';
             }
@@ -375,14 +379,33 @@
         list.innerHTML = '';
         
         if (selectedMahasiswa.length === 0) {
-            list.innerHTML = '<li class="list-group-item text-muted text-center py-3"><i class="bi bi-inbox me-1"></i>Belum ada peserta dipilih</li>';
+            var emptyLi = document.createElement('li');
+            emptyLi.className = 'list-group-item text-muted text-center py-3';
+            var emptyIcon = document.createElement('i');
+            emptyIcon.className = 'bi bi-inbox me-1';
+            emptyLi.appendChild(emptyIcon);
+            emptyLi.appendChild(document.createTextNode('Belum ada peserta dipilih'));
+            list.appendChild(emptyLi);
         } else {
             selectedMahasiswa.forEach(function(mhs, index) {
                 var li = document.createElement('li');
                 li.className = 'list-group-item d-flex justify-content-between align-items-center py-2';
-                li.innerHTML = '<span class="small">' + mhs.text + '</span>' +
-                    '<button type="button" class="btn btn-sm btn-outline-danger" data-index="' + index + '">' +
-                    '<i class="bi bi-x"></i></button>';
+                
+                var span = document.createElement('span');
+                span.className = 'small';
+                span.textContent = mhs.text;
+                
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn btn-sm btn-outline-danger';
+                btn.dataset.index = index;
+                
+                var icon = document.createElement('i');
+                icon.className = 'bi bi-x';
+                btn.appendChild(icon);
+                
+                li.appendChild(span);
+                li.appendChild(btn);
                 list.appendChild(li);
             });
             

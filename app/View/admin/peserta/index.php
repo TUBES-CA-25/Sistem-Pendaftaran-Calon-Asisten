@@ -191,7 +191,8 @@ $result = $result ?? [];
                         <div class="relative shrink-0">
                             <img id="modalFoto" src="" alt="Foto Peserta" 
                                  class="rounded-full w-20 h-20 object-cover border-2 border-white shadow-md bg-slate-100">
-                            <span id="modalStatusIcon" class="absolute bottom-0 right-0 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-[10px] text-white font-bold">
+                            <span id="modalStatusIcon" class="absolute bottom-0 right-0 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-[10px] text-white font-bold border-2 border-white">
+                                <i id="modalStatusIconInner" class="bi bi-dash"></i>
                             </span>
                         </div>
                         
@@ -205,7 +206,7 @@ $result = $result ?? [];
                                         <span id="modalStambukHeader">-</span>
                                     </p>
                                     <span id="modalStatusBadge" class="inline-block rounded-full px-3 py-1 text-[10px] font-semibold">
-                                        Status
+                                        <i id="modalStatusBadgeIcon" class="me-1"></i><span id="modalStatusBadgeText">Status</span>
                                     </span>
                                 </div>
                             </div>

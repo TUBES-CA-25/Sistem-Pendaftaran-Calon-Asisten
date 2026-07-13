@@ -318,6 +318,50 @@ class BankSoalController extends Controller
         exit;
     }
 
+    public function getBankQuestionsHtml()
+    {
+        // Clean any previous output
+        if (ob_get_level()) ob_end_clean();
+        
+        try {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            if (!isset($_SESSION['user']['id'])) {
+                throw new \Exception('User tidak terautentikasi');
+            }
+
+            $bankId = $_POST['bank_id'] ?? null;
+            
+            if (!$bankId) {
+                throw new \Exception('<div class="text-red-500 font-bold p-4 text-center">Bank ID tidak ditemukan</div>');
+            }
+
+            $soalExam = new SoalExam();
+            $soalArray = $soalExam->getSoalByBankId($bankId);
+            
+            // Pass variable and include view
+            ob_start();
+            include __DIR__ . '/../../View/admin/ujian/partials/soal_list.php';
+            $html = ob_get_clean();
+            
+            echo json_encode([
+                'status' => 'success',
+                'html' => $html,
+                'data' => $soalArray // also pass data for things like question count update
+            ]);
+            
+        } catch (\Exception $e) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'html' => '<div class="text-red-500 font-bold p-4 text-center">' . htmlspecialchars($e->getMessage()) . '</div>'
+            ]);
+        }
+        exit;
+    }
+
     public function deleteSoal()
     {
         // Clean any previous output

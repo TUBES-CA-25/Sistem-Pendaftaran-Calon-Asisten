@@ -116,7 +116,14 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                                 <th class="px-2 py-3 text-slate-400 text-xs font-bold text-center tracking-wider">SU</th>
                             </tr>
                         </thead>
-                        <tbody id="calendarBody"></tbody>
+                        <tbody id="calendarBody">
+                            <?php 
+                                $year = (int)date('Y');
+                                $month = (int)date('n');
+                                $eventsData = $kegiatanBulanIni ?? [];
+                                include __DIR__ . '/partials/calendar_table.php'; 
+                            ?>
+                        </tbody>
                     </table>
                 </div>
             </div>

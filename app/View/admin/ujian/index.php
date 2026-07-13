@@ -34,7 +34,7 @@ $essayCount = $stats['essay_count'];
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 [&_.editor-toolbar]:!border-slate-200 [&_.editor-toolbar]:rounded-t-xl [&_.CodeMirror]:!border-slate-200 [&_.CodeMirror]:rounded-b-xl [&_.CodeMirror]:min-h-[200px] [&_.CodeMirror]:max-h-[400px] [&_.editor-statusbar]:hidden [&_.condition-render-markdown_img]:max-w-full [&_.condition-render-markdown_img]:max-h-[400px] [&_.condition-render-markdown_img]:object-contain [&_.condition-render-markdown_img]:rounded-xl [&_.condition-render-markdown_img]:my-2.5 [&_.condition-render-markdown_img]:border [&_.condition-render-markdown_img]:border-slate-200 [&_.condition-render-markdown_img]:block [&_.type-option.selected]:bg-blue-600/5 [&_.type-option.selected]:!border-blue-600 [&_.type-option.selected_.check-icon]:!block [&_.modal-dialog-scrollable_.modal-body]:!overflow-y-auto [&_.modal-dialog-scrollable_.modal-body]:!max-h-[65vh] [&_.modal-dialog-scrollable_.modal-body]:[scrollbar-width:thin] [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar]:w-1.5 [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar-track]:bg-slate-100 [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar-thumb]:bg-slate-300 [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar-thumb]:rounded-sm [&_.EasyMDEContainer]:z-[1055]">
 <div class="bank-list-view" id="bankListView">
         <!-- Stats Bar -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
@@ -118,12 +118,15 @@ $essayCount = $stats['essay_count'];
                 $essayPct = $total > 0 ? round($essay / $total * 100) : 0;
             ?>
             <div class="group" id="bank-card-<?= $bank['id'] ?>">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-lg hover:border-slate-300 transition-all duration-200 overflow-hidden hover:-translate-y-0.5 flex flex-col">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-lg hover:border-slate-300 transition-all duration-200 hover:-translate-y-0.5 flex flex-col">
 
                     <!-- Header -->
-                    <div class="relative h-[88px] bg-gradient-to-br <?= $theme['from'] ?> <?= $theme['via'] ?> <?= $theme['to'] ?> overflow-hidden shrink-0">
-                        <div class="absolute inset-0 opacity-[0.07]" style="background-image:radial-gradient(circle at 20% 50%,#fff 1px,transparent 1px),radial-gradient(circle at 80% 20%,#fff 1px,transparent 1px);background-size:24px 24px;"></div>
-                        <div class="absolute -top-6 -right-6 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+                    <div class="relative h-[88px] bg-gradient-to-br <?= $theme['from'] ?> <?= $theme['via'] ?> <?= $theme['to'] ?> shrink-0 rounded-t-xl">
+                        <!-- Decorative background -->
+                        <div class="absolute inset-0 overflow-hidden pointer-events-none rounded-t-xl">
+                            <div class="absolute inset-0 opacity-[0.07]" style="background-image:radial-gradient(circle at 20% 50%,#fff 1px,transparent 1px),radial-gradient(circle at 80% 20%,#fff 1px,transparent 1px);background-size:24px 24px;"></div>
+                            <div class="absolute -top-6 -right-6 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+                        </div>
 
                         <!-- Center icon -->
                         <div class="absolute inset-0 flex items-center justify-center">
@@ -135,9 +138,9 @@ $essayCount = $stats['essay_count'];
                         <!-- Status badge top-left -->
                         <div class="absolute top-2 left-2">
                             <?php if (($bank['is_active'] ?? 0) == 1): ?>
-                            <span class="bg-emerald-500/90 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">● AKTIF</span>
+                            <span id="topBadge_<?= $bank['id'] ?>" class="top-status-badge bg-emerald-500/90 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full transition-colors">● AKTIF</span>
                             <?php else: ?>
-                            <span class="bg-black/30 text-white/80 text-[8px] font-bold px-1.5 py-0.5 rounded-full">○ NON-AKTIF</span>
+                            <span id="topBadge_<?= $bank['id'] ?>" class="top-status-badge bg-black/30 text-white/80 text-[8px] font-bold px-1.5 py-0.5 rounded-full transition-colors">○ NON-AKTIF</span>
                             <?php endif; ?>
                         </div>
 
@@ -201,11 +204,14 @@ $essayCount = $stats['essay_count'];
                         <!-- Footer: toggle + button -->
                         <div class="mt-auto pt-2 border-t border-slate-100 flex items-center justify-between" onclick="event.stopPropagation()">
                             <div class="flex items-center gap-1.5">
-                                <input class="form-check-input bank-active-switch cursor-pointer w-8 h-4 border-0 rounded-full appearance-none transition-colors shadow-inner focus:ring-0 bg-slate-200 checked:bg-emerald-500"
-                                    type="checkbox" id="activeSwitch_<?= $bank['id'] ?>"
-                                    <?= ($bank['is_active'] ?? 0) == 1 ? 'checked' : '' ?>
-                                    onchange="window.activateBank(<?= $bank['id'] ?>)">
-                                <span id="statusText_<?= $bank['id'] ?>" class="text-[9px] font-semibold <?= ($bank['is_active'] ?? 0) == 1 ? 'text-emerald-600' : 'text-slate-400' ?>">
+                                <label class="relative inline-flex items-center cursor-pointer mb-0">
+                                    <input type="checkbox" id="activeSwitch_<?= $bank['id'] ?>" 
+                                        class="sr-only peer bank-active-switch"
+                                        <?= ($bank['is_active'] ?? 0) == 1 ? 'checked' : '' ?>
+                                        onchange="window.activateBank(<?= $bank['id'] ?>)">
+                                    <div class="w-8 h-4 bg-slate-300 rounded-full peer peer-checked:after:translate-x-4 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                                </label>
+                                <span id="statusText_<?= $bank['id'] ?>" class="text-[9px] font-semibold <?= ($bank['is_active'] ?? 0) == 1 ? 'text-emerald-600' : 'text-slate-500' ?>">
                                     <?= ($bank['is_active'] ?? 0) == 1 ? 'Aktif' : 'Non-aktif' ?>
                                 </span>
                             </div>
@@ -658,49 +664,6 @@ $essayCount = $stats['essay_count'];
     </div>
 </div>
 
-<style>
-    .editor-toolbar { border-color: #e2e8f0; border-radius: 0.75rem 0.75rem 0 0; }
-    .CodeMirror { border-color: #e2e8f0; border-radius: 0 0 0.75rem 0.75rem; min-height: 200px; max-height: 400px; }
-    .editor-statusbar { display: none; }
-    
-    /* Limit rendered markdown image size */
-    .condition-render-markdown img {
-        max-width: 100%;
-        max-height: 400px; /* Reasonable limit */
-        object-fit: contain;
-        border-radius: 12px;
-        margin-top: 10px;
-        margin-bottom: 10px; /* Space between image and text */
-        border: 1px solid #e2e8f0;
-        display: block; /* Force new line */
-    }
-    
-    /* Type Option Selection */
-    .type-option.selected { background-color: rgba(37, 99, 235, 0.05); border-color: #2563eb !important; }
-    .type-option.selected .check-icon { display: block !important; }
-    
-    /* Allow scrolling in modals with EasyMDE */
-    .modal-dialog-scrollable .modal-body {
-        overflow-y: auto !important;
-        max-height: 65vh !important;
-        scrollbar-width: thin;
-    }
-    .modal-dialog-scrollable .modal-body::-webkit-scrollbar {
-        width: 6px;
-    }
-    .modal-dialog-scrollable .modal-body::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-    .modal-dialog-scrollable .modal-body::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
-    }
-    
-    /* Fix EasyMDE z-index issues in modal */
-    .EasyMDEContainer {
-        z-index: 1055; 
-    }
-</style>
 
 <!-- Pass PHP Data to JavaScript -->
 <script>
@@ -729,161 +692,6 @@ $essayCount = $stats['essay_count'];
 
 <!-- Load External JavaScript -->
 <script src="<?= APP_URL ?>/Assets/js/exam_import_export.js"></script>
-<script src="<?= APP_URL ?>/Assets/js/exam_import_export.js"></script>
 <script src="<?= APP_URL ?>/Assets/js/exam.js"></script>
-<script>
-    // Initialize EasyMDE
-    document.addEventListener('DOMContentLoaded', function() {
-        // Options matching user screenshot
-        const mdeOptions = {
-             element: null, // to be set
-             autoDownloadFontAwesome: false,
-             spellChecker: false,
-             status: false,
-             uploadImage: true,
-             imageUploadEndpoint: baseUrl + '/uploadImage',
-             imagePathAbsolute: true,
-             imageAccept: "image/png, image/jpeg, image/gif, image/webp",
-             imageTexts: {
-                 sbInit: 'Drag & drop image here',
-                 sbOnDragEnter: 'Drop image to upload',
-                 sbOnDrop: 'Uploading...',
-                 sbProgress: 'Uploading... (#progress#)',
-                 sbOnUploaded: 'Uploaded',
-                 sizeUnits: 'b,kb,mb'
-             },
-             errorMessages: {
-                 noFileGiven: 'Please select a file.',
-                 typeNotAllowed: 'This file type is not allowed.',
-                 fileTooLarge: 'Image is too big detected.',
-                 importError: 'Something went wrong during image upload.'
-             },
-             toolbar: [
-                 "bold", "italic", "heading",
-                 "quote", "unordered-list", "ordered-list"
-             ]
-        };
+<script src="<?= APP_URL ?>/Assets/js/exam_ui.js"></script>
 
-        // Create Editor for Add Question
-        window.easyMDE_add = new EasyMDE({
-            ...mdeOptions,
-            element: document.querySelector('#addSoalForm textarea[name="deskripsi"]')
-        });
-
-        // Create Editor for Edit Question
-        window.easyMDE_edit = new EasyMDE({
-            ...mdeOptions,
-            element: document.querySelector('#editSoalForm textarea[name="deskripsi"]') 
-        });
-
-        // Refresh on Modal Open to fix rendering issues
-        const addModal = document.getElementById('addSoalModal');
-        addModal.addEventListener('shown.bs.modal', function () {
-            window.easyMDE_add.codemirror.refresh();
-        });
-
-        const editModal = document.getElementById('editSoalModal');
-        editModal.addEventListener('shown.bs.modal', function () {
-            window.easyMDE_edit.codemirror.refresh();
-        });
-
-        // Sync before submit
-        document.getElementById('addSoalForm').addEventListener('submit', function(e) {
-             const val = window.easyMDE_add.value();
-             if (!val.trim()) {
-                 e.preventDefault();
-                 alert('Pertanyaan tidak boleh kosong');
-                 return;
-             }
-        });
-
-        document.getElementById('editSoalForm').addEventListener('submit', function(e) {
-             const val = window.easyMDE_edit.value();
-             if (!val.trim()) {
-                 e.preventDefault();
-                 alert('Pertanyaan tidak boleh kosong');
-                 return;
-             }
-        });
-
-        // Image Preview untuk Add Soal
-        document.getElementById('soalImageInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                // Check file size (max 2MB)
-                if (file.size > 2 * 1024 * 1024) {
-                    alert('Ukuran file terlalu besar. Maksimal 2MB.');
-                    e.target.value = '';
-                    document.getElementById('imagePreview').style.display = 'none';
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('previewImg').src = event.target.result;
-                    document.getElementById('imagePreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                document.getElementById('imagePreview').style.display = 'none';
-            }
-        });
-
-        // Image Preview untuk Edit Soal
-        document.getElementById('soalImageEditInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                // Check file size (max 2MB)
-                if (file.size > 2 * 1024 * 1024) {
-                    alert('Ukuran file terlalu besar. Maksimal 2MB.');
-                    e.target.value = '';
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('editPreviewImg').src = event.target.result;
-                    document.getElementById('editImagePreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    });
-</script>
-
-<!-- Error Handling & Suppression Scripts -->
-<script>
-    // 1. Suppress external extension errors (Visual cleanup for console)
-    if (!window.originalConsoleError) {
-        window.originalConsoleError = console.error;
-        console.error = function(...args) {
-            if (args[0] && typeof args[0] === 'string' && 
-               (args[0].includes('chrome-extension://') || args[0].includes('quillbot'))) {
-                return; // Suppress extension noise
-            }
-            window.originalConsoleError.apply(console, args);
-        };
-    }
-
-    // 2. Global Image Error Handler (Handle 404s gracefully in UI)
-    document.addEventListener('error', function(e) {
-        if (e.target && e.target.tagName === 'IMG') {
-            // Stop if specific suppression class is present
-            if (e.target.classList.contains('suppress-error')) return;
-
-            // Check if src is current page (often happens with src="" or src="#")
-            if (e.target.src === window.location.href || e.target.getAttribute('src') === '') {
-                e.target.style.display = 'none'; // Just hide empty images
-                return;
-            }
-
-            // Check if it's already a placeholder to prevent loops
-            if (!e.target.src.includes('placehold.co')) {
-                console.warn('Image failed to load, swapping with placeholder:', e.target.src);
-                e.target.src = 'https://placehold.co/600x400?text=Image+Not+Found';
-                e.target.alt = 'Broken Image';
-                e.target.style.border = '1px dashed #ff0000';
-            }
-        }
-    }, true); // Capture phase to catch load errors
-</script>

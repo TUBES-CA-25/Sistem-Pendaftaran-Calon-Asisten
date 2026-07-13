@@ -6,13 +6,43 @@
 // Track current page to prevent unnecessary reloads
 var _currentPage = null;
 
+// Helper functions for Page Loader
+function showPageLoader() {
+    let loader = document.getElementById('global-page-loader');
+    if (!loader) {
+        $('body').append(`
+            <div id="global-page-loader" class="fixed inset-0 z-[9999] bg-white/70 backdrop-blur-sm flex flex-col items-center justify-center transition-opacity duration-300 opacity-0 pointer-events-none">
+                <div class="relative w-16 h-16">
+                    <div class="absolute inset-0 border-4 border-slate-200 rounded-full shadow-inner"></div>
+                    <div class="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin shadow-[0_0_15px_rgba(37,99,235,0.4)]"></div>
+                </div>
+                <div class="mt-4 font-bold text-blue-600 text-sm tracking-[0.2em] uppercase animate-pulse">Memuat...</div>
+            </div>
+        `);
+        loader = document.getElementById('global-page-loader');
+        // Force reflow
+        loader.offsetHeight;
+    }
+    loader.classList.remove('opacity-0', 'pointer-events-none');
+    loader.classList.add('opacity-100', 'pointer-events-auto');
+}
+
+function hidePageLoader() {
+    const loader = document.getElementById('global-page-loader');
+    if (loader) {
+        loader.classList.remove('opacity-100', 'pointer-events-auto');
+        loader.classList.add('opacity-0', 'pointer-events-none');
+    }
+}
+
 // Global function untuk load halaman
 function loadPage(page, updateUrl = true) {
-    // Prevent reload if already on this page
-    if (_currentPage === page) return;
     _currentPage = page;
 
     var $content = $('#content');
+
+    // Tampilkan Loader Animasi
+    showPageLoader();
 
     // STEP 1: Fade-out content FIRST (before touching DOM at all)
     $content.css({ opacity: 0, transition: 'opacity 0.15s ease' });
@@ -61,13 +91,18 @@ function loadPage(page, updateUrl = true) {
 
                 // STEP 4: Init DataTables, THEN fade-in via callback
                 initGlobalTables(function() {
-                    $content.css({ visibility: 'visible', opacity: 0 });
-                    requestAnimationFrame(function() {
-                        $content.css({ transition: 'opacity 0.18s ease', opacity: 1 });
-                    });
+                    // Beri jeda animasi loader 0.01 detik (10ms) sesuai permintaan
+                    setTimeout(function() {
+                        hidePageLoader();
+                        $content.css({ visibility: 'visible', opacity: 0 });
+                        requestAnimationFrame(function() {
+                            $content.css({ transition: 'opacity 0.18s ease', opacity: 1 });
+                        });
+                    }, 1);
                 });
             },
             error: function(xhr, status, error) {
+                hidePageLoader();
                 $content.css({ visibility: 'visible', opacity: 1 });
                 _currentPage = null;
                 console.error('Error loading page:', error);
@@ -306,7 +341,7 @@ function checkNotifications() {
         })
         .then(data => {
             if (data.status === 'success') {
-                updateNotificationUI(data.data, data.count);
+                updateNotificationUI(data.count, data.html);
             }
         })
         .catch(err => {
@@ -315,7 +350,7 @@ function checkNotifications() {
         });
 }
 
-function updateNotificationUI(notifications, count) {
+function updateNotificationUI(count, html) {
     // Update Badge
     const badge = document.querySelector('.navbar-action-btn .badge');
     if (badge) {
@@ -334,71 +369,8 @@ function updateNotificationUI(notifications, count) {
         // Set fixed width for better readability
         dropdownMenu.style.width = '320px';
         dropdownMenu.style.maxWidth = '90vw';
-
-        let html = `
-            <li class="dropdown-header d-flex justify-content-between align-items-center">
-                <span class="fw-bold">Notifikasi</span>
-                ${count > 0 ? `<span class="badge bg-primary rounded-pill">${count}</span>` : ''}
-            </li>
-            <li><hr class="dropdown-divider my-1"></li>
-        `;
-
-        if (notifications.length > 0) {
-            notifications.slice(0, 5).forEach(notif => {
-                // Format Date
-                let dateStr = '';
-                if (notif.created_at) {
-                    const date = new Date(notif.created_at.replace(' ', 'T'));
-                    dateStr = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).replace('.', ':');
-                }
-
-                html += `
-                    <li>
-                        <a class="dropdown-item notification-item p-3" href="#" data-page="notification" style="white-space: normal;">
-                            <div class="d-flex gap-3 align-items-start">
-                                <div class="notification-icon flex-shrink-0 mt-1">
-                                    <i class='bx bx-info-circle text-primary'></i>
-                                </div>
-                                <div class="flex-grow-1" style="min-width: 0;">
-                                    <p class="mb-1 small text-dark fw-medium lh-sm text-wrap text-break">${escapeHtml(notif.pesan)}</p>
-                                    <small class="text-muted d-block" style="font-size: 0.75rem;">${dateStr}</small>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                `;
-            });
-            html += `
-                <li><hr class="dropdown-divider my-1"></li>
-                <li>
-                    <a class="dropdown-item text-center small text-primary fw-semibold py-2" href="#" data-page="notification">
-                        Lihat Semua Notifikasi
-                    </a>
-                </li>
-            `;
-        } else {
-            html += `
-                <li>
-                    <div class="dropdown-item text-center text-muted py-3">
-                        <i class='bx bx-bell-off fs-3 d-block mb-2'></i>
-                        <small>Tidak ada notifikasi</small>
-                    </div>
-                </li>
-            `;
-        }
-
         dropdownMenu.innerHTML = html;
     }
-}
-
-function escapeHtml(text) {
-    if (!text) return "";
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
 }
 
 $(document).ready(function() {

@@ -157,6 +157,38 @@ class DashboardAdminController extends Controller
         }
     }
 
+    public static function getAdminActivities(): void
+    {
+        header('Content-Type: application/json');
+        
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+        
+        // Default to current date if no data passed
+        $year = isset($data['year']) ? (int)$data['year'] : (int)date('Y');
+        $month = isset($data['month']) ? (int)$data['month'] : (int)date('m');
+        
+        try {
+            $eventsData = DashboardAdmin::getKegiatanByMonth($year, $month);
+            
+            ob_start();
+            include __DIR__ . '/../../View/admin/dashboard/partials/calendar_table.php';
+            $calendarHtml = ob_get_clean();
+            
+            echo json_encode([
+                'status' => 'success',
+                'data' => $eventsData,
+                'calendarHtml' => $calendarHtml
+            ]);
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
     public static function getPresentationStats(): array
     {
         return DashboardAdmin::getPresentationStats();

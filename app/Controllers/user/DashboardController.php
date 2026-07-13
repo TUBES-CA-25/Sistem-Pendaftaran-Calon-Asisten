@@ -138,9 +138,19 @@ class DashboardController extends Controller {
             // Re-use logic from DashboardAdmin to get activities
             $activities = \App\Model\DashboardAdmin::getKegiatanByMonth($year, $month);
             
+            ob_start();
+            include __DIR__ . '/../../View/user/dashboard/partials/calendar_grid.php';
+            $calendarHtml = ob_get_clean();
+            
+            ob_start();
+            include __DIR__ . '/../../View/user/dashboard/partials/upcoming_activities.php';
+            $upcomingHtml = ob_get_clean();
+            
             echo json_encode([
                 'status' => 'success',
-                'data' => $activities
+                'data' => $activities,
+                'calendarHtml' => $calendarHtml,
+                'upcomingHtml' => $upcomingHtml
             ]);
         } catch (\Exception $e) {
             http_response_code(500);

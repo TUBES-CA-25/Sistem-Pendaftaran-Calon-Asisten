@@ -138,10 +138,15 @@ class NotifikasiController extends Controller {
              $notifications = [];
         }
 
+        ob_start();
+        include __DIR__ . '/../View/partials/notification_dropdown.php';
+        $html = ob_get_clean();
+
         echo json_encode([
             'status' => 'success',
             'data' => $notifications,
-            'count' => $unreadCount
+            'count' => $unreadCount,
+            'html' => $html
         ]);
     }
 

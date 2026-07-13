@@ -105,6 +105,7 @@ Router::post("/createBank",[new BankSoalController, 'createBank']);
 Router::post("/updateBank",[new BankSoalController, 'updateBank']);
 Router::post("/deleteBank",[new BankSoalController, 'deleteBank']);
 Router::post("/getBankQuestions",[new BankSoalController, 'getBankQuestions']);
+Router::post("/getBankQuestionsHtml",[new BankSoalController, 'getBankQuestionsHtml']);
 Router::post("/exam/verifyToken",[new TesTulisController, 'verifyToken']);
 Router::post("/activateBank",[new BankSoalController, 'activateBank']);
 Router::post("/deactivateBank",[new BankSoalController, 'deactivateBank']);
@@ -132,6 +133,7 @@ Router::post("/updatekegiatan", [new DashboardAdminController, 'updateKegiatan']
 Router::post("/deletekegiatan", [new DashboardAdminController, 'destroyKegiatan']);
 Router::post("/updatedeadline", [new DashboardAdminController, 'saveDeadline']);
 Router::post("/dashboard/stats", [new DashboardAdminController, 'getStats']);
+Router::post("/getadminactivities", [new DashboardAdminController, 'getAdminActivities']);
 Router::post("/getactivities", [new DashboardController, 'getActivities']);
 
 // Jadwal Tes Tertulis Individual
