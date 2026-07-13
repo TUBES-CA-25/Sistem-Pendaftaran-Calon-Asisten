@@ -732,14 +732,33 @@ window.activateBank = function(bankId) {
     .then(data => {
         if (data.status === 'success') {
             const statusText = document.getElementById('statusText_' + bankId);
+            // Find the dot indicator (sibling span before the text span)
+            const dotEl = statusText ? statusText.previousElementSibling : null;
+
             if (isActive) {
-                statusText.innerText = 'Aktif';
-                statusText.classList.remove('text-danger');
-                statusText.classList.add('text-success');
+                // Now active
+                if (statusText) {
+                    statusText.innerText = 'Aktif';
+                    // Support both old (Bootstrap) and new (Tailwind square card) classes
+                    statusText.classList.remove('text-danger', 'text-slate-400', 'text-white/50');
+                    statusText.classList.add('text-emerald-300', 'text-success');
+                }
+                if (dotEl) {
+                    dotEl.classList.remove('bg-slate-300', 'bg-white/40');
+                    dotEl.classList.add('bg-emerald-400', 'bg-emerald-500');
+                }
             } else {
-                statusText.innerText = 'Tidak Aktif';
-                statusText.classList.remove('text-success');
-                statusText.classList.add('text-danger');
+                // Now inactive
+                if (statusText) {
+                    statusText.innerText = 'Non-aktif';
+                    // Support both old (Bootstrap) and new (Tailwind square card) classes
+                    statusText.classList.remove('text-success', 'text-emerald-300', 'text-emerald-600');
+                    statusText.classList.add('text-white/50', 'text-slate-400');
+                }
+                if (dotEl) {
+                    dotEl.classList.remove('bg-emerald-400', 'bg-emerald-500');
+                    dotEl.classList.add('bg-slate-300', 'bg-white/40');
+                }
             }
         } else {
             showAlert(data.message || 'Gagal mengubah status', false);

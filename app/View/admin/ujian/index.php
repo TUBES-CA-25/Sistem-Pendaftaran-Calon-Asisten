@@ -135,11 +135,11 @@ $essayCount = $stats['essay_count'];
                     </div>
 
                     <!-- Center: Name & Description — clickable -->
-                    <div class="absolute inset-0 flex flex-col justify-center px-4 pt-4" onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama'] ?? '') ?>')">
-                        <h3 class="font-bold text-white text-[14px] leading-snug line-clamp-2 mb-1 mt-2 group-hover:opacity-90 transition-opacity" title="<?= htmlspecialchars($bank['nama'] ?? '') ?>">
+                    <div class="absolute top-14 left-0 right-0 px-4 cursor-pointer z-0" onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama'] ?? '') ?>')">
+                        <h3 class="font-bold text-white text-[14px] leading-snug line-clamp-2 mb-1 group-hover:opacity-90 transition-opacity" title="<?= htmlspecialchars($bank['nama'] ?? '') ?>">
                             <?= htmlspecialchars($bank['nama'] ?? '') ?>
                         </h3>
-                        <p class="text-white/60 text-[11px] leading-relaxed line-clamp-2 mb-3">
+                        <p class="text-white/60 text-[11px] leading-relaxed line-clamp-2">
                             <?= htmlspecialchars($bank['deskripsi'] ?? 'Tidak ada deskripsi') ?>
                         </p>
                     </div>
@@ -188,6 +188,7 @@ $essayCount = $stats['essay_count'];
                 </div>
             </div>
         </div>
+    </div><!-- end bankListView -->
 
     <!-- Bank Detail View -->
     <div class="bank-detail-view hidden" id="bankDetailView">
