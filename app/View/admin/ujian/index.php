@@ -103,7 +103,7 @@ $essayCount = $stats['essay_count'];
             <?php foreach ($bankSoalList as $bank): ?>
             <!-- Bank Card Item -->
             <div class="col-span-1 group" id="bank-card-<?= $bank['id'] ?>">
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 hover:border-indigo-300 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full transform hover:-translate-y-1">
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 hover:border-indigo-300 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col aspect-square transform hover:-translate-y-1">
                     <!-- Premium Header -->
                     <div class="relative h-28 bg-gradient-to-br from-blue-600 to-indigo-700 shrink-0 p-5 overflow-hidden">
                         <!-- Decorative bg -->
@@ -183,7 +183,7 @@ $essayCount = $stats['essay_count'];
             
             <!-- Create New Bank Card -->
             <div class="col-span-1">
-                <div class="bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-300 hover:border-blue-400 hover:bg-blue-50/30 hover:shadow-xl cursor-pointer transition-all duration-300 p-6 flex flex-col justify-center items-center text-center h-full min-h-[260px] group" 
+                <div class="bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-300 hover:border-blue-400 hover:bg-blue-50/30 hover:shadow-xl cursor-pointer transition-all duration-300 p-6 flex flex-col justify-center items-center text-center aspect-square group" 
                      data-bs-toggle="modal" data-bs-target="#createBankModal">
                     <div class="w-16 h-16 rounded-2xl mb-4 flex justify-center items-center bg-white text-blue-600 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:shadow-md border border-slate-100">
                         <i class="bi bi-plus-lg text-3xl"></i>

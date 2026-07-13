@@ -169,25 +169,38 @@ window.renderSoalList = function(soalArray) {
 window.renderOptions = function(pilihan, jawaban, showJawaban) {
     if (!pilihan) return '';
 
-    const decodedPilihan = new DOMParser().parseFromString(pilihan, "text/html").documentElement.textContent;
-
     let options = [];
-    const pattern = /([A-E])\.\s*(.*?)(?=(?:,\s*[A-E]\.)|$)/g;
-    let match;
+    
+    try {
+        // Try parsing as JSON first
+        const parsed = JSON.parse(pilihan);
+        if (typeof parsed === 'object' && !Array.isArray(parsed)) {
+            options = Object.entries(parsed).map(([key, value]) => ({ key: key, value: value }));
+        } else if (Array.isArray(parsed)) {
+             options = parsed.map((val, idx) => ({ key: String.fromCharCode(65 + idx), value: val }));
+        } else {
+             throw new Error("Not an object/array");
+        }
+    } catch(e) {
+        // Fallback to legacy parsing
+        const decodedPilihan = new DOMParser().parseFromString(pilihan, "text/html").documentElement.textContent;
+        const pattern = /([A-E])\.\s*(.*?)(?=(?:,\s*[A-E]\.)|$)/g;
+        let match;
 
-    while ((match = pattern.exec(decodedPilihan)) !== null) {
-        options.push({
-            key: match[1],
-            value: match[2].trim()
-        });
-    }
+        while ((match = pattern.exec(decodedPilihan)) !== null) {
+            options.push({
+                key: match[1],
+                value: match[2].trim()
+            });
+        }
 
-    if (options.length === 0) {
-        const parts = decodedPilihan.split(',').map(p => p.trim());
-        options = parts.map((part, idx) => ({
-            key: String.fromCharCode(65 + idx), // A, B, C, ...
-            value: part
-        }));
+        if (options.length === 0) {
+            const parts = decodedPilihan.split(',').map(p => p.trim());
+            options = parts.map((part, idx) => ({
+                key: String.fromCharCode(65 + idx), 
+                value: part
+            }));
+        }
     }
 
     // Determine the correct key
@@ -228,8 +241,8 @@ window.renderOptions = function(pilihan, jawaban, showJawaban) {
             ${iconHtml}
             <div class="flex-1">
                 ${isImage 
-                    ? `<img src="${window.getImageUrl(escapeHtml(opt.value))}" class="max-w-full h-auto max-h-32 rounded-lg border border-slate-200" onerror="this.onerror=null; this.src='https://placehold.co/400x200?text=Gambar+Tidak+Ditemukan'; this.style.border='2px dashed #ff0000';">` 
-                    : `<div class="text-[14px] text-slate-700 font-medium leading-snug break-words">${escapeHtml(opt.value)}</div>`
+                    ? `<img src="${window.getImageUrl(opt.value)}" class="max-w-full h-auto max-h-32 rounded-lg border border-slate-200" onerror="this.onerror=null; this.src='https://placehold.co/400x200?text=Gambar+Tidak+Ditemukan'; this.style.border='2px dashed #ff0000';">` 
+                    : `<div class="text-[14px] text-slate-700 font-medium leading-snug break-words"><strong>${opt.key}.</strong> ${window.escapeHtml(opt.value)}</div>`
                 }
             </div>
         </div>`;
