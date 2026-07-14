@@ -35,7 +35,7 @@
         window.INITIAL_PAGE = <?= json_encode($initialPage ?? 'dashboard') ?>;
     </script>
 
-    <title>IC-ASSIST</title>
+    <title>ICLABS</title>
                 <style type="text/tailwindcss">
         @layer components {
 
@@ -164,6 +164,23 @@
             div.dataTables_scrollBody {
                 @apply overflow-x-auto;
             }
+
+        }
+    </style>
+
+    <style>
+        /* ============================================================
+           MODAL BACKDROP BLUR
+           ============================================================ */
+        .modal {
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+        }
+        .modal-backdrop {
+            background-color: rgba(15, 23, 42, 0.4) !important;
+        }
+        .modal-backdrop.show {
+            opacity: 1 !important;
         }
     </style>
 </head>

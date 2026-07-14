@@ -164,6 +164,23 @@
             div.dataTables_scrollBody {
                 @apply overflow-x-auto;
             }
+
+        }
+    </style>
+    
+    <style>
+        /* ============================================================
+           MODAL BACKDROP BLUR
+           ============================================================ */
+        .modal {
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+        }
+        .modal-backdrop {
+            background-color: rgba(15, 23, 42, 0.4) !important;
+        }
+        .modal-backdrop.show {
+            opacity: 1 !important;
         }
     </style>
 </head>

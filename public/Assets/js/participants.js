@@ -128,7 +128,7 @@
             // RESET Image immediately to default to avoid showing previous user's image
             // This prevents the "glitch" where the old image persists while the new one loads
             if (modalFoto) {
-                modalFoto.src = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
+                modalFoto.src = `${APP_URL}/Assets/Downloads/default.png`;
             }
 
             // Populate header
@@ -136,12 +136,12 @@
             document.getElementById('modalStambukHeader').textContent = data.stambuk || '-';
             
             // Set photo
-            var fotoPath = data.foto ? `${PROJECT_ROOT}/res/imageUser/${data.foto}` : '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
+            var fotoPath = data.foto ? `${PROJECT_ROOT}/res/imageUser/${data.foto}` : `${APP_URL}/Assets/Downloads/default.png`;
 
             if (modalFoto) {
                 modalFoto.src = fotoPath;
                 modalFoto.onerror = function() {
-                    this.src = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
+                    this.src = `${APP_URL}/Assets/Downloads/default.png`;
                 };
             }
             
@@ -266,7 +266,7 @@
             
             if (makalahBtn) {
                 if (data.makalah) {
-                    makalahBtn.setAttribute('data-download-url', '/Sistem-Pendaftaran-Calon-Asisten/res/makalahUser/' + data.makalah);
+                    makalahBtn.setAttribute('data-download-url', `${PROJECT_ROOT}/res/makalahUser/` + data.makalah);
                     makalahBtn.style.display = 'inline-flex';
                     hasPresentasiFiles = true;
                 } else {
@@ -276,7 +276,7 @@
             
             if (pptBtn) {
                 if (data.ppt) {
-                    pptBtn.setAttribute('data-download-url', '/Sistem-Pendaftaran-Calon-Asisten/res/pptUser/' + data.ppt);
+                    pptBtn.setAttribute('data-download-url', `${PROJECT_ROOT}/res/pptUser/` + data.ppt);
                     pptBtn.style.display = 'inline-flex';
                     hasPresentasiFiles = true;
                 } else {
@@ -566,11 +566,15 @@ function triggerVerificationFromModal() {
     const namaLengkap = document.getElementById('modalNamaHeader').textContent;
     
     if (mahasiswaId && namaLengkap) {
-        // Close detail modal first
-        bootstrap.Modal.getInstance(document.getElementById('detailModal')).hide();
+        // Tutup modal detail terlebih dahulu untuk menghindari konflik backdrop
+        const detailModalEl = document.getElementById('detailModal');
+        const detailModal = bootstrap.Modal.getInstance(detailModalEl);
+        if (detailModal) detailModal.hide();
         
-        showActionConfirmation({
-            title: 'Konfirmasi Verifikasi Berkas',
+        // Tunggu animasi hide selesai sebelum menampilkan konfirmasi
+        setTimeout(() => {
+            showActionConfirmation({
+                title: 'Konfirmasi Verifikasi Berkas',
             message: `Anda akan memverifikasi berkas untuk:<br><strong class="fs-4 text-dark d-block my-2">${namaLengkap}</strong><span class="text-secondary small"><i class="bi bi-info-circle me-1"></i>Pastikan semua dokumen telah sesuai sebelum melanjutkan</span>`,
             btnText: 'Verifikasi',
             type: 'success',
@@ -595,6 +599,7 @@ function triggerVerificationFromModal() {
                 .catch(error => showAlert('Error: ' + error.message, false));
             }
         });
+        }, 350);
     } else {
         showAlert('Data peserta tidak ditemukan', false);
     }
@@ -608,11 +613,15 @@ function cancelVerification() {
     const namaLengkap = document.getElementById('modalNamaHeader').textContent;
     
     if (mahasiswaId && namaLengkap) {
-        // Close detail modal first
-        bootstrap.Modal.getInstance(document.getElementById('detailModal')).hide();
+        // Tutup modal detail terlebih dahulu
+        const detailModalEl = document.getElementById('detailModal');
+        const detailModal = bootstrap.Modal.getInstance(detailModalEl);
+        if (detailModal) detailModal.hide();
         
-        showActionConfirmation({
-            title: 'Batalkan Verifikasi Berkas',
+        // Tunggu animasi hide selesai sebelum menampilkan konfirmasi
+        setTimeout(() => {
+            showActionConfirmation({
+                title: 'Batalkan Verifikasi Berkas',
             message: `Anda akan membatalkan verifikasi berkas untuk:<br><strong class="fs-4 text-dark d-block my-2">${namaLengkap}</strong><span class="text-danger small"><i class="bi bi-exclamation-triangle me-1"></i>Status akan kembali menjadi "Menunggu Verifikasi"</span>`,
             btnText: 'Batalkan',
             type: 'danger',
@@ -636,6 +645,7 @@ function cancelVerification() {
                 .catch(error => showAlert('Error: ' + error.message, false));
             }
         });
+        }, 350);
     } else {
         showAlert('Data peserta tidak ditemukan', false);
     }
@@ -705,34 +715,37 @@ function acceptParticipant() {
         return;
     }
     
-    // Close detail modal first
-    const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
+    // Tutup modal detail terlebih dahulu
+    const detailModalEl = document.getElementById('detailModal');
+    const detailModal = bootstrap.Modal.getInstance(detailModalEl);
     if (detailModal) detailModal.hide();
     
-    showActionConfirmation({
-        title: 'Verifikasi Berkas',
+    setTimeout(() => {
+        showActionConfirmation({
+            title: 'Verifikasi Berkas',
         message: `Anda akan memverifikasi berkas untuk:<br><strong class="fs-4 text-dark d-block my-2">${nama}</strong><span class="text-secondary small"><i class="bi bi-info-circle me-1"></i>Pastikan semua dokumen telah sesuai</span>`,
         btnText: 'Verifikasi',
         type: 'success', // Green
         onConfirm: function() {
-            showAlert('Memproses verifikasi...', true);
-            fetch(`${APP_URL}/acceptberkas`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'id=' + mahasiswaId + '&status=1'
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === 'success') {
-                    showAlert('Berkas berhasil diverifikasi!', true);
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    showAlert('Gagal: ' + (data.message || 'Unknown'), false);
-                }
-            })
-            .catch(err => showAlert('Error: ' + err.message, false));
-        }
-    });
+                showAlert('Memproses verifikasi...', true);
+                fetch(`${APP_URL}/acceptberkas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'id=' + mahasiswaId + '&status=1'
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'success') {
+                        showAlert('Berkas berhasil diverifikasi!', true);
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showAlert('Gagal: ' + (data.message || 'Unknown'), false);
+                    }
+                })
+                .catch(err => showAlert('Error: ' + err.message, false));
+            }
+        });
+    }, 350);
 }
 
 function rejectParticipant() {
@@ -744,34 +757,37 @@ function rejectParticipant() {
         return;
     }
     
-    // Close detail modal first
-    const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
+    // Tutup modal detail terlebih dahulu
+    const detailModalEl = document.getElementById('detailModal');
+    const detailModal = bootstrap.Modal.getInstance(detailModalEl);
     if (detailModal) detailModal.hide();
     
-    showActionConfirmation({
-        title: 'Tolak Verifikasi Berkas',
+    setTimeout(() => {
+        showActionConfirmation({
+            title: 'Tolak Verifikasi Berkas',
         message: `Anda akan menolak verifikasi berkas untuk:<br><strong class="fs-4 text-dark d-block my-2">${nama}</strong><span class="text-danger small"><i class="bi bi-exclamation-triangle me-1"></i>Status akan diubah menjadi Ditolak</span>`,
         btnText: 'Tolak Verifikasi',
         type: 'danger', // Red
         onConfirm: function() {
-            showAlert('Memproses penolakan...', true);
-            fetch(`${APP_URL}/acceptberkas`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'id=' + mahasiswaId + '&status=2'
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === 'success') {
-                    showAlert('Verifikasi berkas ditolak!', true);
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    showAlert('Gagal: ' + (data.message || 'Unknown'), false);
-                }
-            })
-            .catch(err => showAlert('Error: ' + err.message, false));
-        }
-    });
+                showAlert('Memproses penolakan...', true);
+                fetch(`${APP_URL}/acceptberkas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'id=' + mahasiswaId + '&status=2'
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'success') {
+                        showAlert('Verifikasi berkas ditolak!', true);
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showAlert('Gagal: ' + (data.message || 'Unknown'), false);
+                    }
+                })
+                .catch(err => showAlert('Error: ' + err.message, false));
+            }
+        });
+    }, 350);
 }
 
 // ============================================
