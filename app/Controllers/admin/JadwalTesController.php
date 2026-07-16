@@ -23,7 +23,8 @@ class JadwalTesController extends Controller
         // 1. Load Student Test Schedules from 'wawancara' table
         // We filter where jenis_wawancara is like 'Tes Tertulis%'
         $db = \App\Core\Model::getDB();
-        $sql = "SELECT w.id, w.id_mahasiswa, m.nama_lengkap, m.stambuk, r.nama as ruangan, w.jenis_wawancara as kegiatan, w.waktu, w.tanggal 
+        $sql = "SELECT w.id, w.id_mahasiswa, m.nama_lengkap, m.stambuk, r.nama as ruangan, w.jenis_wawancara as kegiatan, w.waktu, w.tanggal,
+                       (SELECT foto FROM berkas_mahasiswa WHERE id_mahasiswa = m.id ORDER BY id DESC LIMIT 1) as foto
                 FROM wawancara w 
                 JOIN mahasiswa m ON w.id_mahasiswa = m.id 
                 JOIN ruangan r ON w.id_ruangan = r.id 

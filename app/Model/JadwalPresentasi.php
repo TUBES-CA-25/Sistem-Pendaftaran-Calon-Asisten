@@ -29,7 +29,8 @@ class JadwalPresentasi extends Model
         p.judul AS judul_presentasi,
         jp.id_ruangan AS id_ruangan,
         jp.tanggal AS tanggal,
-        jp.waktu AS waktu
+        jp.waktu AS waktu,
+        (SELECT foto FROM berkas_mahasiswa WHERE id_mahasiswa = m.id ORDER BY id DESC LIMIT 1) as foto
     FROM 
         mahasiswa m
     JOIN 
@@ -55,7 +56,8 @@ class JadwalPresentasi extends Model
                 'id_ruangan' => $result['id_ruangan'],
                 'ruangan' => $ruangan['nama'],
                 'tanggal' => $result['tanggal'],
-                'waktu' => $result['waktu']
+                'waktu' => $result['waktu'],
+                'foto' => $result['foto'] ?? null
             ];
         }
 
@@ -198,7 +200,8 @@ class JadwalPresentasi extends Model
                 m.stambuk,
                 m.nama_lengkap,
                 p.judul,
-                r.nama as ruangan
+                r.nama as ruangan,
+                (SELECT foto FROM berkas_mahasiswa WHERE id_mahasiswa = m.id ORDER BY id DESC LIMIT 1) as foto
             FROM jadwal_presentasi jp
             JOIN presentasi p ON jp.id_presentasi = p.id
             JOIN mahasiswa m ON p.id_mahasiswa = m.id

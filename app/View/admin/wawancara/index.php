@@ -57,7 +57,13 @@ $colors = ['#2f66f6'];
                             <tr class="dt-body-row border-b border-slate-100 hover:bg-slate-50 transition" data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
                                 <td class="text-center py-4 px-4"><?= $i ?></td>
                                 <td class="py-4 px-4">
-                                    <div><?= htmlspecialchars($row['nama_lengkap']) ?></div>
+                                    <div class="flex items-center gap-3">
+                                        <img src="<?= \App\Controllers\HomeController::getUserPhotoPath($row['foto'] ?? 'default.png') ?>" alt="Avatar" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
+                                        <div>
+                                            <div class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
+                                            <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mt-0.5">Calon Asisten</div>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td class="py-4 px-4"><?= htmlspecialchars($row['stambuk']) ?></td>
                                 <td class="py-4 px-4"><?= htmlspecialchars($row['jenis_wawancara']) ?></td>
@@ -520,7 +526,13 @@ $colors = ['#2f66f6'];
                                     <tr class="dt-body-row border-b border-slate-100 hover:bg-slate-50 transition" data-id="${row.id}" data-userid="${row.idUser}">
                                         <td class="text-center py-4 px-4">${i}</td>
                                         <td class="py-4 px-4">
-                                            <div>${row.nama_lengkap}</div>
+                                            <div class="flex items-center gap-3">
+                                                <img src="${row.photoPath || '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'}" alt="Avatar" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
+                                                <div>
+                                                    <div class="font-bold text-slate-800">${row.nama_lengkap}</div>
+                                                    <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mt-0.5">Calon Asisten</div>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td class="py-4 px-4">${row.stambuk}</td>
                                         <td class="py-4 px-4">${row.jenis_wawancara}</td>

@@ -115,7 +115,9 @@ class NilaiAkhir extends Model
 
     public function getAllNilai()
     {
-        $sql = "SELECT m.id, m.nama_lengkap, m.stambuk, n.nilai, n.total_nilai as total FROM mahasiswa m
+        $sql = "SELECT m.id, m.nama_lengkap, m.stambuk, n.nilai, n.total_nilai as total,
+                       (SELECT foto FROM berkas_mahasiswa WHERE id_mahasiswa = m.id ORDER BY id DESC LIMIT 1) as foto
+                FROM mahasiswa m
                 JOIN nilai_akhir n ON m.id = n.id_mahasiswa";
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute();

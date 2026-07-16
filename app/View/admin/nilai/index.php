@@ -72,9 +72,12 @@ $nilai = $nilai ?? [];
                                     <tr class="dt-body-row">
                                         <td class="text-center py-4 px-4"><?= $i ?></td>
                                         <td class="py-4 px-4">
-                                            <div class="flex flex-col">
-                                                <span><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></span>
-                                                <span class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-0.5">Mahasiswa</span>
+                                            <div class="flex items-center gap-3">
+                                                <img src="<?= \App\Controllers\HomeController::getUserPhotoPath($value['foto'] ?? 'default.png') ?>" alt="Avatar" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
+                                                <div>
+                                                    <div class="font-bold text-slate-800"><?= htmlspecialchars($value['nama_lengkap'] ?? '-') ?></div>
+                                                    <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mt-0.5">Calon Asisten</div>
+                                                </div>
                                             </div>
                                         </td>
                                         <td class="py-4 px-4"><?= htmlspecialchars($value['stambuk'] ?? '-') ?></td>

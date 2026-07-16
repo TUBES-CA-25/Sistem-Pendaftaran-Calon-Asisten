@@ -69,6 +69,11 @@ class JadwalPresentasiController extends Controller
             $jadwal = new JadwalPresentasi();
             $data = $jadwal->getAllJadwalWithDetails();
 
+            // Resolve photo path for each row
+            foreach ($data as &$row) {
+                $row['photoPath'] = \App\Controllers\HomeController::getUserPhotoPath($row['foto'] ?? 'default.png');
+            }
+
             echo json_encode([
                 'status' => 'success',
                 'data' => $data

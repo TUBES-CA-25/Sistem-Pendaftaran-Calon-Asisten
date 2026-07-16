@@ -36,10 +36,14 @@ class JadwalWawancaraController extends Controller
             $wawancara = new Wawancara(0, 0, 0, 0);
             if($id === 0) {
                 $data = $wawancara->getAll();
-                echo json_encode(['status' => 'success', 'data' => $data]);
-                exit;
+            } else {
+                $data = $wawancara->getAllFilterByRuangan($id);
             }
-            $data = $wawancara->getAllFilterByRuangan($id);
+
+            // Resolve photo path for each row
+            foreach ($data as &$row) {
+                $row['photoPath'] = \App\Controllers\HomeController::getUserPhotoPath($row['foto'] ?? 'default.png');
+            }
 
             if (empty($data)) {
                 echo json_encode(['status' => 'error', 'message' => 'Data tidak ditemukan']);

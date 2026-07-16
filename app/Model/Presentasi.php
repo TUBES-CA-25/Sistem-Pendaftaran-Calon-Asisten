@@ -9,7 +9,8 @@ class Presentasi extends Model {
 
     public function getAll() {
         $sql = "SELECT p.*, m.nama_lengkap, m.stambuk,
-                       (SELECT COUNT(*) FROM jadwal_presentasi jp WHERE jp.id_presentasi = p.id) as has_schedule
+                       (SELECT COUNT(*) FROM jadwal_presentasi jp WHERE jp.id_presentasi = p.id) as has_schedule,
+                       (SELECT foto FROM berkas_mahasiswa WHERE id_mahasiswa = m.id ORDER BY id DESC LIMIT 1) as foto
                 FROM " . static::$table . " p
                 JOIN mahasiswa m ON p.id_mahasiswa = m.id
                 ORDER BY p.id DESC";
@@ -27,6 +28,7 @@ class Presentasi extends Model {
                 'is_accepted' => $result['is_accepted'] ?? 0,
                 'is_revisi' => $result['is_revisi'] ?? 0,
                 'has_schedule' => $result['has_schedule'] > 0,
+                'foto' => $result['foto'] ?? null,
                 'berkas' => [
                     'ppt' => $result['ppt'],
                     'makalah' => $result['makalah']
@@ -37,7 +39,8 @@ class Presentasi extends Model {
     }
 
     public function getAllAccStatus() {
-        $sql = "SELECT p.*, m.nama_lengkap, m.stambuk
+        $sql = "SELECT p.*, m.nama_lengkap, m.stambuk,
+                       (SELECT foto FROM berkas_mahasiswa WHERE id_mahasiswa = m.id ORDER BY id DESC LIMIT 1) as foto
                 FROM " . static::$table . " p
                 JOIN mahasiswa m ON p.id_mahasiswa = m.id
                 WHERE p.is_accepted = 1
@@ -53,6 +56,7 @@ class Presentasi extends Model {
                 'nama' => $result['nama_lengkap'],
                 'stambuk' => $result['stambuk'],
                 'judul' =>  $result['judul'],
+                'foto' => $result['foto'] ?? null,
                 'berkas' => [
                     'ppt' => $result['ppt'],
                     'makalah' => $result['makalah']

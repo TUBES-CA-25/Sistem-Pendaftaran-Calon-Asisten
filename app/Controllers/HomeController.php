@@ -690,7 +690,7 @@ class HomeController extends Controller
     /**
      * Get full path for user photo
      */
-    private function getUserPhotoPath($filename)
+    public static function getUserPhotoPath($filename)
     {
         $defaultPhoto = 'default.png';
         $webBasePath = '/Sistem-Pendaftaran-Calon-Asisten/res/';
