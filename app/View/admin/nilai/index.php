@@ -32,7 +32,7 @@ $nilai = $nilai ?? [];
                 <!-- Clean Table -->
                 <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
                     <div class="overflow-x-auto">
-                        <table class="min-w-full align-middle text-sm text-left" id="tableNilai">
+                        <table class="min-w-full align-middle text-sm text-left no-datatable" id="tableNilai" data-paginator="true" data-paginator-perpage="10">
                             <thead class="">
                                 <tr>
                                     <th class="dt-head-cell text-center" style="width: 60px;">No</th>

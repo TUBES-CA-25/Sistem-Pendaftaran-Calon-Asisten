@@ -31,7 +31,7 @@ $result = $result ?? [];
         </button>
 
         <div class="overflow-x-auto">
-            <table id="daftarPesertaTable" class="min-w-full align-middle text-sm text-left">
+            <table id="daftarPesertaTable" class="min-w-full align-middle text-sm text-left no-datatable" data-paginator="true" data-paginator-perpage="10">
 
                 <thead>
                     <tr class="">
@@ -167,8 +167,8 @@ $result = $result ?? [];
 
 <!-- Modal Detail Peserta -->
 <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered w-full max-w-[90vw] md:max-w-[80vw] lg:max-w-[65vw] !my-4 !mx-auto">
-        <div class="modal-content border-0 rounded-2xl shadow-2xl overflow-hidden min-h-[60vh] lg:min-h-[65vh]">
+    <div class="modal-dialog modal-dialog-centered w-full max-w-4xl !my-4 !mx-auto">
+        <div class="modal-content border-0 rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh] max-h-[90vh]">
             <!-- Header dengan Background Gradient -->
             <div class="relative bg-gradient-to-r from-[#1d4ed8] via-[#2563eb] to-[#3dc2ec] px-6 py-4 text-white overflow-hidden shrink-0">
                 <!-- Decorative Elements -->
@@ -255,7 +255,7 @@ $result = $result ?? [];
             </div>
             
             <!-- Body Content -->
-            <div class="modal-body px-5 pb-5 pt-3">
+            <div class="modal-body px-5 pb-5 pt-3 overflow-y-auto custom-scrollbar">
                 <!-- Panel 1: Profil & Kontak -->
                 <div id="tab-profil" class="tab-panel space-y-4">
                     <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm">

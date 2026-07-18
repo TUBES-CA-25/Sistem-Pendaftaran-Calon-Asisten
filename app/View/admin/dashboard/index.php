@@ -62,7 +62,7 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
         ?>
         <div>
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 flex items-center gap-4 hover:shadow-md transition duration-200">
-                <div class="rounded-xl flex items-center justify-content-center text-white shrink-0" 
+                <div class="rounded-xl flex items-center justify-center text-white shrink-0" 
                      style="width: 52px; height: 52px; font-size: 1.75rem; background-color: <?= $stat['icon_bg'] ?>;">
                     <i class='<?= $stat['icon'] ?>'></i>
                 </div>
@@ -92,12 +92,12 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
             <!-- Calendar Card -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
                 <!-- Navigation -->
-                <div class="flex items-center justify-content-center gap-4 mb-6">
-                    <button id="prevMonth" class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-content-center border-0 text-slate-600 transition">
+                <div class="flex items-center justify-center gap-4 mb-6">
+                    <button id="prevMonth" class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center border-0 text-slate-600 transition">
                         <i class='bx bx-chevron-left text-lg'></i>
                     </button>
                     <h6 class="text-sm font-bold text-slate-800 mb-0" id="currentMonth"><?= $currentMonthName ?></h6>
-                    <button id="nextMonth" class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-content-center border-0 text-slate-600 transition">
+                    <button id="nextMonth" class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center border-0 text-slate-600 transition">
                         <i class='bx bx-chevron-right text-lg'></i>
                     </button>
                 </div>
@@ -140,8 +140,7 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                 <div class="flex-grow flex flex-col gap-4">
                 <?php
                 // Status metadata for calendar legend
-                use App\Controllers\Admin\DashboardAdminController;
-                $statusMeta = DashboardAdminController::getStatusMetadata();
+                $statusMeta = $statusMeta ?? [];
 
                 foreach ($statusKegiatan as $key => $status):
                     // Badge class already provided by Service via Controller

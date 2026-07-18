@@ -530,17 +530,21 @@ class HomeController extends Controller
      */
     private function getDashboardAdminData(): array
     {
-        $currentYear = date('Y');
-        $currentMonth = date('m');
+        $currentYear = (int)date('Y');
+        $currentMonth = (int)date('m');
+        $kegiatanBulanIni = DashboardAdminController::getKegiatanByMonth($currentYear, $currentMonth) ?? [];
+
         return [
             'totalPendaftar' => DashboardAdminController::getTotalPendaftar(),
             'pendaftarLulus' => DashboardAdminController::getPendaftarLulus(),
             'pendaftarPending' => DashboardAdminController::getPendaftarPending(),
             'pendaftarGagal' => DashboardAdminController::getPendaftarGagal(),
             'statusKegiatan' => DashboardAdminController::getStatusKegiatan(),
-            'kegiatanBulanIni' => DashboardAdminController::getKegiatanByMonth($currentYear, $currentMonth) ?? [],
+            'kegiatanBulanIni' => $kegiatanBulanIni,
             'jadwalPresentasiMendatang' => JadwalPresentasiController::getUpcomingJadwal(5),
-            'presentationStats' => DashboardAdminController::getPresentationStats()
+            'presentationStats' => DashboardAdminController::getPresentationStats(),
+            'statusMeta' => DashboardAdminController::getStatusMetadata(),
+            'calendarWeeks' => DashboardAdminController::generateCalendarData($currentYear, $currentMonth, $kegiatanBulanIni)
         ];
     }
 
@@ -816,18 +820,18 @@ class HomeController extends Controller
      */
     private function getBerkasStatusBadge($acceptedStatus)
     {
-        $class = 'badge rounded-pill bg-secondary bg-opacity-10 text-secondary fw-semibold px-3 py-2';
+        $class = 'bg-slate-50 text-slate-500 border border-slate-200';
         $text = 'Belum Upload';
 
         if (isset($acceptedStatus)) {
             if ($acceptedStatus == 1) {
-                $class = 'badge rounded-pill bg-success bg-opacity-10 text-success fw-semibold px-3 py-2';
+                $class = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
                 $text = 'Disetujui';
             } elseif ($acceptedStatus == 2) {
-                $class = 'badge rounded-pill bg-danger bg-opacity-10 text-danger fw-semibold px-3 py-2';
+                $class = 'bg-red-50 text-red-700 border border-red-200';
                 $text = 'Ditolak';
             } elseif ($acceptedStatus == 0) {
-                $class = 'badge rounded-pill bg-info bg-opacity-10 text-info fw-semibold px-3 py-2';
+                $class = 'bg-blue-50 text-blue-700 border border-blue-200';
                 $text = 'Proses';
             }
         }
@@ -858,22 +862,22 @@ class HomeController extends Controller
     {
         if ($hasSchedule) {
             return [
-                'class' => 'bg-primary text-white',
+                'class' => 'bg-blue-50 text-blue-700 border border-blue-200',
                 'text' => 'Terjadwal'
             ];
         } elseif ($isRejected) {
             return [
-                'class' => 'bg-danger text-white',
+                'class' => 'bg-red-50 text-red-700 border border-red-200',
                 'text' => 'Ditolak'
             ];
         } elseif ($isAccepted) {
             return [
-                'class' => 'bg-success text-white',
+                'class' => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
                 'text' => 'Diterima'
             ];
         } else {
             return [
-                'class' => 'bg-secondary text-white',
+                'class' => 'bg-slate-50 text-slate-500 border border-slate-200',
                 'text' => 'Menunggu'
             ];
         }

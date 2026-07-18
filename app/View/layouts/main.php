@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="<?= APP_URL ?>/Assets/Img/iclabs.png">
 
-    <!-- Bootstrap 5.3.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 
     <!-- Tailwind CSS CDN & Config -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,12 +22,194 @@
     <link rel="stylesheet" href="<?= APP_URL ?>/Assets/css/theme.css">
     <link rel="stylesheet" href="<?= APP_URL ?>/Assets/css/style.css">
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap 5.3.3 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables 2.x CSS (no jQuery required) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
+
+    <!-- Bootstrap 5.3.3 JS Emulation Layer -->
+    <script>
+        (function() {
+            const modalInstances = new Map();
+            const toastInstances = new Map();
+
+            class Modal {
+                constructor(element, options = {}) {
+                    this.element = typeof element === 'string' ? document.querySelector(element) : element;
+                    if (!this.element) return;
+                    this.options = options;
+                    this._backdrop = null;
+                    modalInstances.set(this.element, this);
+
+                    const dismissButtons = this.element.querySelectorAll('[data-bs-dismiss="modal"]');
+                    dismissButtons.forEach(btn => btn.addEventListener('click', () => this.hide()));
+                }
+                show() {
+                    if (!this.element) return;
+                    this.element.dispatchEvent(new Event('show.bs.modal', { bubbles: true }));
+                    document.body.classList.add('modal-open');
+                    document.body.style.overflow = 'hidden';
+                    if (this.options.backdrop !== false) this._createBackdrop();
+                    this.element.classList.remove('hidden');
+                    this.element.style.display = 'flex';
+                    this.element.classList.add('show', 'flex');
+                    this.element.setAttribute('aria-modal', 'true');
+                    this.element.removeAttribute('aria-hidden');
+                    this.element.offsetHeight;
+                    this.element.style.opacity = '1';
+                    this.element.dispatchEvent(new Event('shown.bs.modal', { bubbles: true }));
+                }
+                hide() {
+                    if (!this.element) return;
+                    this.element.dispatchEvent(new Event('hide.bs.modal', { bubbles: true }));
+                    this.element.classList.add('hidden');
+                    this.element.style.display = 'none';
+                    this.element.classList.remove('show', 'flex');
+                    this.element.style.opacity = '0';
+                    this.element.setAttribute('aria-hidden', 'true');
+                    this.element.removeAttribute('aria-modal');
+                    this._removeBackdrop();
+                    const openModals = document.querySelectorAll('.modal.show');
+                    if (openModals.length === 0) {
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = '';
+                    }
+                    this.element.dispatchEvent(new Event('hidden.bs.modal', { bubbles: true }));
+                }
+                _createBackdrop() {
+                    let backdrop = document.querySelector('.modal-backdrop');
+                    if (!backdrop) {
+                        backdrop = document.createElement('div');
+                        backdrop.className = 'modal-backdrop';
+                        document.body.appendChild(backdrop);
+                        backdrop.offsetHeight;
+                        backdrop.classList.add('show');
+                    }
+                    this._backdrop = backdrop;
+                }
+                _removeBackdrop() {
+                    if (this._backdrop) {
+                        this._backdrop.classList.remove('show');
+                        const currentBackdrop = this._backdrop;
+                        setTimeout(() => {
+                            if (currentBackdrop && currentBackdrop.parentNode) {
+                                currentBackdrop.parentNode.removeChild(currentBackdrop);
+                            }
+                        }, 300);
+                        this._backdrop = null;
+                    }
+                }
+                static getInstance(element) {
+                    const el = typeof element === 'string' ? document.querySelector(element) : element;
+                    return modalInstances.get(el) || null;
+                }
+                static getOrCreateInstance(element, options = {}) {
+                    const el = typeof element === 'string' ? document.querySelector(element) : element;
+                    let instance = modalInstances.get(el);
+                    if (!instance) instance = new Modal(el, options);
+                    return instance;
+                }
+            }
+
+            class Toast {
+                constructor(element, options = {}) {
+                    this.element = typeof element === 'string' ? document.querySelector(element) : element;
+                    if (!this.element) return;
+                    this.options = options;
+                    this._timeoutId = null;
+                    toastInstances.set(this.element, this);
+                    const dismissButtons = this.element.querySelectorAll('[data-bs-dismiss="toast"]');
+                    dismissButtons.forEach(btn => btn.addEventListener('click', () => this.hide()));
+                }
+                show() {
+                    if (!this.element) return;
+                    this.element.classList.remove('hidden');
+                    this.element.style.display = 'block';
+                    this.element.offsetHeight;
+                    this.element.classList.add('show');
+                    this.element.style.opacity = '1';
+                    if (this.options.delay !== 0) {
+                        const delay = this.options.delay || 4000;
+                        this._timeoutId = setTimeout(() => this.hide(), delay);
+                    }
+                }
+                hide() {
+                    if (!this.element) return;
+                    if (this._timeoutId) clearTimeout(this._timeoutId);
+                    this.element.style.opacity = '0';
+                    this.element.classList.remove('show');
+                    setTimeout(() => {
+                        this.element.classList.add('hidden');
+                        this.element.style.display = 'none';
+                    }, 300);
+                }
+                static getInstance(element) {
+                    const el = typeof element === 'string' ? document.querySelector(element) : element;
+                    return toastInstances.get(el) || null;
+                }
+                static getOrCreateInstance(element, options = {}) {
+                    const el = typeof element === 'string' ? document.querySelector(element) : element;
+                    let instance = toastInstances.get(el);
+                    if (!instance) instance = new Toast(el, options);
+                    return instance;
+                }
+            }
+
+            window.bootstrap = window.bootstrap || {};
+            window.bootstrap.Modal = Modal;
+            window.bootstrap.Toast = Toast;
+
+            // Global event delegation for data-bs triggers (capture phase to bypass stopPropagation on child elements)
+            document.addEventListener('click', function(e) {
+                const dropdownToggle = e.target.closest('[data-bs-toggle="dropdown"]');
+                const modalToggle    = e.target.closest('[data-bs-toggle="modal"]');
+                const modalDismiss   = e.target.closest('[data-bs-dismiss="modal"]');
+                const toastToggle    = e.target.closest('[data-bs-toggle="toast"]');
+                const toastDismiss   = e.target.closest('[data-bs-dismiss="toast"]');
+
+                if (dropdownToggle) {
+                    e.preventDefault();
+                    // Close all open dropdowns first, then toggle the clicked one
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        const parent = menu.closest('.dropdown');
+                        if (parent !== dropdownToggle.closest('.dropdown')) {
+                            menu.classList.remove('show');
+                        }
+                    });
+                    const parent = dropdownToggle.closest('.dropdown');
+                    if (parent) {
+                        const menu = parent.querySelector('.dropdown-menu');
+                        if (menu) menu.classList.toggle('show');
+                    }
+                } else if (modalToggle) {
+                    e.preventDefault();
+                    const sel = modalToggle.getAttribute('data-bs-target') || modalToggle.getAttribute('href');
+                    if (sel) {
+                        const el = document.querySelector(sel);
+                        if (el) Modal.getOrCreateInstance(el).show();
+                    }
+                } else if (modalDismiss) {
+                    e.preventDefault();
+                    const el = modalDismiss.closest('.modal');
+                    if (el) Modal.getOrCreateInstance(el).hide();
+                } else if (toastToggle) {
+                    e.preventDefault();
+                    const sel = toastToggle.getAttribute('data-bs-target');
+                    if (sel) {
+                        const el = document.querySelector(sel);
+                        if (el) Toast.getOrCreateInstance(el).show();
+                    }
+                } else if (toastDismiss) {
+                    e.preventDefault();
+                    const el = toastDismiss.closest('.toast');
+                    if (el) Toast.getOrCreateInstance(el).hide();
+                } else {
+                    // Click outside: close all open dropdowns
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                }
+            }, true);
+        })();
+    </script>
 
     <script>
         const APP_URL = <?= json_encode(APP_URL) ?>;
@@ -38,6 +219,77 @@
     <title>ICLABS</title>
                 <style type="text/tailwindcss">
         @layer components {
+            /* Dropdown custom CSS fallback mapping */
+            .dropdown {
+                position: relative;
+            }
+            .dropdown-menu {
+                position: absolute;
+                z-index: 1000;
+                display: none;
+                min-width: 10rem;
+                padding: 0.5rem 0;
+                margin: 0;
+                font-size: 0.875rem;
+                color: #334155;
+                text-align: left;
+                list-style: none;
+                background-color: #fff;
+                background-clip: padding-box;
+                border: 1px solid #cbd5e1;
+                border-radius: 0.75rem;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+            .dropdown-menu.show {
+                display: block !important;
+            }
+            .dropdown-menu-end {
+                right: 0 !important;
+                left: auto !important;
+            }
+            .dropdown-item {
+                display: block;
+                width: 100%;
+                padding: 0.375rem 0.75rem;
+                clear: both;
+                font-weight: 400;
+                color: #334155;
+                text-align: inherit;
+                text-decoration: none;
+                white-space: nowrap;
+                background-color: transparent;
+                border: 0;
+                cursor: pointer;
+                transition: background-color 0.15s ease, color 0.15s ease;
+            }
+            .dropdown-item:hover,
+            .dropdown-item:focus {
+                background-color: #f1f5f9;
+                color: #1e40af;
+            }
+            .dropdown-divider {
+                height: 0;
+                margin: 0.25rem 0;
+                overflow: hidden;
+                border-top: 1px solid #e2e8f0;
+            }
+
+            /* Custom styling for DataTables with Tailwind classes */
+            .dataTables_wrapper {
+                @apply flex flex-col gap-4;
+            }
+            .dataTables_wrapper .row {
+                @apply flex flex-col sm:flex-row justify-between items-center gap-4 w-full m-0 p-0;
+            }
+            .dataTables_wrapper .row > div {
+                @apply w-full sm:w-auto p-0 flex items-center justify-start sm:justify-end;
+            }
+            .dataTables_wrapper .row > div:first-child {
+                @apply justify-start;
+            }
+            .dataTables_wrapper .row > div:last-child {
+                @apply justify-end;
+            }
 
             /* ============================================================
                TABLE WRAPPER & CARD
@@ -170,17 +422,188 @@
 
     <style>
         /* ============================================================
-           MODAL BACKDROP BLUR
+           DATATABLES LAYOUT BRIDGES
+           ============================================================ */
+        .dataTables_wrapper .row {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            gap: 1rem !important;
+        }
+        .dataTables_wrapper .row > div {
+            flex: 0 0 auto !important;
+            width: auto !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+        }
+        /* Mobile fallback: allow stacking under 640px */
+        @media (max-width: 640px) {
+            .dataTables_wrapper .row {
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+            .dataTables_wrapper .row > div {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+        }
+
+        /* ============================================================
+           VANILLA MODAL & TOAST EMULATION STYLES
            ============================================================ */
         .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1050;
+            display: none;
+            overflow-y: auto;
+            outline: 0;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
             backdrop-filter: blur(8px) !important;
             -webkit-backdrop-filter: blur(8px) !important;
         }
+        .modal.show {
+            opacity: 1;
+        }
+        .modal.hidden {
+            display: none !important;
+        }
         .modal-backdrop {
-            background-color: rgba(15, 23, 42, 0.4) !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1040;
+            background-color: rgba(15, 23, 42, 0.4);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         .modal-backdrop.show {
-            opacity: 1 !important;
+            opacity: 1;
+        }
+        .modal-dialog {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 1.75rem auto;
+            pointer-events: none;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1);
+        }
+        .modal-dialog-centered {
+            display: flex;
+            align-items: center;
+            min-height: calc(100% - 3.5rem);
+        }
+        .modal-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            pointer-events: auto;
+            background-color: #fff;
+            background-clip: padding-box;
+            outline: 0;
+        }
+        .toast {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .toast.show {
+            display: block !important;
+            opacity: 1;
+        }
+        .toast.hidden {
+            display: none !important;
+        }
+        .bg-success {
+            background-color: #10b981 !important;
+        }
+        .bg-danger {
+            background-color: #ef4444 !important;
+        }
+        
+        /* Custom close button styling to replace Bootstrap btn-close */
+        .btn-close {
+            box-sizing: content-box;
+            width: 0.75em;
+            height: 0.75em;
+            padding: 0.25em 0.25em;
+            color: #000;
+            background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+            border: 0;
+            border-radius: 0.375rem;
+            opacity: 0.5;
+            transition: opacity 0.15s ease-in-out;
+            cursor: pointer;
+        }
+        .btn-close:hover {
+            opacity: 0.75;
+        }
+        .btn-close-white {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        /* Form styling fallback for pages with bootstrap classes */
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 0.85rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #334155;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .form-control:focus {
+            border-color: #3b82f6;
+            outline: 0;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+        .form-select {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 2rem 0.5rem 0.85rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #334155;
+            background-color: #fff;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23334155' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .form-select:focus {
+            border-color: #3b82f6;
+            outline: 0;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
         }
     </style>
 </head>
@@ -209,66 +632,80 @@
         ?>
     </div>
 
-    <!-- Bootstrap Modal -->
+    <!-- Tailwind Redesigned Custom Modal -->
     <div class="modal fade" id="customModal" tabindex="-1" aria-labelledby="customModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 rounded-4 shadow-lg">
-                <div class="modal-body text-center p-4 p-lg-5">
-                    <!-- GIF Animasi -->
-                    <div class="d-flex justify-content-center align-items-center mb-3">
-                        <img id="modalGif" src="" alt="Animation" style="width: 100px; display: none;">
-                    </div>
-
-                    <!-- Pesan Custom -->
-                    <p id="modalMessage" class="fs-5 fw-medium mb-4">Pesan akan ditampilkan di sini.</p>
-
-                    <!-- Tombol Close -->
-                    <button type="button" id="closeModal" class="btn btn-primary px-4 py-2 rounded-3" data-bs-dismiss="modal">Tutup</button>
+            <div class="modal-content border-0 bg-white/95 backdrop-blur-md rounded-[24px] shadow-2xl overflow-hidden">
+                <div class="modal-body text-center p-6 md:p-8 flex flex-col items-center">
+                    <img id="modalGif" src="" alt="Animation" class="mb-4" style="width: 100px; display: none;">
+                    <p id="modalMessage" class="text-slate-700 font-semibold text-base md:text-lg mb-6 leading-relaxed">Pesan akan ditampilkan di sini.</p>
+                    <button type="button" id="closeModal" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition shadow-md shadow-blue-500/10 cursor-pointer border-0" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Generic Action Confirmation Modal -->
-    <div class="modal fade" id="actionConfirmModal" tabindex="-1" aria-hidden="true">
+    <!-- Tailwind Redesigned Generic Action Confirmation Modal -->
+    <div class="modal fade" id="actionConfirmModal" tabindex="-1" aria-labelledby="actionConfirmModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+            <div class="modal-content border-0 bg-white/95 backdrop-blur-md rounded-[24px] shadow-2xl overflow-hidden">
                 <!-- Header with Icon & Title -->
-                <div id="actionConfirmHeader" class="text-center p-4 bg-primary text-white">
-                    <div class="mb-3">
-                        <i id="actionConfirmIcon" class="bi bi-check-circle-fill" style="font-size: 4rem;"></i>
+                <div id="actionConfirmHeader" class="px-6 py-8 flex flex-col items-center relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600">
+                    <!-- Background sparkles/glow -->
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10 blur-xl"></div>
+                    <div class="absolute -left-10 -bottom-10 w-40 h-40 rounded-full bg-white/10 blur-xl"></div>
+                    
+                    <div class="w-full text-center relative z-10 flex flex-col items-center">
+                        <div class="mb-3">
+                            <div class="inline-flex items-center justify-center rounded-full w-20 h-20 bg-white/15 border border-white/30 shadow-inner">
+                                <i id="actionConfirmIcon" class="bi bi-question-lg text-4xl text-white"></i>
+                            </div>
+                        </div>
+                        <h5 id="actionConfirmTitle" class="modal-title font-bold text-white text-lg mt-1">Konfirmasi</h5>
                     </div>
-                    <h4 id="actionConfirmTitle" class="fw-bold mb-0">Konfirmasi</h4>
                 </div>
                 
                 <!-- Body -->
-                <div class="modal-body text-center p-4 p-lg-5">
-                    <p class="text-muted fs-5 mb-4" id="actionConfirmMessage">Apakah Anda yakin ingin melanjutkan?</p>
-                    <div class="d-flex justify-content-center gap-3">
-                        <button type="button" class="btn btn-light btn-lg rounded-pill px-5" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-primary btn-lg rounded-pill px-5" id="actionConfirmButton">Ya</button>
-                    </div>
+                <div class="modal-body text-center p-6">
+                    <p id="actionConfirmMessage" class="text-slate-500 text-sm leading-relaxed mb-0">
+                        Apakah Anda yakin ingin melanjutkan tindakan ini?
+                    </p>
+                </div>
+                
+                <!-- Footer -->
+                <div class="modal-footer border-0 flex justify-center gap-3 p-6 pt-0">
+                    <button type="button" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm rounded-xl transition min-w-[120px] border-0 cursor-pointer" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-2"></i>Batal
+                    </button>
+                    <button type="button" id="actionConfirmButton" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition min-w-[120px] shadow-sm flex items-center justify-center gap-2 border-0 cursor-pointer">
+                        Ya, Lanjutkan
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
-    <div id="liveToast" class="toast align-items-center text-white border-0 rounded-3" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body d-flex align-items-center gap-2">
-                    <i id="toastIcon" class="bi bi-check-circle-fill fs-5"></i>
-                    <span id="toastMessage">Operasi berhasil!</span>
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    <!-- Tailwind Redesigned Toast Container -->
+    <div class="fixed top-5 right-5 z-[9999] flex flex-col gap-3 pointer-events-none">
+        <div id="liveToast" class="toast hidden border border-slate-100 rounded-2xl shadow-xl p-4 flex items-center gap-3 transition-all duration-300 max-w-sm pointer-events-auto">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-white/20">
+                <i id="toastIcon" class="bi bi-check-circle-fill text-white text-base"></i>
             </div>
+            <div class="flex-1">
+                <span id="toastMessage" class="text-sm font-semibold text-white">Operasi berhasil!</span>
+            </div>
+            <button type="button" class="text-white/80 hover:text-white transition cursor-pointer border-0 bg-transparent" data-bs-dismiss="toast" aria-label="Close">
+                <i class="bi bi-x-lg text-sm"></i>
+            </button>
         </div>
     </div>
    
     <script src="<?= APP_URL ?>/Assets/js/app.js?v=<?= time() ?>"></script>
     <script src="<?= APP_URL ?>/Assets/js/ScriptSidebar.js?v=<?= time() ?>"></script>
-    
+
+    <!-- DataTables 2.x (Vanilla JS — no jQuery required) -->
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+
 </body>
 </html>
 

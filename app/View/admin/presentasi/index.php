@@ -24,7 +24,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
             <div class="overflow-x-auto">
-                <table class="min-w-full align-middle text-sm text-left" id="tableJadwal">
+                <table class="min-w-full align-middle text-sm text-left no-datatable" id="tableJadwal" data-paginator="true" data-paginator-perpage="10">
                     <thead>
                         <tr class="">
                             <th class="dt-head-cell text-center" style="width: 5%;">No</th>

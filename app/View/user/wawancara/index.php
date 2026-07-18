@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Wawancara View
  *
@@ -36,7 +36,7 @@ $mySchedule = array_filter($wawancara, function($item) {
             </div>
         </div>
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-100 text-sm">
+            <table class="min-w-full divide-y divide-slate-100 text-sm no-datatable" data-paginator="true" data-paginator-perpage="5">
                 <thead>
                     <tr>
                         <th class="dt-head-cell">No</th>

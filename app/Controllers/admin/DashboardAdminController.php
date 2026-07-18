@@ -170,6 +170,7 @@ class DashboardAdminController extends Controller
         
         try {
             $eventsData = DashboardAdmin::getKegiatanByMonth($year, $month);
+            $calendarWeeks = self::generateCalendarData($year, $month, $eventsData);
             
             ob_start();
             include __DIR__ . '/../../View/admin/dashboard/partials/calendar_table.php';
@@ -238,5 +239,56 @@ class DashboardAdminController extends Controller
         }
 
         return $formatted;
+    }
+
+    /**
+     * Generate calendar data for view
+     */
+    public static function generateCalendarData(int $year, int $month, array $eventsData): array
+    {
+        $firstDay = (int)date('w', mktime(0, 0, 0, $month, 1, $year));
+        $daysInMonth = (int)date('t', mktime(0, 0, 0, $month, 1, $year));
+        $adjustedStart = $firstDay === 0 ? 6 : $firstDay - 1; // Mon=0, Sun=6
+
+        $todayYear = (int)date('Y');
+        $todayMonth = (int)date('n');
+        $todayDate = (int)date('j');
+
+        $calendar = [];
+        $date = 1;
+
+        for ($i = 0; $i < 6; $i++) {
+            $week = [];
+            $hasDateInRow = false;
+            
+            for ($j = 0; $j < 7; $j++) {
+                if ($i === 0 && $j < $adjustedStart) {
+                    $week[] = null;
+                } else if ($date > $daysInMonth) {
+                    $week[] = null;
+                } else {
+                    $hasDateInRow = true;
+                    $isToday = ($date === $todayDate && $month === $todayMonth && $year === $todayYear);
+                    $formattedDate = sprintf('%04d-%02d-%02d', $year, $month, $date);
+                    
+                    $daysEvents = array_filter($eventsData, function($e) use ($formattedDate) {
+                        return $e['tanggal'] === $formattedDate;
+                    });
+                    
+                    $week[] = [
+                        'date' => $date,
+                        'isToday' => $isToday,
+                        'events' => array_values($daysEvents)
+                    ];
+                    $date++;
+                }
+            }
+            if ($hasDateInRow || $i === 0) {
+                $calendar[] = $week;
+            }
+            if ($date > $daysInMonth) break;
+        }
+
+        return $calendar;
     }
 }

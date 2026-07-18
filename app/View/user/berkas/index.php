@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Upload Berkas View
  *
@@ -122,7 +122,7 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                     </h5>
                 </div>
                 <div class="overflow-x-auto rounded-xl border border-slate-100">
-                    <table class="min-w-full divide-y divide-slate-100 text-sm">
+                    <table class="min-w-full divide-y divide-slate-100 text-sm no-datatable" data-paginator="true" data-paginator-perpage="5">
                         <thead>
                             <tr> 
                                 <th class="dt-head-cell">No</th>                                   

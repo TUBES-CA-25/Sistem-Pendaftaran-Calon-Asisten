@@ -29,7 +29,7 @@ $mahasiswaList = $mahasiswaList ?? [];
         <?php else: ?>
             <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
                 <div class="overflow-x-auto">
-                    <table class="min-w-full align-middle text-sm text-left" id="tablePengajuan">
+                    <table class="min-w-full align-middle text-sm text-left no-datatable" id="tablePengajuan" data-paginator="true" data-paginator-perpage="10">
                         <thead class="">
                             <tr>
                                 <th class="dt-head-cell text-center" style="width: 5%;">No</th>
@@ -65,7 +65,15 @@ $mahasiswaList = $mahasiswaList ?? [];
                                 ?>
                                 <tr class="dt-body-row" data-id="<?= $row['id'] ?>" data-userid="<?= $row['id_mahasiswa'] ?>">
                                     <td class="text-center py-4 px-4"><?= $i ?></td>
-                                    <td class="py-4 px-4"><?= htmlspecialchars($row['nama'] ?? '-') ?></td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="<?= \App\Controllers\HomeController::getUserPhotoPath($row['foto'] ?? 'default.png') ?>" alt="Avatar" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
+                                            <div>
+                                                <div class="font-bold text-slate-800"><?= htmlspecialchars($row['nama'] ?? '-') ?></div>
+                                                <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mt-0.5">Calon Asisten</div>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td class="py-4 px-4"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
                                     <td class="py-4 px-4"><?= htmlspecialchars($row['judul'] ?? '-') ?></td>
                                     <td class="text-center py-4 px-4">
