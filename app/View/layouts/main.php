@@ -7,7 +7,14 @@
 
 
 
-    <!-- Tailwind CSS CDN & Config -->
+    <!-- Tailwind CSS Play CDN & Configuration -->
+    <script>
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) return;
+            originalWarn.apply(console, args);
+        };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="<?= APP_URL ?>/Assets/js/tailwind-config.js"></script>
 
@@ -686,17 +693,19 @@
     </div>
 
     <!-- Tailwind Redesigned Toast Container -->
-    <div class="fixed top-5 right-5 z-[9999] flex flex-col gap-3 pointer-events-none">
-        <div id="liveToast" class="toast hidden border border-slate-100 rounded-2xl shadow-xl p-4 flex items-center gap-3 transition-all duration-300 max-w-sm pointer-events-auto">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-white/20">
-                <i id="toastIcon" class="bi bi-check-circle-fill text-white text-base"></i>
+    <div class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 pointer-events-none">
+        <div id="liveToast" class="toast text-white border-0 rounded-xl shadow-lg transition-all duration-300 pointer-events-auto" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 250px; max-width: 350px;">
+            <div class="flex items-center justify-between gap-3 p-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 shrink-0 rounded-full bg-white/20 flex items-center justify-center shadow-inner">
+                        <i id="toastIcon" class="bi bi-check-lg text-sm font-bold"></i>
+                    </div>
+                    <span id="toastMessage" class="font-semibold text-[13px] leading-tight tracking-wide">Operasi berhasil!</span>
+                </div>
+                <button type="button" class="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200 hover:bg-white/25 active:scale-95 text-white" data-bs-dismiss="toast" aria-label="Close">
+                    <i class="bi bi-x-lg text-[11px] font-bold"></i>
+                </button>
             </div>
-            <div class="flex-1">
-                <span id="toastMessage" class="text-sm font-semibold text-white">Operasi berhasil!</span>
-            </div>
-            <button type="button" class="text-white/80 hover:text-white transition cursor-pointer border-0 bg-transparent" data-bs-dismiss="toast" aria-label="Close">
-                <i class="bi bi-x-lg text-sm"></i>
-            </button>
         </div>
     </div>
    

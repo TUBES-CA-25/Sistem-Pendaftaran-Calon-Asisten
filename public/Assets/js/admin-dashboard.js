@@ -175,10 +175,37 @@
         document.getElementById('displayDeskripsi').textContent = event.deskripsi || 'Tidak ada deskripsi';
         
         const actionsDiv = document.getElementById('calendarActions');
+        const manageDiv = document.getElementById('calendarManageAction');
+        
+        if (actionsDiv) actionsDiv.style.display = 'none';
+        if (manageDiv) manageDiv.style.display = 'none';
+
         if (event.jenis === 'Kegiatan') {
-            actionsDiv.style.display = 'block';
-        } else {
-            actionsDiv.style.display = 'none';
+            if (actionsDiv) actionsDiv.style.display = 'block';
+        } else if (['Wawancara', 'Presentasi'].includes(event.jenis)) {
+            if (manageDiv) {
+                manageDiv.style.display = 'block';
+                const manageBtn = document.getElementById('btnManageSchedule');
+                if (manageBtn) {
+                    let targetUrl = '';
+                    if (event.jenis === 'Presentasi') {
+                        targetUrl = '/jadwalPresentasi';
+                    } else if (event.jenis === 'Wawancara') {
+                        if (event.judul && event.judul.includes('Tes Tertulis')) {
+                            targetUrl = '/jadwaltes';
+                        } else {
+                            targetUrl = '/wawancara';
+                        }
+                    }
+                    
+                    if (typeof baseUrl === 'undefined') {
+                        var baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
+                    }
+                    manageBtn.onclick = function() {
+                        window.location.href = baseUrl + targetUrl;
+                    };
+                }
+            }
         }
 
         const modal = new bootstrap.Modal(document.getElementById('activityActionModal'));

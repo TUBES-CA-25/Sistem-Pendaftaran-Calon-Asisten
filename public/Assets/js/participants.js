@@ -164,9 +164,9 @@
                     firstTabBtn.classList.remove('text-slate-500');
                     firstTabBtn.classList.remove('border-transparent');
                 }
-                document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active-tab'));
                 var profilPanel = document.getElementById('tab-profil');
-                if (profilPanel) profilPanel.style.display = 'block';
+                if (profilPanel) profilPanel.classList.add('active-tab');
 
                 // Judul Presentasi
                 var judulPresentasi = data.judul_presentasi;
@@ -217,6 +217,7 @@
                     if (statusIconInner) statusIconInner.className = 'bi bi-clock';
                     btnVerifikasi.style.display = 'inline-block';
                     btnVerifikasi.disabled = false;
+                    if (btnTolak) btnTolak.style.display = 'inline-block';
                 } else if (berkasAccepted == '2') {
                     if (statusBadge) statusBadge.className = 'inline-block rounded-full px-3 py-1 text-[10px] font-semibold bg-red-500 text-white';
                     if (statusBadgeIcon) statusBadgeIcon.className = 'bi bi-x-circle me-1';
@@ -230,8 +231,6 @@
                     if (statusBadgeText) statusBadgeText.textContent = 'Belum Upload Berkas';
                     if (statusIcon) statusIcon.className = 'absolute bottom-0 right-0 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-[10px] text-white font-bold bg-slate-500 border-2 border-white';
                     if (statusIconInner) statusIconInner.className = 'bi bi-dash';
-                    if (btnTerima) btnTerima.style.display = 'inline-block';
-                    if (btnTolak) btnTolak.style.display = 'inline-block';
                 }
 
                 // Download buttons
@@ -296,9 +295,9 @@
             this.classList.add('border-blue-600');
             this.classList.remove('text-slate-500');
             this.classList.remove('border-transparent');
-            document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active-tab'));
             var panel = document.getElementById(tabId);
-            if (panel) panel.style.display = 'block';
+            if (panel) panel.classList.add('active-tab');
         });
 
         // ── Download berkas button ───────────────
@@ -637,7 +636,8 @@ document.addEventListener('DOMContentLoaded', function () {
 // ─────────────────────────────────────────────
 function acceptParticipant() {
     const mahasiswaId = document.getElementById('modalMahasiswaId').value;
-    const nama = document.getElementById('modalNama').textContent;
+    const namaEl = document.getElementById('modalNama') || document.getElementById('modalNamaHeader');
+    const nama = namaEl ? namaEl.textContent : 'Peserta';
 
     if (!mahasiswaId) { showAlert('ID Mahasiswa tidak ditemukan', false); return; }
 
@@ -675,7 +675,8 @@ function acceptParticipant() {
 
 function rejectParticipant() {
     const mahasiswaId = document.getElementById('modalMahasiswaId').value;
-    const nama = document.getElementById('modalNama').textContent;
+    const namaEl = document.getElementById('modalNama') || document.getElementById('modalNamaHeader');
+    const nama = namaEl ? namaEl.textContent : 'Peserta';
 
     if (!mahasiswaId) { showAlert('ID Mahasiswa tidak ditemukan', false); return; }
 

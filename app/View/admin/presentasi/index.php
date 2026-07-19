@@ -243,14 +243,14 @@ $(document).ready(function() {
         }, 'json');
     }
 
-    $('#btnAddJadwal').click(function(e) {
+    $(document).off('click', '#btnAddJadwal').on('click', '#btnAddJadwal', function(e) {
         e.preventDefault();
         loadAvailableMahasiswa(); loadRuangan();
         $('#formAddJadwal')[0].reset();
         new bootstrap.Modal('#addJadwalModal').show();
     });
 
-    $('#formAddJadwal').submit(function(e) {
+    $(document).off('submit', '#formAddJadwal').on('submit', '#formAddJadwal', function(e) {
         e.preventDefault();
         $.post(APP_URL + '/savejadwalpresentasi', {
             id_presentasi: $('#selectMahasiswa').val(),
@@ -264,13 +264,18 @@ $(document).ready(function() {
         }, 'json');
     });
 
-    $(document).on('click', '.btn-edit-jadwal', function() {
+    $(document).off('click', '.btn-edit-jadwal').on('click', '.btn-edit-jadwal', function() {
         const btn = $(this);
         loadRuangan();
         $('#editId').val(btn.data('id'));
         $('#editNama').val(btn.data('nama'));
         $('#editTanggal').val(btn.data('tanggal'));
-        $('#editWaktu').val(btn.data('waktu'));
+        
+        let timeStr = btn.data('waktu');
+        if (timeStr && timeStr.length > 5) {
+            timeStr = timeStr.substring(0, 5);
+        }
+        $('#editWaktu').val(timeStr);
         
         setTimeout(() => {
             $('#editRuangan').val(btn.data('ruangan'));
@@ -279,7 +284,7 @@ $(document).ready(function() {
         new bootstrap.Modal('#updateJadwalModal').show();
     });
 
-    $('#formUpdateJadwal').submit(function(e) {
+    $(document).off('submit', '#formUpdateJadwal').on('submit', '#formUpdateJadwal', function(e) {
         e.preventDefault();
         $.post(APP_URL + '/updatejadwalpresentasi', {
             id: $('#editId').val(),
@@ -293,14 +298,14 @@ $(document).ready(function() {
         }, 'json');
     });
 
-    $(document).on('click', '.btn-delete-jadwal', function() {
+    $(document).off('click', '.btn-delete-jadwal').on('click', '.btn-delete-jadwal', function() {
         const id = $(this).data('id');
         showConfirmDelete(function() {
             $.post(APP_URL + '/deletejadwalpresentasi', { id: id }, function(res) {
                 if(res.status === 'success') { 
                     showAlert('Jadwal berhasil dihapus!', true); 
                     setTimeout(function() {
-                        location.reload();
+                        loadJadwal();
                     }, 1000);
                 } else {
                     showAlert(res.message, false);

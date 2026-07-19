@@ -504,7 +504,6 @@ $(document).ready(function() {
     // --- EDIT LOGIC ---
     $('.open-detail').click(function() {
         const btn = $(this);
-        const modal = $('#detailAbsensiModal');
 
         $('#detailNama').text(btn.data('nama'));
         $('#detailStambuk').text(btn.data('stambuk'));
@@ -519,7 +518,7 @@ $(document).ready(function() {
         $('#wawancaraII').val(btn.data('absensiwawancaraii') || '');
         $('#detailStatusAkhir').val(btn.data('statusakhir') || 'Pending');
 
-        modal.modal('show');
+        new bootstrap.Modal('#detailAbsensiModal').show();
     });
 
     $('#saveDetailAbsensi').click(function() {
@@ -599,7 +598,8 @@ $(document).ready(function() {
                         }
                     }
                     
-                    $('#detailAbsensiModal').modal('hide'); 
+                    const detailModalEl = document.getElementById('detailAbsensiModal');
+                    if (detailModalEl) bootstrap.Modal.getInstance(detailModalEl).hide(); 
                 } else {
                     showAlert(res.message || 'Terjadi kesalahan', false);
                 }
@@ -613,7 +613,6 @@ $(document).ready(function() {
     // --- REKAP DETAIL LOGIC ---
     $('.open-rekap').click(function() {
         const btn = $(this);
-        const modal = $('#rekapDetailModal');
 
         // Basic Info
         $('#rekapNama').text(btn.data('nama'));
@@ -699,7 +698,7 @@ $(document).ready(function() {
             badge.addClass('bg-amber-500 text-white').text('PENDING');
         }
 
-        modal.modal('show');
+        new bootstrap.Modal('#rekapDetailModal').show();
     });
 });
 </script>

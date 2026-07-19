@@ -416,11 +416,20 @@ function showConfirmDelete(callback, message) {
 function showAlert(message, isSuccess = true) {
     const toastMessageEl = document.getElementById('toastMessage');
     const toastEl = document.getElementById('liveToast');
+    const toastIcon = document.getElementById('toastIcon');
+    
     if (toastMessageEl && toastEl) {
-        toastMessageEl.textContent = message;
-        toastEl.classList.remove('bg-success', 'bg-danger');
-        toastEl.classList.add(isSuccess ? 'bg-success' : 'bg-danger');
-        const bootstrapToast = new bootstrap.Toast(toastEl);
+        toastMessageEl.innerHTML = message;
+        
+        // Remove legacy bootstrap classes and add modern tailwind classes
+        toastEl.classList.remove('bg-success', 'bg-danger', 'bg-emerald-600', 'bg-rose-600', 'bg-emerald-300', 'bg-rose-500');
+        toastEl.classList.add(isSuccess ? 'bg-emerald-500' : 'bg-rose-500');
+        
+        if (toastIcon) {
+            toastIcon.className = isSuccess ? 'bi bi-check-lg text-xl font-bold' : 'bi bi-x-lg text-xl font-bold';
+        }
+
+        const bootstrapToast = bootstrap.Toast.getOrCreateInstance(toastEl);
         bootstrapToast.show();
     } else {
         alert((isSuccess ? '✔ ' : '✘ ') + message);

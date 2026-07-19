@@ -254,13 +254,19 @@ $(document).ready(function() {
     });
 
     // Open Edit Modal
-    $(document).on('click', '.open-edit', function() {
+    $(document).off('click', '.open-edit').on('click', '.open-edit', function() {
         const btn = $(this);
         $('#editId').val(btn.data('id'));
         $('#editMhsInfo').text(btn.data('stambuk') + ' - ' + btn.data('nama'));
         $('#editKegiatan').val(btn.data('kegiatan'));
         $('#editTanggal').val(btn.data('tanggal'));
-        $('#editWaktu').val(btn.data('waktu'));
+        
+        // Fix time format to HH:mm
+        let timeStr = btn.data('waktu');
+        if (timeStr && timeStr.length > 5) {
+            timeStr = timeStr.substring(0, 5);
+        }
+        $('#editWaktu').val(timeStr);
         
         // Find room ID based on name or set manually
         const roomName = btn.data('ruangan');
@@ -268,11 +274,11 @@ $(document).ready(function() {
             if ($(this).text() === roomName) $(this).prop('selected', true);
         });
 
-        $('#updateJadwalModal').modal('show');
+        new bootstrap.Modal('#updateJadwalModal').show();
     });
 
     // Save Update Schedule
-    $('#updateJadwalForm').submit(function(e) {
+    $(document).off('submit', '#updateJadwalForm').on('submit', '#updateJadwalForm', function(e) {
         e.preventDefault();
         const data = {
             id: $('#editId').val(),
@@ -289,7 +295,8 @@ $(document).ready(function() {
             data: JSON.stringify(data),
             success: function(res) {
                 if (res.status === 'success') {
-                    $('#updateJadwalModal').modal('hide');
+                    const modalEl = document.getElementById('updateJadwalModal');
+                    if(modalEl) bootstrap.Modal.getInstance(modalEl).hide();
                     showAlert(res.message, true);
                     document.querySelector('a[data-page="jadwaltes"]').click();
                 } else {
@@ -307,7 +314,8 @@ $(document).ready(function() {
             data: JSON.stringify(data),
             success: function(res) {
                 if (res.status === 'success') {
-                    $(modalId).modal('hide');
+                    const modalEl = document.querySelector(modalId);
+                    if(modalEl) bootstrap.Modal.getInstance(modalEl).hide();
                     showAlert(res.message, true);
                     // Reload the page content
                     document.querySelector('a[data-page="jadwaltes"]').click();
@@ -322,7 +330,7 @@ $(document).ready(function() {
     }
 
     // Delete Schedule
-    $(document).on('click', '.delete-schedule', function() {
+    $(document).off('click', '.delete-schedule').on('click', '.delete-schedule', function() {
         const id = $(this).data('id');
         showConfirmDelete(function() {
             $.ajax({
@@ -334,7 +342,7 @@ $(document).ready(function() {
                     if (res.status === 'success') {
                         showAlert(res.message || 'Jadwal berhasil dihapus!', true);
                         setTimeout(function() {
-                            location.reload();
+                            document.querySelector('a[data-page="jadwaltes"]').click();
                         }, 1000);
                     } else {
                         showAlert(res.message, false);
@@ -348,7 +356,7 @@ $(document).ready(function() {
     });
 
     // Reset Exam Handler
-    $(document).on('click', '.reset-exam', function() {
+    $(document).off('click', '.reset-exam').on('click', '.reset-exam', function() {
         const idMahasiswa = $(this).data('id');
         const text = $(this).data('nama');
         

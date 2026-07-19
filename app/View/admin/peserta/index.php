@@ -168,7 +168,7 @@ $result = $result ?? [];
 <!-- Modal Detail Peserta -->
 <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered w-full max-w-4xl !my-4 !mx-auto">
-        <div class="modal-content border-0 rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh] max-h-[90vh]">
+        <div class="modal-content border-0 rounded-2xl shadow-2xl overflow-hidden">
             <!-- Header dengan Background Gradient -->
             <div class="relative bg-gradient-to-r from-[#1d4ed8] via-[#2563eb] to-[#3dc2ec] px-6 py-4 text-white overflow-hidden shrink-0">
                 <!-- Decorative Elements -->
@@ -210,30 +210,7 @@ $result = $result ?? [];
                                     </span>
                                 </div>
                             </div>
-                            
-                            <!-- Quick Stats Row -->
-                            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
-                                <div class="bg-blue-50/40 border border-blue-100/60 rounded-xl p-2.5 text-center transition hover:bg-blue-50/70 hover:scale-[1.02] duration-200">
-                                    <i class="bi bi-mortarboard-fill text-blue-500 mb-1 text-base block"></i>
-                                    <span class="block text-slate-400 text-[9px] font-bold uppercase tracking-wider mb-0.5">Jurusan</span>
-                                    <span class="font-bold text-xs text-slate-700 truncate block" id="modalJurusan" title="">-</span>
-                                </div>
-                                <div class="bg-emerald-50/40 border border-emerald-100/60 rounded-xl p-2.5 text-center transition hover:bg-emerald-50/70 hover:scale-[1.02] duration-200">
-                                    <i class="bi bi-door-open-fill text-emerald-500 mb-1 text-base block"></i>
-                                    <span class="block text-slate-400 text-[9px] font-bold uppercase tracking-wider mb-0.5">Kelas</span>
-                                    <span class="font-bold text-xs text-slate-700 block" id="modalKelas">-</span>
-                                </div>
-                                <div class="bg-purple-50/40 border border-purple-100/60 rounded-xl p-2.5 text-center transition hover:bg-purple-50/70 hover:scale-[1.02] duration-200">
-                                    <i class="bi bi-gender-ambiguous text-purple-500 mb-1 text-base block"></i>
-                                    <span class="block text-slate-400 text-[9px] font-bold uppercase tracking-wider mb-0.5">Gender</span>
-                                    <span class="font-bold text-xs text-slate-700 block" id="modalJenis_kelamin">-</span>
-                                </div>
-                                <div class="bg-amber-50/40 border border-amber-100/60 rounded-xl p-2.5 text-center transition hover:bg-amber-50/70 hover:scale-[1.02] duration-200">
-                                    <i class="bi bi-telephone-fill text-amber-500 mb-1 text-base block"></i>
-                                    <span class="block text-slate-400 text-[9px] font-bold uppercase tracking-wider mb-0.5">Telepon</span>
-                                    <span class="font-bold text-xs text-slate-700 truncate block" id="modalNoTelp">-</span>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -255,9 +232,28 @@ $result = $result ?? [];
             </div>
             
             <!-- Body Content -->
-            <div class="modal-body px-5 pb-5 pt-3 overflow-y-auto custom-scrollbar">
-                <!-- Panel 1: Profil & Kontak -->
-                <div id="tab-profil" class="tab-panel space-y-4">
+            <div class="modal-body px-5 pb-5 pt-3">
+                <style>
+                .tabs-container {
+                    display: grid;
+                }
+                .tab-panel {
+                    grid-area: 1 / 1;
+                    visibility: hidden;
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: opacity 0.2s ease-in-out;
+                }
+                .tab-panel.active-tab {
+                    visibility: visible;
+                    opacity: 1;
+                    pointer-events: auto;
+                    z-index: 10;
+                }
+                </style>
+                <div class="tabs-container">
+                    <!-- Panel 1: Profil & Kontak -->
+                    <div id="tab-profil" class="tab-panel active-tab space-y-4">
                     <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
                         <h6 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-1.5">
                             <span class="w-1 h-3.5 bg-blue-600 rounded-full"></span>
@@ -305,13 +301,13 @@ $result = $result ?? [];
                 </div>
  
                 <!-- Panel 2: Berkas Pendaftaran -->
-                <div id="tab-berkas" class="tab-panel hidden space-y-4">
+                <div id="tab-berkas" class="tab-panel space-y-4">
                     <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
                         <h6 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-1.5">
                             <span class="w-1.5 h-3.5 bg-amber-500 rounded-full"></span>
                             Dokumen yang Diunggah
                         </h6>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <div class="grid grid-cols-1 gap-3.5">
                             <!-- Foto -->
                             <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-100 rounded-xl hover:bg-slate-50 hover:border-slate-200 hover:shadow-sm hover:scale-[1.01] transition-all duration-200">
                                 <div class="flex items-center gap-3 flex-grow min-w-0">
@@ -380,7 +376,7 @@ $result = $result ?? [];
                 </div>
  
                 <!-- Panel 3: Tugas & Presentasi -->
-                <div id="tab-presentasi" class="tab-panel hidden space-y-4">
+                <div id="tab-presentasi" class="tab-panel space-y-4">
                     <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
                         <h6 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-1.5">
                             <span class="w-1.5 h-3.5 bg-indigo-600 rounded-full"></span>
@@ -394,7 +390,7 @@ $result = $result ?? [];
                         </div>
  
                         <!-- Dokumen Pendukung -->
-                        <div id="presentasiFiles" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <div id="presentasiFiles" class="grid grid-cols-1 gap-3.5">
                             <!-- Makalah -->
                             <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-100 rounded-xl hover:bg-slate-50 hover:border-slate-200 hover:shadow-sm hover:scale-[1.01] transition-all duration-200">
                                 <div class="flex items-center gap-3 flex-grow min-w-0">
@@ -435,6 +431,7 @@ $result = $result ?? [];
                         </div>
                     </div>
                 </div>
+                </div> <!-- End tabs-container -->
             </div>
             
             <!-- Footer -->
@@ -456,7 +453,7 @@ $result = $result ?? [];
                         </button>
                         
                         <button type="button" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-semibold text-xs rounded-xl transition flex items-center justify-center gap-1.5 shadow-md shadow-red-500/10" id="btnTolakModal" onclick="rejectParticipant()" style="display: none;">
-                            <i class="bi bi-x-circle"></i>Batalkan Verifikasi Berkas
+                            <i class="bi bi-x-circle"></i>Tolak Berkas
                         </button>
                         
                         <button type="button" class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold text-xs rounded-xl transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/10" id="btnVerifikasiModal" onclick="triggerVerificationFromModal()">

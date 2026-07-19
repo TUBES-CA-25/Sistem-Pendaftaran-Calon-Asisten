@@ -262,6 +262,11 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                         <i class="bx bx-trash"></i> Hapus Kegiatan
                     </button>
                 </div>
+                <div id="calendarManageAction" style="display: none;" class="space-y-2 pt-4 border-t border-slate-100">
+                    <button type="button" class="w-full py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5" id="btnManageSchedule">
+                        <i class="bx bx-calendar-event"></i> Kelola Penjadwalan
+                    </button>
+                </div>
             </div>
         </div>
     </div>

@@ -337,7 +337,8 @@ $colors = ['#2f66f6'];
                 data: JSON.stringify(data),
                 success: function (response) {
                     if (response.status === 'success') {
-                        $(modalId).modal('hide');
+                        const modalEl = document.querySelector(modalId);
+                        if(modalEl) bootstrap.Modal.getInstance(modalEl).hide();
                         showAlert("Jadwal berhasil disimpan", true);
                         document.querySelector('a[data-page="wawancara"]').click();
                     } else {
@@ -375,7 +376,7 @@ $colors = ['#2f66f6'];
 
             saveWawancara(jadwalData, '#addJadwalModal');
         });
-        $(document).on("click", ".open-update", function () {
+        $(document).off("click", ".open-update").on("click", ".open-update", function () {
             const btn = $(this);
             const id = btn.data("id") || btn.attr("data-id");
             const ruangan_id = btn.data("ruangan_id") || btn.attr("data-ruangan_id");
@@ -386,11 +387,19 @@ $colors = ['#2f66f6'];
             $("#updateWawancaraId").val(id);
             $("#updateRuangan").val(ruangan_id);
             $("#updateJenisWawancara").val(jenisWawancara);
-            $("#updateWaktu").val(waktu);
+            
+            let timeStr = waktu;
+            if (timeStr && timeStr.length > 5) {
+                timeStr = timeStr.substring(0, 5);
+            }
+            $("#updateWaktu").val(timeStr);
+            
             $("#updateTanggal").val(tanggal);
+            
+            new bootstrap.Modal('#updateWawancaraModal').show();
         });
 
-        $("#updateWawancaraForm").on("submit", function (e) {
+        $(document).off("submit", "#updateWawancaraForm").on("submit", "#updateWawancaraForm", function (e) {
             e.preventDefault();
 
             const id = $("#updateWawancaraId").val();
@@ -415,7 +424,8 @@ $colors = ['#2f66f6'];
                 success: function (response) {
                     if (response.status === "success") {
                         showAlert("Jadwal berhasil diupdate", true);
-                        $("#updateWawancaraModal").modal("hide");
+                        const modalEl = document.getElementById('updateWawancaraModal');
+                        if(modalEl) bootstrap.Modal.getInstance(modalEl).hide();
                         // Refresh content via existing sidebar trigger
                         document.querySelector('a[data-page="wawancara"]').click();
                     } else {
@@ -429,7 +439,7 @@ $colors = ['#2f66f6'];
             });
         });
 
-        $(document).on("click", ".btn-delete-wawancara", function (e) {
+        $(document).off("click", ".btn-delete-wawancara").on("click", ".btn-delete-wawancara", function (e) {
             e.preventDefault();
             const btn = $(this);
             const id = btn.data("id") || btn.attr("data-id");

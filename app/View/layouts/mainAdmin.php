@@ -7,6 +7,13 @@
     <link rel="icon" href="<?= APP_URL ?>/Assets/Img/iclabs.png">
 
     <!-- Tailwind CSS Play CDN & Configuration -->
+    <script>
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) return;
+            originalWarn.apply(console, args);
+        };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="<?= APP_URL ?>/Assets/js/tailwind-config.js"></script>
 
@@ -22,6 +29,11 @@
 
     <!-- DataTables 2.x CSS (no jQuery required) -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
+
+    <!-- jQuery (Required for inline scripts) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- DataTables 2.x -->
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
 
     <!-- Bootstrap 5.3.3 JS Emulation Layer -->
     <script>
@@ -58,6 +70,11 @@
                 hide() {
                     if (!this.element) return;
                     this.element.dispatchEvent(new Event('hide.bs.modal', { bubbles: true }));
+                    
+                    if (this.element.contains(document.activeElement)) {
+                        document.activeElement.blur();
+                    }
+                    
                     this.element.classList.add('hidden');
                     this.element.style.display = 'none';
                     this.element.classList.remove('show', 'flex');
@@ -620,16 +637,18 @@
     <?php require_once __DIR__ . "/../templates/sidebarAdmin.php" ?>
 
     <!-- Bootstrap Toast Container (Redesigned with Tailwind) -->
-    <div class="fixed top-4 right-4 z-[1100] flex flex-col gap-3 pointer-events-none" id="toast-container">
-        <div id="liveToast" class="toast align-items-center text-white border-0 rounded-2xl shadow-2xl transition-all duration-300 hidden pointer-events-auto" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex p-3">
-                <div class="toast-body d-flex align-items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                        <i id="toastIcon" class="bi bi-check-circle-fill text-lg"></i>
+    <div class="fixed top-4 right-4 z-[1100] flex flex-col gap-2 pointer-events-none" id="toast-container">
+        <div id="liveToast" class="toast text-white border-0 rounded-xl shadow-lg transition-all duration-300 pointer-events-auto" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 250px; max-width: 350px;">
+            <div class="flex items-center justify-between gap-3 p-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 shrink-0 rounded-full bg-white/20 flex items-center justify-center shadow-inner">
+                        <i id="toastIcon" class="bi bi-check-lg text-sm font-bold"></i>
                     </div>
-                    <span id="toastMessage" class="font-semibold text-sm">Operasi berhasil!</span>
+                    <span id="toastMessage" class="font-semibold text-[13px] leading-tight tracking-wide">Operasi berhasil!</span>
                 </div>
-                <button type="button" class="btn-close btn-close-white ms-auto me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200 hover:bg-white/25 active:scale-95 text-white" data-bs-dismiss="toast" aria-label="Close">
+                    <i class="bi bi-x-lg text-[11px] font-bold"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -769,11 +788,6 @@
     <!-- App Scripts -->
     <script src="<?= APP_URL ?>/Assets/js/app.js?v=<?= time() ?>"></script>
     <script src="<?= APP_URL ?>/Assets/js/ScriptSidebar.js?v=<?= time() ?>"></script>
-
-    <!-- jQuery (Required for DataTables) -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <!-- DataTables 2.x -->
-    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
 </body>
 </html>
 
