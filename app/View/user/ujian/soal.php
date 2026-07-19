@@ -431,6 +431,7 @@ $results = $results ?? [];
         };
 
         window.examSessionId = 'exam_<?= $bank['id'] ?? 'default' ?>_<?= $_SESSION['user']['id'] ?? 'guest' ?>_<?= $_SESSION['exam_session_timestamp'] ?? time() ?>';
+        window.examDuration = <?= isset($bank['durasi']) ? (int)$bank['durasi'] : 45 ?>;
     </script>
     <script src="<?=APP_URL?>/Assets/js/examScript.js"></script>
 </body>

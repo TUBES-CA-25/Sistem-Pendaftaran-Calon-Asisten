@@ -477,11 +477,13 @@ class BankSoalController extends Controller
             $nama = $_POST['nama'] ?? '';
             $deskripsi = $_POST['deskripsi'] ?? '';
             $token = $_POST['token'] ?? '';
+            $durasi = isset($_POST['durasi']) ? (int)$_POST['durasi'] : 45;
+            $poin_per_soal = isset($_POST['poin_per_soal']) ? (int)$_POST['poin_per_soal'] : 10;
             
             if (empty($nama)) throw new \Exception('Nama bank soal wajib diisi');
             
             $bankSoal = new BankSoal();
-            if ($bankSoal->save($nama, $deskripsi, $token)) {
+            if ($bankSoal->save($nama, $deskripsi, $token, $durasi, $poin_per_soal)) {
                 $newId = $bankSoal->getLastInsertId();
                 echo json_encode([
                     'status' => 'success',
@@ -508,12 +510,14 @@ class BankSoalController extends Controller
             $nama = $_POST['nama'] ?? '';
             $deskripsi = $_POST['deskripsi'] ?? '';
             $token = $_POST['token'] ?? '';
+            $durasi = isset($_POST['durasi']) ? (int)$_POST['durasi'] : 45;
+            $poin_per_soal = isset($_POST['poin_per_soal']) ? (int)$_POST['poin_per_soal'] : 10;
             
             if (!$id) throw new \Exception('ID Bank tidak valid');
             if (empty($nama)) throw new \Exception('Nama bank soal wajib diisi');
             
             $bankSoal = new BankSoal();
-            if ($bankSoal->updateBank($id, $nama, $deskripsi, $token)) {
+            if ($bankSoal->updateBank($id, $nama, $deskripsi, $token, $durasi, $poin_per_soal)) {
                 echo json_encode(['status' => 'success', 'message' => 'Bank soal berhasil diperbarui']);
             } else {
                 throw new \Exception('Gagal memperbarui bank soal');

@@ -14,19 +14,19 @@ $nilai = $nilai ?? [];
         <!-- Page Header -->
         <?php
             $title = 'Daftar Nilai Tes Tertulis';
-            $subtitle = 'Kelola dan lihat nilai tes tertulis mahasiswa';
+            $subtitle = 'Kelola dan lihat nilai tes tertulis calon asisten';
             $icon = 'bi bi-clipboard-data';
             require_once __DIR__ . '/../../templates/components/PageHeader.php';
         ?>
 
-        <div class="max-w-7xl mx-auto px-4 py-6">
+        <div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
 
 
             <?php if (empty($nilai)): ?>
                 <div class="flex flex-col items-center justify-center py-16 text-slate-400 bg-white rounded-2xl border border-slate-100 shadow-sm p-8 text-center">
                     <i class="bi bi-inbox text-6xl mb-4 text-slate-300"></i>
                     <h3 class="text-lg font-bold text-slate-700 mb-1">Belum ada peserta</h3>
-                    <p class="text-sm max-w-sm text-slate-500">Data nilai akan muncul setelah mahasiswa mengerjakan tes tertulis</p>
+                    <p class="text-sm max-w-sm text-slate-500">Data nilai akan muncul setelah calon asisten mengerjakan tes tertulis</p>
                 </div>
             <?php else: ?>
                 <!-- Clean Table -->
@@ -36,7 +36,7 @@ $nilai = $nilai ?? [];
                             <thead class="">
                                 <tr>
                                     <th class="dt-head-cell text-center" style="width: 60px;">No</th>
-                                    <th class="dt-head-cell">Mahasiswa</th>
+                                    <th class="dt-head-cell">Calon Asisten</th>
                                     <th class="dt-head-cell">Stambuk</th>
                                     <th class="dt-head-cell text-center" style="width: 150px;">Nilai Akhir</th>
                                     <th class="dt-head-cell text-center" style="width: 180px;">Status</th>
@@ -125,7 +125,7 @@ $nilai = $nilai ?? [];
                         <i class="bi bi-arrow-left"></i> Kembali ke Daftar
                     </button>
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3 flex items-center gap-3">
-                        <span id="detailNama">Nama Mahasiswa</span>
+                        <span id="detailNama">Nama Calon Asisten</span>
                     </h2>
                     <div class="flex flex-wrap items-center gap-3">
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold rounded-lg border border-white/10">
@@ -468,7 +468,7 @@ $(document).ready(function() {
         const nilaiAkhir = $('#nilaiAkhir').val();
 
         if (!currentMahasiswaId) {
-            showAlert('ID mahasiswa tidak ditemukan', false);
+            showAlert('ID calon asisten tidak ditemukan', false);
             return;
         }
 

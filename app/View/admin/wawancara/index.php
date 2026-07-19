@@ -20,7 +20,7 @@ $colors = ['#2f66f6'];
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<div class="max-w-7xl mx-auto px-4 py-6">
+<div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
 
     <!-- Hidden custom buttons for DataTables -->
     <button class="dt-custom-button hidden px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl items-center gap-2 transition shadow-sm border-0" type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal">

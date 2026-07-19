@@ -17,7 +17,7 @@ $mahasiswaList = $mahasiswaList ?? [];
         require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
-    <div class="max-w-7xl mx-auto px-4 py-6">
+    <div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
 
 
         <?php if (empty($mahasiswaList)): ?>

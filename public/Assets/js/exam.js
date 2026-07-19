@@ -20,8 +20,23 @@ window.openBankDetail = function(bankId, bankName) {
     document.getElementById('bankListView').classList.add('hidden'); // legacy
     document.getElementById('bankDetailView').classList.remove('hidden');
     document.getElementById('bankDetailView').classList.add('active'); // legacy
+    if(document.getElementById('pageHeaderWrapper')) document.getElementById('pageHeaderWrapper').classList.add('hidden');
     document.getElementById('detailBankTitle').textContent = bankName;
     
+    // Update badge status based on bank data
+    const bankData = window.bankSoalList ? window.bankSoalList.find(b => b.id == bankId) : null;
+    const badge = document.getElementById('detailBankStatusBadge');
+    if (badge && bankData) {
+        if (bankData.is_active == 1) {
+            badge.textContent = 'AKTIF';
+            badge.className = 'bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-md transition-colors';
+        } else {
+            badge.textContent = 'NON-AKTIF';
+            badge.className = 'bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-1 rounded-md transition-colors';
+        }
+    }
+    
+
     // Hide Create Bank Button (Keep Tabs Visible)
     const btnCreate = document.getElementById('btnCreateBank');
     if(btnCreate) btnCreate.classList.add('hidden');
@@ -33,10 +48,12 @@ window.openBankDetail = function(bankId, bankName) {
 // Close Bank Detail
 window.closeBankDetail = function() {
     window.currentBankId = null;
+    window.currentBankSoal = [];
     document.getElementById('bankDetailView').classList.add('hidden');
     document.getElementById('bankDetailView').classList.remove('active'); // legacy
     document.getElementById('bankListView').classList.remove('hidden');
     document.getElementById('bankListView').classList.remove('hidden'); // legacy
+    if(document.getElementById('pageHeaderWrapper')) document.getElementById('pageHeaderWrapper').classList.remove('hidden');
     
     // Show Create Bank Button
     const btnCreate = document.getElementById('btnCreateBank');
@@ -76,8 +93,11 @@ window.loadBankQuestions = function(bankId) {
             }
 
             // Update stats
+            const bankData = window.bankSoalList ? window.bankSoalList.find(b => b.id == bankId) : null;
+            const poinPerSoal = bankData && bankData.poin_per_soal ? parseInt(bankData.poin_per_soal) : 10;
+            
             const totalSoal = window.currentBankSoal.length;
-            const totalPoin = totalSoal * 5;
+            const totalPoin = totalSoal * poinPerSoal;
             if(document.getElementById('detailBankQuestionCount')) {
                 document.getElementById('detailBankQuestionCount').innerText = totalSoal;
                 document.getElementById('detailBankPoints').innerText = totalPoin;
@@ -230,15 +250,7 @@ window.deleteBank = function(bankId) {
     }, 'Apakah Anda yakin ingin menghapus bank soal ini? Semua soal di dalamnya akan ikut terhapus.');
 }
 
-// Close Bank Detail
-window.closeBankDetail = function() {
-    window.currentBankId = null;
-    window.currentBankSoal = [];
-    document.getElementById('bankDetailView').classList.add('hidden');
-    document.getElementById('bankDetailView').classList.remove('active');
-    document.getElementById('bankListView').classList.remove('hidden');
-    document.getElementById('bankListView').classList.remove('hidden');
-}
+
 
 // Global Base URL for JS (avoid redeclaration if already defined)
 if (typeof baseUrl === 'undefined' && window.appUrl) {
@@ -265,7 +277,7 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
             document.querySelectorAll('#pilihanContainer input[name^="pilihan_"]').forEach((input, idx) => {
                 if (idx < 4) input.required = isPG; // A, B, C, D required
             });
-            document.querySelector('#jawabanPGContainer input[name="jawaban"]').required = isPG;
+            document.querySelectorAll('#jawabanPGContainer input[name="jawaban"]').forEach(input => input.required = isPG);
         });
     });
 
@@ -316,7 +328,7 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
             if (window.easyMDE_edit) {
                 const desc = window.easyMDE_edit.value();
                 if (!desc.trim()) {
-                    alert('Pertanyaan tidak boleh kosong');
+                    showAlert('Pertanyaan tidak boleh kosong', false);
                     return;
                 }
                 formData.set('deskripsi', desc);
@@ -389,6 +401,8 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
                         window.bankSoalList[bankIdx].nama = formData.get('nama');
                         window.bankSoalList[bankIdx].deskripsi = formData.get('deskripsi');
                         window.bankSoalList[bankIdx].token = formData.get('token');
+                        window.bankSoalList[bankIdx].durasi = formData.get('durasi');
+                        window.bankSoalList[bankIdx].poin_per_soal = formData.get('poin_per_soal');
                     }
                     
                     // Update UI if in list view
@@ -422,13 +436,17 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
             const nama = formData.get('nama_bank');
             const deskripsi = formData.get('deskripsi_bank');
             const token = formData.get('token_bank');
+            const durasi = formData.get('durasi_bank');
+            const poin = formData.get('poin_bank');
             
             fetch(baseUrl + '/createBank', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: 'nama=' + encodeURIComponent(nama) + 
                     '&deskripsi=' + encodeURIComponent(deskripsi) +
-                    '&token=' + encodeURIComponent(token)
+                    '&token=' + encodeURIComponent(token) +
+                    '&durasi=' + encodeURIComponent(durasi) +
+                    '&poin_per_soal=' + encodeURIComponent(poin)
             })
             .then(res => res.json())
             .then(data => {
@@ -483,8 +501,10 @@ window.editBankModal = function(id) {
     // Populate Form
     document.getElementById('editBankId').value = bank.id;
     document.getElementById('editBankName').value = bank.nama;
-    document.getElementById('editBankDesc').value = bank.deskripsi;
-    document.getElementById('editBankToken').value = bank.token;
+    document.getElementById('editBankDesc').value = bank.deskripsi || '';
+    document.getElementById('editBankToken').value = bank.token || '';
+    document.getElementById('editBankDurasi').value = bank.durasi || 45;
+    document.getElementById('editBankPoin').value = bank.poin_per_soal || 10;
 
     // Show Modal
     const modal = new bootstrap.Modal(document.getElementById('editBankModal'));
@@ -554,6 +574,26 @@ window.activateBank = function(bankId) {
             showAlert(data.message || 'Gagal mengubah status', false);
             // Revert state on failure
             switchEl.checked = !isActive;
+        }
+        
+        // Update in-memory data
+        if (window.bankSoalList) {
+            const bData = window.bankSoalList.find(b => b.id == bankId);
+            if (bData) bData.is_active = isActive ? 1 : 0;
+        }
+        
+        // If this bank is currently open in detail view, update its badge too
+        if (window.currentBankId == bankId) {
+            const detailBadge = document.getElementById('detailBankStatusBadge');
+            if (detailBadge) {
+                if (isActive) {
+                    detailBadge.textContent = 'AKTIF';
+                    detailBadge.className = 'bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-md transition-colors';
+                } else {
+                    detailBadge.textContent = 'NON-AKTIF';
+                    detailBadge.className = 'bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-1 rounded-md transition-colors';
+                }
+            }
         }
     })
     .catch((err) => {
@@ -642,7 +682,7 @@ window.editSoal = function(id) {
 
         // Check correct answer
         const jawab = soalData.jawaban;
-        const radio = document.querySelector(`input[name="jawaban"][value="${jawab}"]`);
+        const radio = document.querySelector(`#editSoalForm input[name="jawaban"][value="${jawab}"]`);
         if(radio) radio.checked = true;
 
     } else {
@@ -772,7 +812,7 @@ window.deleteSoal = function(id) {
             if (window.easyMDE_add) {
                 const desc = window.easyMDE_add.value();
                 if (!desc.trim()) {
-                    alert('Pertanyaan tidak boleh kosong');
+                    showAlert('Pertanyaan tidak boleh kosong', false);
                     
                     // Reset button state
                     btn.disabled = false;

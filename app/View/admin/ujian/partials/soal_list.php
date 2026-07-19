@@ -123,7 +123,11 @@ foreach ($soalArray as $index => $soal) {
             <!-- Image if any -->
             <?php if (!empty($imageUrl)): ?>
             <div class="w-full">
-                <img src="<?= htmlspecialchars((str_starts_with($imageUrl, 'http') ? '' : '/Sistem-Pendaftaran-Calon-Asisten/') . $imageUrl) ?>" alt="Gambar Soal" class="max-w-full lg:max-w-2xl rounded-xl border border-slate-200 object-contain max-h-80" onerror="this.style.display='none'">
+                <img src="<?= htmlspecialchars((str_starts_with($imageUrl, 'http') ? '' : '/Sistem-Pendaftaran-Calon-Asisten/') . $imageUrl) ?>" 
+                     alt="Gambar Soal" 
+                     class="w-full h-48 sm:h-64 object-contain bg-slate-50 rounded-xl border border-slate-200 cursor-zoom-in hover:opacity-95 transition-opacity" 
+                     onerror="this.style.display='none'"
+                     onclick="showImageModal(this.src)">
             </div>
             <?php endif; ?>
             

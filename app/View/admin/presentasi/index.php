@@ -16,7 +16,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
         require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
-    <div class="max-w-7xl mx-auto px-4 py-6">
+    <div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
         <!-- Hidden custom buttons for DataTables -->
         <button class="dt-custom-button hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10" id="btnAddJadwal">
             <i class="bi bi-plus-circle"></i> Tambah Jadwal

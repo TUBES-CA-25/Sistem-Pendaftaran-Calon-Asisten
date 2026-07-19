@@ -22,7 +22,6 @@ class NilaiAkhir extends Model
     {
         try {
             $total_nilai = 0;
-            $poin_per_benar = 10;
 
             $mahasiswa = $this->getIdMahasiswa($id);
             if (!$mahasiswa) {
@@ -40,7 +39,7 @@ class NilaiAkhir extends Model
                 $id_soal = $answer['id_soal'];
                 $jawaban_user = $answer['jawaban'];
 
-                $query_soal = "SELECT pilihan, jawaban FROM soal WHERE id = :id_soal";
+                $query_soal = "SELECT s.pilihan, s.jawaban, b.poin_per_soal FROM soal s LEFT JOIN bank_soal b ON s.bank_soal_id = b.id WHERE s.id = :id_soal";
                 $stmt_soal = self::getDB()->prepare($query_soal);
                 $stmt_soal->bindParam(':id_soal', $id_soal, PDO::PARAM_INT);
                 $stmt_soal->execute();
@@ -49,6 +48,8 @@ class NilaiAkhir extends Model
                 if ($soal_data) {
                     $pilihan = json_decode($soal_data['pilihan'], true);
                     $correct_answer = $soal_data['jawaban'];
+                    $poin_per_benar = isset($soal_data['poin_per_soal']) ? (int)$soal_data['poin_per_soal'] : 10;
+                    
                     // Normalize answers for comparison
                     if (isset($pilihan[$jawaban_user]) && trim($pilihan[$jawaban_user]) === trim($correct_answer)) {
                         $total_nilai += $poin_per_benar;

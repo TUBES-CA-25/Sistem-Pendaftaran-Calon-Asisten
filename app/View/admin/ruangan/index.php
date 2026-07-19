@@ -17,7 +17,7 @@ $ruanganList = $ruanganList ?? [];
             require_once __DIR__ . '/../../templates/components/PageHeader.php';
         ?>
 
-        <div class="max-w-7xl mx-auto px-4 py-6">
+        <div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
             <!-- Unified Table Container with Controls -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6 relative">
                 

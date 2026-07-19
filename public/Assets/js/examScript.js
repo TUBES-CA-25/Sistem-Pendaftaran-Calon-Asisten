@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const timerElement = document.getElementById("timer");
   const endpoint = APP_URL + "/hasil";
   let currentQuestion = 0;
-  const initialDuration = 30 * 60;
+  const initialDuration = (window.examDuration || 45) * 60;
   let remainingTime;
 
   const storage = window.storage || {

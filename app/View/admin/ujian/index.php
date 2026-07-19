@@ -27,14 +27,16 @@ $essayCount = $stats['essay_count'];
 <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 
 <!-- Page Header -->
+<div id="pageHeaderWrapper" class="transition-all duration-300">
 <?php
     $title = 'Bank Soal';
     $subtitle = 'Kelola kumpulan soal dan akses token ujian';
     $icon = 'bi bi-journal-richtext';
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
+</div>
 
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 [&_.editor-toolbar]:!border-slate-200 [&_.editor-toolbar]:rounded-t-xl [&_.CodeMirror]:!border-slate-200 [&_.CodeMirror]:rounded-b-xl [&_.CodeMirror]:min-h-[200px] [&_.CodeMirror]:max-h-[400px] [&_.editor-statusbar]:hidden [&_.condition-render-markdown_img]:max-w-full [&_.condition-render-markdown_img]:max-h-[400px] [&_.condition-render-markdown_img]:object-contain [&_.condition-render-markdown_img]:rounded-xl [&_.condition-render-markdown_img]:my-2.5 [&_.condition-render-markdown_img]:border [&_.condition-render-markdown_img]:border-slate-200 [&_.condition-render-markdown_img]:block [&_.type-option.selected]:bg-blue-600/5 [&_.type-option.selected]:!border-blue-600 [&_.type-option.selected_.check-icon]:!block [&_.modal-dialog-scrollable_.modal-body]:!overflow-y-auto [&_.modal-dialog-scrollable_.modal-body]:!max-h-[65vh] [&_.modal-dialog-scrollable_.modal-body]:[scrollbar-width:thin] [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar]:w-1.5 [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar-track]:bg-slate-100 [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar-thumb]:bg-slate-300 [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar-thumb]:rounded-sm [&_.EasyMDEContainer]:z-[1055]">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-6 [&_.editor-toolbar]:!border-slate-200 [&_.editor-toolbar]:rounded-t-xl [&_.CodeMirror]:!border-slate-200 [&_.CodeMirror]:rounded-b-xl [&_.CodeMirror]:min-h-[200px] [&_.CodeMirror]:max-h-[400px] [&_.editor-statusbar]:hidden [&_.condition-render-markdown_img]:max-w-full [&_.condition-render-markdown_img]:max-h-[400px] [&_.condition-render-markdown_img]:object-contain [&_.condition-render-markdown_img]:rounded-xl [&_.condition-render-markdown_img]:my-2.5 [&_.condition-render-markdown_img]:border [&_.condition-render-markdown_img]:border-slate-200 [&_.condition-render-markdown_img]:block [&_.type-option.selected]:bg-blue-600/5 [&_.type-option.selected]:!border-blue-600 [&_.type-option.selected_.check-icon]:!block [&_.modal-dialog-scrollable_.modal-body]:!overflow-y-auto [&_.modal-dialog-scrollable_.modal-body]:!max-h-[65vh] [&_.modal-dialog-scrollable_.modal-body]:[scrollbar-width:thin] [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar]:w-1.5 [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar-track]:bg-slate-100 [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar-thumb]:bg-slate-300 [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar-thumb]:rounded-sm [&_.EasyMDEContainer]:z-[1055]">
 <div class="bank-list-view" id="bankListView">
         <!-- Stats Bar -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
@@ -242,60 +244,36 @@ $essayCount = $stats['essay_count'];
     <!-- Bank Detail View -->
     <div class="bank-detail-view hidden" id="bankDetailView">
         <!-- Quizizz Style Header Card -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 mb-6 overflow-hidden">
-            <div class="p-6 md:p-8 flex flex-col md:flex-row md:items-start gap-6">
+        <div class="bg-gradient-to-r from-blue-600 to-cyan-400 rounded-2xl shadow-lg border-0 mb-5 overflow-hidden relative">
+            <div class="absolute -top-16 -right-16 w-64 h-64 bg-white/10 rounded-full pointer-events-none"></div>
+            <div class="absolute -bottom-20 left-8 w-40 h-40 bg-white/10 rounded-full pointer-events-none"></div>
+            
+            <div class="p-4 md:p-5 flex flex-col md:flex-row md:items-center gap-4 relative z-10">
                 <!-- Icon/Cover -->
-                <div class="w-24 h-24 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 border border-blue-100">
-                    <i class='bx bx-book-content text-5xl text-blue-400'></i>
+                <div class="w-14 h-14 bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                    <i class='bx bx-book-content text-3xl text-white'></i>
                 </div>
                 <!-- Title & Meta -->
                 <div class="flex-1">
-                    <div class="flex items-center gap-3 mb-2">
-                        <h3 class="text-2xl font-bold text-slate-800" id="detailBankTitle">Nama Bank Soal</h3>
-                        <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded border border-slate-200">Draf</span>
-                    </div>
-                    
-                    <div class="flex flex-wrap items-center gap-y-2 gap-x-3 text-sm font-medium text-slate-500 mb-4">
-                        <div class="flex items-center gap-1.5 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
-                            <i class='bx bxs-check-circle'></i> Assessment
-                        </div>
-                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
-                        <div class="flex items-center gap-1.5">
-                            <div class="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center">
-                                <i class='bx bx-user text-xs text-blue-600'></i>
-                            </div>
-                            <span id="detailBankAuthor">Admin</span>
-                        </div>
-                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
-                        <span>Universitas</span>
-                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
-                        <span class="text-red-500 font-semibold" id="detailBankStatus">Sedang</span>
+                    <div class="flex items-center gap-3">
+                        <h3 class="text-xl font-bold text-white" id="detailBankTitle">Nama Bank Soal</h3>
                     </div>
                 </div>
             </div>
             
             <!-- Toolbar -->
-            <div class="bg-slate-50 border-t border-slate-100 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-2">
-                    <button class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-lg flex items-center gap-2 transition">
-                        <i class='bx bx-folder'></i> Simpan
-                    </button>
-                    <button class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-lg flex items-center gap-2 transition">
-                        <i class='bx bx-share-alt'></i> Sebarkan <i class='bx bx-chevron-down ml-1 text-slate-400'></i>
-                    </button>
-                    <button class="w-10 h-10 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg flex items-center justify-center transition">
-                        <i class='bx bx-dots-vertical-rounded'></i>
+            <div class="bg-slate-50 border-t border-slate-100 px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center">
+                    <button class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-lg flex items-center gap-2 transition shadow-sm" onclick="closeBankDetail()">
+                        <i class='bx bx-arrow-back'></i> Kembali
                     </button>
                 </div>
                 
                 <div class="flex items-center gap-2">
-                    <button class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-lg flex items-center gap-2 transition" onclick="closeBankDetail()">
-                        <i class='bx bx-undo'></i> Batal
+                    <button class="px-4 py-2 bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 text-sm font-bold rounded-lg flex items-center gap-2 transition shadow-sm" onclick="window.editBankModal(window.currentBankId)">
+                        <i class='bx bx-edit'></i> Edit Bank Soal
                     </button>
-                    <button class="px-4 py-2 bg-white border border-pink-200 text-pink-600 hover:bg-pink-50 text-sm font-semibold rounded-lg flex items-center gap-2 transition">
-                        <i class='bx bx-edit'></i> Edit
-                    </button>
-                    <button class="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-semibold rounded-lg flex items-center gap-2 transition" data-bs-toggle="modal" data-bs-target="#addSoalModal">
+                    <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg flex items-center gap-2 transition shadow-sm border border-blue-600" data-bs-toggle="modal" data-bs-target="#addSoalModal">
                         <i class='bx bx-plus'></i> Tambah Soal
                     </button>
                 </div>
@@ -313,21 +291,11 @@ $essayCount = $stats['essay_count'];
                         <div class="p-5">
                             <div class="flex items-center justify-between mb-4">
                                 <h4 class="font-bold text-slate-800 text-sm">Status Bank Soal</h4>
-                                <span class="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-md">AKTIF</span>
+                                <span id="detailBankStatusBadge" class="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-md transition-colors">AKTIF</span>
                             </div>
                             
-                            <div class="space-y-4">
-                                <div>
-                                    <div class="flex justify-between text-xs font-semibold mb-1.5">
-                                        <span class="text-slate-500">Kesiapan Materi</span>
-                                        <span class="text-blue-600">85%</span>
-                                    </div>
-                                    <div class="w-full bg-slate-100 rounded-full h-2">
-                                        <div class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full" style="width: 85%"></div>
-                                    </div>
-                                </div>
-                                
-                                <div class="grid grid-cols-2 gap-3 pt-2">
+                            <div>
+                                <div class="grid grid-cols-2 gap-3">
                                     <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 transition hover:border-blue-200">
                                         <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">Total Poin</div>
                                         <div class="text-slate-800 font-bold text-lg" id="panelTotalPoints">0</div>
@@ -442,6 +410,16 @@ $essayCount = $stats['essay_count'];
                         </div>
                         <div class="text-xs text-slate-400 mt-1 font-semibold">Kode unik untuk peserta mengakses ujian ini.</div>
                     </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Durasi (Menit)</label>
+                            <input type="number" min="1" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition" name="durasi_bank" placeholder="45" value="45" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Poin per Soal</label>
+                            <input type="number" min="1" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition" name="poin_bank" placeholder="10" value="10" required>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
                     <button type="button" class="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-bold transition border-0 bg-transparent" data-bs-dismiss="modal">Batal</button>
@@ -476,6 +454,16 @@ $essayCount = $stats['essay_count'];
                         <div class="relative">
                             <i class='bx bx-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg'></i>
                             <input type="text" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition uppercase tracking-wider" name="token" id="editBankToken" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Durasi (Menit)</label>
+                            <input type="number" min="1" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition" name="durasi" id="editBankDurasi" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Poin per Soal</label>
+                            <input type="number" min="1" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition" name="poin_per_soal" id="editBankPoin" required>
                         </div>
                     </div>
                 </div>
@@ -688,6 +676,30 @@ $essayCount = $stats['essay_count'];
     // Legacy support for inline scripts that might expect these globals immediately
     window.allSoal = window.serverData.allSoal;
     window.bankSoalList = window.serverData.bankSoalList;
+
+    // Image Modal Functions
+    window.showImageModal = function(imageUrl) {
+        const modalHtml = `
+            <div id="imageModal" class="fixed inset-0 z-[1060] flex items-center justify-center bg-slate-900/75 p-4 animate-fade-in" onclick="closeImageModal()">
+                <div class="relative max-w-5xl w-full flex items-center justify-center" onclick="event.stopPropagation()">
+                    <button type="button" class="absolute -top-12 right-0 md:-right-12 text-white/70 hover:text-white transition w-10 h-10 flex items-center justify-center bg-black/20 hover:bg-black/40 rounded-full" onclick="closeImageModal()">
+                        <i class="bi bi-x-lg text-xl"></i>
+                    </button>
+                    <img src="${imageUrl}" class="max-h-[85vh] max-w-full object-contain rounded-xl shadow-2xl" alt="Zoomed Image">
+                </div>
+            </div>
+        `;
+        
+        const existingModal = document.getElementById('imageModal');
+        if (existingModal) existingModal.remove();
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    };
+
+    window.closeImageModal = function() {
+        const existingModal = document.getElementById('imageModal');
+        if (existingModal) existingModal.remove();
+    };
 </script>
 
 <!-- Load External JavaScript -->

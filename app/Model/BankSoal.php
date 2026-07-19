@@ -19,12 +19,14 @@ class BankSoal extends Model {
                     b.updated_at,
                     b.token,
                     b.is_active,
+                    b.durasi,
+                    b.poin_per_soal,
                     COUNT(s.id) as jumlah_soal,
                     SUM(CASE WHEN s.status_soal = 'pilihan_ganda' THEN 1 ELSE 0 END) as pg_count,
                     SUM(CASE WHEN s.status_soal != 'pilihan_ganda' AND s.id IS NOT NULL THEN 1 ELSE 0 END) as essay_count
                   FROM " . self::$table . " b
                   LEFT JOIN soal s ON b.id = s.bank_soal_id
-                  GROUP BY b.id, b.nama, b.deskripsi, b.created_at, b.updated_at, b.token, b.is_active
+                  GROUP BY b.id, b.nama, b.deskripsi, b.created_at, b.updated_at, b.token, b.is_active, b.durasi, b.poin_per_soal
                   ORDER BY b.created_at DESC";
         
         $stmt = self::getDB()->prepare($query);
@@ -51,13 +53,15 @@ class BankSoal extends Model {
                     b.updated_at,
                     b.token,
                     b.is_active,
+                    b.durasi,
+                    b.poin_per_soal,
                     COUNT(s.id) as jumlah_soal,
                     SUM(CASE WHEN s.status_soal = 'pilihan_ganda' THEN 1 ELSE 0 END) as jumlah_pg,
                     SUM(CASE WHEN s.status_soal != 'pilihan_ganda' AND s.id IS NOT NULL THEN 1 ELSE 0 END) as jumlah_essay
                   FROM " . self::$table . " b
                   LEFT JOIN soal s ON b.id = s.bank_soal_id
                   WHERE b.id = :id
-                  GROUP BY b.id, b.nama, b.deskripsi, b.created_at, b.updated_at, b.token, b.is_active";
+                  GROUP BY b.id, b.nama, b.deskripsi, b.created_at, b.updated_at, b.token, b.is_active, b.durasi, b.poin_per_soal";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -67,25 +71,29 @@ class BankSoal extends Model {
     /**
      * Create new question bank
      */
-    public function save($nama, $deskripsi, $token) {
-        $sql = "INSERT INTO " . self::$table . " (nama, deskripsi, token, is_active) VALUES (?, ?, ?, 0)";
+    public function save($nama, $deskripsi, $token, $durasi = 45, $poin_per_soal = 10) {
+        $sql = "INSERT INTO " . self::$table . " (nama, deskripsi, token, is_active, durasi, poin_per_soal) VALUES (?, ?, ?, 0, ?, ?)";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(1, $nama);
         $stmt->bindParam(2, $deskripsi);
         $stmt->bindParam(3, $token);
+        $stmt->bindParam(4, $durasi, PDO::PARAM_INT);
+        $stmt->bindParam(5, $poin_per_soal, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
     /**
      * Update question bank
      */
-    public function updateBank($id, $nama, $deskripsi, $token) {
-        $sql = "UPDATE " . self::$table . " SET nama = ?, deskripsi = ?, token = ? WHERE id = ?";
+    public function updateBank($id, $nama, $deskripsi, $token, $durasi = 45, $poin_per_soal = 10) {
+        $sql = "UPDATE " . self::$table . " SET nama = ?, deskripsi = ?, token = ?, durasi = ?, poin_per_soal = ? WHERE id = ?";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(1, $nama);
         $stmt->bindParam(2, $deskripsi);
         $stmt->bindParam(3, $token);
-        $stmt->bindParam(4, $id, PDO::PARAM_INT);
+        $stmt->bindParam(4, $durasi, PDO::PARAM_INT);
+        $stmt->bindParam(5, $poin_per_soal, PDO::PARAM_INT);
+        $stmt->bindParam(6, $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
