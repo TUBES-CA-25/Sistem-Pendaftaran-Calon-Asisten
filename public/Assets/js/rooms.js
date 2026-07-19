@@ -157,8 +157,62 @@
                 .then(res => res.json())
                 .then(res => {
                     if (res.status === 'success') {
-                        sessionStorage.setItem('pendingToast', JSON.stringify({ message: 'Ruangan berhasil ditambahkan!', isSuccess: true }));
-                        location.reload();
+                        showAlert('Ruangan berhasil ditambahkan!', true);
+                        
+                        // Close modal
+                        const modalEl = document.getElementById('tambahRuanganModal');
+                        if (modalEl) {
+                            const modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                            el('tambahRuanganForm').reset();
+                        }
+                        
+                        // Dynamically append new row
+                        const tbody = document.getElementById('ruanganTableBody');
+                        if (tbody) {
+                            // Remove empty state if it exists
+                            if (tbody.querySelector('td[colspan="3"]')) {
+                                tbody.innerHTML = '';
+                            }
+                            
+                            const rowCount = tbody.querySelectorAll('tr').length + 1;
+                            const newRow = document.createElement('tr');
+                            newRow.className = 'dt-body-row room-item border-b border-slate-100 hover:bg-slate-50 transition-colors';
+                            newRow.setAttribute('data-id', res.id);
+                            newRow.setAttribute('data-name', res.nama);
+                            
+                            newRow.innerHTML = `
+                                <td class="text-center py-4 px-4 font-semibold text-slate-600">${rowCount}</td>
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center shrink-0 border border-blue-100">
+                                            <i class="bi bi-buildings-fill text-lg"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-800 text-base">${res.nama}</div>
+                                            <div class="text-[10px] font-bold text-slate-400 tracking-wider mt-0.5 uppercase"><i class="bi bi-geo-alt-fill text-[9px] me-1"></i>Ruangan Seleksi</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-blue-50 hover:bg-blue-100 text-blue-600 btn-edit-room" 
+                                                title="Ubah Nama"
+                                                data-id="${res.id}"
+                                                data-name="${res.nama}">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-red-50 hover:bg-red-100 text-red-600 btn-delete-room" 
+                                                title="Hapus"
+                                                data-id="${res.id}"
+                                                data-name="${res.nama}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            `;
+                            tbody.appendChild(newRow);
+                        }
                     } else {
                         showAlert(res.message, false);
                     }
@@ -186,8 +240,31 @@
                             el('detailRoomTitle') && (el('detailRoomTitle').textContent = name);
                             currentRoomName = name;
                         }
-                        sessionStorage.setItem('pendingToast', JSON.stringify({ message: 'Nama ruangan diperbarui', isSuccess: true }));
-                        location.reload();
+                        
+                        showAlert('Nama ruangan diperbarui', true);
+                        
+                        // Close modal
+                        const modalEl = document.getElementById('updateRuanganModal');
+                        if (modalEl) {
+                            const modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                            el('updateRuanganForm').reset();
+                        }
+                        
+                        // Dynamically update row
+                        const row = document.querySelector(`.room-item[data-id="${id}"]`);
+                        if (row) {
+                            row.setAttribute('data-name', name);
+                            const nameEl = row.querySelector('.font-bold.text-slate-800.text-base');
+                            if (nameEl) nameEl.textContent = name;
+                            
+                            // update button data attributes
+                            const btnEdit = row.querySelector('.btn-edit-room');
+                            if (btnEdit) btnEdit.setAttribute('data-name', name);
+                            
+                            const btnDelete = row.querySelector('.btn-delete-room');
+                            if (btnDelete) btnDelete.setAttribute('data-name', name);
+                        }
                     } else {
                         showAlert(res.message, false);
                     }
@@ -238,8 +315,12 @@
             .then(res => res.json())
             .then(res => {
                 if (res.status === 'success') {
-                    sessionStorage.setItem('pendingToast', JSON.stringify({ message: 'Ruangan berhasil dihapus!', isSuccess: true }));
-                    location.reload();
+                    showAlert('Ruangan berhasil dihapus!', true);
+                    const roomRow = document.querySelector(`.room-item[data-id="${id}"]`);
+                    if (roomRow) {
+                        // Remove the row from the table
+                        roomRow.remove();
+                    }
                 } else {
                     showAlert(res.message, false);
                 }

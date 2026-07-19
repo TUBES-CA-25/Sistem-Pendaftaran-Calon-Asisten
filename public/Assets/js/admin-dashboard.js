@@ -53,7 +53,25 @@
             .then(data => {
                 if (data.status === 'success') {
                     showAlert('Deadline berhasil diperbarui!', true);
-                    location.reload();
+                    
+                    const updatedJenis = formData.jenis;
+                    const updatedDate = formData.tanggal;
+                    const editBtn = document.querySelector(`.edit-deadline-btn[data-jenis="${updatedJenis}"]`);
+                    if (editBtn) {
+                        editBtn.setAttribute('data-date', updatedDate);
+                        const span = editBtn.previousElementSibling;
+                        if (span) {
+                            const d = new Date(updatedDate);
+                            const options = { day: '2-digit', month: 'short', year: 'numeric' };
+                            span.textContent = 'Deadline: ' + d.toLocaleDateString('id-ID', options);
+                        }
+                    }
+                    
+                    const modalEl = document.getElementById('editDeadlineModal');
+                    if (modalEl) {
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+                    }
                 } else {
                     showAlert('Gagal: ' + data.message, false);
                 }
@@ -134,7 +152,14 @@
             .then(data => {
                 if (data.status === 'success') {
                     showAlert('Kegiatan berhasil ditambahkan!', true);
-                    location.reload();
+                    updateCalendarView(currentYear, currentMonth);
+                    
+                    const modalEl = document.getElementById('addActivityModal');
+                    if (modalEl) {
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+                        addActivityForm.reset();
+                    }
                 } else {
                     showAlert('Gagal: ' + data.message, false);
                 }
@@ -244,7 +269,13 @@
         .then(data => {
             if (data.status === 'success') {
                 showAlert('Kegiatan berhasil dihapus!', true);
-                setTimeout(() => location.reload(), 1000);
+                updateCalendarView(currentYear, currentMonth);
+                
+                const modalEl = document.getElementById('activityActionModal');
+                if (modalEl) {
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                }
             } else {
                 showAlert('Gagal: ' + data.message, false);
             }
@@ -278,7 +309,14 @@
             .then(data => {
                 if (data.status === 'success') {
                     showAlert('Kegiatan berhasil diperbarui!', true);
-                    location.reload();
+                    updateCalendarView(currentYear, currentMonth);
+                    
+                    const modalEl = document.getElementById('editActivityModal');
+                    if (modalEl) {
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+                        editActivityForm.reset();
+                    }
                 } else {
                     showAlert('Gagal: ' + data.message, false);
                 }

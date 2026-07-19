@@ -20,6 +20,7 @@ class Ruangan extends Model {
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(1, $nama);
         $stmt->execute();
+        return self::getDB()->lastInsertId();
     }
     public function deleteRuangan($id) {
         $sql = "DELETE FROM " . static::$table . " WHERE id = ?";

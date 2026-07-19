@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Ruangan View - Card Layout with Details & Interview
  * 
@@ -18,74 +18,75 @@ $ruanganList = $ruanganList ?? [];
         ?>
 
         <div class="max-w-7xl mx-auto px-4 py-6">
-            <!-- Controls Toolbar -->
-            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                <div class="relative w-full sm:w-72">
-                    <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input type="text" id="searchInput" class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm" placeholder="Cari ruangan...">
-                </div>
-                <button class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition flex items-center gap-2 shadow-md shadow-blue-500/10 btn-add-room" data-bs-toggle="modal" data-bs-target="#tambahRuanganModal">
+            <!-- Unified Table Container with Controls -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6 relative">
+                
+                <!-- Hidden Custom Button for VanillaPaginator -->
+                <button class="vp-custom-button hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10 btn-add-room" data-bs-toggle="modal" data-bs-target="#tambahRuanganModal">
                     <i class="bi bi-plus-circle-fill"></i>
                     <span>Tambah Ruangan</span>
                 </button>
-            </div>
 
-            <!-- Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="ruanganGrid">
-                <?php if (empty($ruanganList)) { ?>
-                    <div class="col-span-full max-w-md mx-auto py-12 text-center">
-                         <div class="w-20 h-20 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-3xl mx-auto mb-4">
-                            <i class="bi bi-buildings"></i>
-                         </div>
-                         <h4 class="text-lg font-bold text-slate-800 mb-1">Belum ada Ruangan</h4>
-                         <p class="text-slate-500 text-sm mb-6">Mulai dengan menambahkan ruangan baru untuk seleksi.</p>
-                         <div>
-                             <button class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-blue-500/10" data-bs-toggle="modal" data-bs-target="#tambahRuanganModal">
-                                <i class="bi bi-plus-circle me-1"></i> Tambah Sekarang
-                             </button>
-                         </div>
-                    </div>
-                <?php } else { ?>
-                    <?php foreach ($ruanganList as $ruangan) { ?>
-                        <div class="room-item" data-id="<?= $ruangan['id'] ?>" data-name="<?= htmlspecialchars($ruangan['nama']) ?>">
-                            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden h-full p-6 relative flex flex-col justify-between hover:shadow-md transition duration-200">
-                                <!-- Top Accent Bar -->
-                                <div class="absolute top-0 left-0 w-full h-[5px] bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-
-                                <!-- Room Info -->
-                                <div class="text-center flex flex-col items-center">
-                                    <!-- Icon -->
-                                    <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4 text-3xl mt-2">
-                                        <i class="bi bi-buildings-fill"></i>
-                                    </div>
-                                    <h5 class="text-base font-bold text-slate-800 mb-1 truncate max-w-full">
-                                        <?= htmlspecialchars($ruangan['nama']) ?>
-                                    </h5>
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wider mb-4">
-                                        <i class="bi bi-geo-alt-fill text-[9px]"></i> Ruangan Seleksi
-                                    </span>
-                                </div>
-
-                                <!-- Action Buttons -->
-                                <div class="flex gap-2 mt-4 shrink-0">
-                                    <button class="flex-grow py-2 px-3 border border-blue-600 text-blue-600 hover:bg-blue-50 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 btn-edit-room"
-                                            data-id="<?= $ruangan['id'] ?>"
-                                            data-name="<?= htmlspecialchars($ruangan['nama']) ?>"
-                                            title="Ubah Nama">
-                                        <i class="bi bi-pencil-square"></i>
-                                        <span>Edit</span>
-                                    </button>
-                                    <button class="flex-grow py-2 px-3 border border-red-500 text-red-500 hover:bg-red-50 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 btn-delete-room"
-                                            data-id="<?= $ruangan['id'] ?>"
-                                            title="Hapus">
-                                        <i class="bi bi-trash"></i>
-                                        <span>Hapus</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    <?php } ?>
-                <?php } ?>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full align-middle text-sm text-left no-datatable" id="ruanganTable" data-paginator="true" data-paginator-perpage="10">
+                        <thead>
+                            <tr>
+                                <th class="dt-head-cell text-center" style="width: 10%;">No</th>
+                                <th class="dt-head-cell">Nama Ruangan</th>
+                                <th class="dt-head-cell text-center" style="width: 20%;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ruanganTableBody">
+                            <?php if (empty($ruanganList)) { ?>
+                                <tr>
+                                    <td colspan="3" class="text-center py-12">
+                                         <div class="w-16 h-16 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-3xl mx-auto mb-3">
+                                            <i class="bi bi-buildings"></i>
+                                         </div>
+                                         <h4 class="text-base font-bold text-slate-800 mb-1">Belum ada Ruangan</h4>
+                                         <p class="text-slate-500 text-xs mb-4">Mulai dengan menambahkan ruangan baru untuk seleksi.</p>
+                                         <button class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs rounded-xl transition shadow-sm shadow-blue-500/10 btn-add-room" data-bs-toggle="modal" data-bs-target="#tambahRuanganModal">
+                                            <i class="bi bi-plus-circle me-1"></i> Tambah Ruangan
+                                         </button>
+                                    </td>
+                                </tr>
+                            <?php } else { ?>
+                                <?php $i = 1; foreach ($ruanganList as $ruangan) { ?>
+                                    <tr class="dt-body-row room-item border-b border-slate-100 hover:bg-slate-50 transition-colors" data-id="<?= $ruangan['id'] ?>" data-name="<?= htmlspecialchars($ruangan['nama']) ?>">
+                                        <td class="text-center py-4 px-4 font-semibold text-slate-600"><?= $i++ ?></td>
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center shrink-0 border border-blue-100">
+                                                    <i class="bi bi-buildings-fill text-lg"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-bold text-slate-800 text-base"><?= htmlspecialchars($ruangan['nama']) ?></div>
+                                                    <div class="text-[10px] font-bold text-slate-400 tracking-wider mt-0.5 uppercase"><i class="bi bi-geo-alt-fill text-[9px] me-1"></i>Ruangan Seleksi</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center justify-center gap-2">
+                                                <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-blue-50 hover:bg-blue-100 text-blue-600 btn-edit-room" 
+                                                        title="Ubah Nama"
+                                                        data-id="<?= $ruangan['id'] ?>"
+                                                        data-name="<?= htmlspecialchars($ruangan['nama']) ?>">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                                <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-red-50 hover:bg-red-100 text-red-600 btn-delete-room" 
+                                                        title="Hapus"
+                                                        data-id="<?= $ruangan['id'] ?>"
+                                                        data-name="<?= htmlspecialchars($ruangan['nama']) ?>">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

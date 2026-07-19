@@ -336,7 +336,8 @@
                     .then(data => {
                         if (data.status === 'success') {
                             showAlert('Data berhasil dihapus!', true);
-                            setTimeout(() => location.reload(), 1000);
+                            const row = document.querySelector(`.dt-body-row[data-userid="${id}"]`) || document.querySelector(`.dt-body-row[data-id="${id}"]`);
+                            if (row) row.remove();
                         } else {
                             showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
                         }
@@ -533,7 +534,7 @@ function triggerVerificationFromModal() {
                     .then(data => {
                         if (data.status === 'success') {
                             showAlert('Berhasil! Berkas berhasil diverifikasi!', true);
-                            setTimeout(() => location.reload(), 1000);
+                            updateParticipantRowStatus(mahasiswaId, 1);
                         } else {
                             showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
                         }
@@ -576,7 +577,7 @@ function cancelVerification() {
                     .then(data => {
                         if (data.status === 'success') {
                             showAlert('Berhasil! Verifikasi dibatalkan.', true);
-                            setTimeout(() => location.reload(), 1000);
+                            updateParticipantRowStatus(mahasiswaId, 0);
                         } else {
                             showAlert('Gagal: ' + (data.message || 'Terjadi kesalahan'), false);
                         }
@@ -662,7 +663,7 @@ function acceptParticipant() {
                 .then(data => {
                     if (data.status === 'success') {
                         showAlert('Berkas berhasil diverifikasi!', true);
-                        setTimeout(() => location.reload(), 1000);
+                        updateParticipantRowStatus(mahasiswaId, 1);
                     } else {
                         showAlert('Gagal: ' + (data.message || 'Unknown'), false);
                     }
@@ -701,7 +702,7 @@ function rejectParticipant() {
                 .then(data => {
                     if (data.status === 'success') {
                         showAlert('Verifikasi berkas ditolak!', true);
-                        setTimeout(() => location.reload(), 1000);
+                        updateParticipantRowStatus(mahasiswaId, 2);
                     } else {
                         showAlert('Gagal: ' + (data.message || 'Unknown'), false);
                     }
@@ -715,6 +716,31 @@ function rejectParticipant() {
 // ─────────────────────────────────────────────
 // DETAIL MODAL BACKDROP CLEANUP (Vanilla JS)
 // ─────────────────────────────────────────────
+function updateParticipantRowStatus(mahasiswaId, status) {
+    const row = document.querySelector(`.dt-body-row[data-id="${mahasiswaId}"]`);
+    if (row) {
+        const badgeContainer = row.querySelector('td:nth-child(5) span');
+        if (badgeContainer) {
+            badgeContainer.className = 'inline-block px-3 py-1.5 text-xs font-semibold rounded-lg';
+            if (status == 1) {
+                badgeContainer.classList.add('bg-green-100', 'text-green-700');
+                badgeContainer.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Lulus Berkas';
+            } else if (status == 2) {
+                badgeContainer.classList.add('bg-red-100', 'text-red-700');
+                badgeContainer.innerHTML = '<i class="bi bi-x-circle-fill me-1"></i>Ditolak';
+            } else {
+                badgeContainer.classList.add('bg-blue-100', 'text-blue-700');
+                badgeContainer.innerHTML = '<i class="bi bi-clock-fill me-1"></i>Menunggu Verifikasi';
+            }
+        }
+        
+        const viewBtn = row.querySelector('.btn-view');
+        if (viewBtn) {
+            viewBtn.setAttribute('data-berkas_accepted', status == 0 ? '' : status);
+        }
+    }
+}
+
 (function () {
     function initModalCleanup() {
         var detailModalEl = document.getElementById('detailModal');

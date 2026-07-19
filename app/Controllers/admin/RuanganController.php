@@ -23,9 +23,14 @@ class RuanganController extends Controller {
         }
         $ruangan = new Ruangan();
         try {
-            $ruangan->insertRuangan($_POST['namaRuangan']);
+            $newId = $ruangan->insertRuangan($_POST['namaRuangan']);
             header('Content-Type: application/json');
-            echo json_encode(['status' => 'success', 'message' => 'Ruangan berhasil ditambahkan']);
+            echo json_encode([
+                'status' => 'success', 
+                'message' => 'Ruangan berhasil ditambahkan',
+                'id' => $newId,
+                'nama' => htmlspecialchars($_POST['namaRuangan'])
+            ]);
         } catch(\Exception $e) {
             header('Content-Type: application/json');
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);

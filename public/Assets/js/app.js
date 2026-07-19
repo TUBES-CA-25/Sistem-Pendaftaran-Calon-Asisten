@@ -602,8 +602,26 @@ class VanillaPaginator {
         `;
 
         topBar.appendChild(perPageGroup);
-        if (this.options.searchable) topBar.appendChild(searchGroup);
 
+        const rightGroup = document.createElement('div');
+        rightGroup.className = 'flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto justify-end';
+
+        // Custom Buttons insertion
+        const customContainer = this.table.closest('div') ? this.table.closest('div').parentElement : document;
+        const customButtons = customContainer.querySelectorAll('.vp-custom-button');
+        customButtons.forEach(btn => {
+            btn.classList.remove('hidden', 'vp-custom-button');
+            btn.style.display = 'inline-flex';
+            rightGroup.appendChild(btn);
+        });
+
+        if (this.options.searchable) {
+            rightGroup.appendChild(searchGroup);
+        }
+
+        if (rightGroup.children.length > 0) {
+            topBar.appendChild(rightGroup);
+        }
         // Info bar + pagination (bottom)
         const bottomBar = document.createElement('div');
         bottomBar.className = 'flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-4 border-t border-slate-100 bg-white';
