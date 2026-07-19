@@ -636,18 +636,22 @@
 
     <?php require_once __DIR__ . "/../templates/sidebarAdmin.php" ?>
 
-    <!-- Bootstrap Toast Container (Redesigned with Tailwind) -->
+    <!-- Bootstrap Toast Container (Redesigned) -->
     <div class="fixed top-4 right-4 z-[1100] flex flex-col gap-2 pointer-events-none" id="toast-container">
-        <div id="liveToast" class="toast text-white border-0 rounded-xl shadow-lg transition-all duration-300 pointer-events-auto" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 250px; max-width: 350px;">
-            <div class="flex items-center justify-between gap-3 p-3">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-7 h-7 shrink-0 rounded-full bg-white/20 flex items-center justify-center shadow-inner">
-                        <i id="toastIcon" class="bi bi-check-lg text-sm font-bold"></i>
-                    </div>
-                    <span id="toastMessage" class="font-semibold text-[13px] leading-tight tracking-wide">Operasi berhasil!</span>
+        <div id="liveToast" class="toast border-0 border-l-[4px] rounded-r-lg shadow-lg transition-all duration-200 pointer-events-auto" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="200" style="min-width: 280px; max-width: 400px;">
+            <div class="flex items-center gap-2.5 p-3">
+                <!-- Icon -->
+                <i id="toastIcon" class="bi bi-check-circle-fill text-xl"></i>
+                
+                <!-- Content -->
+                <div class="flex-1">
+                    <h6 id="toastTitle" class="font-bold text-[13px] mb-0.5 tracking-wide">Success!</h6>
+                    <p id="toastMessage" class="text-[11px] font-medium m-0 leading-tight">Operasi berhasil!</p>
                 </div>
-                <button type="button" class="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200 hover:bg-white/25 active:scale-95 text-white" data-bs-dismiss="toast" aria-label="Close">
-                    <i class="bi bi-x-lg text-[11px] font-bold"></i>
+                
+                <!-- Action -->
+                <button type="button" id="toastBtn" class="shrink-0 px-3 py-1 border rounded-md text-[11px] font-bold transition-colors" data-bs-dismiss="toast">
+                    Close
                 </button>
             </div>
         </div>

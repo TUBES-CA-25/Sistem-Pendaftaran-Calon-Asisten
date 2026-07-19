@@ -203,8 +203,8 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                         <textarea class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="deskripsi" id="deskripsiKegiatan" rows="3"></textarea>
                     </div>
                     <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                        <button type="button" class="px-5 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm rounded-xl transition" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition">Simpan</button>
+                        <button type="button" class="px-5 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm rounded-xl transition cursor-pointer" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition border-0 cursor-pointer">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -230,7 +230,7 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
                     <small class="text-slate-400 font-medium block" id="editDeadlineLabelName"></small>
                     <input type="date" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" id="editDeadlineDate" name="tanggal" required>
                     <div class="pt-2">
-                        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition">Update</button>
+                        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition border-0 cursor-pointer">Update</button>
                     </div>
                 </form>
             </div>
@@ -238,39 +238,69 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
     </div>
 </div>
 
+
 <!-- Activity Detail/Action Modal -->
 <div class="modal fade" id="activityActionModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden bg-white">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+        <div class="modal-content border-0 bg-white rounded-[24px] shadow-2xl overflow-hidden relative">
+            
+            <!-- Header section (Gradient Blue to Cyan) -->
+            <div class="bg-gradient-to-r from-blue-600 to-cyan-400 p-6 pb-5 relative">
+                <button type="button" class="absolute top-4 right-4 w-8 h-8 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition-colors shadow-sm cursor-pointer border-0" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg text-xs"></i>
+                </button>
+                <h5 class="text-[17px] font-extrabold text-white leading-snug pr-8 tracking-tight uppercase" id="displayJudul"></h5>
+            </div>
+
+            <!-- Content section (White) -->
             <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h5 class="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2" id="actionModalTitle">Detail Kegiatan</h5>
-                    <button type="button" class="text-slate-400 hover:text-slate-600" data-bs-dismiss="modal">
-                        <i class="bi bi-x-lg text-base"></i>
-                    </button>
+                <!-- Informasi Umum -->
+                <div class="mb-5">
+                    <div class="flex items-center gap-1.5 mb-2.5">
+                        <i class="bx bx-info-circle text-slate-400 text-sm"></i>
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Informasi Umum</span>
+                    </div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#E6F0FF] rounded-lg">
+                        <i class="bx bx-calendar text-blue-600 text-sm"></i>
+                        <span class="text-xs font-bold text-blue-700" id="displayTanggal"></span>
+                    </div>
                 </div>
-                <div id="actionModalContent" class="mb-6">
-                    <h6 class="font-extrabold text-blue-600 text-base mb-1" id="displayJudul"></h6>
-                    <p class="text-slate-400 text-xs flex items-center gap-1 mb-3"><i class="bx bx-calendar"></i><span id="displayTanggal"></span></p>
-                    <p class="text-slate-600 text-sm leading-relaxed" id="displayDeskripsi"></p>
+
+                <!-- Deskripsi -->
+                <div class="mb-2">
+                    <div class="flex items-center gap-1.5 mb-2.5">
+                        <i class="bx bx-file text-slate-400 text-sm"></i>
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Deskripsi</span>
+                    </div>
+                    <div class="bg-[#F8FAFC] rounded-xl p-4 border border-slate-100">
+                        <p class="text-[13px] text-slate-600 leading-relaxed whitespace-pre-wrap m-0" id="displayDeskripsi"></p>
+                    </div>
                 </div>
-                <div id="calendarActions" style="display: none;" class="space-y-2 pt-4 border-t border-slate-100">
-                    <button type="button" class="w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5" id="btnEditActivity">
-                        <i class="bx bx-edit-alt"></i> Edit Kegiatan
+            </div>
+
+            <!-- Actions — Kegiatan -->
+            <div id="calendarActions" style="display: none;" class="px-6 pb-6 pt-0">
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" class="py-2.5 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[13px] rounded-xl border border-slate-200 transition-all flex items-center justify-center gap-2 cursor-pointer" id="btnEditActivity">
+                        <i class="bi bi-pencil"></i> Edit
                     </button>
-                    <button type="button" class="w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5" id="btnDeleteActivity">
-                        <i class="bx bx-trash"></i> Hapus Kegiatan
-                    </button>
-                </div>
-                <div id="calendarManageAction" style="display: none;" class="space-y-2 pt-4 border-t border-slate-100">
-                    <button type="button" class="w-full py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5" id="btnManageSchedule">
-                        <i class="bx bx-calendar-event"></i> Kelola Penjadwalan
+                    <button type="button" class="py-2.5 bg-[#C81E1E] hover:bg-red-700 text-white font-bold text-[13px] rounded-xl transition-all flex items-center justify-center gap-2 border-0 cursor-pointer" id="btnDeleteActivity">
+                        <i class="bi bi-trash"></i> Hapus
                     </button>
                 </div>
             </div>
+
+            <!-- Actions — Wawancara/Presentasi -->
+            <div id="calendarManageAction" style="display: none;" class="px-6 pb-6 pt-0">
+                <button type="button" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition-all flex items-center justify-center gap-2 border-0 cursor-pointer" id="btnManageSchedule">
+                    <i class="bx bx-calendar-event text-lg"></i> Kelola Penjadwalan
+                </button>
+            </div>
+
         </div>
     </div>
 </div>
+
 
 <!-- Edit Activity Modal -->
 <div class="modal fade" id="editActivityModal" tabindex="-1" aria-hidden="true">

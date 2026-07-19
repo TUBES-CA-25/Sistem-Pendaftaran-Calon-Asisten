@@ -197,8 +197,21 @@
 
         document.getElementById('displayJudul').textContent = event.judul;
         document.getElementById('displayTanggal').textContent = new Date(event.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-        document.getElementById('displayDeskripsi').textContent = event.deskripsi || 'Tidak ada deskripsi';
-        
+        document.getElementById('displayDeskripsi').textContent = event.deskripsi || 'Tidak ada deskripsi.';
+
+        // Set jenis badge
+        const jenisEl = document.getElementById('displayJenis');
+        if (jenisEl) {
+            const jenisColors = {
+                'Kegiatan':   'text-blue-500',
+                'Wawancara':  'text-amber-500',
+                'Presentasi': 'text-emerald-500'
+            };
+            jenisEl.textContent = event.jenis || '';
+            // Add 'hidden' to the class so it doesn't break the layout if used as a hidden data holder
+            jenisEl.className = 'hidden text-[11px] font-bold uppercase tracking-wider ' + (jenisColors[event.jenis] || 'text-slate-400');
+        }
+
         const actionsDiv = document.getElementById('calendarActions');
         const manageDiv = document.getElementById('calendarManageAction');
         
@@ -206,7 +219,7 @@
         if (manageDiv) manageDiv.style.display = 'none';
 
         if (event.jenis === 'Kegiatan') {
-            if (actionsDiv) actionsDiv.style.display = 'block';
+            if (actionsDiv) actionsDiv.style.display = 'grid';
         } else if (['Wawancara', 'Presentasi'].includes(event.jenis)) {
             if (manageDiv) {
                 manageDiv.style.display = 'block';

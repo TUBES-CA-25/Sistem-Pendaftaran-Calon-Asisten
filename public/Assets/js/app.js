@@ -417,20 +417,66 @@ function showAlert(message, isSuccess = true) {
     const toastMessageEl = document.getElementById('toastMessage');
     const toastEl = document.getElementById('liveToast');
     const toastIcon = document.getElementById('toastIcon');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastBtn = document.getElementById('toastBtn');
     
     if (toastMessageEl && toastEl) {
         toastMessageEl.innerHTML = message;
         
-        // Remove legacy bootstrap classes and add modern tailwind classes
-        toastEl.classList.remove('bg-success', 'bg-danger', 'bg-emerald-600', 'bg-rose-600', 'bg-emerald-300', 'bg-rose-500');
-        toastEl.classList.add(isSuccess ? 'bg-emerald-500' : 'bg-rose-500');
+        // Reset base classes
+        toastEl.className = 'toast border-0 border-l-[4px] rounded-r-lg shadow-lg transition-all duration-200 pointer-events-auto';
         
-        if (toastIcon) {
-            toastIcon.className = isSuccess ? 'bi bi-check-lg text-xl font-bold' : 'bi bi-x-lg text-xl font-bold';
+        if (isSuccess) {
+            toastEl.style.borderColor = '#10b981'; // emerald-500
+            toastEl.style.backgroundColor = '#f3fcf6'; // extremely light green
+            if (toastIcon) {
+                toastIcon.className = 'bi bi-check-circle-fill text-xl';
+                toastIcon.style.color = '#10b981';
+            }
+            if (toastTitle) {
+                toastTitle.textContent = 'Success!';
+                toastTitle.style.color = '#059669'; // emerald-600
+            }
+            if (toastMessageEl) {
+                toastMessageEl.style.color = '#059669'; 
+            }
+            if (toastBtn) {
+                toastBtn.textContent = 'Close';
+                toastBtn.style.color = '#059669';
+                toastBtn.style.borderColor = '#a7f3d0'; // emerald-200
+                toastBtn.style.backgroundColor = 'transparent';
+            }
+        } else {
+            toastEl.style.borderColor = '#ef4444'; // red-500
+            toastEl.style.backgroundColor = '#fef2f2'; // red-50
+            if (toastIcon) {
+                toastIcon.className = 'bi bi-x-circle-fill text-xl';
+                toastIcon.style.color = '#ef4444';
+            }
+            if (toastTitle) {
+                toastTitle.textContent = 'Error!';
+                toastTitle.style.color = '#dc2626'; // red-600
+            }
+            if (toastMessageEl) {
+                toastMessageEl.style.color = '#dc2626';
+            }
+            if (toastBtn) {
+                toastBtn.textContent = 'Close';
+                toastBtn.style.color = '#dc2626';
+                toastBtn.style.borderColor = '#fecaca'; // red-200
+                toastBtn.style.backgroundColor = 'transparent';
+            }
         }
 
-        const bootstrapToast = bootstrap.Toast.getOrCreateInstance(toastEl);
+        // Dispose old instance so Bootstrap re-reads the delay option
+        const existingToast = bootstrap.Toast.getInstance(toastEl);
+        if (existingToast) existingToast.dispose();
+        
+        const bootstrapToast = new bootstrap.Toast(toastEl, { delay: 1500, autohide: true });
         bootstrapToast.show();
+        
+        // Force hide after 2000ms
+        setTimeout(() => bootstrapToast.hide(), 2000);
     } else {
         alert((isSuccess ? '✔ ' : '✘ ') + message);
     }

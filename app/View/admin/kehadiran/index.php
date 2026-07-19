@@ -57,7 +57,7 @@ $mahasiswaList = $mahasiswaList ?? [];
                                         <img src="<?= $photoUrl ?>" alt="Foto" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
                                         <div>
                                             <div class="font-bold text-slate-800"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
-                                            <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Mahasiswa</div>
+                                            <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Calon Asisten</div>
                                         </div>
                                     </div>
                                 </td>
