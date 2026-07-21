@@ -29,6 +29,27 @@
             .hide-scroll {
                 overflow-x: hidden;
             }
+            
+            /* Floating Label Pattern */
+            .float-group {
+                position: relative;
+            }
+            .float-group input {
+                /* Removed padding-top since we want text centered vertically */
+            }
+            .float-group input:focus ~ .float-label,
+            .float-group input:not(:placeholder-shown) ~ .float-label {
+                top: 0;
+                transform: translateY(-50%) scale(0.85);
+                color: #3dc2ec; /* primary */
+                font-weight: 500;
+                background-color: white;
+                padding: 0 4px;
+            }
+            .float-group:focus-within .float-icon {
+                filter: invert(56%) sepia(87%) saturate(2256%) hue-rotate(164deg) brightness(101%) contrast(92%);
+                opacity: 1;
+            }
         }
     </style>
     
@@ -58,9 +79,9 @@
         </div>
 
         <!-- ===== FORM SIGN-IN ===== -->
-        <div class="relative md:absolute top-0 left-0 w-full md:w-1/2 h-auto md:h-full z-20 transition-all duration-700 ease-in-out 
+        <div class="relative md:absolute top-0 left-0 w-full md:w-1/2 h-auto md:h-full z-20 transition-all duration-[850ms] ease-[cubic-bezier(0.65,0,0.35,1)] 
                     md:group-active:translate-x-full md:group-active:opacity-0 md:group-active:z-10
-                    grid transition-[grid-template-rows,opacity] duration-500
+                    grid transition-[grid-template-rows,opacity]
                     grid-rows-[1fr] opacity-100 group-active:grid-rows-[0fr] group-active:opacity-0 group-active:pointer-events-none md:group-active:pointer-events-auto md:grid-rows-[1fr] md:opacity-100">
             <div class="overflow-hidden min-h-0">
                 <form id="loginForm" class="bg-white flex flex-col items-center justify-center px-6 md:px-10 py-8 md:py-0 h-full w-full">
@@ -72,15 +93,17 @@
 
                     <h1 class="text-center mb-4 text-2xl md:text-3xl font-bold">Masuk</h1>
 
-                    <div class="relative w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[46px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
-                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/idcard.svg" alt="ID" class="w-[18px] md:w-[22px] opacity-45 mr-2 md:mr-3">
-                        <input type="text" class="w-full bg-transparent border-none p-0 focus:ring-0 text-sm md:text-[15px]" id="stambuk" name="stambuk" placeholder="Stambuk" required>
+                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[54px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/idcard.svg" alt="ID" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
+                        <input type="text" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-4 pt-[2px]" id="stambuk" name="stambuk" placeholder=" " required>
+                        <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Stambuk</label>
                     </div>
 
-                    <div class="relative w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[46px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
-                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Password" class="w-[18px] md:w-[22px] opacity-45 mr-2 md:mr-3">
-                        <input type="password" class="w-full bg-transparent border-none p-0 focus:ring-0 text-sm md:text-[15px]" id="passwordLogin" name="password" placeholder="Password" required>
-                        <span class="ml-2 cursor-pointer text-gray-400 flex items-center justify-center w-7 h-7 rounded-md hover:text-primary hover:bg-primary/10 transition-colors" id="loginIconPass">
+                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[54px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Password" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
+                        <input type="password" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px] pt-[2px]" id="passwordLogin" name="password" placeholder=" " required>
+                        <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Password</label>
+                        <span class="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-md hover:text-primary hover:bg-primary/10 transition-colors z-10" id="loginIconPass">
                             <i class="bi bi-eye-slash pointer-events-none" id="togglePassLogin"></i>
                         </span>
                     </div>
@@ -101,39 +124,43 @@
         </div>
 
         <!-- ===== FORM SIGN-UP ===== -->
-        <div class="relative md:absolute top-0 left-0 w-full md:w-1/2 h-auto md:h-full transition-all duration-700 ease-in-out
+        <div class="relative md:absolute top-0 left-0 w-full md:w-1/2 h-auto md:h-full transition-all duration-[850ms] ease-[cubic-bezier(0.65,0,0.35,1)]
                     md:opacity-0 md:z-10
                     md:group-active:translate-x-full md:group-active:opacity-100 md:group-active:z-[50]
-                    grid transition-[grid-template-rows,opacity] duration-500
+                    grid transition-[grid-template-rows,opacity]
                     grid-rows-[0fr] opacity-0 group-active:grid-rows-[1fr] group-active:opacity-100 group-active:pointer-events-auto pointer-events-none md:pointer-events-auto md:group-active:pointer-events-auto md:grid-rows-[1fr] md:group-active:grid-rows-[1fr]">
             <div class="overflow-hidden min-h-0">
                 <form id="registerForm" class="bg-white flex flex-col items-center justify-center px-6 md:px-10 py-8 md:py-0 h-full w-full">
                     <h1 class="text-center mb-4 text-2xl md:text-3xl font-bold">Buat Akun</h1>
 
-                    <div class="relative w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[46px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
-                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/profile.svg" alt="Email" class="w-[18px] md:w-[22px] opacity-45 mr-2 md:mr-3">
-                        <input type="email" class="w-full bg-transparent border-none p-0 focus:ring-0 text-sm md:text-[15px]" id="email" name="email" placeholder="email@student.umi.ac.id" required>
+                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/profile.svg" alt="Email" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
+                        <input type="email" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-4 pt-[2px]" id="email" name="email" placeholder=" " required>
+                        <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">email@student.umi.ac.id</label>
                     </div>
-                    <div id="emailError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 min-h-[16px]"></div>
+                    <div id="emailError" class="text-red-500 text-[11px] font-medium w-full text-left mt-1 pl-2 empty:hidden"></div>
 
-                    <div class="relative w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[46px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
-                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/idcard.svg" alt="ID" class="w-[18px] md:w-[22px] opacity-45 mr-2 md:mr-3">
-                        <input type="text" class="w-full bg-transparent border-none p-0 focus:ring-0 text-sm md:text-[15px]" id="stambukregister" name="stambuk" placeholder="Stambuk" required>
+                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/idcard.svg" alt="ID" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
+                        <input type="text" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-4 pt-[2px]" id="stambukregister" name="stambuk" placeholder=" " required>
+                        <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Stambuk</label>
                     </div>
 
-                    <div class="relative w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[46px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
-                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Password" class="w-[18px] md:w-[22px] opacity-45 mr-2 md:mr-3">
-                        <input type="password" class="w-full bg-transparent border-none p-0 focus:ring-0 text-sm md:text-[15px]" id="password" name="password" placeholder="Password" required>
-                        <span class="ml-2 cursor-pointer text-gray-400 flex items-center justify-center w-7 h-7 rounded-md hover:text-primary hover:bg-primary/10 transition-colors" id="togglePassword">
+                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Password" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
+                        <input type="password" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px] pt-[2px]" id="password" name="password" placeholder=" " required>
+                        <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Password</label>
+                        <span class="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-md hover:text-primary hover:bg-primary/10 transition-colors z-10" id="togglePassword">
                             <i class="bi bi-eye-slash pointer-events-none" id="toggleIcon"></i>
                         </span>
                     </div>
-                    <div id="passwordError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 min-h-[16px]"></div>
+                    <div id="passwordError" class="text-red-500 text-[11px] font-medium w-full text-left mt-1 pl-2 empty:hidden"></div>
 
-                    <div class="relative w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[46px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
-                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Confirm" class="w-[18px] md:w-[22px] opacity-45 mr-2 md:mr-3">
-                        <input type="password" class="w-full bg-transparent border-none p-0 focus:ring-0 text-sm md:text-[15px]" id="confirmPass" name="konfirmasiPassword" placeholder="Konfirmasi Password" required>
-                        <span class="ml-2 cursor-pointer text-gray-400 flex items-center justify-center w-7 h-7 rounded-md hover:text-primary hover:bg-primary/10 transition-colors" id="confirmPassword">
+                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Confirm" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
+                        <input type="password" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px] pt-[2px]" id="confirmPass" name="konfirmasiPassword" placeholder=" " required>
+                        <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Konfirmasi Password</label>
+                        <span class="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-md hover:text-primary hover:bg-primary/10 transition-colors z-10" id="confirmPassword">
                             <i class="bi bi-eye-slash pointer-events-none" id="toggleIconConfirmation"></i>
                         </span>
                     </div>
@@ -146,16 +173,16 @@
         </div>
 
         <!-- ===== DESKTOP TOGGLE PANEL ===== -->
-        <div class="hidden md:block absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-all duration-700 ease-in-out z-[1000] rounded-tl-[150px] rounded-bl-[100px] group-active:-translate-x-full group-active:rounded-tl-none group-active:rounded-bl-none group-active:rounded-tr-[150px] group-active:rounded-br-[100px]">
-            <div class="bg-gradient-to-bl from-primary to-secondary text-white relative -left-full h-full w-[200%] transition-transform duration-700 ease-in-out group-active:translate-x-1/2">
+        <div class="hidden md:block absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-all duration-[850ms] ease-[cubic-bezier(0.65,0,0.35,1)] z-[1000] rounded-tl-[150px] rounded-bl-[100px] group-active:-translate-x-full group-active:rounded-tl-none group-active:rounded-bl-none group-active:rounded-tr-[150px] group-active:rounded-br-[100px]">
+            <div class="bg-gradient-to-bl from-primary to-secondary text-white relative -left-full h-full w-[200%] transition-transform duration-[850ms] ease-[cubic-bezier(0.65,0,0.35,1)] group-active:translate-x-1/2">
                 <!-- Right Panel (Login Active) -->
-                <div class="absolute right-0 w-1/2 h-full flex flex-col items-center justify-center px-8 text-center top-0 transition-transform duration-700 ease-in-out group-active:translate-x-[200%]">
+                <div class="absolute right-0 w-1/2 h-full flex flex-col items-center justify-center px-8 text-center top-0 transition-transform duration-[850ms] ease-[cubic-bezier(0.65,0,0.35,1)] group-active:translate-x-[200%]">
                     <h1 class="text-3xl font-bold mb-4 text-white">Belum punya akun?</h1>
                     <p class="text-[15px] text-white/90 font-medium leading-relaxed mb-5">Silahkan daftar akun untuk melanjutkan proses IC-ASSIST</p>
                     <button class="bg-transparent text-white text-[13px] py-2.5 px-12 border border-white rounded-xl font-bold tracking-wide uppercase mt-4 transition-all hover:bg-white/10 hover:-translate-y-0.5" id="register" onclick="document.getElementById('container').classList.add('active')">Daftar</button>
                 </div>
                 <!-- Left Panel (Register Active) -->
-                <div class="absolute -translate-x-[200%] w-1/2 h-full flex flex-col items-center justify-center px-8 text-center top-0 transition-transform duration-700 ease-in-out group-active:translate-x-0">
+                <div class="absolute -translate-x-[200%] w-1/2 h-full flex flex-col items-center justify-center px-8 text-center top-0 transition-transform duration-[850ms] ease-[cubic-bezier(0.65,0,0.35,1)] group-active:translate-x-0">
                     <h1 class="text-3xl font-bold mb-4 text-white">Sudah punya akun?</h1>
                     <p class="text-[15px] text-white/90 font-medium leading-relaxed mb-5">Silahkan login jika anda telah mempunyai akun IC-ASSIST</p>
                     <button class="bg-transparent text-white text-[13px] py-2.5 px-12 border border-white rounded-xl font-bold tracking-wide uppercase mt-4 transition-all hover:bg-white/10 hover:-translate-y-0.5" id="login" onclick="document.getElementById('container').classList.remove('active')">Masuk</button>
