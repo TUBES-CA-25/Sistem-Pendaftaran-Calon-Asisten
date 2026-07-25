@@ -148,11 +148,10 @@
         if (tambahForm) {
             tambahForm.addEventListener('submit', function (e) {
                 e.preventDefault();
-                var namaRuangan = el('namaRuangan') ? el('namaRuangan').value : '';
+                var formData = new FormData(tambahForm);
                 fetch(`${APP_URL}/tambahruangan`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: 'namaRuangan=' + encodeURIComponent(namaRuangan)
+                    body: formData
                 })
                 .then(res => res.json())
                 .then(res => {
@@ -185,8 +184,10 @@
                                 <td class="text-center py-4 px-4 font-semibold text-slate-600">${rowCount}</td>
                                 <td class="py-4 px-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center shrink-0 border border-blue-100">
-                                            <i class="bi bi-buildings-fill text-lg"></i>
+                                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shrink-0 border border-blue-100 overflow-hidden">
+                                            <a href="${APP_URL}/uploads/ruangan_lab/${res.gambar || 'default_room.png'}" target="_blank" title="Klik untuk memperbesar gambar" class="block w-full h-full">
+                                                <img src="${APP_URL}/uploads/ruangan_lab/${res.gambar || 'default_room.png'}" alt="Gambar Lab" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+                                            </a>
                                         </div>
                                         <div>
                                             <div class="font-bold text-slate-800 text-base">${res.nama}</div>
@@ -228,10 +229,11 @@
                 var id   = el('updateRuanganId')    ? el('updateRuanganId').value    : '';
                 var name = el('updateNamaRuangan')  ? el('updateNamaRuangan').value  : '';
 
+                var formData = new FormData(updateForm);
+                formData.append('id', id);
                 fetch(`${APP_URL}/updateruangan`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `id=${encodeURIComponent(id)}&namaRuangan=${encodeURIComponent(name)}`
+                    body: formData
                 })
                 .then(res => res.json())
                 .then(res => {
@@ -257,6 +259,13 @@
                             row.setAttribute('data-name', name);
                             const nameEl = row.querySelector('.font-bold.text-slate-800.text-base');
                             if (nameEl) nameEl.textContent = name;
+                            
+                            if (res.gambar) {
+                                const imgEl = row.querySelector('img');
+                                const aEl = row.querySelector('a');
+                                if (imgEl) imgEl.src = `${APP_URL}/uploads/ruangan_lab/${res.gambar}`;
+                                if (aEl) aEl.href = `${APP_URL}/uploads/ruangan_lab/${res.gambar}`;
+                            }
                             
                             // update button data attributes
                             const btnEdit = row.querySelector('.btn-edit-room');

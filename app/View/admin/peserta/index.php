@@ -259,40 +259,40 @@ $result = $result ?? [];
                             Biodata Lengkap
                         </h6>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-                            <div class="p-3 bg-slate-50/50 rounded-lg border border-slate-100/80 hover:bg-slate-50 transition-colors">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Nama Lengkap</span>
+                            <div class="p-3 bg-blue-50/50 rounded-xl border border-blue-100 hover:bg-blue-50 transition-colors shadow-sm shadow-blue-100/50">
+                                <span class="text-[9px] font-bold text-blue-500 uppercase tracking-wider block mb-0.5">Nama Lengkap</span>
                                 <span class="font-bold text-slate-800 text-xs" id="modalNama">-</span>
                             </div>
-                            <div class="p-3 bg-slate-50/50 rounded-lg border border-slate-100/80 hover:bg-slate-50 transition-colors">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Stambuk / NIM</span>
+                            <div class="p-3 bg-indigo-50/50 rounded-xl border border-indigo-100 hover:bg-indigo-50 transition-colors shadow-sm shadow-indigo-100/50">
+                                <span class="text-[9px] font-bold text-indigo-500 uppercase tracking-wider block mb-0.5">Stambuk / NIM</span>
                                 <span class="font-bold text-slate-800 text-xs" id="modalStambuk">-</span>
                             </div>
-                            <div class="p-3 bg-slate-50/50 rounded-lg border border-slate-100/80 hover:bg-slate-50 transition-colors">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Jurusan</span>
+                            <div class="p-3 bg-purple-50/50 rounded-xl border border-purple-100 hover:bg-purple-50 transition-colors shadow-sm shadow-purple-100/50">
+                                <span class="text-[9px] font-bold text-purple-500 uppercase tracking-wider block mb-0.5">Jurusan</span>
                                 <span class="font-bold text-slate-800 text-xs" id="modalJurusanTab">-</span>
                             </div>
-                            <div class="p-3 bg-slate-50/50 rounded-lg border border-slate-100/80 hover:bg-slate-50 transition-colors">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Kelas</span>
+                            <div class="p-3 bg-pink-50/50 rounded-xl border border-pink-100 hover:bg-pink-50 transition-colors shadow-sm shadow-pink-100/50">
+                                <span class="text-[9px] font-bold text-pink-500 uppercase tracking-wider block mb-0.5">Kelas</span>
                                 <span class="font-bold text-slate-800 text-xs" id="modalKelasTab">-</span>
                             </div>
-                            <div class="p-3 bg-slate-50/50 rounded-lg border border-slate-100/80 hover:bg-slate-50 transition-colors">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Tempat Lahir</span>
+                            <div class="p-3 bg-rose-50/50 rounded-xl border border-rose-100 hover:bg-rose-50 transition-colors shadow-sm shadow-rose-100/50">
+                                <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider block mb-0.5">Tempat Lahir</span>
                                 <span class="font-bold text-slate-800 text-xs" id="modalTempat_lahir">-</span>
                             </div>
-                            <div class="p-3 bg-slate-50/50 rounded-lg border border-slate-100/80 hover:bg-slate-50 transition-colors">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Tanggal Lahir</span>
+                            <div class="p-3 bg-amber-50/50 rounded-xl border border-amber-100 hover:bg-amber-50 transition-colors shadow-sm shadow-amber-100/50">
+                                <span class="text-[9px] font-bold text-amber-600 uppercase tracking-wider block mb-0.5">Tanggal Lahir</span>
                                 <span class="font-bold text-slate-800 text-xs" id="modalTanggal_lahir">-</span>
                             </div>
-                            <div class="p-3 bg-slate-50/50 rounded-lg border border-slate-100/80 hover:bg-slate-50 transition-colors">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Jenis Kelamin</span>
+                            <div class="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100 hover:bg-emerald-50 transition-colors shadow-sm shadow-emerald-100/50">
+                                <span class="text-[9px] font-bold text-emerald-500 uppercase tracking-wider block mb-0.5">Jenis Kelamin</span>
                                 <span class="font-bold text-slate-800 text-xs" id="modalJenisKelaminDetail">-</span>
                             </div>
-                            <div class="p-3 bg-slate-50/50 rounded-lg border border-slate-100/80 hover:bg-slate-50 transition-colors">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">No. HP / WhatsApp</span>
+                            <div class="p-3 bg-teal-50/50 rounded-xl border border-teal-100 hover:bg-teal-50 transition-colors shadow-sm shadow-teal-100/50">
+                                <span class="text-[9px] font-bold text-teal-500 uppercase tracking-wider block mb-0.5">No. HP / WhatsApp</span>
                                 <span class="font-bold text-slate-800 text-xs" id="modalNoTelpTab">-</span>
                             </div>
-                            <div class="sm:col-span-2 lg:col-span-3 p-3 bg-slate-50/50 rounded-lg border border-slate-100/80 hover:bg-slate-50 transition-colors">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Alamat Tinggal</span>
+                            <div class="sm:col-span-2 lg:col-span-3 p-3 bg-cyan-50/50 rounded-xl border border-cyan-100 hover:bg-cyan-50 transition-colors shadow-sm shadow-cyan-100/50">
+                                <span class="text-[9px] font-bold text-cyan-500 uppercase tracking-wider block mb-0.5">Alamat Tinggal</span>
                                 <span class="font-bold text-slate-800 text-xs leading-relaxed block" id="modalAlamat">-</span>
                             </div>
                         </div>

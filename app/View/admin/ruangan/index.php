@@ -56,8 +56,11 @@ $ruanganList = $ruanganList ?? [];
                                         <td class="text-center py-4 px-4 font-semibold text-slate-600"><?= $i++ ?></td>
                                         <td class="py-4 px-4">
                                             <div class="flex items-center gap-3">
-                                                <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center shrink-0 border border-blue-100">
-                                                    <i class="bi bi-buildings-fill text-lg"></i>
+                                                <?php $imgSrc = !empty($ruangan['gambar']) ? APP_URL.'/uploads/ruangan_lab/'.$ruangan['gambar'] : APP_URL.'/uploads/ruangan_lab/default_room.png'; ?>
+                                                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shrink-0 border border-blue-100 overflow-hidden">
+                                                    <a href="<?= $imgSrc ?>" target="_blank" title="Klik untuk memperbesar gambar" class="block w-full h-full">
+                                                        <img src="<?= $imgSrc ?>" alt="Gambar Lab" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+                                                    </a>
                                                 </div>
                                                 <div>
                                                     <div class="font-bold text-slate-800 text-base"><?= htmlspecialchars($ruangan['nama']) ?></div>
@@ -104,7 +107,10 @@ $ruanganList = $ruanganList ?? [];
                 <form id="tambahRuanganForm" class="space-y-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Ruangan</label>
-                        <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="namaRuangan" name="namaRuangan" placeholder="Contoh: Lab RPL 1" required>
+                        <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition mb-3" id="namaRuangan" name="namaRuangan" placeholder="Contoh: Lab RPL 1" required>
+                        
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Gambar Lab (Opsional)</label>
+                        <input type="file" class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white transition" id="gambarRuangan" name="gambarRuangan" accept="image/*">
                     </div>
                     <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition shadow-md shadow-blue-500/10">Simpan Ruangan</button>
                 </form>
@@ -125,7 +131,10 @@ $ruanganList = $ruanganList ?? [];
                     <input type="hidden" id="updateRuanganId">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Ruangan</label>
-                        <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="updateNamaRuangan" name="updateNamaRuangan" required>
+                        <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition mb-3" id="updateNamaRuangan" name="namaRuangan" required>
+
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Ganti Gambar Lab (Opsional)</label>
+                        <input type="file" class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white transition" id="updateGambarRuangan" name="updateGambarRuangan" accept="image/*">
                     </div>
                     <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition shadow-md shadow-blue-500/10">Simpan Perubahan</button>
                 </form>

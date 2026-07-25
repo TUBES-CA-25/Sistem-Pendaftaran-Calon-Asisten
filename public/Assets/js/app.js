@@ -470,8 +470,9 @@ function showAlert(message, isSuccess = true) {
 
         // Dispose old instance so Bootstrap re-reads the delay option
         const existingToast = bootstrap.Toast.getInstance(toastEl);
-        if (existingToast) existingToast.dispose();
-        
+        if (existingToast && typeof existingToast.dispose === 'function') {
+            existingToast.dispose();
+        }
         const bootstrapToast = new bootstrap.Toast(toastEl, { delay: 1500, autohide: true });
         bootstrapToast.show();
         

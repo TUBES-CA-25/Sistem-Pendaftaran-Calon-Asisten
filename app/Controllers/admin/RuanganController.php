@@ -21,15 +21,38 @@ class RuanganController extends Controller {
             echo json_encode(['status' => 'error', 'message' => 'Nama ruangan harus diisi']);
             return;
         }
+
+        $gambar = 'default_room.png';
+        if (isset($_FILES['gambarRuangan']) && $_FILES['gambarRuangan']['error'] === UPLOAD_ERR_OK) {
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            $fileType = mime_content_type($_FILES['gambarRuangan']['tmp_name']);
+            if (!in_array($fileType, $allowedTypes)) {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'error', 'message' => 'Format file tidak didukung. Harap unggah gambar (JPEG, PNG, GIF, WEBP)']);
+                return;
+            }
+
+            $uploadDir = __DIR__ . '/../../../public/uploads/ruangan_lab/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            $fileName = time() . '_' . basename($_FILES['gambarRuangan']['name']);
+            $targetPath = $uploadDir . $fileName;
+            if (move_uploaded_file($_FILES['gambarRuangan']['tmp_name'], $targetPath)) {
+                $gambar = $fileName;
+            }
+        }
+
         $ruangan = new Ruangan();
         try {
-            $newId = $ruangan->insertRuangan($_POST['namaRuangan']);
+            $newId = $ruangan->insertRuangan($_POST['namaRuangan'], $gambar);
             header('Content-Type: application/json');
             echo json_encode([
                 'status' => 'success', 
                 'message' => 'Ruangan berhasil ditambahkan',
                 'id' => $newId,
-                'nama' => htmlspecialchars($_POST['namaRuangan'])
+                'nama' => htmlspecialchars($_POST['namaRuangan']),
+                'gambar' => $gambar
             ]);
         } catch(\Exception $e) {
             header('Content-Type: application/json');
@@ -49,6 +72,13 @@ class RuanganController extends Controller {
         }
         $ruangan = new Ruangan();
         try {
+            $roomData = $ruangan->getById($_POST['id']);
+            if ($roomData && !empty($roomData['gambar']) && $roomData['gambar'] !== 'default_room.png') {
+                $filePath = __DIR__ . '/../../../public/uploads/ruangan_lab/' . $roomData['gambar'];
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
             $ruangan->deleteRuangan($_POST['id']);
             header('Content-Type: application/json');
             echo json_encode(['status' => 'success', 'message' => 'Ruangan berhasil dihapus']);
@@ -68,11 +98,42 @@ class RuanganController extends Controller {
             echo json_encode(['status' => 'error', 'message' => 'ID dan nama ruangan harus diisi']);
             return;
         }
+
+        $gambar = null;
+        if (isset($_FILES['updateGambarRuangan']) && $_FILES['updateGambarRuangan']['error'] === UPLOAD_ERR_OK) {
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            $fileType = mime_content_type($_FILES['updateGambarRuangan']['tmp_name']);
+            if (!in_array($fileType, $allowedTypes)) {
+                header('Content-Type: application/json');
+                echo json_encode(['status' => 'error', 'message' => 'Format file tidak didukung. Harap unggah gambar (JPEG, PNG, GIF, WEBP)']);
+                return;
+            }
+
+            $uploadDir = __DIR__ . '/../../../public/uploads/ruangan_lab/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            $fileName = time() . '_' . basename($_FILES['updateGambarRuangan']['name']);
+            $targetPath = $uploadDir . $fileName;
+            if (move_uploaded_file($_FILES['updateGambarRuangan']['tmp_name'], $targetPath)) {
+                $gambar = $fileName;
+                
+                $ruanganModel = new Ruangan();
+                $oldData = $ruanganModel->getById($_POST['id']);
+                if ($oldData && !empty($oldData['gambar']) && $oldData['gambar'] !== 'default_room.png') {
+                    $oldFile = $uploadDir . $oldData['gambar'];
+                    if (file_exists($oldFile)) {
+                        unlink($oldFile);
+                    }
+                }
+            }
+        }
+
         $ruangan = new Ruangan();
         try {
-            $ruangan->updateRuangan($_POST['id'], $_POST['namaRuangan']);
+            $ruangan->updateRuangan($_POST['id'], $_POST['namaRuangan'], $gambar);
             header('Content-Type: application/json');
-            echo json_encode(['status' => 'success', 'message' => 'Ruangan berhasil diupdate']);
+            echo json_encode(['status' => 'success', 'message' => 'Ruangan berhasil diupdate', 'gambar' => $gambar]);
         } catch(\Exception $e) {
             header('Content-Type: application/json');
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);

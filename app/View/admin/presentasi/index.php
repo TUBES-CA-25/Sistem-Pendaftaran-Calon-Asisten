@@ -56,9 +56,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                                     <td class="py-4 px-4"><?= htmlspecialchars($row['stambuk'] ?? '-') ?></td>
                                     <td class="py-4 px-4"><?= htmlspecialchars($row['judul'] ?? '-') ?></td>
                                     <td class="py-4 px-4">
-                                        <span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs">
-                                            <?= htmlspecialchars($row['ruangan'] ?? $row['nama_ruangan'] ?? '-') ?>
-                                        </span>
+                                        <?= htmlspecialchars($row['ruangan'] ?? $row['nama_ruangan'] ?? '-') ?>
                                     </td>
                                     <td class="py-4 px-4"><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
                                     <td class="py-4 px-4"><?= htmlspecialchars($row['waktu']) ?></td>

@@ -59,7 +59,7 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                                     </td>
                                     <td class="py-4 px-4"><?= htmlspecialchars($row['stambuk']) ?></td>
                                     <td class="py-4 px-4"><?= htmlspecialchars($row['kegiatan']) ?></td>
-                                    <td class="py-4 px-4"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs"><?= htmlspecialchars($row['ruangan']) ?></span></td>
+                                    <td class="py-4 px-4"><?= htmlspecialchars($row['ruangan']) ?></td>
                                     <td class="py-4 px-4"><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
                                     <td class="py-4 px-4"><?= htmlspecialchars($row['waktu']) ?></td>
                                     <td class="py-4 px-4">

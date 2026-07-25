@@ -15,10 +15,18 @@ class Ruangan extends Model {
         $stmt->execute();
         return $stmt->fetchAll();
     }
-    public function insertRuangan($nama) {
-        $sql = "INSERT INTO " . static::$table . " (nama) VALUES (?) ";
+    public function getById($id) {
+        $sql = "SELECT * FROM " . static::$table . " WHERE id = ?";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+    public function insertRuangan($nama, $gambar = 'default_room.png') {
+        $sql = "INSERT INTO " . static::$table . " (nama, gambar) VALUES (?, ?) ";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(1, $nama);
+        $stmt->bindParam(2, $gambar);
         $stmt->execute();
         return self::getDB()->lastInsertId();
     }
@@ -28,14 +36,25 @@ class Ruangan extends Model {
         $stmt->bindParam(1, $id);
         $stmt->execute();
     }
-    public function updateRuangan($id,$nama) {
-        $sql = "UPDATE " . static::$table . " SET nama = ?, modified = ? WHERE id = ?";
-        $date = date('Y-m-d H:i:s');
-        $stmt = self::getDB()->prepare($sql);
-        $stmt->bindParam(1, $nama);
-        $stmt->bindParam(2, $date);
-        $stmt->bindParam(3, $id);
-        $stmt->execute();
+    public function updateRuangan($id, $nama, $gambar = null) {
+        if ($gambar !== null) {
+            $sql = "UPDATE " . static::$table . " SET nama = ?, gambar = ?, modified = ? WHERE id = ?";
+            $date = date('Y-m-d H:i:s');
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->bindParam(1, $nama);
+            $stmt->bindParam(2, $gambar);
+            $stmt->bindParam(3, $date);
+            $stmt->bindParam(4, $id);
+            $stmt->execute();
+        } else {
+            $sql = "UPDATE " . static::$table . " SET nama = ?, modified = ? WHERE id = ?";
+            $date = date('Y-m-d H:i:s');
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->bindParam(1, $nama);
+            $stmt->bindParam(2, $date);
+            $stmt->bindParam(3, $id);
+            $stmt->execute();
+        }
     }
 
     // User Assignment Methods (Restored from backup/original state)

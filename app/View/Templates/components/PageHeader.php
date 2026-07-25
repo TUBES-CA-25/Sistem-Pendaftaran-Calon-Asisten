@@ -62,7 +62,7 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
     <div class="container-fluid relative z-1 px-4 flex items-center justify-between">
         <!-- Left: Burger Menu + Icon + Title -->
         <div class="flex items-center gap-3">
-            <button class="flex flex-col justify-between w-6 h-[18px] bg-transparent border-0 p-0 cursor-pointer z-[1051] lg:hidden" id="burgerMenuBtn" type="button" aria-label="Toggle Sidebar">
+            <button class="flex flex-col justify-between w-6 h-[18px] bg-transparent border-0 p-0 cursor-pointer z-[1030] lg:hidden" id="burgerMenuBtn" type="button" aria-label="Toggle Sidebar">
                 <span class="block w-full h-[2px] bg-white rounded-full transition-all duration-300 origin-left [.sidebar-open_&]:rotate-45 [.sidebar-open_&]:translate-x-[2px] [.sidebar-open_&]:-translate-y-[1px]"></span>
                 <span class="block w-full h-[2px] bg-white rounded-full transition-all duration-300 [.sidebar-open_&]:opacity-0 [.sidebar-open_&]:translate-x-3"></span>
                 <span class="block w-full h-[2px] bg-white rounded-full transition-all duration-300 origin-left [.sidebar-open_&]:-rotate-45 [.sidebar-open_&]:translate-x-[2px] [.sidebar-open_&]:translate-y-[1px]"></span>
