@@ -612,10 +612,17 @@
             outline: 0;
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
         }
+        @keyframes page-fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-page-fade {
+            animation: page-fade-in 0.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
     </style>
 </head>
 
-<body>
+<body class="animate-page-fade">
     <?php require_once __DIR__ . "/../templates/sidebar.php"?>
 
     <div class="min-h-screen bg-[#f8fafc] w-full md:w-[calc(100%-240px)] md:ml-[240px] p-2 sm:p-3 md:p-4 transition-all duration-300 ease-in-out" id="content">

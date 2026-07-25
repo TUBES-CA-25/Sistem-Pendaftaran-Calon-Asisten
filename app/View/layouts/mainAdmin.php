@@ -614,10 +614,16 @@
             outline: 0;
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
         }
+        @keyframes page-fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-page-fade {
+            animation: page-fade-in 0.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
     </style>
 </head>
-
-<body>
+<body class="animate-page-fade">
     <script>
         // Suppress tracking prevention warnings in console
         (function() {

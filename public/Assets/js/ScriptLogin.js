@@ -247,6 +247,14 @@ confirmPasswordInput.addEventListener('input', function () {
 
 // ── Vanilla JS DOMContentLoaded block ────────────────────────
 document.addEventListener('DOMContentLoaded', function () {
+    // Kosongkan form saat halaman dimuat (mencegah browser menyimpan input lama)
+    {
+        const lForm = document.getElementById('loginForm');
+        if (lForm) lForm.reset();
+        const rForm = document.getElementById('registerForm');
+        if (rForm) rForm.reset();
+    }
+
     let expiryTimer  = null;
     let cooldownTimer = null;
 
