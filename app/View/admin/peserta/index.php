@@ -169,7 +169,7 @@ $result = $result ?? [];
     <div class="modal-dialog modal-dialog-centered w-full max-w-4xl !my-4 !mx-auto">
         <div class="modal-content border-0 rounded-2xl shadow-2xl overflow-hidden">
             <!-- Header dengan Background Gradient -->
-            <div class="relative bg-gradient-to-r from-[#1d4ed8] via-[#2563eb] to-[#3dc2ec] px-6 py-4 text-white overflow-hidden shrink-0">
+            <div class="relative bg-gradient-to-br from-primary to-secondary px-6 py-4 text-white overflow-hidden shrink-0">
                 <!-- Decorative Elements -->
                 <div class="absolute -top-10 -right-10 w-28 h-28 bg-white/10 rounded-full"></div>
                 <div class="absolute bottom-5 -left-10 w-20 h-20 bg-white/5 rounded-full"></div>

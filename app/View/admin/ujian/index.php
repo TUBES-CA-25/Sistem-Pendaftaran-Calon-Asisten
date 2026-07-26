@@ -244,7 +244,7 @@ $essayCount = $stats['essay_count'];
     <!-- Bank Detail View -->
     <div class="bank-detail-view hidden" id="bankDetailView">
         <!-- Quizizz Style Header Card -->
-        <div class="bg-gradient-to-r from-blue-600 to-cyan-400 rounded-2xl shadow-lg border-0 mb-5 overflow-hidden relative">
+        <div class="bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-lg border-0 mb-5 overflow-hidden relative">
             <div class="absolute -top-16 -right-16 w-64 h-64 bg-white/10 rounded-full pointer-events-none"></div>
             <div class="absolute -bottom-20 left-8 w-40 h-40 bg-white/10 rounded-full pointer-events-none"></div>
             

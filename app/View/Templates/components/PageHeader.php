@@ -54,12 +54,12 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
 }
 ?>
 
-<nav class="w-[96%] lg:w-[98%] max-w-[1400px] mx-auto my-4 bg-gradient-to-r from-blue-600 to-cyan-400 rounded-2xl shadow-lg shadow-blue-500/10 relative overflow-hidden transition-all duration-300 py-5 px-4 md:py-7 md:px-6">
+<nav class="w-[96%] lg:w-[98%] max-w-[1400px] mx-auto my-4 bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-lg shadow-blue-500/10 relative overflow-hidden transition-all duration-300 py-5 px-4 md:py-7 md:px-6">
     <!-- Background Decoration Container -->
     <div class="absolute -top-16 -right-16 w-80 h-80 bg-white/10 rounded-full pointer-events-none"></div>
     <div class="absolute -bottom-20 left-8 w-52 h-52 bg-white/5 rounded-full pointer-events-none"></div>
     
-    <div class="container-fluid relative z-1 px-4 flex items-center justify-between">
+    <div class="w-full relative z-1 px-4 flex items-center justify-between">
         <!-- Left: Burger Menu + Icon + Title -->
         <div class="flex items-center gap-3">
             <button class="flex flex-col justify-between w-6 h-[18px] bg-transparent border-0 p-0 cursor-pointer z-[1030] lg:hidden" id="burgerMenuBtn" type="button" aria-label="Toggle Sidebar">
@@ -89,7 +89,7 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
                     <button class="w-10 h-10 md:w-11 md:h-11 bg-white/10 hover:bg-white/20 active:scale-95 border border-white/10 rounded-full text-white flex items-center justify-center relative transition-all duration-200" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class='bx bx-bell text-lg md:text-xl'></i>
                         <?php if (isset($notificationCount) && $notificationCount > 0): ?>
-                        <span class="absolute -top-1 -right-1 bg-red-500 border-2 border-[#2563eb] text-white font-bold rounded-full text-[9px] w-5 h-5 flex items-center justify-center">
+                        <span class="absolute -top-1 -right-1 bg-red-500 border-2 border-primary-dark text-white font-bold rounded-full text-[9px] w-5 h-5 flex items-center justify-center">
                             <?= $notificationCount ?>
                         </span>
                         <?php endif; ?>
@@ -98,15 +98,15 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
                         <li class="dropdown-header flex justify-between items-center bg-gray-50/85 backdrop-blur-md px-4 py-3 border-b border-gray-100">
                             <span class="font-bold text-gray-800">Notifikasi</span>
                             <?php if (isset($notificationCount) && $notificationCount > 0): ?>
-                                <span class="badge bg-blue-600 text-white rounded-full px-2 py-1 text-xs"><?= $notificationCount ?></span>
+                                <span class="bg-primary-dark text-white rounded-full px-2 py-1 text-xs"><?= $notificationCount ?></span>
                             <?php endif; ?>
                         </li>
-                        <li class="list-group list-group-flush">
+                        <li class="block">
                         <?php if (isset($notifikasi) && !empty($notifikasi)): ?>
                             <?php foreach (array_slice($notifikasi, 0, 5) as $notif): ?>
-                                <a class="block px-4 py-3 hover:bg-blue-50/40 transition-colors border-b border-gray-100 last:border-0 notification-item text-decoration-none" href="#" data-page="notification">
+                                <a class="block px-4 py-3 hover:bg-blue-50/40 transition-colors border-b border-gray-100 last:border-0 notification-item no-underline" href="#" data-page="notification">
                                     <div class="flex gap-3 items-start">
-                                        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0 mt-0.5">
+                                        <div class="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center text-primary-dark shrink-0 mt-0.5">
                                             <i class='bx bx-info-circle text-lg'></i>
                                         </div>
                                         <div class="flex-grow min-w-0">
@@ -120,7 +120,7 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
                                     </div>
                                 </a>
                             <?php endforeach; ?>
-                            <a class="block text-center text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50/50 font-semibold py-2.5 bg-gray-50/80 border-t border-gray-100 text-decoration-none" href="#" data-page="notification">
+                            <a class="block text-center text-xs text-primary-dark hover:text-primary hover:bg-blue-50/50 font-semibold py-2.5 bg-gray-50/80 border-t border-gray-100 no-underline" href="#" data-page="notification">
                                 Lihat Semua Notifikasi
                             </a>
                         <?php else: ?>
@@ -139,28 +139,25 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
                 <!-- Admin: Simple static display without dropdown -->
                 <div class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full py-1.5 px-3 md:px-4 transition-all duration-200">
                     <img src="<?= $photo ?>" alt="Profile" class="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover border-2 border-white/60 bg-white" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/Rectangle.png'">
-                    <span class="text-white text-xs md:text-sm font-semibold tracking-wide truncate max-w-[100px] md:max-w-[150px] d-none d-sm-inline"><?= htmlspecialchars($userName) ?></span>
+                    <span class="text-white text-xs md:text-sm font-semibold tracking-wide truncate max-w-[100px] md:max-w-[150px] hidden sm:inline"><?= htmlspecialchars($userName) ?></span>
                 </div>
             <?php else: ?>
                 <!-- User: Simple static display without dropdown -->
                 <div class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full py-1.5 px-3 md:px-4 transition-all duration-200">
                     <img src="<?= $photo ?>" alt="Profile" class="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover border-2 border-white/60 bg-white" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
-                    <span class="text-white text-xs md:text-sm font-semibold tracking-wide truncate max-w-[100px] md:max-w-[150px] d-none d-sm-inline"><?= htmlspecialchars($userName) ?></span>
+                    <span class="text-white text-xs md:text-sm font-semibold tracking-wide truncate max-w-[100px] md:max-w-[150px] hidden sm:inline"><?= htmlspecialchars($userName) ?></span>
                 </div>
             <?php endif; ?>
         </div>
     </div>
 </nav>
 
-<!-- Global Toast Container -->
-<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055">
-  <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="d-flex">
-      <div class="toast-body" id="toastMessage">
-        <!-- Message -->
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  </div>
-</div>
+<!--
+  Toast container SENGAJA DIHAPUS dari sini.
+  Toast global sudah dirender oleh layout (layouts/main.php & layouts/mainAdmin.php)
+  dengan gaya Tailwind. Karena PageHeader di-include di dalam #content, duplikat
+  #liveToast di sini muncul LEBIH DULU di DOM, sehingga
+  document.getElementById('liveToast') di app.js justru mengambil elemen ini
+  dan toast tampil tanpa gaya. Jangan tambahkan kembali di sini.
+-->
 

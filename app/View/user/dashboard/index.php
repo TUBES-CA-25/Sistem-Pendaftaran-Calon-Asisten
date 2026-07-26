@@ -73,7 +73,7 @@ $dokumen = $dokumen ?? [];
             <?php else: ?>
                 <!-- Announcement Coming Soon Card (Visible when closed and pending) -->
                 <div class="flex items-center gap-4 p-5 rounded-2xl bg-blue-50 border border-blue-100/50">
-                    <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-content-center shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
                         <i class="bi bi-bell-fill text-white text-lg"></i>
                     </div>
                     <div>
@@ -104,7 +104,7 @@ $dokumen = $dokumen ?? [];
                         </svg>
 
                         <!-- Text di tengah -->
-                        <div class="absolute inset-0 flex flex-col items-center justify-content-center text-center">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
                             <span class="text-2xl font-black text-blue-600"><?= $percentage ?>%</span>
                             <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Complete</span>
                         </div>
@@ -153,7 +153,7 @@ $dokumen = $dokumen ?? [];
                                     $isActive = $tahapanSelesai >= $step['threshold'];
                                 ?>
                                     <div class="text-center relative px-1 z-10 flex-1">
-                                        <div class="w-6 h-6 rounded-full flex items-center justify-content-center mx-auto mb-2 shadow-sm transition-all duration-300 <?= $isActive ? $step['bgActive'] : 'bg-slate-100 border border-slate-200' ?>">
+                                        <div class="w-6 h-6 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm transition-all duration-300 <?= $isActive ? $step['bgActive'] : 'bg-slate-100 border border-slate-200' ?>">
                                             <?php if ($isActive): ?>
                                                 <i class="bi bi-check text-white text-xs font-bold"></i>
                                             <?php else: ?>
@@ -321,10 +321,10 @@ $dokumen = $dokumen ?? [];
                 <div class="flex justify-between items-center mb-4">
                     <h6 class="font-bold text-slate-700">Calendar</h6>
                     <div class="flex gap-1">
-                        <button class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-content-center text-slate-600 transition" id="prev-month">
+                        <button class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" id="prev-month">
                             <i class="bi bi-chevron-left text-xs"></i>
                         </button>
-                        <button class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-content-center text-slate-600 transition" id="next-month">
+                        <button class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" id="next-month">
                             <i class="bi bi-chevron-right text-xs"></i>
                         </button>
                     </div>
@@ -369,7 +369,7 @@ $dokumen = $dokumen ?? [];
                 <div id="upcomingEventsList">
                     <?php if ($jadwalPresentasiUser): ?>
                         <div class="flex gap-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-content-center shrink-0">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                                 <i class="bi bi-calendar-event text-lg"></i>
                             </div>
                             <div>
@@ -418,7 +418,7 @@ $dokumen = $dokumen ?? [];
                         <?php foreach ($notifikasi as $notif): ?>
                             <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50">
                                 <div class="flex items-center gap-2 mb-2">
-                                    <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-content-center font-bold text-xs">
+                                    <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
                                         T
                                     </div>
                                     <strong class="text-slate-700 text-sm">Tim Iclabs</strong>

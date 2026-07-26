@@ -3,14 +3,13 @@ $notifications = $notifications ?? [];
 $count = $count ?? 0;
 
 $html = '
-<li class="dropdown-header d-flex justify-content-between align-items-center">
-    <span class="fw-bold">Notifikasi</span>';
+<li class="dropdown-header flex justify-between items-center bg-gray-50/85 px-4 py-3 border-b border-gray-100">
+    <span class="font-bold text-gray-800">Notifikasi</span>';
 if ($count > 0) {
-    $html .= '<span class="badge bg-primary rounded-pill">' . $count . '</span>';
+    $html .= '<span class="bg-primary-dark text-white rounded-full px-2 py-1 text-xs">' . $count . '</span>';
 }
 $html .= '
-</li>
-<li><hr class="dropdown-divider my-1"></li>';
+</li>';
 
 if (count($notifications) > 0) {
     $limitedNotifs = array_slice($notifications, 0, 5);
@@ -30,32 +29,31 @@ if (count($notifications) > 0) {
 
         $html .= '
         <li>
-            <a class="dropdown-item notification-item p-3" href="#" data-page="notification" style="white-space: normal;">
-                <div class="d-flex gap-3 align-items-start">
-                    <div class="notification-icon flex-shrink-0 mt-1">
-                        <i class=\'bx bx-info-circle text-primary\'></i>
+            <a class="notification-item block px-4 py-3 hover:bg-blue-50/40 transition-colors border-b border-gray-100 last:border-0 no-underline" href="#" data-page="notification" style="white-space: normal;">
+                <div class="flex gap-3 items-start">
+                    <div class="notification-icon w-8 h-8 rounded-full bg-primary-light flex items-center justify-center text-primary-dark shrink-0 mt-0.5">
+                        <i class=\'bx bx-info-circle text-lg\'></i>
                     </div>
-                    <div class="flex-grow-1" style="min-width: 0;">
-                        <p class="mb-1 small text-dark fw-medium lh-sm text-wrap text-break">' . htmlspecialchars($notif['pesan'], ENT_QUOTES, 'UTF-8') . '</p>
-                        <small class="text-muted d-block" style="font-size: 0.75rem;">' . $dateStr . '</small>
+                    <div class="flex-grow min-w-0">
+                        <p class="mb-1 text-xs text-gray-700 font-medium leading-normal break-words">' . htmlspecialchars($notif['pesan'], ENT_QUOTES, 'UTF-8') . '</p>
+                        <small class="text-gray-400 block text-[10px]">' . $dateStr . '</small>
                     </div>
                 </div>
             </a>
         </li>';
     }
     $html .= '
-    <li><hr class="dropdown-divider my-1"></li>
     <li>
-        <a class="dropdown-item text-center small text-primary fw-semibold py-2" href="#" data-page="notification">
+        <a class="block text-center text-xs text-primary-dark hover:text-primary hover:bg-blue-50/50 font-semibold py-2.5 bg-gray-50/80 border-t border-gray-100 no-underline" href="#" data-page="notification">
             Lihat Semua Notifikasi
         </a>
     </li>';
 } else {
     $html .= '
     <li>
-        <div class="dropdown-item text-center text-muted py-3">
-            <i class=\'bx bx-bell-off fs-3 d-block mb-2\'></i>
-            <small>Tidak ada notifikasi</small>
+        <div class="text-center text-gray-400 py-6 px-4">
+            <i class=\'bx bx-bell-off text-3xl block mb-2 text-gray-300\'></i>
+            <small class="text-xs">Tidak ada notifikasi</small>
         </div>
     </li>';
 }

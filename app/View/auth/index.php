@@ -20,29 +20,24 @@
     
     <style type="text/tailwindcss">
         @layer utilities {
-            .bg-wave {
-                background-color: #f0f2f5;
-                background-image: url("/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/wave.svg");
-                background-repeat: no-repeat;
-                background-size: cover;
+            /* Latar auth: gradien biru lembut, seragam dengan lupa/reset password */
+            .bg-auth {
+                @apply bg-gradient-auth;
             }
             .hide-scroll {
                 overflow-x: hidden;
             }
-            
+
             /* Floating Label Pattern */
             .float-group {
                 position: relative;
-            }
-            .float-group input {
-                /* Removed padding-top since we want text centered vertically */
             }
             .float-group input:focus ~ .float-label,
             .float-group input:not(:placeholder-shown) ~ .float-label,
             .float-group input:-webkit-autofill ~ .float-label {
                 top: 0;
                 transform: translateY(-50%) scale(0.85);
-                color: #3dc2ec; /* primary */
+                color: theme('colors.primary.DEFAULT');
                 font-weight: 500;
                 background-color: white;
                 padding: 0 4px;
@@ -52,19 +47,35 @@
                 opacity: 1;
             }
         }
+
+        /* Hormati preferensi pengguna: matikan animasi dekoratif */
+        @media (prefers-reduced-motion: reduce) {
+            .animate-blob,
+            .animate-fade-up {
+                animation: none !important;
+            }
+        }
     </style>
     
     <title>Pendaftaran Calon Asisten ICLABS</title>
 </head>
 
-<body class="bg-wave flex items-center justify-center min-h-screen py-5 hide-scroll text-gray-800">
-    <!-- 
+<body class="bg-auth flex items-center justify-center min-h-screen py-5 hide-scroll text-gray-800 relative">
+
+    <!-- ===== BLOB LATAR (dekoratif) ===== -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/30 blur-3xl opacity-40 animate-blob"></div>
+        <div class="absolute top-1/3 -right-32 w-[480px] h-[480px] rounded-full bg-secondary/25 blur-3xl opacity-40 animate-blob" style="animation-delay: -6s;"></div>
+        <div class="absolute -bottom-32 left-1/4 w-[400px] h-[400px] rounded-full bg-primary-dark/20 blur-3xl opacity-40 animate-blob" style="animation-delay: -12s;"></div>
+    </div>
+
+    <!--
       .group class is added so we can use group-active: variants for child animations
     -->
-    <div class="group bg-white md:rounded-[30px] rounded-[24px] shadow-[0_5px_15px_rgba(0,0,0,0.35)] md:shadow-2xl relative overflow-hidden w-[95%] md:w-[90%] max-w-[440px] md:max-w-[768px] min-h-auto md:min-h-[520px] flex flex-col md:block" id="container">
+    <div class="group bg-white md:rounded-[30px] rounded-[24px] shadow-[0_5px_15px_rgba(0,0,0,0.18)] md:shadow-2xl relative overflow-hidden w-[95%] md:w-[90%] max-w-[440px] md:max-w-[768px] min-h-auto md:min-h-[520px] flex flex-col md:block animate-fade-up" id="container">
 
         <!-- ===== MOBILE TOGGLE BANNER (Only visible <= 768px) ===== -->
-        <div class="md:hidden relative w-full h-[140px] shrink-0 bg-gradient-to-bl from-primary to-secondary rounded-b-[28px] z-10 flex overflow-hidden">
+        <div class="md:hidden relative w-full h-[140px] shrink-0 bg-gradient-to-br from-primary to-secondary rounded-b-[28px] z-10 flex overflow-hidden">
             <!-- Mobile Right Panel (Login Active) -->
             <div class="absolute w-full h-full flex flex-col items-center justify-center text-center p-4 transition-transform duration-500 ease-in-out transform group-active:-translate-x-full">
                 <h1 class="text-[1.1rem] font-bold text-white mb-1">Belum punya akun?</h1>
@@ -86,21 +97,21 @@
                     grid-rows-[1fr] opacity-100 group-active:grid-rows-[0fr] group-active:opacity-0 group-active:pointer-events-none md:group-active:pointer-events-auto md:grid-rows-[1fr] md:opacity-100">
             <div class="overflow-hidden min-h-0">
                 <form id="loginForm" autocomplete="off" class="bg-white flex flex-col items-center justify-center px-6 md:px-10 py-8 md:py-0 h-full w-full">
-                    <div class="flex items-center justify-center gap-2 md:gap-3 mb-6 w-full">
+                    <div class="flex items-center justify-center gap-2 md:gap-3 mb-6 w-full animate-fade-up">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/umi.png" alt="UMI" class="w-[44px] md:w-[68px] object-contain">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/fikom.png" alt="FIKOM" class="w-[44px] md:w-[68px] object-contain">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="ICLABS" class="w-[44px] md:w-[68px] object-contain">
                     </div>
 
-                    <h1 class="text-center mb-4 text-2xl md:text-3xl font-bold">Masuk</h1>
+                    <h1 class="text-center mb-4 text-2xl md:text-3xl font-bold animate-fade-up" style="animation-delay: 60ms;">Masuk</h1>
 
-                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[54px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[48px] md:h-[54px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 animate-fade-up" style="animation-delay: 120ms;">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/idcard.svg" alt="ID" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
                         <input type="text" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-4 pt-[2px]" id="stambuk" name="stambuk" placeholder=" " autocomplete="off" required>
                         <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Stambuk</label>
                     </div>
 
-                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[54px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[48px] md:h-[54px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 animate-fade-up" style="animation-delay: 180ms;">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Password" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
                         <input type="password" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px] pt-[2px]" id="passwordLogin" name="password" placeholder=" " autocomplete="off" required>
                         <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Password</label>
@@ -109,7 +120,7 @@
                         </span>
                     </div>
 
-                    <div class="flex flex-wrap justify-between items-center w-full mb-4 md:mb-5 text-[12px] md:text-[13px] gap-2">
+                    <div class="flex flex-wrap justify-between items-center w-full mb-4 md:mb-5 text-[12px] md:text-[13px] gap-2 animate-fade-up" style="animation-delay: 240ms;">
                         <div class="flex items-center">
                             <input type="checkbox" class="w-3.5 h-3.5 text-primary rounded border-gray-300 focus:ring-primary mr-2" id="customCheck" name="check">
                             <label class="text-gray-600 cursor-pointer select-none" for="customCheck">Remember me</label>
@@ -117,7 +128,7 @@
                         <a href="lupa-password" class="text-gray-600 hover:text-primary transition-colors">Lupa password?</a>
                     </div>
 
-                    <button type="submit" class="w-full bg-gradient-to-br from-primary to-secondary rounded-xl py-2.5 md:py-3 text-[14px] md:text-[15px] font-semibold text-white tracking-wide hover:-translate-y-0.5 hover:shadow-lg transition-all flex justify-center items-center gap-2" name="login" id="btnlogin">
+                    <button type="submit" class="w-full bg-gradient-to-br from-primary to-secondary rounded-xl py-2.5 md:py-3 text-[14px] md:text-[15px] font-semibold text-white tracking-wide hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-sm transition-all flex justify-center items-center gap-2 animate-fade-up" style="animation-delay: 300ms;" name="login" id="btnlogin">
                         <i class="bi bi-box-arrow-in-right"></i>Login
                     </button>
                 </form>
@@ -134,21 +145,21 @@
                 <form id="registerForm" autocomplete="off" class="bg-white flex flex-col items-center justify-center px-6 md:px-10 py-8 md:py-0 h-full w-full">
                     <h1 class="text-center mb-4 text-2xl md:text-3xl font-bold">Buat Akun</h1>
 
-                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/profile.svg" alt="Email" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
                         <input type="email" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-4 pt-[2px]" id="email" name="email" placeholder=" " autocomplete="off" required>
                         <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">email@student.umi.ac.id</label>
                     </div>
-                    <div id="emailError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden"></div>
+                    <div id="emailError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden animate-fade-up"></div>
 
-                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/idcard.svg" alt="ID" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
                         <input type="text" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-4 pt-[2px]" id="stambukregister" name="stambuk" placeholder=" " autocomplete="off" required>
                         <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Stambuk</label>
                     </div>
-                    <div id="stambukRegisterError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden"></div>
+                    <div id="stambukRegisterError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden animate-fade-up"></div>
 
-                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Password" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
                         <input type="password" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px] pt-[2px]" id="password" name="password" placeholder=" " autocomplete="off" required>
                         <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Password</label>
@@ -156,9 +167,9 @@
                             <i class="bi bi-eye-slash pointer-events-none" id="toggleIcon"></i>
                         </span>
                     </div>
-                    <div id="passwordError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden"></div>
+                    <div id="passwordError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden animate-fade-up"></div>
 
-                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                    <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Confirm" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
                         <input type="password" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px] pt-[2px]" id="confirmPass" name="konfirmasiPassword" placeholder=" " autocomplete="off" required>
                         <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Konfirmasi Password</label>
@@ -166,9 +177,9 @@
                             <i class="bi bi-eye-slash pointer-events-none" id="toggleIconConfirmation"></i>
                         </span>
                     </div>
-                    <div id="confirmPassError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden"></div>
+                    <div id="confirmPassError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden animate-fade-up"></div>
 
-                    <button type="submit" class="w-full bg-gradient-to-br from-primary to-secondary rounded-xl py-2.5 md:py-3 text-[14px] md:text-[15px] font-semibold text-white tracking-wide hover:-translate-y-0.5 hover:shadow-lg transition-all flex justify-center items-center gap-2 mt-2" name="register" id="btndaftar">
+                    <button type="submit" class="w-full bg-gradient-to-br from-primary to-secondary rounded-xl py-2.5 md:py-3 text-[14px] md:text-[15px] font-semibold text-white tracking-wide hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-sm transition-all flex justify-center items-center gap-2 mt-2" name="register" id="btndaftar">
                         <i class="bi bi-person-plus"></i>Daftar
                     </button>
                 </form>
@@ -177,7 +188,7 @@
 
         <!-- ===== DESKTOP TOGGLE PANEL ===== -->
         <div class="hidden md:block absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-all duration-[850ms] ease-[cubic-bezier(0.65,0,0.35,1)] z-[1000] rounded-tl-[150px] rounded-bl-[100px] group-active:-translate-x-full group-active:rounded-tl-none group-active:rounded-bl-none group-active:rounded-tr-[150px] group-active:rounded-br-[100px]">
-            <div class="bg-gradient-to-bl from-primary to-secondary text-white relative -left-full h-full w-[200%] transition-transform duration-[850ms] ease-[cubic-bezier(0.65,0,0.35,1)] group-active:translate-x-1/2">
+            <div class="bg-gradient-to-br from-primary to-secondary text-white relative -left-full h-full w-[200%] transition-transform duration-[850ms] ease-[cubic-bezier(0.65,0,0.35,1)] group-active:translate-x-1/2">
                 <!-- Right Panel (Login Active) -->
                 <div class="absolute right-0 w-1/2 h-full flex flex-col items-center justify-center px-8 text-center top-0 transition-transform duration-[850ms] ease-[cubic-bezier(0.65,0,0.35,1)] group-active:translate-x-[200%]">
                     <h1 class="text-3xl font-bold mb-4 text-white">Belum punya akun?</h1>
@@ -223,7 +234,7 @@
                 </div>
                 <div class="relative flex-auto p-6 pt-0 text-center">
                     <div class="mb-3 mt-2">
-                        <div class="inline-flex items-center justify-center rounded-full w-[70px] h-[70px] bg-sky-100 text-sky-600">
+                        <div class="inline-flex items-center justify-center rounded-full w-[70px] h-[70px] bg-primary-light text-primary-dark">
                             <i class="bi bi-shield-lock-fill text-[2.2rem]"></i>
                         </div>
                     </div>
@@ -243,14 +254,14 @@
                         </div>
                         <input type="hidden" id="otpCode" name="otp">
                         
-                        <button type="submit" class="w-full text-white bg-[#0097d9] hover:bg-[#0086c2] border border-[#0097d9] hover:border-[#0086c2] focus:ring-4 focus:outline-none focus:ring-[#0097d9]/50 font-semibold rounded-xl text-sm px-5 py-3 text-center shadow-sm" id="btnVerifyOtp">
+                        <button type="submit" class="w-full text-white bg-gradient-to-br from-primary to-secondary border-none focus:ring-4 focus:outline-none focus:ring-primary/30 font-semibold rounded-xl text-sm px-5 py-3 text-center shadow-sm hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-sm transition-all" id="btnVerifyOtp">
                             Verifikasi Akun
                         </button>
                     </form>
                     
                     <div class="mt-5 text-gray-500 text-sm">
                         Tidak menerima email? 
-                        <button type="button" class="bg-transparent border-none p-0 inline align-baseline font-semibold text-[#0097d9] hover:text-[#0086c2] cursor-pointer" id="btnResendOtp">
+                        <button type="button" class="bg-transparent border-none p-0 inline align-baseline font-semibold text-primary-dark hover:text-primary cursor-pointer transition-colors" id="btnResendOtp">
                             Kirim Ulang
                         </button>
                         <span id="otpTimer" class="ml-1 text-gray-400 hidden">(60s)</span>

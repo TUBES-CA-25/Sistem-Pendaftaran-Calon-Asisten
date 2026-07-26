@@ -4,279 +4,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password - Sistem Pendaftaran</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="icon" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            font-family: 'Poppins', sans-serif;
-        }
 
-        body {
-            background: linear-gradient(135deg, #0097d9 0%, #00b4d8 50%, #17a2a2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="<?= APP_URL ?>/Assets/js/tailwind-config.js"></script>
 
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #0097d9 0%, #00b4d8 50%, #17a2a2 100%);
-            animation: gradientShift 15s ease infinite;
-            z-index: -1;
-        }
-
-        @keyframes gradientShift {
-            0% {
-                background: linear-gradient(135deg, #0097d9 0%, #00b4d8 50%, #17a2a2 100%);
+    <style type="text/tailwindcss">
+        @layer utilities {
+            /* Latar auth: sama persis dengan halaman login */
+            .bg-auth {
+                @apply bg-gradient-auth;
             }
-            50% {
-                background: linear-gradient(135deg, #00b4d8 0%, #17a2a2 50%, #0097d9 100%);
-            }
-            100% {
-                background: linear-gradient(135deg, #0097d9 0%, #00b4d8 50%, #17a2a2 100%);
-            }
-        }
 
-        .reset-password-container {
-            width: 100%;
-            max-width: 450px;
-            padding: 20px;
-            animation: slideUp 0.6s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
+            /* Floating Label Pattern - identik dengan auth/index.php */
+            .float-group {
+                position: relative;
             }
-            to {
+            .float-group input:focus ~ .float-label,
+            .float-group input:not(:placeholder-shown) ~ .float-label,
+            .float-group input:-webkit-autofill ~ .float-label {
+                top: 0;
+                transform: translateY(-50%) scale(0.85);
+                color: theme('colors.primary.DEFAULT');
+                font-weight: 500;
+                background-color: white;
+                padding: 0 4px;
+            }
+            .float-group:focus-within .float-icon {
+                filter: invert(56%) sepia(87%) saturate(2256%) hue-rotate(164deg) brightness(101%) contrast(92%);
                 opacity: 1;
-                transform: translateY(0);
             }
         }
 
-        .reset-password-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 40px 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .card-header-section {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .card-header-section h1 {
-            color: #0097d9;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .card-header-section p {
-            color: #666;
-            font-size: 14px;
-            margin: 0;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #333;
-            font-weight: 500;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .input-group {
-            position: relative;
-        }
-
-        .form-control {
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 12px 15px;
-            font-size: 14px;
-            background: #fafafa;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: #0097d9;
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(0, 151, 217, 0.1);
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #999;
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-password:hover {
-            color: #0097d9;
-        }
-
-        .password-requirements {
-            background: #f5f5f5;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-left: 4px solid #ffc107;
-        }
-
-        .password-requirements h6 {
-            color: #333;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .requirement {
-            font-size: 12px;
-            color: #666;
-            margin: 6px 0;
-            display: flex;
-            align-items: center;
-        }
-
-        .requirement i {
-            margin-right: 8px;
-            width: 16px;
-            color: #ccc;
-        }
-
-        .requirement.met i {
-            color: #28a745;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #0097d9 0%, #00b4d8 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .btn-submit:hover:not(:disabled) {
-            background: linear-gradient(135deg, #0087c0 0%, #00a3c7 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 151, 217, 0.3);
-        }
-
-        .btn-submit:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .back-link a {
-            color: #0097d9;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .back-link a:hover {
-            color: #00b4d8;
-            text-decoration: underline;
-        }
-
-        .alert {
-            display: none;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: none;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
+        @layer components {
+            /* Alert: class .alert/.alert-success/.alert-error dipertahankan
+               karena di-toggle oleh JS di bawah. Hanya gayanya yang berubah. */
+            .alert {
+                @apply hidden rounded-xl mb-5 px-4 py-3 text-sm font-medium animate-fade-up;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+            .alert-success {
+                @apply bg-emerald-50 text-emerald-700 border border-emerald-200;
+            }
+            .alert-error {
+                @apply bg-red-50 text-red-600 border border-red-200;
+            }
+
+            /* Spinner tombol - menggantikan .spinner-border milik Bootstrap */
+            .loading {
+                @apply hidden w-4 h-4 border-2 border-white/40 border-t-white rounded-full mr-2 align-[-2px];
+            }
+            .loading.active {
+                @apply inline-block animate-spin;
+            }
+
+            /* Checklist syarat password. Class .met di-toggle oleh JS. */
+            .requirement {
+                @apply flex items-center text-xs text-gray-500 my-1.5 transition-colors;
+            }
+            .requirement i {
+                @apply mr-2 w-4 text-gray-300 transition-colors;
+            }
+            .requirement.met {
+                @apply text-emerald-700;
+            }
+            .requirement.met i {
+                @apply text-emerald-500;
             }
         }
 
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .loading {
-            display: none;
-        }
-
-        .loading.active {
-            display: inline-block;
-        }
-
-        .spinner-border {
-            width: 16px;
-            height: 16px;
-            border-width: 2px;
-            margin-right: 8px;
+        /* Hormati preferensi pengguna: matikan animasi dekoratif */
+        @media (prefers-reduced-motion: reduce) {
+            .animate-blob,
+            .animate-fade-up {
+                animation: none !important;
+            }
         }
     </style>
 </head>
-<body>
-    <div class="animated-bg"></div>
+<body class="bg-auth flex items-center justify-center min-h-screen py-8 px-4 text-gray-800 relative overflow-x-hidden">
 
-    <div class="reset-password-container">
-        <div class="reset-password-card">
-            <div class="card-header-section">
-                <h1><i class="bi bi-shield-check"></i> Reset Password</h1>
-                <p>Buat password baru Anda</p>
+    <!-- ===== BLOB LATAR (dekoratif) ===== -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/30 blur-3xl opacity-40 animate-blob"></div>
+        <div class="absolute top-1/3 -right-32 w-[480px] h-[480px] rounded-full bg-secondary/25 blur-3xl opacity-40 animate-blob" style="animation-delay: -6s;"></div>
+        <div class="absolute -bottom-32 left-1/4 w-[400px] h-[400px] rounded-full bg-primary-dark/20 blur-3xl opacity-40 animate-blob" style="animation-delay: -12s;"></div>
+    </div>
+
+    <div class="w-full max-w-[450px]">
+        <div class="bg-white rounded-[24px] shadow-2xl p-8 md:p-10 animate-fade-up">
+
+            <!-- Logo trio - menyatukan halaman ini dengan halaman login -->
+            <div class="flex items-center justify-center gap-2 md:gap-3 mb-6 w-full">
+                <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/umi.png" alt="UMI" class="w-[44px] md:w-[56px] object-contain">
+                <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/fikom.png" alt="FIKOM" class="w-[44px] md:w-[56px] object-contain">
+                <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="ICLABS" class="w-[44px] md:w-[56px] object-contain">
+            </div>
+
+            <div class="text-center mb-7">
+                <div class="inline-flex items-center justify-center rounded-full w-[64px] h-[64px] bg-primary-light text-primary-dark mb-4">
+                    <i class="bi bi-shield-check text-[1.8rem]"></i>
+                </div>
+                <h1 class="text-2xl md:text-[28px] font-bold text-primary-dark mb-2">Reset Password</h1>
+                <p class="text-gray-500 text-sm leading-relaxed">Buat password baru Anda</p>
             </div>
 
             <div id="alertMessage" class="alert"></div>
 
-            <div class="password-requirements">
-                <h6>Persyaratan Password:</h6>
+            <div class="bg-slate-50 rounded-xl p-4 mb-5 border-l-4 border-warning">
+                <h6 class="text-[13px] font-semibold text-gray-700 mb-2.5">Persyaratan Password:</h6>
                 <div class="requirement" id="req-length">
                     <i class="bi bi-check-circle"></i>
                     Minimal 6 karakter
@@ -289,71 +133,71 @@
 
             <form id="resetPasswordForm">
                 <input type="hidden" name="token" value="<?= htmlspecialchars($_GET['token'] ?? '') ?>">
-                
-                <div class="form-group">
-                    <label for="newPassword">Password Baru</label>
-                    <div class="input-group">
-                        <input 
-                            type="password" 
-                            class="form-control" 
-                            id="newPassword" 
-                            name="newPassword" 
-                            placeholder="Masukkan password baru"
-                            required
-                        >
-                        <button 
-                            type="button" 
-                            class="toggle-password" 
-                            id="togglePassword1"
-                            title="Tampilkan password"
-                        >
-                            <i class="bi bi-eye"></i>
-                        </button>
-                    </div>
+
+                <div class="float-group w-full mb-4 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                    <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Password" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
+                    <input
+                        type="password"
+                        class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px]"
+                        id="newPassword"
+                        name="newPassword"
+                        placeholder=" "
+                        autocomplete="new-password"
+                        required
+                    >
+                    <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left" for="newPassword">Password Baru</label>
+                    <button
+                        type="button"
+                        class="toggle-password absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 bg-transparent border-none flex items-center justify-center w-8 h-8 rounded-md hover:text-primary hover:bg-primary/10 transition-colors z-10"
+                        id="togglePassword1"
+                        title="Tampilkan password"
+                    >
+                        <i class="bi bi-eye pointer-events-none"></i>
+                    </button>
                 </div>
 
-                <div class="form-group">
-                    <label for="confirmPassword">Konfirmasi Password</label>
-                    <div class="input-group">
-                        <input 
-                            type="password" 
-                            class="form-control" 
-                            id="confirmPassword" 
-                            name="confirmPassword" 
-                            placeholder="Konfirmasi password baru"
-                            required
-                        >
-                        <button 
-                            type="button" 
-                            class="toggle-password" 
-                            id="togglePassword2"
-                            title="Tampilkan password"
-                        >
-                            <i class="bi bi-eye"></i>
-                        </button>
-                    </div>
+                <div class="float-group w-full mb-5 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                    <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Confirm" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
+                    <input
+                        type="password"
+                        class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px]"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder=" "
+                        autocomplete="new-password"
+                        required
+                    >
+                    <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left" for="confirmPassword">Konfirmasi Password</label>
+                    <button
+                        type="button"
+                        class="toggle-password absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 bg-transparent border-none flex items-center justify-center w-8 h-8 rounded-md hover:text-primary hover:bg-primary/10 transition-colors z-10"
+                        id="togglePassword2"
+                        title="Tampilkan password"
+                    >
+                        <i class="bi bi-eye pointer-events-none"></i>
+                    </button>
                 </div>
 
-                <button type="submit" class="btn-submit" id="submitBtn">
-                    <span class="loading spinner-border"></span>
+                <button type="submit" class="w-full bg-gradient-to-br from-primary to-secondary rounded-xl py-3 text-[14px] md:text-[15px] font-semibold text-white tracking-wide hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-sm transition-all flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none" id="submitBtn">
+                    <span class="loading"></span>
                     <span class="btn-text">Ubah Password</span>
                 </button>
             </form>
 
-            <div class="back-link">
-                <!-- Gunakan absolute path atau helper jika APP_URL tersedia, fallback ke /public/login -->
-                <a href="/Sistem-Pendaftaran-Calon-Asisten/public/login"><i class="bi bi-arrow-left"></i> Kembali ke Login</a>
+            <div class="text-center mt-6">
+                <a href="/Sistem-Pendaftaran-Calon-Asisten/public/login" class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-primary transition-colors no-underline">
+                    <i class="bi bi-arrow-left"></i> Kembali ke Login
+                </a>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/js/bootstrap.bundle.min.js"></script>
     <script>
         // Toggle password visibility
         document.getElementById('togglePassword1').addEventListener('click', function() {
             const input = document.getElementById('newPassword');
             const icon = this.querySelector('i');
-            
+
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.classList.remove('bi-eye');
@@ -368,7 +212,7 @@
         document.getElementById('togglePassword2').addEventListener('click', function() {
             const input = document.getElementById('confirmPassword');
             const icon = this.querySelector('i');
-            
+
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.classList.remove('bi-eye');
@@ -476,7 +320,7 @@
                 submitBtn.disabled = false;
             } finally {
                 loading.classList.remove('active');
-                if (!submitBtn.disabled) { 
+                if (!submitBtn.disabled) {
                     btnText.textContent = 'Ubah Password';
                 }
             }

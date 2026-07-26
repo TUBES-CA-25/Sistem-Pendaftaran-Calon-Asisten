@@ -245,7 +245,7 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
         <div class="modal-content border-0 bg-white rounded-[24px] shadow-2xl overflow-hidden relative">
             
             <!-- Header section (Gradient Blue to Cyan) -->
-            <div class="bg-gradient-to-r from-blue-600 to-cyan-400 p-6 pb-5 relative">
+            <div class="bg-gradient-to-br from-primary to-secondary p-6 pb-5 relative">
                 <button type="button" class="absolute top-3 right-3 w-8 h-8 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition-colors shadow-sm cursor-pointer border-0" data-bs-dismiss="modal">
                     <i class="bi bi-x-lg text-xs"></i>
                 </button>

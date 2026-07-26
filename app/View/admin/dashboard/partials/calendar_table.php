@@ -6,7 +6,7 @@ foreach ($calendarWeeks as $week):
 <tr>
     <?php foreach ($week as $day): ?>
         <?php if ($day === null): ?>
-            <td class="text-dark bg-slate-50/50" style="height: 70px; vertical-align: top; border: 1px solid #f1f5f9; position: relative; padding: 6px;"></td>
+            <td class="text-gray-800 bg-slate-50/50" style="height: 70px; vertical-align: top; border: 1px solid #f1f5f9; position: relative; padding: 6px;"></td>
         <?php else: ?>
             <?php
                 $fontWeight = '500';

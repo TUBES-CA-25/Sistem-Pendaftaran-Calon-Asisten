@@ -27,7 +27,7 @@ if (isset($photo) && is_array($photo) && !empty($photo)) {
     <div class="flex flex-col justify-center items-center py-6 px-5 border-b border-gray-100">
         <div class="flex items-center gap-3">
             <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="IC-Assist Logo" class="w-10 h-10 shrink-0 object-contain">
-            <span class="text-lg font-bold tracking-wider text-[#3dc2ec]">IC-ASSIST</span>
+            <span class="text-lg font-bold tracking-wider text-primary">IC-ASSIST</span>
         </div>
     </div>
 
@@ -94,9 +94,9 @@ if (isset($photo) && is_array($photo) && !empty($photo)) {
         background: #94a3b8;
     }
 
-    /* Active link style with blue gradient matching the navbar */
+    /* Active link style - gradien brand tunggal, sama dengan navbar & tombol login */
     .sidebar a.active {
-        @apply bg-gradient-to-r from-[#1d4ed8] via-[#2563eb] to-[#3dc2ec] text-white shadow-md shadow-blue-500/10 !important;
+        @apply bg-gradient-to-br from-primary to-secondary text-white shadow-md shadow-blue-500/10 !important;
     }
     .sidebar a.active i {
         @apply text-white !important;
