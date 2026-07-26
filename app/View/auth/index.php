@@ -139,13 +139,14 @@
                         <input type="email" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-4 pt-[2px]" id="email" name="email" placeholder=" " autocomplete="off" required>
                         <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">email@student.umi.ac.id</label>
                     </div>
-                    <div id="emailError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 min-h-[16px]"></div>
+                    <div id="emailError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden"></div>
 
                     <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/idcard.svg" alt="ID" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
                         <input type="text" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-4 pt-[2px]" id="stambukregister" name="stambuk" placeholder=" " autocomplete="off" required>
                         <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Stambuk</label>
                     </div>
+                    <div id="stambukRegisterError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden"></div>
 
                     <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Password" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
@@ -155,7 +156,7 @@
                             <i class="bi bi-eye-slash pointer-events-none" id="toggleIcon"></i>
                         </span>
                     </div>
-                    <div id="passwordError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 min-h-[16px]"></div>
+                    <div id="passwordError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden"></div>
 
                     <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-white border-[1.5px] border-[#e0e0e0] rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Confirm" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
@@ -165,6 +166,7 @@
                             <i class="bi bi-eye-slash pointer-events-none" id="toggleIconConfirmation"></i>
                         </span>
                     </div>
+                    <div id="confirmPassError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden"></div>
 
                     <button type="submit" class="w-full bg-gradient-to-br from-primary to-secondary rounded-xl py-2.5 md:py-3 text-[14px] md:text-[15px] font-semibold text-white tracking-wide hover:-translate-y-0.5 hover:shadow-lg transition-all flex justify-center items-center gap-2 mt-2" name="register" id="btndaftar">
                         <i class="bi bi-person-plus"></i>Daftar
