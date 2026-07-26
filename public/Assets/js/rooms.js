@@ -185,8 +185,8 @@
                                 <td class="py-4 px-4">
                                     <div class="flex items-center gap-3">
                                         <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shrink-0 border border-blue-100 overflow-hidden">
-                                            <a href="${APP_URL}/uploads/ruangan_lab/${res.gambar || 'default_room.png'}" target="_blank" title="Klik untuk memperbesar gambar" class="block w-full h-full">
-                                                <img src="${APP_URL}/uploads/ruangan_lab/${res.gambar || 'default_room.png'}" alt="Gambar Lab" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+                                            <a href="${APP_URL.replace('/public', '')}/res/uploads/ruangan_lab/${res.gambar || 'default_room.png'}" target="_blank" title="Klik untuk memperbesar gambar" class="block w-full h-full">
+                                                <img src="${APP_URL.replace('/public', '')}/res/uploads/ruangan_lab/${res.gambar || 'default_room.png'}" alt="Gambar Lab" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
                                             </a>
                                         </div>
                                         <div>
@@ -263,8 +263,8 @@
                             if (res.gambar) {
                                 const imgEl = row.querySelector('img');
                                 const aEl = row.querySelector('a');
-                                if (imgEl) imgEl.src = `${APP_URL}/uploads/ruangan_lab/${res.gambar}`;
-                                if (aEl) aEl.href = `${APP_URL}/uploads/ruangan_lab/${res.gambar}`;
+                                if (imgEl) imgEl.src = `${APP_URL.replace('/public', '')}/res/uploads/ruangan_lab/${res.gambar}`;
+                                if (aEl) aEl.href = `${APP_URL.replace('/public', '')}/res/uploads/ruangan_lab/${res.gambar}`;
                             }
                             
                             // update button data attributes

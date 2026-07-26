@@ -56,7 +56,7 @@ $ruanganList = $ruanganList ?? [];
                                         <td class="text-center py-4 px-4 font-semibold text-slate-600"><?= $i++ ?></td>
                                         <td class="py-4 px-4">
                                             <div class="flex items-center gap-3">
-                                                <?php $imgSrc = !empty($ruangan['gambar']) ? APP_URL.'/uploads/ruangan_lab/'.$ruangan['gambar'] : APP_URL.'/uploads/ruangan_lab/default_room.png'; ?>
+                                                <?php $imgSrc = !empty($ruangan['gambar']) ? str_replace('/public', '', APP_URL).'/res/uploads/ruangan_lab/'.$ruangan['gambar'] : str_replace('/public', '', APP_URL).'/res/uploads/ruangan_lab/default_room.png'; ?>
                                                 <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shrink-0 border border-blue-100 overflow-hidden">
                                                     <a href="<?= $imgSrc ?>" target="_blank" title="Klik untuk memperbesar gambar" class="block w-full h-full">
                                                         <img src="<?= $imgSrc ?>" alt="Gambar Lab" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
@@ -104,7 +104,7 @@ $ruanganList = $ruanganList ?? [];
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="p-6">
-                <form id="tambahRuanganForm" class="space-y-4">
+                <form id="tambahRuanganForm" class="space-y-4" enctype="multipart/form-data">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Ruangan</label>
                         <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition mb-3" id="namaRuangan" name="namaRuangan" placeholder="Contoh: Lab RPL 1" required>
@@ -127,7 +127,7 @@ $ruanganList = $ruanganList ?? [];
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="p-6">
-                <form id="updateRuanganForm" class="space-y-4">
+                <form id="updateRuanganForm" class="space-y-4" enctype="multipart/form-data">
                     <input type="hidden" id="updateRuanganId">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Ruangan</label>

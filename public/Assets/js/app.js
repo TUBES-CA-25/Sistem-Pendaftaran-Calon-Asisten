@@ -598,6 +598,22 @@ class VanillaPaginator {
         this._render();
     }
 
+    updateData() {
+        const tbody = this.table.querySelector('tbody');
+        if (!tbody) return;
+        this.allRows = Array.from(tbody.querySelectorAll('tr'));
+        this.currentPage = 1;
+        this._filterRows();
+        this._render();
+    }
+
+    setFilter(fn) {
+        this.customFilterFn = fn;
+        this.currentPage = 1;
+        this._filterRows();
+        this._render();
+    }
+
     _buildUI() {
         // Wrap table in a container
         const wrapper = document.createElement('div');
@@ -737,12 +753,16 @@ class VanillaPaginator {
     }
 
     _filterRows() {
-        if (!this.searchQuery) {
-            this.filteredRows = [...this.allRows];
-            return;
-        }
         this.filteredRows = this.allRows.filter(row => {
-            return row.textContent.toLowerCase().includes(this.searchQuery);
+            let matchSearch = true;
+            if (this.searchQuery) {
+                matchSearch = row.textContent.toLowerCase().includes(this.searchQuery);
+            }
+            let matchCustom = true;
+            if (this.customFilterFn) {
+                matchCustom = this.customFilterFn(row);
+            }
+            return matchSearch && matchCustom;
         });
     }
 
