@@ -17,14 +17,10 @@ class RekapKehadiranController extends Controller
     {
         try {
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-                return;
+                self::jsonError('Invalid request method');
             }
             if (!isset($_SESSION['user']['id'])) {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-                return;
+                self::jsonError('User not logged in');
             }
             $input = json_decode(file_get_contents('php://input'), true);
             $id = $input['mahasiswa'] ?? null;
@@ -35,9 +31,7 @@ class RekapKehadiranController extends Controller
             $presentasi = !empty($input['presentasi']) ? $input['presentasi'] : '-';
 
             if (empty($id)) {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'Mahasiswa belum dipilih']);
-                return;
+                self::jsonError('Mahasiswa belum dipilih');
             }
             
             $absensi = new Absensi(
@@ -49,25 +43,18 @@ class RekapKehadiranController extends Controller
                 $presentasi
             );
             if ($absensi->addMahasiswa($absensi, $id)) {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'success', 'message' => 'Absensi berhasil disimpan']);
+                self::jsonSuccess([], 'Absensi berhasil disimpan');
             }
         } catch (\Exception $e) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-            return;
+            self::jsonError($e->getMessage());
         }
     }
     public function updateData() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
         $input = json_decode(file_get_contents('php://input'), true);
         
@@ -82,9 +69,7 @@ class RekapKehadiranController extends Controller
         $statusAkhir = $input['statusAkhir'] ?? null;
 
         if (!$mhsId) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'ID Mahasiswa tidak valid']);
-            return;
+            self::jsonError('ID Mahasiswa tidak valid');
         }
 
         $absensi = new Absensi(
@@ -99,11 +84,9 @@ class RekapKehadiranController extends Controller
         // If ID is null, we need to insert a NEW record for this mahasiswa
         if (!$id || $id === '') {
             if ($absensi->addMahasiswa($absensi, [$mhsId])) {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'success', 'message' => 'Absensi berhasil dibuat']);
+                self::jsonSuccess([], 'Absensi berhasil dibuat');
             } else {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'Gagal membuat absensi']);
+                self::jsonError('Gagal membuat absensi');
             }
         } else {
             // Update existing record
@@ -114,49 +97,38 @@ class RekapKehadiranController extends Controller
                     $mahasiswa->updateStatusAkhir($mhsId, $statusAkhir);
                 }
 
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'success', 'message' => 'Absensi berhasil diupdate']);
+                self::jsonSuccess([], 'Absensi berhasil diupdate');
             } else {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate absensi']);
+                self::jsonError('Gagal mengupdate absensi');
             }
         }
     }
 
     public function deleteData() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
 
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
         $id = $input['id'] ?? null;
 
         if (!$id) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'ID is required']);
-            return;
+            self::jsonError('ID is required');
         }
 
         try {
             $absensi = new Absensi();
             if ($absensi->deleteAbsensi($id)) {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'success', 'message' => 'Absensi berhasil dihapus']);
+                self::jsonSuccess([], 'Absensi berhasil dihapus');
             } else {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus absensi']);
+                self::jsonError('Gagal menghapus absensi');
             }
         } catch (\Exception $e) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
     
@@ -165,24 +137,16 @@ class RekapKehadiranController extends Controller
      */
     public function backfillData() {
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
         
         try {
             $absensi = new Absensi();
             $count = $absensi->backfillAbsensi();
             
-            header('Content-Type: application/json');
-            echo json_encode([
-                'status' => 'success', 
-                'message' => "Berhasil menambahkan $count mahasiswa ke rekap",
-                'count' => $count
-            ]);
+            self::jsonSuccess(['count' => $count], "Berhasil menambahkan $count mahasiswa ke rekap");
         } catch (\Exception $e) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 }

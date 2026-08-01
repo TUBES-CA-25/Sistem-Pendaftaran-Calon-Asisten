@@ -56,17 +56,16 @@ class DashboardAdminController extends Controller
 
         if (!isset($data['judul']) || !isset($data['tanggal'])) {
             http_response_code(400);
-            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
-            return;
+            self::jsonError('Invalid input');
         }
 
         $success = DashboardAdmin::addKegiatan($data);
 
         if ($success) {
-            echo json_encode(['status' => 'success', 'message' => 'Kegiatan berhasil ditambahkan']);
+            self::jsonSuccess([], 'Kegiatan berhasil ditambahkan');
         } else {
             http_response_code(500);
-            echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan kegiatan']);
+            self::jsonError('Gagal menambahkan kegiatan');
         }
     }
 
@@ -77,17 +76,16 @@ class DashboardAdminController extends Controller
 
         if (!isset($data['id']) || !isset($data['judul']) || !isset($data['tanggal'])) {
             http_response_code(400);
-            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
-            return;
+            self::jsonError('Invalid input');
         }
 
         $success = DashboardAdmin::updateKegiatan($data);
 
         if ($success) {
-            echo json_encode(['status' => 'success', 'message' => 'Kegiatan berhasil diperbarui']);
+            self::jsonSuccess([], 'Kegiatan berhasil diperbarui');
         } else {
             http_response_code(500);
-            echo json_encode(['status' => 'error', 'message' => 'Gagal memperbarui kegiatan']);
+            self::jsonError('Gagal memperbarui kegiatan');
         }
     }
 
@@ -98,17 +96,16 @@ class DashboardAdminController extends Controller
 
         if (!isset($data['id'])) {
             http_response_code(400);
-            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
-            return;
+            self::jsonError('Invalid input');
         }
 
         $success = DashboardAdmin::deleteKegiatan((int)$data['id']);
 
         if ($success) {
-            echo json_encode(['status' => 'success', 'message' => 'Kegiatan berhasil dihapus']);
+            self::jsonSuccess([], 'Kegiatan berhasil dihapus');
         } else {
             http_response_code(500);
-            echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus kegiatan']);
+            self::jsonError('Gagal menghapus kegiatan');
         }
     }
 
@@ -119,17 +116,16 @@ class DashboardAdminController extends Controller
 
         if (!isset($data['jenis']) || !isset($data['tanggal'])) {
             http_response_code(400);
-            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
-            return;
+            self::jsonError('Invalid input');
         }
 
         $success = DashboardAdmin::updateDeadline($data['jenis'], $data['tanggal']);
 
         if ($success) {
-            echo json_encode(['status' => 'success', 'message' => 'Deadline updated']);
+            self::jsonSuccess([], 'Deadline updated');
         } else {
             http_response_code(500);
-            echo json_encode(['status' => 'error', 'message' => 'Failed to update deadline']);
+            self::jsonError('Failed to update deadline');
         }
     }
     public static function getStats(): void
@@ -153,7 +149,7 @@ class DashboardAdminController extends Controller
             ]);
         } catch (\Exception $e) {
             http_response_code(500);
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -176,17 +172,10 @@ class DashboardAdminController extends Controller
             include __DIR__ . '/../../View/admin/dashboard/partials/calendar_table.php';
             $calendarHtml = ob_get_clean();
             
-            echo json_encode([
-                'status' => 'success',
-                'data' => $eventsData,
-                'calendarHtml' => $calendarHtml
-            ]);
+            self::jsonSuccess(['data' => $eventsData, 'calendarHtml' => $calendarHtml]);
         } catch (\Exception $e) {
             http_response_code(500);
-            echo json_encode([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ]);
+            self::jsonError($e->getMessage());
         }
     }
 

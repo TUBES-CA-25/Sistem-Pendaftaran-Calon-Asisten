@@ -22,7 +22,7 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
         return $act['tanggal'] === $formattedDate;
     });
     
-    $hasActivity = count($dayActivities) > 0;
+    $hasActivity = count($dayActivities)> 0;
     
     $tooltiptxt = '';
     if ($hasActivity) {
@@ -50,15 +50,25 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
         $activityDots .= '</div>';
     }
     
+    // Tooltip murni CSS (group-hover). Sebelumnya memakai data-bs-toggle="tooltip"
+    // yang tidak pernah ada implementasinya, sehingga tooltip tidak pernah muncul.
+    $tooltipHtml = '';
+    if (trim($tooltiptxt) !== '') {
+        $tooltipHtml =
+            '<span role="tooltip" class="pointer-events-none absolute bottom-full left-1/2 z-30 mb-1.5 '
+          . '-translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-800 px-2.5 py-1.5 text-[11px] '
+          . 'font-medium leading-snug text-white opacity-0 shadow-lg transition-opacity duration-150 '
+          . 'group-hover:opacity-100">'
+          . nl2br(htmlspecialchars($tooltiptxt, ENT_QUOTES))
+          . '</span>';
+    }
+
     $html .= '
-        <div class="' . $classes . '" 
-             data-date="' . $formattedDate . '" 
-             onclick="showDayDetails(\'' . $formattedDate . '\')"
-             data-bs-toggle="tooltip"
-             data-bs-html="true"
-             data-bs-title="' . htmlspecialchars(str_replace("\n", "<br>", $tooltiptxt), ENT_QUOTES) . '">
+        <div class="group ' . $classes . '"
+             data-date="' . $formattedDate . '"
+             onclick="showDayDetails(\'' . $formattedDate . '\')">
             <span class="date-num">' . $day . '</span>
-            ' . $activityDots . '
+            ' . $activityDots . $tooltipHtml . '
         </div>';
 }
 

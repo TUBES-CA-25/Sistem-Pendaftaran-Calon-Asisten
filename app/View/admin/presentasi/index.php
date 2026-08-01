@@ -17,10 +17,12 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
     ?>
 
     <div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
-        <!-- Hidden custom buttons for DataTables -->
-        <button class="dt-custom-button hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10" id="btnAddJadwal">
-            <i class="bi bi-plus-circle"></i> Tambah Jadwal
-        </button>
+        <!-- Tombol aksi (dulu tersembunyi menunggu initComplete DataTables) -->
+        <div class="flex justify-end mb-4">
+            <button class="inline-flex px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10" id="btnAddJadwal">
+                <i class="bi bi-plus-circle"></i> Tambah Jadwal
+            </button>
+        </div>
 
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
             <div class="overflow-x-auto">
@@ -69,7 +71,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                                                     data-tanggal="<?= $row['tanggal'] ?>"
                                                     data-waktu="<?= $row['waktu'] ?>"
                                                     title="Edit"><i class="bi bi-pencil"></i></button>
-                                            <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-red-50 hover:bg-red-100 text-red-650 btn-delete-jadwal"
+                                            <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-red-50 hover:bg-red-100 text-red-600 btn-delete-jadwal"
                                                     data-id="<?= $row['id'] ?>" title="Hapus"><i class="bi bi-trash"></i></button>
                                         </div>
                                     </td>
@@ -84,12 +86,13 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 </main>
 
 <!-- Modal Tambah Jadwal -->
-<div class="modal fade" id="addJadwalModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="addJadwalModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
-                <h5 class="modal-title font-bold flex items-center gap-2"><i class="bi bi-calendar-plus text-lg"></i>Tambah Jadwal</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <h5 class="font-bold flex items-center gap-2"><i class="bi bi-calendar-plus text-lg"></i>Tambah Jadwal</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <div class="p-6">
                 <form id="formAddJadwal" method="POST" action="javascript:void(0);" class="space-y-4">
@@ -103,18 +106,18 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Tanggal:</label>
+                            <label for="inputTanggal" class="block text-sm font-semibold text-slate-700 mb-2">Tanggal:</label>
                             <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="inputTanggal" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Waktu:</label>
+                            <label for="inputWaktu" class="block text-sm font-semibold text-slate-700 mb-2">Waktu:</label>
                             <input type="time" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="inputWaktu" required>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3">
-                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-modal-close>Batal</button>
                 <button type="submit" form="formAddJadwal" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-blue-500/10 flex items-center gap-2"><i class="bi bi-check-lg"></i> Simpan</button>
             </div>
         </div>
@@ -122,12 +125,13 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 </div>
 
 <!-- Modal Update Jadwal -->
-<div class="modal fade" id="updateJadwalModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="updateJadwalModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
-                <h5 class="modal-title font-bold flex items-center gap-2"><i class="bi bi-pencil-square text-lg"></i>Update Jadwal</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <h5 class="font-bold flex items-center gap-2"><i class="bi bi-pencil-square text-lg"></i>Update Jadwal</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <div class="p-6">
                 <form id="formUpdateJadwal" method="POST" action="javascript:void(0);" class="space-y-4">
@@ -137,180 +141,28 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                         <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-sm font-semibold" id="editNama" readonly>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Ruangan:</label>
+                        <label for="editRuangan" class="block text-sm font-semibold text-slate-700 mb-2">Ruangan:</label>
                         <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editRuangan" required></select>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Tanggal:</label>
+                            <label for="editTanggal" class="block text-sm font-semibold text-slate-700 mb-2">Tanggal:</label>
                             <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editTanggal" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Waktu:</label>
+                            <label for="editWaktu" class="block text-sm font-semibold text-slate-700 mb-2">Waktu:</label>
                             <input type="time" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editWaktu" required>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3">
-                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-modal-close>Batal</button>
                 <button type="submit" form="formUpdateJadwal" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-blue-500/10 flex items-center gap-2"><i class="bi bi-check-lg"></i> Update</button>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-$(document).ready(function() {
-    const APP_URL = '<?= APP_URL ?>';
-    
-    $('#searchJadwal').on('keyup', function() {
-        const term = $(this).val().toLowerCase();
-        $('#jadwalTableBody tr').filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(term) > -1)
-        });
-    });
-
-    function loadRuangan() {
-        $.post(APP_URL + '/getallruangan', function(res) {
-            if (res.status === 'success') {
-                let opts = '<option value="">-- Pilih Ruangan --</option>';
-                res.data.forEach(r => opts += `<option value="${r.id}">${r.nama}</option>`);
-                $('#selectRuangan, #editRuangan').html(opts);
-            }
-        }, 'json');
-    }
-
-    function loadAvailableMahasiswa() {
-        $.post(APP_URL + '/getavailablemahasiswa', function(res) {
-            if (res.status === 'success') {
-                let opts = '<option value="">-- Pilih Mahasiswa --</option>';
-                res.data.forEach((m) => {
-                    opts += `<option value="${m.id_presentasi}">${m.nama_lengkap} - ${m.stambuk}</option>`;
-                });
-                $('#selectMahasiswa').html(opts);
-            }
-        }, 'json');
-    }
-
-    function loadJadwal() {
-        $.post(APP_URL + '/getjadwalpresentasi', function(res) {
-            if(res.status==='success') {
-                let html = '';
-                if(res.data.length===0) html='<tr><td colspan="8" class="text-center text-slate-400 py-10 font-medium">Belum ada jadwal</td></tr>';
-                else {
-                    res.data.forEach((j, i) => {
-                        html += `<tr class="dt-body-row" data-id="${j.id}">
-                            <td class="text-center py-4 px-4">${i+1}</td>
-                            <td class="py-4 px-4">
-                                <div class="flex items-center gap-3">
-                                    <img src="${j.photoPath || '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'}" alt="Avatar" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
-                                    <div>
-                                        <div class="font-bold text-slate-800">${j.nama_lengkap}</div>
-                                        <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mt-0.5">Calon Asisten</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-4 px-4">${j.stambuk}</td>
-                            <td class="py-4 px-4">${j.judul||'-'}</td>
-                            <td class="py-4 px-4">
-                                <span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs">
-                                    ${j.ruangan}
-                                </span>
-                            </td>
-                            <td class="py-4 px-4">${new Date(j.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})}</td>
-                            <td class="py-4 px-4">${j.waktu}</td>
-                            <td class="py-4 px-4">
-                                <div class="flex items-center justify-center gap-2">
-                                    <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-amber-50 hover:bg-amber-100 text-amber-600 btn-edit-jadwal"
-                                            data-id="${j.id}"
-                                            data-nama="${j.nama_lengkap}"
-                                            data-ruangan="${j.id_ruangan}"
-                                            data-tanggal="${j.tanggal}"
-                                            data-waktu="${j.waktu}"
-                                            title="Edit"><i class="bi bi-pencil"></i></button>
-                                    <button class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-red-50 hover:bg-red-100 text-red-600 btn-delete-jadwal"
-                                            data-id="${j.id}" title="Hapus"><i class="bi bi-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>`;
-                    });
-                }
-                $('#jadwalTableBody').html(html);
-            }
-        }, 'json');
-    }
-
-    $(document).off('click', '#btnAddJadwal').on('click', '#btnAddJadwal', function(e) {
-        e.preventDefault();
-        loadAvailableMahasiswa(); loadRuangan();
-        $('#formAddJadwal')[0].reset();
-        new bootstrap.Modal('#addJadwalModal').show();
-    });
-
-    $(document).off('submit', '#formAddJadwal').on('submit', '#formAddJadwal', function(e) {
-        e.preventDefault();
-        $.post(APP_URL + '/savejadwalpresentasi', {
-            id_presentasi: $('#selectMahasiswa').val(),
-            id_ruangan: $('#selectRuangan').val(),
-            tanggal: $('#inputTanggal').val(),
-            waktu: $('#inputWaktu').val()
-        }, function(res) {
-            bootstrap.Modal.getInstance(document.getElementById('addJadwalModal')).hide();
-            if(res.status==='success') { showAlert('Disimpan!'); loadJadwal(); }
-            else showAlert(res.message, false);
-        }, 'json');
-    });
-
-    $(document).off('click', '.btn-edit-jadwal').on('click', '.btn-edit-jadwal', function() {
-        const btn = $(this);
-        loadRuangan();
-        $('#editId').val(btn.data('id'));
-        $('#editNama').val(btn.data('nama'));
-        $('#editTanggal').val(btn.data('tanggal'));
-        
-        let timeStr = btn.data('waktu');
-        if (timeStr && timeStr.length > 5) {
-            timeStr = timeStr.substring(0, 5);
-        }
-        $('#editWaktu').val(timeStr);
-        
-        setTimeout(() => {
-            $('#editRuangan').val(btn.data('ruangan'));
-        }, 300);
-
-        new bootstrap.Modal('#updateJadwalModal').show();
-    });
-
-    $(document).off('submit', '#formUpdateJadwal').on('submit', '#formUpdateJadwal', function(e) {
-        e.preventDefault();
-        $.post(APP_URL + '/updatejadwalpresentasi', {
-            id: $('#editId').val(),
-            id_ruangan: $('#editRuangan').val(),
-            tanggal: $('#editTanggal').val(),
-            waktu: $('#editWaktu').val()
-        }, function(res) {
-            bootstrap.Modal.getInstance(document.getElementById('updateJadwalModal')).hide();
-            if(res.status==='success') { showAlert('Berhasil diupdate!'); loadJadwal(); }
-            else showAlert(res.message, false);
-        }, 'json');
-    });
-
-    $(document).off('click', '.btn-delete-jadwal').on('click', '.btn-delete-jadwal', function() {
-        const id = $(this).data('id');
-        showConfirmDelete(function() {
-            $.post(APP_URL + '/deletejadwalpresentasi', { id: id }, function(res) {
-                if(res.status === 'success') { 
-                    showAlert('Jadwal berhasil dihapus!', true); 
-                    setTimeout(function() {
-                        loadJadwal();
-                    }, 1000);
-                } else {
-                    showAlert(res.message, false);
-                }
-            }, 'json');
-        }, 'Apakah Anda yakin ingin menghapus jadwal presentasi ini?');
-    });
-});
-</script>
+<script src="<?= APP_URL ?>/Assets/js/admin/presentasi.js?v=<?= time() ?>"></script>
 

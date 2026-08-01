@@ -16,7 +16,7 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="<?= APP_URL ?>/Assets/js/tailwind-config.js"></script>
+    <script src="<?= APP_URL ?>/Assets/js/core/tailwind-config.js"></script>
     
     <style type="text/tailwindcss">
         @layer utilities {
@@ -123,7 +123,7 @@
                     <div class="flex flex-wrap justify-between items-center w-full mb-4 md:mb-5 text-[12px] md:text-[13px] gap-2 animate-fade-up" style="animation-delay: 240ms;">
                         <div class="flex items-center">
                             <input type="checkbox" class="w-3.5 h-3.5 text-primary rounded border-gray-300 focus:ring-primary mr-2" id="customCheck" name="check">
-                            <label class="text-gray-600 cursor-pointer select-none" for="customCheck">Remember me</label>
+                            <label for="customCheck" class="text-gray-600 cursor-pointer select-none">Remember me</label>
                         </div>
                         <a href="lupa-password" class="text-gray-600 hover:text-primary transition-colors">Lupa password?</a>
                     </div>
@@ -271,7 +271,7 @@
         </div>
     </div>
 
-    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/ScriptLogin.js?v=<?= time() ?>"></script>
+    <script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/auth/login.js?v=<?= time() ?>"></script>
     <script>
         // Attach mobile buttons for toggle manually since ID changed
         document.getElementById('register-mobile')?.addEventListener('click', () => {

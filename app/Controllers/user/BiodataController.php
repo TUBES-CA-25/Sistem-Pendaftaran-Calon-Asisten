@@ -22,12 +22,12 @@ class BiodataController extends Controller
             header('Content-Type: application/json');
 
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+                self::jsonError('Invalid request method');
                 exit; // <-- Tambahkan exit setelah echo
             }
 
             if (!isset($_SESSION['user']['id'])) {
-                echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
+                self::jsonError('User not logged in');
                 exit;
             }
 
@@ -43,7 +43,7 @@ class BiodataController extends Controller
             $noHp = $_POST['telephone'] ?? '';
 
             if (empty($jurusan) || empty($kelas) || empty($nama) || empty($gender) || empty($alamat) || empty($tempatLahir) || empty($tanggalLahir) || empty($noHp)) {
-                echo json_encode(['status' => 'error', 'message' => 'All fields are required']);
+                self::jsonError('All fields are required');
                 exit;
             }
 
@@ -51,26 +51,26 @@ class BiodataController extends Controller
             $kelas = strtoupper(trim($kelas));
             
             if ($genderLower === 'wanita' && !preg_match('/^B[0-9]+$/', $kelas)) {
-                echo json_encode(['status' => 'error', 'message' => 'Kelas untuk wanita harus diawali dengan karakter B lalu diikuti angka.']);
+                self::jsonError('Kelas untuk wanita harus diawali dengan karakter B lalu diikuti angka.');
                 exit;
             }
             if (($genderLower === 'pria' || $genderLower === 'laki-laki' || $genderLower === 'pria') && !preg_match('/^A[0-9]+$/', $kelas)) {
-                echo json_encode(['status' => 'error', 'message' => 'Kelas untuk pria harus diawali dengan karakter A lalu diikuti angka.']);
+                self::jsonError('Kelas untuk pria harus diawali dengan karakter A lalu diikuti angka.');
                 exit;
             }
 
             if (!preg_match('/^[A-Za-z\s]+$/', trim($nama))) {
-                echo json_encode(['status' => 'error', 'message' => 'Nama Lengkap tidak boleh kosong dan tidak boleh mengandung angka atau karakter spesial.']);
+                self::jsonError('Nama Lengkap tidak boleh kosong dan tidak boleh mengandung angka atau karakter spesial.');
                 exit;
             }
 
             if (!preg_match('/^[A-Za-z\s]+$/', trim($tempatLahir))) {
-                echo json_encode(['status' => 'error', 'message' => 'Kota Asal/Tempat Lahir tidak boleh kosong dan tidak boleh mengandung angka atau karakter spesial.']);
+                self::jsonError('Kota Asal/Tempat Lahir tidak boleh kosong dan tidak boleh mengandung angka atau karakter spesial.');
                 exit;
             }
 
             if (!preg_match('/^[A-Za-z0-9\s]+$/', trim($alamat))) {
-                echo json_encode(['status' => 'error', 'message' => 'Alamat tidak boleh kosong dan tidak boleh mengandung karakter spesial.']);
+                self::jsonError('Alamat tidak boleh kosong dan tidak boleh mengandung karakter spesial.');
                 exit;
             }
 
@@ -101,20 +101,20 @@ class BiodataController extends Controller
                         $absensiModel->createDefaultAbsensi($mhs['id']);
                     }
 
-                    echo json_encode(['status' => 'success', 'message' => 'Data berhasil disimpan']);
+                    self::jsonSuccess([], 'Data berhasil disimpan');
                 } else {
-                    echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan data baru']);
+                    self::jsonError('Gagal menyimpan data baru');
                 }
             } else {
                 // Update existing data
                 if ($biodata->updateBiodata($biodata)) {
-                    echo json_encode(['status' => 'success', 'message' => 'Data berhasil diperbarui']);
+                    self::jsonSuccess([], 'Data berhasil diperbarui');
                 } else {
-                    echo json_encode(['status' => 'error', 'message' => 'Gagal memperbarui data']);
+                    self::jsonError('Gagal memperbarui data');
                 }
             } 
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'Data gagal disimpan: ' . $e->getMessage()]);
+            self::jsonError('Data gagal disimpan: ' . $e->getMessage());
             exit; 
         }
     }

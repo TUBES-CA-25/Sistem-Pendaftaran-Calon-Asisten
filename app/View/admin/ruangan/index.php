@@ -22,7 +22,7 @@ $ruanganList = $ruanganList ?? [];
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6 relative">
                 
                 <!-- Hidden Custom Button for VanillaPaginator -->
-                <button class="vp-custom-button hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10 btn-add-room" data-bs-toggle="modal" data-bs-target="#tambahRuanganModal">
+                <button class="vp-custom-button hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10 btn-add-room" data-modal-open="#tambahRuanganModal">
                     <i class="bi bi-plus-circle-fill"></i>
                     <span>Tambah Ruangan</span>
                 </button>
@@ -45,7 +45,7 @@ $ruanganList = $ruanganList ?? [];
                                          </div>
                                          <h4 class="text-base font-bold text-slate-800 mb-1">Belum ada Ruangan</h4>
                                          <p class="text-slate-500 text-xs mb-4">Mulai dengan menambahkan ruangan baru untuk seleksi.</p>
-                                         <button class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs rounded-xl transition shadow-sm shadow-blue-500/10 btn-add-room" data-bs-toggle="modal" data-bs-target="#tambahRuanganModal">
+                                         <button class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs rounded-xl transition shadow-sm shadow-blue-500/10 btn-add-room" data-modal-open="#tambahRuanganModal">
                                             <i class="bi bi-plus-circle me-1"></i> Tambah Ruangan
                                          </button>
                                     </td>
@@ -96,20 +96,21 @@ $ruanganList = $ruanganList ?? [];
 </main>
 
 <!-- Modals -->
-<div class="modal fade" id="tambahRuanganModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="tambahRuanganModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
-                <h5 class="modal-title font-bold flex items-center gap-2"><i class="bi bi-plus-circle text-lg"></i>Tambah Ruangan Baru</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <h5 class="font-bold flex items-center gap-2"><i class="bi bi-plus-circle text-lg"></i>Tambah Ruangan Baru</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <div class="p-6">
                 <form id="tambahRuanganForm" class="space-y-4" enctype="multipart/form-data">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Ruangan</label>
+                        <label for="namaRuangan" class="block text-sm font-semibold text-slate-700 mb-2">Nama Ruangan</label>
                         <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition mb-3" id="namaRuangan" name="namaRuangan" placeholder="Contoh: Lab RPL 1" required>
                         
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Gambar Lab (Opsional)</label>
+                        <label for="gambarRuangan" class="block text-sm font-semibold text-slate-700 mb-2">Gambar Lab (Opsional)</label>
                         <input type="file" class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white transition" id="gambarRuangan" name="gambarRuangan" accept="image/*">
                     </div>
                     <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition shadow-md shadow-blue-500/10">Simpan Ruangan</button>
@@ -119,18 +120,19 @@ $ruanganList = $ruanganList ?? [];
     </div>
 </div>
 
-<div class="modal fade" id="updateRuanganModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="updateRuanganModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
-                <h5 class="modal-title font-bold flex items-center gap-2"><i class="bi bi-pencil-square text-lg"></i>Ubah Nama Ruangan</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <h5 class="font-bold flex items-center gap-2"><i class="bi bi-pencil-square text-lg"></i>Ubah Nama Ruangan</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <div class="p-6">
                 <form id="updateRuanganForm" class="space-y-4" enctype="multipart/form-data">
                     <input type="hidden" id="updateRuanganId">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Ruangan</label>
+                        <label for="updateNamaRuangan" class="block text-sm font-semibold text-slate-700 mb-2">Nama Ruangan</label>
                         <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition mb-3" id="updateNamaRuangan" name="namaRuangan" required>
 
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Ganti Gambar Lab (Opsional)</label>
@@ -144,4 +146,4 @@ $ruanganList = $ruanganList ?? [];
 </div>
 
 <!-- Load Custom Script -->
-<script src="<?= APP_URL ?>/Assets/js/rooms.js?v=2.0"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/ruangan.js?v=2.0"></script>

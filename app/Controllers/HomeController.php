@@ -4,28 +4,13 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\View;
-use App\Core\Model;
 
 // Models
-use App\Model\Mahasiswa;
 
 // User Controllers
-use App\Controllers\User\DashboardController;
-use App\Controllers\User\BiodataController;
-use App\Controllers\User\BerkasController;
-use App\Controllers\User\TesTulisController;
 use App\Controllers\User\ProfilController;
-use App\Controllers\User\PresentasiUserController;
 
 // Admin Controllers
-use App\Controllers\Admin\DashboardAdminController;
-use App\Controllers\Admin\PesertaController;
-use App\Controllers\Admin\RuanganController;
-use App\Controllers\Admin\NilaiController;
-use App\Controllers\Admin\RekapKehadiranController;
-use App\Controllers\Admin\JadwalWawancaraController;
-use App\Controllers\Admin\BankSoalController;
-use App\Controllers\Admin\JadwalPresentasiController;
 
 // Shared Controllers
 use App\Controllers\NotifikasiController;
@@ -33,6 +18,13 @@ use App\Controllers\NotifikasiController;
 
 class HomeController extends Controller
 {
+    // Bagian HomeController dipisah ke trait agar berkas ini tetap ringkas.
+    // Perilaku tidak berubah: trait digabung ke class saat runtime.
+    use \App\Controllers\Concerns\ProvidesUserData;
+    use \App\Controllers\Concerns\ProvidesAdminData;
+    use \App\Controllers\Concerns\FormatsViewData;
+    use \App\Controllers\Concerns\ManagesUserPhoto;
+
     public function index()
     {
         if ($this->isLoggedIn() && $this->getRole() == "User") {
@@ -46,7 +38,7 @@ class HomeController extends Controller
             $data = $this->getSidebarData();
             $dashboardData = $this->getDashboardAdminData();
             $data = array_merge($data, $dashboardData);
-            View::render('mainAdmin', 'layouts', $data);
+            View::render('main_admin', 'layouts', $data);
 
         } else {
             View::render('index', 'auth');
@@ -54,16 +46,21 @@ class HomeController extends Controller
         }
     }
 
-    public function loadContent($page)
+    /**
+     * Titik masuk semua halaman ber-sidebar.
+     *
+     * $page selalu berupa string: Router mengubah `{page}` jadi grup regex
+     * lalu meneruskan hasil preg_match (selalu string) via
+     * call_user_func_array; tiga rute lain memanggilnya dengan literal
+     * ('tesTulis', 'dashboard'). Karena itu cabang is_array($page) yang
+     * dulu ada di sini tidak pernah tercapai dan sudah dihapus.
+     */
+    public function loadContent(string $page): void
     {
         if (!$this->isLoggedIn()) {
             $baseUrl = dirname($_SERVER['SCRIPT_NAME']);
             header('Location: ' . $baseUrl . '/login');
             exit();
-        }
-
-        if (is_array($page)) {
-            $page = $page['page'] ?? 'dashboard';
         }
 
         // Detect if AJAX request
@@ -82,7 +79,7 @@ class HomeController extends Controller
     /**
      * Render full page with layout (for direct URL access)
      */
-    private function renderFullPage($page)
+    private function renderFullPage(string $page): void
     {
         $data = $this->getSidebarData();
         $data['initialPage'] = $page;
@@ -92,7 +89,7 @@ class HomeController extends Controller
         $data = array_merge($data, $pageData);
 
         if ($this->getRole() == "Admin") {
-            View::render('mainAdmin', 'layouts', $data);
+            View::render('main_admin', 'layouts', $data);
         } else {
             View::render('main', 'layouts', $data);
         }
@@ -101,7 +98,7 @@ class HomeController extends Controller
     /**
      * Get data for specific page
      */
-    private function getPageData($page): array
+    private function getPageData(string $page): array
     {
         if ($this->getRole() == "Admin") {
             switch ($page) {
@@ -130,6 +127,13 @@ class HomeController extends Controller
                 case 'wawancara': return $this->getWawancaraData();
                 case 'profile':
                 case 'editprofile': return $this->getProfileData();
+                // Halaman notifikasi/pengumuman tidak punya data khusus, tetapi
+                // layout tetap merender dashboard sebagai $initialPage. Tanpa
+                // data dashboard, view memunculkan "Undefined variable
+                // $graduationStatus / $profileDisplay" di halaman.
+                case 'notifikasi':
+                case 'notification':
+                case 'pengumuman': return $this->getDashboardData();
                 default: return [];
             }
         }
@@ -138,7 +142,7 @@ class HomeController extends Controller
     /**
      * Render only page content (for AJAX requests)
      */
-    private function renderPageContent($page)
+    private function renderPageContent(string $page): void
     {
         if ($this->getRole() == "Admin") {
             $sidebarData = $this->getSidebarData(); // Fetch once
@@ -186,8 +190,12 @@ class HomeController extends Controller
                     View::render('index', 'admin/wawancara', $data);
                     break;
                 case 'profile':
-                    $data = array_merge($sidebarData, $this->getProfileData());
-                    View::render('index', 'admin/profil', $data);
+                    // View 'admin/profil' tidak pernah ada di repo ini, sehingga
+                    // View::render() selalu jatuh ke cabang error/404. Arahkan ke
+                    // dashboard admin agar tidak gagal. (Sisi user memetakan
+                    // 'profile' ke user/biodata - lihat case serupa di bawah.)
+                    $data = array_merge($sidebarData, $this->getDashboardAdminData());
+                    View::render('index', 'admin/dashboard', $data);
                     break;
                 case 'lihatnilai':
                     $data = array_merge($sidebarData, $this->getNilaiAdminData());
@@ -289,640 +297,4 @@ class HomeController extends Controller
     /**
      * Mengambil semua data yang dibutuhkan untuk dashboard
      */
-    private function getDashboardData(): array
-    {
-        // Get mahasiswa ID for current user
-        $jadwalPresentasiUser = null;
-        if (isset($_SESSION['user']['id'])) {
-            $id_user = $_SESSION['user']['id'];
-            $sql = "SELECT id FROM mahasiswa WHERE id_user = ?";
-            $stmt = Model::getDB()->prepare($sql);
-            $stmt->bindParam(1, $id_user, \PDO::PARAM_INT);
-            $stmt->execute();
-            $mahasiswa = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-            if ($mahasiswa) {
-                $jadwalPresentasiUser = JadwalPresentasiController::getJadwalByMahasiswaId($mahasiswa['id']);
-
-                // Format schedule dates
-                if ($jadwalPresentasiUser && is_array($jadwalPresentasiUser)) {
-                    if (isset($jadwalPresentasiUser['tanggal'])) {
-                        $jadwalPresentasiUser['formattedDate'] = $this->formatDate($jadwalPresentasiUser['tanggal']);
-                    }
-                    if (isset($jadwalPresentasiUser['waktu'])) {
-                        $jadwalPresentasiUser['formattedTime'] = $this->formatTime($jadwalPresentasiUser['waktu']);
-                    }
-                }
-            }
-        }
-
-        // Tambahkan data biodata, user, dan photo
-        $biodata = ProfilController::viewBiodata();
-        $user = ProfilController::viewUser();
-
-        // Updated Logic: Fetch Profile Photo specifically
-        $mahasiswaModel = new \App\Model\Mahasiswa();
-        $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id']);
-        $photoName = $mahasiswa['foto_profil'] ?? 'default.png';
-        $photoPath = $this->getUserPhotoPath($photoName);
-
-        // Format profile display
-        $profileDisplay = $this->formatProfileDisplay($biodata, $user, $photoName);
-
-        // Calculate progress
-        $tahapanSelesai = DashboardController::getMajorStagesSelesai();
-        $progress = $this->calculateProgress($tahapanSelesai);
-
-        // Tambahkan data dokumen/berkas
-        $berkas = BerkasController::viewBerkas();
-        $dokumen = $this->getDokumenStatus($berkas);
-
-        return [
-            'notifikasi' => NotifikasiController::getMessageById() ?? [],
-            'tahapanSelesai' => $tahapanSelesai,
-            'percentage' => $progress['percentage'],
-            'stepProgress' => $progress['percentage'],
-            'jadwalPresentasiUser' => $jadwalPresentasiUser,
-            'tahapan' => [
-                ["1", "Pemberkasan", $tahapanSelesai >= 1, "tahap ini"],
-                ["2", "Tes Seleksi", $tahapanSelesai >= 2, "tahap ini"],
-                ["3", "Presentasi", $tahapanSelesai >= 3, "tahap ini"],
-                ["4", "Wawancara", $tahapanSelesai >= 4, "tahap ini"],
-                ["5", "Pengumuman", $tahapanSelesai >= 5, "tahap ini"],
-            ],
-            'biodata' => $biodata,
-            'user' => $user,
-            'photo' => $photoPath,
-            'profileDisplay' => $profileDisplay,
-            'dokumen' => $dokumen,
-            'graduationStatus' => DashboardController::getGraduationStatus(),
-            'isPengumumanOpen' => DashboardController::isPengumumanOpen(),
-            'currentActivities' => DashboardController::getKegiatanByMonth(),
-            'isBiodataEmpty' => BiodataController::isEmpty()
-        ];
-    }
-
-    /**
-     * Get status dokumen/berkas user
-     */
-    private function getDokumenStatus($berkas): array
-    {
-        return [
-            [
-                'nama' => 'Ijazah Terakhir',
-                'status' => $berkas['statusIjazah'] ?? 'Menunggu',
-                'jumlah' => 1
-            ],
-            [
-                'nama' => 'Curriculum Vitae (CV)',
-                'status' => $berkas['statusCV'] ?? 'Menunggu',
-                'jumlah' => 1
-            ],
-            [
-                'nama' => 'Kartu Tanda Mahasiswa (KTM)',
-                'status' => $berkas['statusKTM'] ?? 'Menunggu',
-                'jumlah' => 1
-            ],
-            [
-                'nama' => 'Transkrip Nilai',
-                'status' => $berkas['statusTranskrip'] ?? 'Menunggu',
-                'jumlah' => 1
-            ],
-            [
-                'nama' => 'Surat Keterangan Sehat',
-                'status' => $berkas['statusSuratSehat'] ?? 'Menunggu',
-                'jumlah' => 1
-            ]
-        ];
-    }
-
-    /**
-     * Data untuk biodata view
-     */
-    private function getBiodataData(): array
-    {
-        $biodata = ProfilController::viewBiodata();
-        $user = ProfilController::viewUser();
-        
-        $mahasiswaModel = new \App\Model\Mahasiswa();
-        $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id'] ?? 1);
-        $photoName = $mahasiswa['foto_profil'] ?? 'default.png';
-        $photoPath = $this->getUserPhotoPath($photoName);
-
-        return [
-            'nama' => $biodata['namaLengkap'] ?? 'Nama Lengkap',
-            'stambuk' => $user['stambuk'] ?? '',
-            'jurusan' => $biodata['jurusan'] ?? 'Jurusan',
-            'alamat' => $biodata['alamat'] ?? 'Alamat',
-            'kelas' => $biodata['kelas'] ?? 'Kelas',
-            'jenisKelamin' => $biodata['jenisKelamin'] ?? 'Jenis Kelamin',
-            'tempatLahir' => $biodata['tempatLahir'] ?? 'Tempat Lahir',
-            'tanggalLahir' => $biodata['tanggalLahir'] ?? 'Tanggal Lahir',
-            'noHp' => $biodata['noHp'] ?? 'No Telephone',
-            'photo' => $photoPath,
-            'isBiodataEmpty' => BiodataController::isEmpty()
-        ];
-    }
-
-    /**
-     * Data untuk profile view
-     */
-    private function getProfileData(): array
-    {
-        $biodata = ProfilController::viewBiodata();
-        $user = ProfilController::viewUser();
-        
-        $role = $user['role'] ?? 'User';
-        
-        if ($role === 'Admin') {
-            $photoPath = HomeController::getAdminPhoto($_SESSION['user']['id']);
-        } else {
-             $mahasiswaModel = new \App\Model\Mahasiswa();
-             $mahasiswa = $mahasiswaModel->getMahasiswaId($_SESSION['user']['id']);
-             $photoName = $mahasiswa['foto_profil'] ?? 'default.png';
-             $photoPath = $this->getUserPhotoPath($photoName);
-        }
-
-        return [
-            'userName' => $user['username'] ?? 'Guest',
-            'nama' => $biodata['namaLengkap'] ?? 'Nama Lengkap',
-            'stambuk' => $user['stambuk'] ?? '',
-            'jurusan' => $biodata['jurusan'] ?? 'Jurusan',
-            'alamat' => $biodata['alamat'] ?? 'Alamat',
-            'kelas' => $biodata['kelas'] ?? 'Kelas',
-            'jenisKelamin' => $biodata['jenisKelamin'] ?? 'Jenis Kelamin',
-            'tempatLahir' => $biodata['tempatLahir'] ?? 'Tempat Lahir',
-            'tanggalLahir' => $biodata['tanggalLahir'] ?? 'Tanggal Lahir',
-            'noHp' => $biodata['noHp'] ?? 'No Telephone',
-            'photo' => $photoPath
-        ];
-    }
-
-    /**
-     * Data untuk upload berkas view
-     */
-    private function getUploadBerkasData(): array
-    {
-        $biodata = ProfilController::viewBiodata();
-        return [
-            'res' => BerkasController::viewBerkas() ?? [],
-            'nama' => $biodata['namaLengkap'] ?? 'Nama Lengkap',
-            'biodataStatus' => DashboardController::getBiodataStatus(),
-            'isBerkasEmpty' => BerkasController::isEmptyBerkas()
-        ];
-    }
-
-    /**
-     * Data untuk tes tulis view
-     */
-    private function getTesTulisData(): array
-    {
-        $absensiTesTertulis = DashboardController::getAbsensiTesTertulis();
-        $berkasStatus = DashboardController::getBerkasStatus();
-        $biodataStatus = DashboardController::getBiodataStatus();
-
-        // Check access
-        $accessCheck = $this->canAccessExam(
-            $absensiTesTertulis,
-            $berkasStatus,
-            $biodataStatus
-        );
-
-        return [
-            'absensiTesTertulis' => $absensiTesTertulis,
-            'berkasStatus' => $berkasStatus,
-            'biodataStatus' => $biodataStatus,
-            'canAccess' => $accessCheck['allowed'],
-            'accessReason' => $accessCheck['reason'],
-            'accessMessage' => $accessCheck['message'],
-            'activeBank' => TesTulisController::getActiveBank()
-        ];
-    }
-
-    /**
-     * Data untuk presentasi view
-     */
-    private function getPresentasiData(): array
-    {
-        return [
-            'results' => PresentasiUserController::viewAll() ?? [],
-            'biodataStatus' => DashboardController::getBiodataStatus(),
-            'berkasStatus' => DashboardController::getBerkasStatus(),
-            'absensiTesTertulis' => DashboardController::getAbsensiTesTertulis(),
-            'pptStatus' => DashboardController::getPptStatus()
-        ];
-    }
-
-    /**
-     * Data untuk wawancara view
-     */
-    private function getWawancaraData(): array
-    {
-        return [
-            'wawancara' => JadwalWawancaraController::getAllById() ?? []
-        ];
-    }
-
-    // ==================== ADMIN DATA METHODS ====================
-
-    /**
-     * Data untuk dashboard admin
-     */
-    private function getDashboardAdminData(): array
-    {
-        $currentYear = (int)date('Y');
-        $currentMonth = (int)date('m');
-        $kegiatanBulanIni = DashboardAdminController::getKegiatanByMonth($currentYear, $currentMonth) ?? [];
-
-        return [
-            'totalPendaftar' => DashboardAdminController::getTotalPendaftar(),
-            'pendaftarLulus' => DashboardAdminController::getPendaftarLulus(),
-            'pendaftarPending' => DashboardAdminController::getPendaftarPending(),
-            'pendaftarGagal' => DashboardAdminController::getPendaftarGagal(),
-            'statusKegiatan' => DashboardAdminController::getStatusKegiatan(),
-            'kegiatanBulanIni' => $kegiatanBulanIni,
-            'jadwalPresentasiMendatang' => JadwalPresentasiController::getUpcomingJadwal(5),
-            'presentationStats' => DashboardAdminController::getPresentationStats(),
-            'statusMeta' => DashboardAdminController::getStatusMetadata(),
-            'calendarWeeks' => DashboardAdminController::generateCalendarData($currentYear, $currentMonth, $kegiatanBulanIni)
-        ];
-    }
-
-    /**
-     * Data untuk ruangan view
-     */
-    private function getRuanganData(): array
-    {
-        return [
-            'ruanganList' => RuanganController::viewAllRuangan() ?? []
-        ];
-    }
-
-    /**
-     * Data untuk daftar peserta view
-     */
-    private function getDaftarPesertaData(): array
-    {
-        $mahasiswa = PesertaController::viewAllMahasiswa() ?? [];
-
-        // Format each participant
-        $formattedMahasiswa = [];
-        foreach ($mahasiswa as $mhs) {
-            // Format participant data with photoPath and statusBadge
-            $formattedMahasiswa[] = $this->formatParticipantForView($mhs);
-        }
-
-        return [
-            'mahasiswaList' => $formattedMahasiswa,
-            'result' => $formattedMahasiswa
-        ];
-    }
-
-    /**
-     * Data untuk daftar hadir view
-     */
-    private function getDaftarHadirData(): array
-    {
-        return [
-            'absensiList' => RekapKehadiranController::viewAbsensi() ?? [],
-            'mahasiswaList' => PesertaController::viewAllMahasiswa() ?? []
-        ];
-    }
-
-    /**
-     * Data untuk presentasi admin view (Legacy/Combined)
-     */
-    private function getPresentasiAdminData(): array
-    {
-        $mahasiswaList = PresentasiUserController::viewAllForAdmin() ?? [];
-
-        // Format mahasiswa list with status badges
-        $formattedMahasiswaList = $this->formatMahasiswaListForView($mahasiswaList);
-
-        return [
-            'mahasiswaList' => $formattedMahasiswaList,
-            'mahasiswaAccStatus' => PresentasiUserController::viewAllAccStatusForAdmin() ?? [],
-            'ruanganList' => RuanganController::viewAllRuangan() ?? [],
-            'jadwalPresentasi' => JadwalPresentasiController::getJadwalPresentasi() ?? []
-        ];
-    }
-
-    /**
-     * Data untuk halaman pengajuan judul
-     */
-    private function getPengajuanJudulData(): array
-    {
-        return [
-            'mahasiswaList' => PresentasiUserController::viewAllForAdmin() ?? [],
-            'mahasiswaAccStatus' => PresentasiUserController::viewAllAccStatusForAdmin() ?? []
-        ];
-    }
-
-    /**
-     * Data untuk halaman jadwal presentasi
-     */
-    private function getJadwalPresentasiData(): array
-    {
-        return [
-            'ruanganList' => RuanganController::viewAllRuangan() ?? [],
-            'jadwalPresentasi' => JadwalPresentasiController::getJadwalPresentasi() ?? []
-        ];
-    }
-
-    /**
-     * Data untuk tes tulis admin view
-     */
-    private function getTesTulisAdminData(): array
-    {
-        $examData = TesTulisController::getAdminExamPageData();
-        return [
-            'allSoal' => $examData['allSoal'] ?? [],
-            'bankSoalList' => $examData['bankSoalList'] ?? [],
-            'stats' => $examData['stats'] ?? []
-        ];
-    }
-
-    /**
-     * Data untuk wawancara admin view
-     * Only show mahasiswa who have completed Presentasi
-     */
-    private function getWawancaraAdminData(): array
-    {
-        return [
-            'wawancara' => JadwalWawancaraController::getAll() ?? [],
-            'mahasiswaList' => \App\Model\Mahasiswa::getAvailableForWawancara() ?? [],
-            'ruanganList' => RuanganController::viewAllRuangan() ?? []
-        ];
-    }
-
-    /**
-     * Data untuk nilai admin view
-     */
-    private function getNilaiAdminData(): array
-    {
-        return [
-            'nilai' => NilaiController::getAllNilaiAkhirMahasiswa() ?? []
-        ];
-    }
-
-    // ==================== HELPER METHODS (menggantikan Services) ====================
-
-    /**
-     * Format date from string
-     */
-    private function formatDate($date, $format = 'd F Y')
-    {
-        if (empty($date)) {
-            return '-';
-        }
-        $timestamp = strtotime($date);
-        return $timestamp ? date($format, $timestamp) : '-';
-    }
-
-    /**
-     * Format time from string
-     */
-    private function formatTime($time, $format = 'H:i')
-    {
-        if (empty($time)) {
-            return '-';
-        }
-        $timestamp = strtotime($time);
-        return $timestamp ? date($format, $timestamp) : '-';
-    }
-
-    /**
-     * Get full path for user photo
-     */
-    public static function getUserPhotoPath($filename)
-    {
-        $defaultPhoto = 'default.png';
-        $webBasePath = '/Sistem-Pendaftaran-Calon-Asisten/res/';
-        $docRoot = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/';
-        $defaultPhotoUrl = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
-
-        if (empty($filename) || $filename === $defaultPhoto) {
-            // Return new default photo location
-            return $defaultPhotoUrl;
-        }
-
-        if (strpos($filename, '/') !== false) {
-            return $filename;
-        }
-
-        // Check imageUser directory first (berkas uploads - priority)
-        if (file_exists($docRoot . 'imageUser/' . $filename)) {
-            return $webBasePath . 'imageUser/' . $filename . '?v=' . time();
-        }
-
-        // Check profile directory as fallback
-        if (file_exists($docRoot . 'profile/' . $filename)) {
-            return $webBasePath . 'profile/' . $filename . '?v=' . time(); // Add cache busting
-        }
-
-        // Fallback to default if not found in either
-        return $defaultPhotoUrl;
-    }
-
-    /**
-     * Check if photo is valid (not default)
-     */
-    private function hasValidPhoto($filename)
-    {
-        return !empty($filename) && $filename !== 'default.png';
-    }
-
-    /**
-     * Generate initials from full name
-     */
-    private function generateInitials($fullName)
-    {
-        if (empty($fullName)) {
-            return 'U';
-        }
-
-        $words = explode(' ', $fullName);
-        if (count($words) >= 2) {
-            return strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
-        } else {
-            return strtoupper(substr($fullName, 0, 2));
-        }
-    }
-
-    /**
-     * Format complete profile display data
-     */
-    private function formatProfileDisplay($biodata, $user, $photo)
-    {
-        $nama = $biodata['namaLengkap'] ?? $user['username'] ?? 'User';
-        $hasValidPhoto = $this->hasValidPhoto($photo);
-
-        return [
-            'hasValidPhoto' => $hasValidPhoto,
-            'photoPath' => $this->getUserPhotoPath($photo),
-            'initials' => $this->generateInitials($nama),
-            'displayName' => $nama
-        ];
-    }
-
-    /**
-     * Calculate progress from tahapan selesai
-     */
-    private function calculateProgress($tahapanSelesai, $maxSteps = 4)
-    {
-        $percentage = min(($tahapanSelesai / $maxSteps) * 100, 100);
-
-        return [
-            'completed' => $tahapanSelesai,
-            'total' => $maxSteps,
-            'percentage' => $percentage
-        ];
-    }
-
-    /**
-     * Check if user can access exam
-     */
-    private function canAccessExam($absensiTesTertulis, $berkasStatus, $biodataStatus)
-    {
-        if ($absensiTesTertulis) {
-            return [
-                'allowed' => false,
-                'reason' => 'completed',
-                'message' => 'Anda sudah mengikuti tes tertulis'
-            ];
-        }
-
-        if (!$biodataStatus) {
-            return [
-                'allowed' => false,
-                'reason' => 'biodata_incomplete',
-                'message' => 'Lengkapi biodata terlebih dahulu'
-            ];
-        }
-
-        if (!$berkasStatus) {
-            return [
-                'allowed' => false,
-                'reason' => 'berkas_incomplete',
-                'message' => 'Lengkapi berkas terlebih dahulu'
-            ];
-        }
-
-        return [
-            'allowed' => true,
-            'reason' => 'ok',
-            'message' => ''
-        ];
-    }
-
-    /**
-     * Get badge style for berkas status
-     */
-    private function getBerkasStatusBadge($acceptedStatus)
-    {
-        $class = 'bg-slate-50 text-slate-500 border border-slate-200';
-        $text = 'Belum Upload';
-
-        if (isset($acceptedStatus)) {
-            if ($acceptedStatus == 1) {
-                $class = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-                $text = 'Disetujui';
-            } elseif ($acceptedStatus == 2) {
-                $class = 'bg-red-50 text-red-700 border border-red-200';
-                $text = 'Ditolak';
-            } elseif ($acceptedStatus == 0) {
-                $class = 'bg-blue-50 text-blue-700 border border-blue-200';
-                $text = 'Proses';
-            }
-        }
-
-        return ['class' => $class, 'text' => $text];
-    }
-
-    /**
-     * Format participant data for view display
-     */
-    private function formatParticipantForView($rawData)
-    {
-        $formatted = $rawData;
-
-        $photoName = $rawData['berkas']['foto'] ?? 'default.png';
-        $formatted['photoPath'] = $this->getUserPhotoPath($photoName);
-
-        $acceptedStatus = $rawData['berkas']['accepted'] ?? null;
-        $formatted['statusBadge'] = $this->getBerkasStatusBadge($acceptedStatus);
-
-        return $formatted;
-    }
-
-    /**
-     * Get presentation status badge
-     */
-    private function getPresentationStatusBadge($isAccepted, $isRejected, $hasSchedule)
-    {
-        if ($hasSchedule) {
-            return [
-                'class' => 'bg-blue-50 text-blue-700 border border-blue-200',
-                'text' => 'Terjadwal'
-            ];
-        } elseif ($isRejected) {
-            return [
-                'class' => 'bg-red-50 text-red-700 border border-red-200',
-                'text' => 'Ditolak'
-            ];
-        } elseif ($isAccepted) {
-            return [
-                'class' => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-                'text' => 'Diterima'
-            ];
-        } else {
-            return [
-                'class' => 'bg-slate-50 text-slate-500 border border-slate-200',
-                'text' => 'Menunggu'
-            ];
-        }
-    }
-
-    /**
-     * Format mahasiswa list with presentation status badges
-     */
-    private function formatMahasiswaListForView($mahasiswaList)
-    {
-        $formatted = [];
-
-        foreach ($mahasiswaList as $mahasiswa) {
-            $isAccepted = isset($mahasiswa['is_accepted']) && $mahasiswa['is_accepted'] == 1;
-            $isRejected = isset($mahasiswa['is_accepted']) && $mahasiswa['is_accepted'] == 2;
-            $hasSchedule = isset($mahasiswa['has_schedule']) && $mahasiswa['has_schedule'];
-
-            $statusBadge = $this->getPresentationStatusBadge($isAccepted, $isRejected, $hasSchedule);
-
-            $mahasiswa['statusBadge'] = $statusBadge;
-            $formatted[] = $mahasiswa;
-        }
-
-        return $formatted;
-    }
-
-    /**
-     * Get admin photo path
-     * Returns custom photo if exists, otherwise returns default iclabs logo
-     */
-    public static function getAdminPhoto($userId) {
-        $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
-        $webPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
-        
-        $extensions = ['png', 'jpg', 'jpeg'];
-        
-        clearstatcache();
-
-        foreach ($extensions as $ext) {
-            $filename = "admin_{$userId}.{$ext}";
-            if (file_exists($baseDir . $filename)) {
-                return $webPath . $filename . '?v=' . time();
-            }
-        }
-
-        return '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/Rectangle.png';
-    }
 }

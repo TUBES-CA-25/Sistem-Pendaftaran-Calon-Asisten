@@ -16,7 +16,7 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="<?= APP_URL ?>/Assets/js/tailwind-config.js"></script>
+    <script src="<?= APP_URL ?>/Assets/js/core/tailwind-config.js"></script>
 
     <style type="text/tailwindcss">
         @layer utilities {
@@ -52,10 +52,10 @@
                 @apply hidden rounded-xl mb-5 px-4 py-3 text-sm font-medium animate-fade-up;
             }
             .alert-success {
-                @apply bg-emerald-50 text-emerald-700 border border-emerald-200;
+                @apply block bg-emerald-50 text-emerald-700 border border-emerald-200;
             }
             .alert-error {
-                @apply bg-red-50 text-red-600 border border-red-200;
+                @apply block bg-red-50 text-red-600 border border-red-200;
             }
 
             /* Spinner tombol - menggantikan .spinner-border milik Bootstrap */
@@ -136,44 +136,36 @@
 
                 <div class="float-group w-full mb-4 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
                     <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Password" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
-                    <input
-                        type="password"
+                    <input type="password"
                         class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px]"
                         id="newPassword"
                         name="newPassword"
                         placeholder=" "
                         autocomplete="new-password"
-                        required
-                    >
+                        required>
                     <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left" for="newPassword">Password Baru</label>
-                    <button
-                        type="button"
+                    <button type="button"
                         class="toggle-password absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 bg-transparent border-none flex items-center justify-center w-8 h-8 rounded-md hover:text-primary hover:bg-primary/10 transition-colors z-10"
                         id="togglePassword1"
-                        title="Tampilkan password"
-                    >
+                        title="Tampilkan password">
                         <i class="bi bi-eye pointer-events-none"></i>
                     </button>
                 </div>
 
                 <div class="float-group w-full mb-5 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
                     <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Confirm" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
-                    <input
-                        type="password"
+                    <input type="password"
                         class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px]"
                         id="confirmPassword"
                         name="confirmPassword"
                         placeholder=" "
                         autocomplete="new-password"
-                        required
-                    >
-                    <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left" for="confirmPassword">Konfirmasi Password</label>
-                    <button
-                        type="button"
+                        required>
+                    <label for="confirmPassword" class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Konfirmasi Password</label>
+                    <button type="button"
                         class="toggle-password absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 bg-transparent border-none flex items-center justify-center w-8 h-8 rounded-md hover:text-primary hover:bg-primary/10 transition-colors z-10"
                         id="togglePassword2"
-                        title="Tampilkan password"
-                    >
+                        title="Tampilkan password">
                         <i class="bi bi-eye pointer-events-none"></i>
                     </button>
                 </div>
@@ -234,7 +226,7 @@
             const confirm = confirmPassword.value;
 
             // Check length requirement
-            const lengthMet = password.length >= 6;
+            const lengthMet = password.length>= 6;
             const lengthReq = document.getElementById('req-length');
             if (lengthMet) {
                 lengthReq.classList.add('met');
@@ -245,7 +237,7 @@
             }
 
             // Check match requirement
-            const matchMet = password === confirm && password.length > 0;
+            const matchMet = password === confirm && password.length> 0;
             const matchReq = document.getElementById('req-match');
             if (matchMet) {
                 matchReq.classList.add('met');

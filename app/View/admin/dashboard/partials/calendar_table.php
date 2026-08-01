@@ -23,7 +23,7 @@ foreach ($calendarWeeks as $week):
                     $fontWeight = '700';
                 }
 
-                if (count($day['events']) > 0) {
+                if (count($day['events'])> 0) {
                     $cursor = 'pointer';
                     $escapedEvents = htmlspecialchars(json_encode($day['events']), ENT_QUOTES, 'UTF-8');
                     $onclick = " onclick='showActivityActions(this.getAttribute(\"data-events\"))' data-events=\"$escapedEvents\"";
@@ -50,7 +50,7 @@ foreach ($calendarWeeks as $week):
                         
                         // Limit title length
                         $title = htmlspecialchars($event['judul']);
-                        if (strlen($title) > 12) {
+                        if (strlen($title)> 12) {
                             $title = substr($title, 0, 10) . '...';
                         }
                         
@@ -58,7 +58,7 @@ foreach ($calendarWeeks as $week):
                         $eventsHtml .= $title;
                         $eventsHtml .= "</div>";
                     }
-                    if (count($day['events']) > 2) {
+                    if (count($day['events'])> 2) {
                         $eventsHtml .= "<div class=\"text-[10px] font-bold text-slate-400\">+" . (count($day['events']) - 2) . " lagi</div>";
                     }
                     $eventsHtml .= '</div>';

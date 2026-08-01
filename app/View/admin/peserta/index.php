@@ -23,10 +23,12 @@ $result = $result ?? [];
     <!-- Table Container -->
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
 
-        <!-- Hidden custom buttons for DataTables -->
-        <button id="btnKirimNotifDt" class="dt-custom-button hidden items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg transition shadow-sm shadow-blue-500/20" data-bs-toggle="modal" data-bs-target="#addNotification">
+        <!-- Tombol aksi: dipindahkan VanillaPaginator ke toolbar atas, bersebelahan
+             dengan kotak "Cari data". Sengaja `hidden` supaya tidak berkedip di
+             posisi lama sebelum paginator memindahkannya. -->
+        <button id="btnKirimNotifDt" class="vp-custom-button hidden px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg transition shadow-sm shadow-blue-500/20 items-center gap-2 whitespace-nowrap" data-modal-open="#addNotification">
             <i class="bi bi-send-fill text-xs"></i>
-            Kirim Notifikasi
+            <span>Kirim Notifikasi</span>
         </button>
 
         <div class="overflow-x-auto">
@@ -111,20 +113,21 @@ $result = $result ?? [];
 </div>
 
 <!-- Modal Kirim Notifikasi -->
-<div class="modal fade" id="addNotification" tabindex="-1" aria-labelledby="addNotificationLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="addNotification" aria-labelledby="addNotificationLabel" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
-                <h5 class="modal-title font-bold flex items-center gap-2" id="addNotificationLabel">
+                <h5 class="font-bold flex items-center gap-2" id="addNotificationLabel">
                     <i class="bi bi-send text-lg"></i>Kirim Notifikasi ke Peserta
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <div class="p-6">
                 <form id="addNotificationForm" class="space-y-4">
                     <!-- Hidden Select for Logic Compatibility -->
                     <div class="hidden">
-                        <select class="form-select" id="mahasiswa">
+                        <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="mahasiswa">
                             <option value="" disabled selected>-- Pilih Peserta --</option>
                             <?php foreach ($mahasiswaList as $mahasiswa): ?>
                                 <option value="<?= $mahasiswa['id'] ?>" data-userid="<?= $mahasiswa['idUser'] ?>">
@@ -153,7 +156,7 @@ $result = $result ?? [];
                 </form>
             </div>
             <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3">
-                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition flex items-center justify-center gap-2" data-bs-dismiss="modal">
+                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition flex items-center justify-center gap-2" data-modal-close>
                     <i class="bi bi-x-circle"></i>Batal
                 </button>
                 <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-blue-500/10 flex items-center gap-2" form="addNotificationForm">
@@ -165,17 +168,21 @@ $result = $result ?? [];
 </div>
 
 <!-- Modal Detail Peserta -->
-<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered w-full max-w-4xl !my-4 !mx-auto">
-        <div class="modal-content border-0 rounded-2xl shadow-2xl overflow-hidden">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="detailModal" aria-labelledby="detailModalLabel" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <!-- Tinggi frame dikunci (h-[90vh]) supaya modal TIDAK berubah ukuran saat
+         pindah tab. Header, kartu profil, navigasi tab, dan footer memakai
+         shrink-0; hanya area isi tab yang memanjang dan menggulir sendiri. -->
+    <div class="relative w-full max-w-4xl mx-auto h-[85vh] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full h-full flex flex-col rounded-2xl shadow-2xl overflow-hidden">
             <!-- Header dengan Background Gradient -->
             <div class="relative bg-gradient-to-br from-primary to-secondary px-6 py-4 text-white overflow-hidden shrink-0">
                 <!-- Decorative Elements -->
                 <div class="absolute -top-10 -right-10 w-28 h-28 bg-white/10 rounded-full"></div>
                 <div class="absolute bottom-5 -left-10 w-20 h-20 bg-white/5 rounded-full"></div>
                 
-                <button type="button" class="btn-close btn-close-white absolute top-3.5 right-3.5 opacity-80 z-20" data-bs-dismiss="modal" aria-label="Close"></button>
-                
+                <button type="button" data-modal-close aria-label="Tutup" class="absolute top-3.5 right-3.5 z-20 shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
+
                 <!-- Title -->
                 <h5 class="text-white font-bold text-base flex items-center gap-1.5 relative z-10">
                     <i class="bi bi-person-badge text-lg"></i>Detail Peserta
@@ -216,7 +223,7 @@ $result = $result ?? [];
             </div>
             
             <!-- Tab Navigation -->
-            <div class="px-5 mt-3 shrink-0">
+            <div class="px-5 mt-3 shrink-0 bg-white">
                 <div class="flex border-b border-slate-200 gap-1.5">
                     <button type="button" class="tab-btn active px-3 py-2 text-xs font-semibold text-blue-600 border-b-2 border-blue-600 transition-all flex items-center gap-1.5" data-tab="tab-profil">
                         <i class="bi bi-person-vcard"></i> Profil & Kontak
@@ -230,29 +237,23 @@ $result = $result ?? [];
                 </div>
             </div>
             
-            <!-- Body Content -->
-            <div class="modal-body px-5 pb-5 pt-3">
-                <style>
-                .tabs-container {
-                    display: grid;
-                }
-                .tab-panel {
-                    grid-area: 1 / 1;
-                    visibility: hidden;
-                    opacity: 0;
-                    pointer-events: none;
-                    transition: opacity 0.2s ease-in-out;
-                }
-                .tab-panel.active-tab {
-                    visibility: visible;
-                    opacity: 1;
-                    pointer-events: auto;
-                    z-index: 10;
-                }
-                </style>
-                <div class="tabs-container">
+            <!-- Body Content: satu-satunya area yang boleh memanjang/menggulir -->
+            <div class="px-5 pb-5 pt-3 flex-1 min-h-0 overflow-y-auto">
+                <!-- Tab overlay: semua panel ditumpuk di sel grid yang sama lalu
+                     di-cross-fade.
+
+                     PENTING: jangan pakai <style type="text/tailwindcss"> di sini.
+                     Play CDN hanya mengompilasi blok itu saat load awal; pada
+                     navigasi SPA markup masuk lewat innerHTML sehingga blok tidak
+                     pernah dikompilasi, .tab-panel kehilangan SELURUH gayanya, dan
+                     ketiga panel tampil sekaligus bertumpuk ke bawah.
+                     Karena itu utility-nya ditulis literal di elemen.
+
+                     Nama class .tab-panel/.active-tab tetap dipertahankan karena
+                     di-toggle oleh JS (admin/peserta.js:298-300). -->
+                <div class="tabs-container grid">
                     <!-- Panel 1: Profil & Kontak -->
-                    <div id="tab-profil" class="tab-panel active-tab space-y-4">
+                    <div id="tab-profil" class="tab-panel active-tab [grid-area:1/1] transition-opacity duration-200 ease-in-out space-y-4">
                     <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
                         <h6 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-1.5">
                             <span class="w-1 h-3.5 bg-blue-600 rounded-full"></span>
@@ -300,7 +301,7 @@ $result = $result ?? [];
                 </div>
  
                 <!-- Panel 2: Berkas Pendaftaran -->
-                <div id="tab-berkas" class="tab-panel space-y-4">
+                <div id="tab-berkas" class="tab-panel hidden [grid-area:1/1] transition-opacity duration-200 ease-in-out space-y-4">
                     <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
                         <h6 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-1.5">
                             <span class="w-1.5 h-3.5 bg-amber-500 rounded-full"></span>
@@ -318,7 +319,7 @@ $result = $result ?? [];
                                         <small class="text-slate-400 text-[10px] block truncate mt-0.5">Format JPG/PNG</small>
                                     </div>
                                 </div>
-                                <button type="button" class="btn-download-berkas w-8 h-8 rounded-lg flex items-center justify-center transition bg-blue-50 hover:bg-blue-100 text-blue-600 shadow-sm" id="downloadFotoButton" data-download-url="">
+                                <button type="button" class="btn-download-berkas w-8 h-8 rounded-lg flex items-center justify-center transition bg-blue-50 hover:bg-blue-100 text-blue-600 shadow-sm" id="downloadFotoButton" data-download-url="" aria-label="Unduh foto">
                                     <i class="bi bi-download text-xs"></i>
                                 </button>
                             </div>
@@ -334,7 +335,7 @@ $result = $result ?? [];
                                         <small class="text-slate-400 text-[10px] block truncate mt-0.5">Format PDF</small>
                                     </div>
                                 </div>
-                                <button type="button" class="btn-download-berkas w-8 h-8 rounded-lg flex items-center justify-center transition bg-purple-50 hover:bg-purple-100 text-purple-600 shadow-sm" id="downloadCVButton" data-download-url="">
+                                <button type="button" class="btn-download-berkas w-8 h-8 rounded-lg flex items-center justify-center transition bg-purple-50 hover:bg-purple-100 text-purple-600 shadow-sm" id="downloadCVButton" data-download-url="" aria-label="Unduh CV">
                                     <i class="bi bi-download text-xs"></i>
                                 </button>
                             </div>
@@ -350,7 +351,7 @@ $result = $result ?? [];
                                         <small class="text-slate-400 text-[10px] block truncate mt-0.5">KHS / Transkrip Terakhir</small>
                                     </div>
                                 </div>
-                                <button type="button" class="btn-download-berkas w-8 h-8 rounded-lg flex items-center justify-center transition bg-emerald-50 hover:bg-emerald-100 text-emerald-600 shadow-sm" id="downloadTranskripButton" data-download-url="">
+                                <button type="button" class="btn-download-berkas w-8 h-8 rounded-lg flex items-center justify-center transition bg-emerald-50 hover:bg-emerald-100 text-emerald-600 shadow-sm" id="downloadTranskripButton" data-download-url="" aria-label="Unduh transkrip nilai">
                                     <i class="bi bi-download text-xs"></i>
                                 </button>
                             </div>
@@ -366,7 +367,7 @@ $result = $result ?? [];
                                         <small class="text-slate-400 text-[10px] block truncate mt-0.5">Format PDF bermaterai</small>
                                     </div>
                                 </div>
-                                <button type="button" class="btn-download-berkas w-8 h-8 rounded-lg flex items-center justify-center transition bg-rose-50 hover:bg-rose-100 text-rose-600 shadow-sm" id="downloadSuratButton" data-download-url="">
+                                <button type="button" class="btn-download-berkas w-8 h-8 rounded-lg flex items-center justify-center transition bg-rose-50 hover:bg-rose-100 text-rose-600 shadow-sm" id="downloadSuratButton" data-download-url="" aria-label="Unduh surat pernyataan">
                                     <i class="bi bi-download text-xs"></i>
                                 </button>
                             </div>
@@ -375,7 +376,7 @@ $result = $result ?? [];
                 </div>
  
                 <!-- Panel 3: Tugas & Presentasi -->
-                <div id="tab-presentasi" class="tab-panel space-y-4">
+                <div id="tab-presentasi" class="tab-panel hidden [grid-area:1/1] transition-opacity duration-200 ease-in-out space-y-4">
                     <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
                         <h6 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-1.5">
                             <span class="w-1.5 h-3.5 bg-indigo-600 rounded-full"></span>
@@ -401,7 +402,7 @@ $result = $result ?? [];
                                         <small class="text-slate-400 text-[10px] block truncate mt-0.5">Format PDF</small>
                                     </div>
                                 </div>
-                                <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-red-50 hover:bg-red-100 text-red-600 shadow-sm" id="downloadMakalahButton" data-download-url="">
+                                <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-red-50 hover:bg-red-100 text-red-600 shadow-sm" id="downloadMakalahButton" data-download-url="" aria-label="Unduh makalah">
                                     <i class="bi bi-download text-xs"></i>
                                 </button>
                             </div>
@@ -417,7 +418,7 @@ $result = $result ?? [];
                                         <small class="text-slate-400 text-[10px] block truncate mt-0.5">Format PPTX</small>
                                     </div>
                                 </div>
-                                <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-orange-50 hover:bg-orange-100 text-orange-600 shadow-sm" id="downloadPptButton" data-download-url="">
+                                <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-orange-50 hover:bg-orange-100 text-orange-600 shadow-sm" id="downloadPptButton" data-download-url="" aria-label="Unduh PPT">
                                     <i class="bi bi-download text-xs"></i>
                                 </button>
                             </div>
@@ -439,7 +440,7 @@ $result = $result ?? [];
                 <input type="hidden" id="modalUserId" value="">
                 
                 <div class="flex flex-col sm:flex-row justify-between items-center w-full gap-3">
-                    <button type="button" class="w-full sm:w-auto px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 font-semibold text-xs rounded-xl transition flex items-center justify-center gap-1.5" data-bs-dismiss="modal">
+                    <button type="button" class="w-full sm:w-auto px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 font-semibold text-xs rounded-xl transition flex items-center justify-center gap-1.5" data-modal-close>
                         <i class="bi bi-x-lg"></i>Tutup
                     </button>
                     <div class="flex flex-wrap gap-2.5 w-full sm:w-auto justify-end">
@@ -469,14 +470,15 @@ $result = $result ?? [];
 </div>
 
 <!-- Modal Kirim Pesan Individual -->
-<div class="modal fade" id="sendMessageModal" tabindex="-1" aria-labelledby="sendMessageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="sendMessageModal" aria-labelledby="sendMessageModalLabel" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
-                <h5 class="modal-title font-bold flex items-center gap-2" id="sendMessageModalLabel">
+                <h5 class="font-bold flex items-center gap-2" id="sendMessageModalLabel">
                     <i class="bi bi-chat-dots text-lg"></i>Kirim Pesan
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <div class="p-6 space-y-4">
                  <div>
@@ -491,7 +493,7 @@ $result = $result ?? [];
             <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3">
                 <input type="hidden" id="messageUserId" value="">
                 <input type="hidden" id="messageMahasiswaId" value="">
-                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-modal-close>Batal</button>
                 <button type="button" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-blue-500/10 flex items-center gap-2" id="sendIndividualMessage">
                     <i class="bi bi-send"></i> Kirim
                 </button>
@@ -501,6 +503,6 @@ $result = $result ?? [];
 </div>
 
 <!-- Load Custom JavaScript -->
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/participants.js?v=<?= time() ?>"></script>
+<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/admin/peserta.js?v=<?= time() ?>"></script>
 
 

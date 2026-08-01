@@ -11,14 +11,12 @@ use App\Controllers\User\DashboardController;
 use App\Controllers\User\BiodataController;
 use App\Controllers\User\BerkasController;
 use App\Controllers\User\TesTulisController;
-use App\Controllers\User\JadwalController;
 use App\Controllers\User\ProfilController;
 use App\Controllers\User\PresentasiUserController;
 
 // Controllers Admin
 use App\Controllers\Admin\DashboardAdminController;
 use App\Controllers\Admin\PesertaController;
-use App\Controllers\Admin\PengajuanJudulController;
 use App\Controllers\Admin\BankSoalController;
 use App\Controllers\Admin\ImporSoalController;
 use App\Controllers\Admin\JadwalTesController;

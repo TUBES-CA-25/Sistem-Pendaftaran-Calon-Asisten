@@ -2,7 +2,6 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
-use App\Model\BankSoal;
 
 class JadwalTesController extends Controller
 {
@@ -68,7 +67,7 @@ class JadwalTesController extends Controller
              }
              
              $fullData = array_merge($data, $sidebarData);
-             $this->view('layouts/mainAdmin', $fullData);
+             $this->view('layouts/main_admin', $fullData);
         }
     }
 
@@ -80,8 +79,7 @@ class JadwalTesController extends Controller
         header('Content-Type: application/json');
         
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -92,8 +90,7 @@ class JadwalTesController extends Controller
         $kegiatan = $input['kegiatan'] ?? 'Tes Tertulis';
 
         if (empty($ids) || !$id_ruangan || !$tanggal || !$waktu) {
-            echo json_encode(['status' => 'error', 'message' => 'Lengkapi semua data']);
-            return;
+            self::jsonError('Lengkapi semua data');
         }
 
         try {
@@ -123,12 +120,12 @@ class JadwalTesController extends Controller
             if ($successCount > 0) {
                 $msg = "Berhasil menjadwalkan $successCount mahasiswa.";
                 if ($skippedCount > 0) $msg .= " ($skippedCount dilewati karena sudah ada jadwal)";
-                echo json_encode(['status' => 'success', 'message' => $msg]);
+                self::jsonSuccess([], $msg);
             } else {
-                 echo json_encode(['status' => 'error', 'message' => 'Semua mahasiswa yang dipilih sudah memiliki jadwal.']);
+                 self::jsonError('Semua mahasiswa yang dipilih sudah memiliki jadwal.');
             }
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -143,17 +140,16 @@ class JadwalTesController extends Controller
         $id = $input['id'] ?? null;
 
         if (!$id) {
-            echo json_encode(['status' => 'error', 'message' => 'ID tidak valid']);
-            return;
+            self::jsonError('ID tidak valid');
         }
 
         try {
             $db = \App\Core\Model::getDB();
             $stmt = $db->prepare("DELETE FROM wawancara WHERE id = ?");
             $stmt->execute([$id]);
-            echo json_encode(['status' => 'success', 'message' => 'Jadwal berhasil dihapus']);
+            self::jsonSuccess([], 'Jadwal berhasil dihapus');
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -165,8 +161,7 @@ class JadwalTesController extends Controller
         header('Content-Type: application/json');
         
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -177,8 +172,7 @@ class JadwalTesController extends Controller
         $kegiatan = $input['kegiatan'] ?? null;
 
         if (!$id || !$id_ruangan || !$tanggal || !$waktu || !$kegiatan) {
-            echo json_encode(['status' => 'error', 'message' => 'Lengkapi semua data']);
-            return;
+            self::jsonError('Lengkapi semua data');
         }
 
         try {
@@ -187,9 +181,9 @@ class JadwalTesController extends Controller
             $stmt = $db->prepare($sql);
             $stmt->execute([$id_ruangan, $kegiatan, $waktu, $tanggal, $id]);
 
-            echo json_encode(['status' => 'success', 'message' => 'Jadwal berhasil diupdate']);
+            self::jsonSuccess([], 'Jadwal berhasil diupdate');
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 }

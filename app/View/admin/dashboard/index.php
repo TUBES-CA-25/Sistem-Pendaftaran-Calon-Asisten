@@ -93,11 +93,11 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
                 <!-- Navigation -->
                 <div class="flex items-center justify-center gap-4 mb-6">
-                    <button id="prevMonth" class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center border-0 text-slate-600 transition">
+                    <button id="prevMonth" class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center border-0 text-slate-600 transition" aria-label="Bulan sebelumnya">
                         <i class='bx bx-chevron-left text-lg'></i>
                     </button>
                     <h6 class="text-sm font-bold text-slate-800 mb-0" id="currentMonth"><?= $currentMonthName ?></h6>
-                    <button id="nextMonth" class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center border-0 text-slate-600 transition">
+                    <button id="nextMonth" class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center border-0 text-slate-600 transition" aria-label="Bulan berikutnya">
                         <i class='bx bx-chevron-right text-lg'></i>
                     </button>
                 </div>
@@ -177,33 +177,34 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
 </div>
 
 <!-- Add Activity Modal -->
-<div class="modal fade" id="addActivityModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden bg-white">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="addActivityModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden bg-white">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
                         <i class="bx bx-calendar-plus text-blue-600"></i>Tambah Kegiatan
                     </h5>
-                    <button type="button" class="text-slate-400 hover:text-slate-600" data-bs-dismiss="modal">
+                    <button type="button" class="text-slate-400 hover:text-slate-600" data-modal-close aria-label="Tutup">
                         <i class="bi bi-x-lg text-lg"></i>
                     </button>
                 </div>
                 <form id="addActivityForm" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Judul Kegiatan</label>
+                        <label for="judulKegiatan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Judul Kegiatan</label>
                         <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="judul" id="judulKegiatan" required>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tanggal</label>
+                        <label for="tanggalKegiatan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tanggal</label>
                         <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="tanggal" id="tanggalKegiatan" required>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Deskripsi</label>
+                        <label for="deskripsiKegiatan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Deskripsi</label>
                         <textarea class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="deskripsi" id="deskripsiKegiatan" rows="3"></textarea>
                     </div>
                     <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                        <button type="button" class="px-5 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm rounded-xl transition cursor-pointer" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="px-5 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm rounded-xl transition cursor-pointer" data-modal-close>Batal</button>
                         <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition border-0 cursor-pointer">Simpan</button>
                     </div>
                 </form>
@@ -213,15 +214,16 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
 </div>
 
 <!-- Edit Deadline Modal -->
-<div class="modal fade" id="editDeadlineModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden bg-white">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="editDeadlineModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-sm scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden bg-white">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
                         <i class="bx bx-edit text-blue-600"></i>Edit Deadline
                     </h5>
-                    <button type="button" class="text-slate-400 hover:text-slate-600" data-bs-dismiss="modal">
+                    <button type="button" class="text-slate-400 hover:text-slate-600" data-modal-close aria-label="Tutup">
                         <i class="bi bi-x-lg text-lg"></i>
                     </button>
                 </div>
@@ -240,13 +242,14 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
 
 
 <!-- Activity Detail/Action Modal -->
-<div class="modal fade" id="activityActionModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
-        <div class="modal-content border-0 bg-white rounded-[24px] shadow-2xl overflow-hidden relative">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="activityActionModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100" style="max-width: 480px;">
+        <div class="relative bg-white w-full bg-white rounded-[24px] shadow-2xl overflow-hidden relative">
             
             <!-- Header section (Gradient Blue to Cyan) -->
             <div class="bg-gradient-to-br from-primary to-secondary p-6 pb-5 relative">
-                <button type="button" class="absolute top-3 right-3 w-8 h-8 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition-colors shadow-sm cursor-pointer border-0" data-bs-dismiss="modal">
+                <button type="button" class="absolute top-3 right-3 w-8 h-8 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition-colors shadow-sm cursor-pointer border-0" data-modal-close aria-label="Tutup">
                     <i class="bi bi-x-lg text-xs"></i>
                 </button>
                 <h5 class="text-[17px] font-extrabold text-white leading-snug pr-8 tracking-tight uppercase" id="displayJudul"></h5>
@@ -303,34 +306,35 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
 
 
 <!-- Edit Activity Modal -->
-<div class="modal fade" id="editActivityModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden bg-white">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="editActivityModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden bg-white">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
                         <i class="bx bx-edit-alt text-blue-600"></i>Edit Kegiatan
                     </h5>
-                    <button type="button" class="text-slate-400 hover:text-slate-600" data-bs-dismiss="modal">
+                    <button type="button" class="text-slate-400 hover:text-slate-600" data-modal-close aria-label="Tutup">
                         <i class="bi bi-x-lg text-lg"></i>
                     </button>
                 </div>
                 <form id="editActivityForm" class="space-y-4">
                     <input type="hidden" name="id" id="editIdKegiatan">
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Judul Kegiatan</label>
+                        <label for="editJudulKegiatan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Judul Kegiatan</label>
                         <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="judul" id="editJudulKegiatan" required>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tanggal</label>
+                        <label for="editTanggalKegiatan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tanggal</label>
                         <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="tanggal" id="editTanggalKegiatan" required>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Deskripsi</label>
+                        <label for="editDeskripsiKegiatan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Deskripsi</label>
                         <textarea class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="deskripsi" id="editDeskripsiKegiatan" rows="3"></textarea>
                     </div>
                     <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                        <button type="button" class="px-5 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm rounded-xl transition" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="px-5 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm rounded-xl transition" data-modal-close>Batal</button>
                         <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition">Update</button>
                     </div>
                 </form>
@@ -343,4 +347,4 @@ $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
     window.eventsData = <?= json_encode($kegiatanBulanIni ?? []) ?>;
     window.baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
 </script>
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/admin-dashboard.js"></script>
+<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/admin/dashboard.js"></script>

@@ -3,15 +3,15 @@ $notifications = $notifications ?? [];
 $count = $count ?? 0;
 
 $html = '
-<li class="dropdown-header flex justify-between items-center bg-gray-50/85 px-4 py-3 border-b border-gray-100">
+<li class="flex justify-between items-center bg-gray-50/85 px-4 py-3 border-b border-gray-100">
     <span class="font-bold text-gray-800">Notifikasi</span>';
-if ($count > 0) {
+if ($count> 0) {
     $html .= '<span class="bg-primary-dark text-white rounded-full px-2 py-1 text-xs">' . $count . '</span>';
 }
 $html .= '
 </li>';
 
-if (count($notifications) > 0) {
+if (count($notifications)> 0) {
     $limitedNotifs = array_slice($notifications, 0, 5);
     foreach ($limitedNotifs as $notif) {
         $dateStr = '';

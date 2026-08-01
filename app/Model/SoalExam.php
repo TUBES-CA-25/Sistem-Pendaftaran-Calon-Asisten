@@ -82,7 +82,7 @@ class SoalExam extends Model {
 
     public function updateSoal($id, SoalExam $soal) {
         $sql = "UPDATE " . static::$table . " SET deskripsi = ?, pilihan = ?, jawaban = ?, status_soal = ?, modified = ? WHERE id = ?";
-    
+
         $date = date('Y-m-d H:i:s');
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(1, $soal->deskripsi);
@@ -92,6 +92,37 @@ class SoalExam extends Model {
         $stmt->bindParam(5, $date);
         $stmt->bindParam(6, $id);
         return $stmt->execute();
+    }
+
+    /**
+     * Sama seperti updateSoal(), tetapi ikut memperbarui kolom image_url.
+     *
+     * Dibuat karena BankSoalController sebelumnya menulis SQL UPDATE sendiri
+     * hanya untuk bisa menyertakan image_url — akses data kini kembali ke Model.
+     */
+    public function updateSoalWithImage($id, SoalExam $soal, $imageUrl) {
+        $sql = "UPDATE " . static::$table . " SET deskripsi = ?, image_url = ?, pilihan = ?, jawaban = ?, status_soal = ?, modified = ? WHERE id = ?";
+
+        $date = date('Y-m-d H:i:s');
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $soal->deskripsi);
+        $stmt->bindParam(2, $imageUrl);
+        $stmt->bindParam(3, $soal->pilihan);
+        $stmt->bindParam(4, $soal->jawaban);
+        $stmt->bindParam(5, $soal->status);
+        $stmt->bindParam(6, $date);
+        $stmt->bindParam(7, $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    /** Ambil path gambar satu soal (dipakai saat menghapus soal beserta berkasnya). */
+    public function getImageUrlById($id) {
+        $sql = "SELECT image_url FROM " . static::$table . " WHERE id = ?";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['image_url'] ?? null;
     }
     
     public function getCountSoal() {

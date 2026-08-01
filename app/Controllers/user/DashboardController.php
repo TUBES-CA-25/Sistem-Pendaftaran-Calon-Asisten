@@ -37,10 +37,6 @@ class DashboardController extends Controller {
         $dashboardUser = new DashboardUser();
         return $dashboardUser->getStatusPpt();
     }
-    public static function getPptJudulAccStatus() {
-        $dashboardUser = new DashboardUser();
-        return $dashboardUser->getPptAccStatus();
-    }
     public static function getGraduationStatus() {
         $dashboardUser = new DashboardUser();
         return $dashboardUser->getGraduationStatus();
@@ -93,36 +89,7 @@ class DashboardController extends Controller {
         return $i;
     }
 
-    public static function getPercentage() {
-        $completed = self::getMajorStagesSelesai(); 
-        $total = 5; 
-        return ($completed / $total) * 100; 
-    }
     
-    public static function generateCircle($percentage) {
-        $radius = 38; // Radius lingkaran
-        $circumference = 2 * pi() * $radius; // Keliling lingkaran
-        $offset = $circumference * (1 - $percentage / 100); // Hitung offset
-    
-        return "
-        <div class=\"progress\">
-            <svg width=\"100\" height=\"100\">
-                <circle cx=\"50\" cy=\"50\" r=\"$radius\" stroke=\"#e6e6e6\" stroke-width=\"14\" fill=\"none\"></circle>
-                <circle 
-                    cx=\"50\" 
-                    cy=\"50\" 
-                    r=\"$radius\" 
-                    stroke=\"#00aaff\" 
-                    stroke-width=\"14\" 
-                    fill=\"none\" 
-                    stroke-dasharray=\"$circumference\" 
-                    stroke-dashoffset=\"$offset\"
-                    transform=\"rotate(-90 50 50)\"
-                ></circle>
-            </svg>
-            <div class=\"number\">{$percentage}%</div>
-        </div>";
-    }
     
     public static function getActivities() {
         header('Content-Type: application/json');
@@ -146,18 +113,10 @@ class DashboardController extends Controller {
             include __DIR__ . '/../../View/user/dashboard/partials/upcoming_activities.php';
             $upcomingHtml = ob_get_clean();
             
-            echo json_encode([
-                'status' => 'success',
-                'data' => $activities,
-                'calendarHtml' => $calendarHtml,
-                'upcomingHtml' => $upcomingHtml
-            ]);
+            self::jsonSuccess(['data' => $activities, 'calendarHtml' => $calendarHtml, 'upcomingHtml' => $upcomingHtml]);
         } catch (\Exception $e) {
             http_response_code(500);
-            echo json_encode([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ]);
+            self::jsonError($e->getMessage());
         }
     }
 }

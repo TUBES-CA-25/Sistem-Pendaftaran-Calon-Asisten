@@ -106,12 +106,13 @@ $mahasiswaList = $mahasiswaList ?? [];
 </main>
 
 <!-- Modal Detail -->
-<div class="modal fade" id="detailPengajuanModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="detailPengajuanModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
-                <h5 class="modal-title font-bold flex items-center gap-2"><i class="bi bi-person-badge text-lg"></i>Detail Presentasi</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <h5 class="font-bold flex items-center gap-2"><i class="bi bi-person-badge text-lg"></i>Detail Presentasi</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <div class="p-6">
                 <div class="space-y-4">
@@ -138,12 +139,13 @@ $mahasiswaList = $mahasiswaList ?? [];
 </div>
 
 <!-- Modal Send Message -->
-<div class="modal fade" id="sendMessageModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="sendMessageModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
-                <h5 class="modal-title font-bold flex items-center gap-2"><i class="bi bi-chat-dots text-lg"></i>Kirim Pesan Revisi</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <h5 class="font-bold flex items-center gap-2"><i class="bi bi-chat-dots text-lg"></i>Kirim Pesan Revisi</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <div class="p-6">
                 <form id="formSendMessage">
@@ -154,138 +156,12 @@ $mahasiswaList = $mahasiswaList ?? [];
                 </form>
             </div>
             <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3">
-                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-modal-close>Batal</button>
                 <button type="submit" form="formSendMessage" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-blue-500/10 flex items-center gap-2"><i class="bi bi-send"></i> Kirim</button>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-$(document).ready(function() {
-    const APP_URL = '<?= APP_URL ?>';
-    let currentMessageId = null, currentUserId = null;
-
-    $('#searchPengajuan').on('keyup', function() {
-        const term = $(this).val().toLowerCase();
-        $('#tablePengajuan tbody tr').filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(term) > -1)
-        });
-    });
-
-    $('.btn-detail-pengajuan').on('click', function() {
-        const data = $(this).data();
-        currentUserId = data.userid;
-        
-        $('#detailNama').text(data.nama);
-        $('#detailStambuk').text(data.stambuk);
-        $('#detailJudul').text(data.judul);
-        
-        $('#btnDownloadPpt').data('url', data.ppt);
-        $('#btnDownloadMakalah').data('url', data.makalah);
-        
-        // Visual indicator for active status in modal
-        if (data.status == 1) { // Accepted
-            $('#btnModalAccept').removeClass('bg-emerald-600 hover:bg-emerald-700 text-white').addClass('border border-emerald-600 text-emerald-600 bg-white cursor-not-allowed').attr('disabled', true).html('<i class="bi bi-check-circle-fill"></i> Berhasil Diterima');
-            $('#btnModalReject').removeClass('border border-red-600 text-red-600 bg-white cursor-not-allowed').addClass('bg-red-600 hover:bg-red-700 text-white').attr('disabled', false).html('<i class="bi bi-x-circle"></i> Tolak Judul');
-        } else if (data.status == 2) { // Rejected
-            $('#btnModalReject').removeClass('bg-red-600 hover:bg-red-700 text-white').addClass('border border-red-600 text-red-600 bg-white cursor-not-allowed').attr('disabled', true).html('<i class="bi bi-x-circle-fill"></i> Berhasil Ditolak');
-            $('#btnModalAccept').removeClass('border border-emerald-600 text-emerald-600 bg-white cursor-not-allowed').addClass('bg-emerald-600 hover:bg-emerald-700 text-white').attr('disabled', false).html('<i class="bi bi-check-circle"></i> Terima Judul');
-        } else {
-            $('#btnModalAccept').removeClass('border border-emerald-600 text-emerald-600 bg-white cursor-not-allowed').addClass('bg-emerald-600 hover:bg-emerald-700 text-white').attr('disabled', false).html('<i class="bi bi-check-circle"></i> Terima Judul');
-            $('#btnModalReject').removeClass('border border-red-600 text-red-600 bg-white cursor-not-allowed').addClass('bg-red-600 hover:bg-red-700 text-white').attr('disabled', false).html('<i class="bi bi-x-circle"></i> Tolak Judul');
-        }
-        
-        new bootstrap.Modal('#detailPengajuanModal').show();
-    });
-
-    $('#btnDownloadPpt').click(function() {
-        const url = $(this).data('url');
-        if(url) window.location.href = APP_URL.replace(/\/public$/, '') + '/res/pptUser/' + url;
-        else showAlert('File tidak tersedia', false);
-    });
-    $('#btnDownloadMakalah').click(function() {
-        const url = $(this).data('url');
-        if(url) window.location.href = APP_URL.replace(/\/public$/, '') + '/res/makalahUser/' + url;
-        else showAlert('File tidak tersedia', false);
-    });
-
-    $('#btnModalAccept').click(function() {
-        const nama = $('#detailNama').text();
-        const detailModalEl = document.getElementById('detailPengajuanModal');
-        
-        // Hide detail modal FIRST
-        const detailModal = bootstrap.Modal.getInstance(detailModalEl);
-        if (detailModal) detailModal.hide();
-
-        // Wait for it to close then show confirmation
-        setTimeout(() => {
-            showActionConfirmation({
-                title: 'Terima Judul',
-                message: `Anda akan menerima judul untuk:<br><strong class="text-lg text-slate-800 font-bold block my-2">${nama}</strong><span class="text-emerald-600 small font-semibold"><i class="bi bi-check-circle me-1"></i>Judul memenuhi kriteria</span>`,
-                btnText: 'Terima Judul',
-                type: 'success', // Green
-                onConfirm: function() {
-                    $.post(APP_URL + '/updatestatus', { id: currentUserId, status: 1 }, function(res) {
-                        if(res.status === 'success') { 
-                            showAlert('Judul berhasil diterima!', true);
-                            setTimeout(() => location.reload(), 1000);
-                        } else {
-                            showAlert(res.message || 'Gagal menerima judul', false);
-                        }
-                    }, 'json');
-                }
-            });
-        }, 300); // Small delay to allow fade out
-    });
-
-    $('#btnModalReject').click(function() {
-        const nama = $('#detailNama').text();
-        const detailModalEl = document.getElementById('detailPengajuanModal');
-
-        // Hide detail modal FIRST
-        const detailModal = bootstrap.Modal.getInstance(detailModalEl);
-        if (detailModal) detailModal.hide();
-
-        // Wait for it to close then show confirmation
-        setTimeout(() => {
-            showActionConfirmation({
-                title: 'Tolak Judul',
-                message: `Anda akan menolak judul untuk:<br><strong class="text-lg text-slate-800 font-bold block my-2">${nama}</strong><span class="text-red-600 small font-semibold"><i class="bi bi-exclamation-triangle me-1"></i>Mahasiswa akan diminta mengajukan ulang</span>`,
-                btnText: 'Tolak Judul',
-                type: 'danger', // Red
-                onConfirm: function() {
-                    $.post(APP_URL + '/updatestatus', { id: currentUserId, status: 2 }, function(res) {
-                        if(res.status === 'success') { 
-                            showAlert('Judul berhasil ditolak!', true);
-                            setTimeout(() => location.reload(), 1000);
-                        } else {
-                            showAlert(res.message || 'Gagal menolak judul', false);
-                        }
-                    }, 'json');
-                }
-            });
-        }, 300); // Small delay to allow fade out
-    });
-
-    $('.btn-send-message').click(function() {
-        currentMessageId = $(this).data('id');
-        currentUserId = $(this).data('userid');
-        $('#messageContent').val('');
-        new bootstrap.Modal('#sendMessageModal').show();
-    });
-
-    $('#formSendMessage').submit(function(e) {
-        e.preventDefault();
-        $.post(APP_URL + '/updatepresentasi', { id: currentMessageId, userid: currentUserId, message: $('#messageContent').val() }, function(res) {
-            bootstrap.Modal.getInstance(document.getElementById('sendMessageModal')).hide();
-            if(res.status === 'success') {
-                showAlert('Pesan berhasil terkirim!', true);
-            } else {
-                showAlert(res.message || 'Gagal mengirim pesan', false);
-            }
-        }, 'json');
-    });
-});
-</script>
+<script src="<?= APP_URL ?>/Assets/js/admin/judul.js?v=<?= time() ?>"></script>
 

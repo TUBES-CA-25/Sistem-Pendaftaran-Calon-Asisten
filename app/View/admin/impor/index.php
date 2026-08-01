@@ -163,4 +163,4 @@ $bankSoalList = $data['bankSoalList'] ?? [];
 </script>
 
 <!-- Load External JavaScript -->
-<script src="<?= APP_URL ?>/Assets/js/exam_import_export.js"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/exam-import.js"></script>

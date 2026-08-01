@@ -19,21 +19,18 @@ class ForgotPasswordController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
-            echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
-            return;
+            self::jsonError('Method not allowed');
         }
 
         $email = $_POST['email'] ?? '';
         if (empty($email)) {
-            echo json_encode(['status' => 'error', 'message' => 'Email wajib diisi']);
-            return;
+            self::jsonError('Email wajib diisi');
         }
 
         $user = UserModel::findByEmail($email);
 
         if (!$user) {
-            echo json_encode(['status' => 'error', 'message' => 'Email tidak ditemukan']);
-            return;
+            self::jsonError('Email tidak ditemukan');
         }
 
         // Generate Token
@@ -47,42 +44,22 @@ class ForgotPasswordController extends Controller
             $resetLink = Env::get('APP_URL') . '/reset-password?token=' . $token;
             
             $subject = "Reset Password - IC-ASSIST";
-            $body = "
-                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;'>
-                    <div style='background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center;'>
-                        <h2 style='color: #0097d9; margin: 0 0 5px 0;'>IC-ASSIST</h2>
-                        <p style='color: #6c757d; margin: 0 0 30px 0; font-size: 14px;'>Sistem Pendaftaran Calon Asisten</p>
-                        
-                        <div style='text-align: left; color: #333333;'>
-                            <p>Halo,</p>
-                            <p>Kami menerima permintaan untuk mereset password akun Anda. Jika ini benar Anda, silakan klik tombol di bawah ini:</p>
-                        </div>
-
-                        <div style='margin: 30px 0;'>
-                            <a href='{$resetLink}' style='background-color: #0097d9; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block;'>Reset Password Saya</a>
-                        </div>
-                        
-                        <div style='text-align: left; color: #6c757d; font-size: 13px; border-top: 1px solid #eeeeee; padding-top: 20px;'>
-                            <p>Link ini hanya berlaku selama 1 jam.</p>
-                            <p style='font-size: 12px; color: #adb5bd;'>Jika Anda tidak merasa melakukan permintaan ini, abaikan saja email ini. Akun Anda tetap aman.</p>
-                        </div>
-                        
-                        <div style='margin-top: 30px; font-size: 11px; color: #adb5bd;'>
-                            &copy; 2026 IC-ASSIST All rights reserved
-                        </div>
-                    </div>
-                </div>
-            ";
+            $body = Mailer::buildHtml(
+                'Kami menerima permintaan untuk mereset password akun Anda. Jika ini benar Anda, silakan klik tombol di bawah ini:',
+                Mailer::linkButton($resetLink, 'Reset Password Saya'),
+                'Link ini hanya berlaku selama 1 jam.',
+                'Jika Anda tidak merasa melakukan permintaan ini, abaikan saja email ini. Akun Anda tetap aman.'
+            );
 
             $sent = $mailer->send($email, $subject, $body);
 
             if ($sent === true) {
-                echo json_encode(['status' => 'success', 'message' => 'Link reset password telah dikirim ke email Anda. Cek inbox/spam.']);
+                self::jsonSuccess([], 'Link reset password telah dikirim ke email Anda. Cek inbox/spam.');
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Gagal mengirim email. Silakan coba lagi. ' . $sent]);
+                self::jsonError('Gagal mengirim email. Silakan coba lagi. ' . $sent);
             }
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Gagal memproses permintaan.']);
+            self::jsonError('Gagal memproses permintaan.');
         }
     }
 
@@ -110,8 +87,7 @@ class ForgotPasswordController extends Controller
     public function updatePassword()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
-            return;
+            self::jsonError('Method not allowed');
         }
 
         $token = $_POST['token'] ?? '';
@@ -119,21 +95,18 @@ class ForgotPasswordController extends Controller
         $confirmPassword = $_POST['confirm_password'] ?? '';
 
         if (empty($token) || empty($password) || empty($confirmPassword)) {
-            echo json_encode(['status' => 'error', 'message' => 'Semua kolom wajib diisi']);
-            return;
+            self::jsonError('Semua kolom wajib diisi');
         }
 
         if ($password !== $confirmPassword) {
-            echo json_encode(['status' => 'error', 'message' => 'Password tidak cocok']);
-            return;
+            self::jsonError('Password tidak cocok');
         }
 
         $tokenHash = hash('sha256', $token);
         $user = UserModel::findByResetToken($tokenHash);
 
         if (!$user) {
-            echo json_encode(['status' => 'error', 'message' => 'Token tidak valid atau kadaluarsa']);
-            return;
+            self::jsonError('Token tidak valid atau kadaluarsa');
         }
 
         // Update Password
@@ -142,9 +115,9 @@ class ForgotPasswordController extends Controller
         if ($userModel->updateUser($user['id'], $user['username'], $password)) {
             // Clear token
             $userModel->updateResetToken($user['id'], null);
-            echo json_encode(['status' => 'success', 'message' => 'Password berhasil diubah. Silakan login.']);
+            self::jsonSuccess([], 'Password berhasil diubah. Silakan login.');
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Gagal mengubah password.']);
+            self::jsonError('Gagal mengubah password.');
         }
     }
 }

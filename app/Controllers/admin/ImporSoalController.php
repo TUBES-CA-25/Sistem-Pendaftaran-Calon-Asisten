@@ -7,6 +7,24 @@ use App\Model\BankSoal;
 
 class ImporSoalController extends Controller
 {
+    /**
+     * Kolom template impor/ekspor soal.
+     *
+     * Dulu daftar ini ditulis tiga kali dengan isi identik (downloadTemplate,
+     * validateTemplateHeaders, exportSoal), sehingga mengganti satu nama kolom
+     * berarti menyunting tiga tempat. Sekarang satu sumber kebenaran.
+     */
+    private const CSV_HEADERS = [
+        'Deskripsi Soal',
+        'Tipe Soal (pilihan_ganda/essay)',
+        'Pilihan A',
+        'Pilihan B',
+        'Pilihan C',
+        'Pilihan D',
+        'Pilihan E (Opsional)',
+        'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
+    ];
+
     public function downloadTemplate()
     {
         // Try to serve physical file if exists
@@ -32,16 +50,7 @@ class ImporSoalController extends Controller
         }
 
         // Fallback: Headers for the template
-        $headers = [
-            'Deskripsi Soal',
-            'Tipe Soal (pilihan_ganda/essay)',
-            'Pilihan A',
-            'Pilihan B',
-            'Pilihan C',
-            'Pilihan D',
-            'Pilihan E (Opsional)',
-            'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
-        ];
+        $headers = self::CSV_HEADERS;
 
         // Clean ALL output buffers
         while (ob_get_level()) {
@@ -94,16 +103,11 @@ class ImporSoalController extends Controller
     /**
      * Validate file type - only accept CSV and Excel formats
      */
-    private function validateFileType($filename, $mimeType) {
+    private function validateFileType($filename) {
+        // Catatan: validasi hanya berdasarkan ekstensi. Daftar $allowedMimeTypes
+        // dan parameter $mimeType sebelumnya dibuat tetapi tidak pernah dibaca,
+        // jadi dihapus beserta panggilan mime_content_type() di pemanggilnya.
         $allowedExtensions = ['csv', 'xls', 'xlsx'];
-        $allowedMimeTypes = [
-            'text/csv',
-            'text/plain',
-            'application/csv',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/octet-stream' // Some browsers send this for Excel files
-        ];
 
         $fileExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
@@ -121,16 +125,7 @@ class ImporSoalController extends Controller
      * Validate template headers match expected format
      */
     private function validateTemplateHeaders($headers) {
-        $expectedHeaders = [
-            'Deskripsi Soal',
-            'Tipe Soal (pilihan_ganda/essay)',
-            'Pilihan A',
-            'Pilihan B',
-            'Pilihan C',
-            'Pilihan D',
-            'Pilihan E (Opsional)',
-            'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
-        ];
+        $expectedHeaders = self::CSV_HEADERS;
 
         $errors = [];
 
@@ -162,9 +157,8 @@ class ImporSoalController extends Controller
             $expectedClean = $cleanText($expected);
             $actualClean = $cleanText($actual);
 
-            // Log for debugging
-            error_log("Header validation [{$i}]: Expected='{$expectedClean}' (len=" . strlen($expectedClean) . "), Actual='{$actualClean}' (len=" . strlen($actualClean) . ")");
-            error_log("  Raw bytes - Expected: " . bin2hex($expected) . ", Actual: " . bin2hex($actual));
+            // Catatan: dua baris error_log per kolom (termasuk bin2hex) dihapus.
+            // Untuk template 8 kolom itu berarti 16 baris log tiap kali impor.
 
             // More flexible matching - check if actual contains expected keywords
             $isValid = false;
@@ -261,27 +255,11 @@ class ImporSoalController extends Controller
     }
 
     public function importSoal() {
-        // Clean any previous output FIRST
-        while (ob_get_level()) {
-            ob_end_clean();
-        }
-
-        header('Content-Type: application/json');
-
         try {
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
-
-            if (!isset($_SESSION['user']['id'])) {
-                error_log("Import failed: User not authenticated");
-                echo json_encode([
-                    'success' => false,
-                    'status' => 'error',
-                    'message' => 'User tidak terautentikasi. Silakan login kembali.'
-                ]);
-                http_response_code(403);
-                exit;
+            // Pesan & kode 403 dipertahankan persis seperti sebelumnya agar
+            // front-end impor tetap menampilkan instruksi login yang sama.
+            if (self::currentUserId() === null) {
+                self::jsonError('User tidak terautentikasi. Silakan login kembali.', 403);
             }
 
             $bankId = $_POST['bank_id'] ?? null;
@@ -331,12 +309,10 @@ class ImporSoalController extends Controller
 
             $fileTmpPath = $_FILES['file']['tmp_name'];
             $fileName = $_FILES['file']['name'];
-            $fileType = mime_content_type($fileTmpPath);
 
-            error_log("Import attempt: file={$fileName}, type={$fileType}, bank_id={$bankId}");
-
-            // Validate file type
-            $fileValidation = $this->validateFileType($fileName, $fileType);
+            // Validate file type (berdasarkan ekstensi; mime_content_type()
+            // dihapus karena hasilnya memang tidak pernah dipakai)
+            $fileValidation = $this->validateFileType($fileName);
             if (!$fileValidation['valid']) {
                 error_log("Import failed: Invalid file type - " . $fileValidation['error']);
                 echo json_encode([
@@ -569,19 +545,15 @@ class ImporSoalController extends Controller
                 ob_end_clean();
             }
 
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
-
-            if (!isset($_SESSION['user']['id'])) {
-                error_log("Export failed: User not authenticated");
+            // Endpoint ini mengirim CSV, bukan JSON. Karena itu kegagalan tetap
+            // dibalas teks polos (bukan jsonError) supaya unduhan tidak rusak.
+            if (self::currentUserId() === null) {
                 header('HTTP/1.1 403 Forbidden');
                 die('User tidak terautentikasi. Silakan login kembali.');
             }
 
             $bankId = $_GET['bank_id'] ?? null;
             if (!$bankId) {
-                error_log("Export failed: No bank_id provided");
                 header('HTTP/1.1 400 Bad Request');
                 die('Bank Soal ID tidak valid');
             }
@@ -626,16 +598,7 @@ class ImporSoalController extends Controller
             fputs($output, "\xEF\xBB\xBF");
 
             // Headers
-            $headers = [
-                'Deskripsi Soal',
-                'Tipe Soal (pilihan_ganda/essay)',
-                'Pilihan A',
-                'Pilihan B',
-                'Pilihan C',
-                'Pilihan D',
-                'Pilihan E (Opsional)',
-                'Jawaban Benar (A/B/C/D/E atau Kunci Jawaban)'
-            ];
+            $headers = self::CSV_HEADERS;
 
             fputcsv($output, $headers);
 

@@ -4,8 +4,6 @@ session_start();
 use App\Core\Controller;
 use App\Core\View;
 use App\Model\UserModel;
-use App\Model\Mahasiswa;
-use App\Model\Absensi;
 use App\Core\Mailer;
 
 class AuthController extends Controller
@@ -153,32 +151,12 @@ class AuthController extends Controller
                 // Send email
                 $mailer = new Mailer();
                 $subject = "Kode OTP Registrasi - IC-ASSIST";
-                $body = "
-                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;'>
-                        <div style='background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center;'>
-                            <h2 style='color: #0097d9; margin: 0 0 5px 0;'>IC-ASSIST</h2>
-                            <p style='color: #6c757d; margin: 0 0 30px 0; font-size: 14px;'>Sistem Pendaftaran Calon Asisten</p>
-                            
-                            <div style='text-align: left; color: #333333;'>
-                                <p>Halo,</p>
-                                <p>Terima kasih telah mendaftar di IC-ASSIST. Gunakan kode OTP di bawah ini untuk memverifikasi pendaftaran akun baru Anda:</p>
-                            </div>
-
-                            <div style='margin: 30px 0;'>
-                                <div style='background-color: #f1f3f5; color: #0f172a; padding: 15px 30px; border-radius: 10px; font-weight: bold; font-size: 32px; display: inline-block; letter-spacing: 5px;'>{$otp}</div>
-                            </div>
-                            
-                            <div style='text-align: left; color: #6c757d; font-size: 13px; border-top: 1px solid #eeeeee; padding-top: 20px;'>
-                                <p>Kode OTP ini hanya berlaku selama 5 menit.</p>
-                                <p style='font-size: 12px; color: #adb5bd;'>Jika Anda tidak merasa melakukan pendaftaran ini, abaikan saja email ini.</p>
-                            </div>
-                            
-                            <div style='margin-top: 30px; font-size: 11px; color: #adb5bd;'>
-                                &copy; 2026 IC-ASSIST All rights reserved
-                            </div>
-                        </div>
-                    </div>
-                ";
+                $body = Mailer::buildHtml(
+                    'Terima kasih telah mendaftar di IC-ASSIST. Gunakan kode OTP di bawah ini untuk memverifikasi pendaftaran akun baru Anda:',
+                    Mailer::otpBox($otp),
+                    'Kode OTP ini hanya berlaku selama 5 menit.',
+                    'Jika Anda tidak merasa melakukan pendaftaran ini, abaikan saja email ini.'
+                );
 
                 $sent = $mailer->send($name, $subject, $body);
 
@@ -289,31 +267,11 @@ class AuthController extends Controller
             // Send email
             $mailer = new Mailer();
             $subject = "Kode OTP Registrasi Baru - IC-ASSIST";
-            $body = "
-                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;'>
-                    <div style='background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center;'>
-                        <h2 style='color: #0097d9; margin: 0 0 5px 0;'>IC-ASSIST</h2>
-                        <p style='color: #6c757d; margin: 0 0 30px 0; font-size: 14px;'>Sistem Pendaftaran Calon Asisten</p>
-                        
-                        <div style='text-align: left; color: #333333;'>
-                            <p>Halo,</p>
-                            <p>Berikut adalah kode OTP registrasi Anda yang baru untuk memverifikasi pembuatan akun:</p>
-                        </div>
-
-                        <div style='margin: 30px 0;'>
-                            <div style='background-color: #f1f3f5; color: #0f172a; padding: 15px 30px; border-radius: 10px; font-weight: bold; font-size: 32px; display: inline-block; letter-spacing: 5px;'>{$otp}</div>
-                        </div>
-                        
-                        <div style='text-align: left; color: #6c757d; font-size: 13px; border-top: 1px solid #eeeeee; padding-top: 20px;'>
-                            <p>Kode OTP ini berlaku selama 5 menit.</p>
-                        </div>
-                        
-                        <div style='margin-top: 30px; font-size: 11px; color: #adb5bd;'>
-                            &copy; 2026 IC-ASSIST All rights reserved
-                        </div>
-                    </div>
-                </div>
-            ";
+            $body = Mailer::buildHtml(
+                'Berikut adalah kode OTP registrasi Anda yang baru untuk memverifikasi pembuatan akun:',
+                Mailer::otpBox($otp),
+                'Kode OTP ini berlaku selama 5 menit.'
+            );
 
             $sent = $mailer->send($email, $subject, $body);
 

@@ -88,14 +88,12 @@ class TesTulisController extends Controller {
             $activeBank = $bankModel->getActiveBank();
 
             if (!$activeBank) {
-                echo json_encode(['status' => 'error', 'message' => 'Tidak ada ujian aktif']);
-                return;
+                self::jsonError('Tidak ada ujian aktif');
             }
 
             // Check if user has already completed the exam
             if (\App\Controllers\User\DashboardController::getAbsensiTesTertulis()) {
-                echo json_encode(['status' => 'error', 'message' => 'Anda sudah mengikuti tes tertulis.']);
-                return;
+                self::jsonError('Anda sudah mengikuti tes tertulis.');
             }
 
             if ($inputToken === $activeBank['token']) {
@@ -105,16 +103,12 @@ class TesTulisController extends Controller {
                 // Create unique session ID with timestamp to ensure timer resets on each new attempt
                 $_SESSION['exam_session_timestamp'] = time();
 
-                echo json_encode([
-                    'status' => 'success',
-                    'message' => 'Token valid',
-                    'bank_id' => $activeBank['id']
-                ]);
+                self::jsonSuccess(['bank_id' => $activeBank['id']], 'Token valid');
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Token salah']);
+                self::jsonError('Token salah');
             }
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -176,46 +170,19 @@ class TesTulisController extends Controller {
             http_response_code(200);
 
         } catch (\Throwable $e) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Backend Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine(),
-            ]);
+            self::jsonError('Backend Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
             error_log("Error di backend: " . $e->getMessage());
             http_response_code(500);
         }
     }
     
 
-    public static function viewAllSoal() {
-        $soalExam = new SoalExam();
-        $soal = $soalExam->getAll();
-        return $soal == null ? [] : $soal;
-    
-    }
-
-    /**
-     * Get all bank soal with statistics
-     */
-    public static function getAllBankSoal() {
-        $bankSoal = new \App\Model\BankSoal();
-        $banks = $bankSoal->getAllBanks();
-        return $banks == null ? [] : $banks;
-    }
 
     public static function getActiveBank() {
         $bankSoal = new \App\Model\BankSoal();
         return $bankSoal->getActiveBank();
     }
 
-    /**
-     * Get soal by bank ID
-     */
-    public static function getSoalByBank($bankId) {
-        $soalExam = new SoalExam();
-        $soal = $soalExam->getSoalByBankId($bankId);
-        return $soal == null ? [] : $soal;
-    }
 
     /**
      * Prepare all data for admin exam management page

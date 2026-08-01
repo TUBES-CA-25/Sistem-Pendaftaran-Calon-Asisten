@@ -17,14 +17,10 @@ class JadwalPresentasiController extends Controller
     public function saveJadwal()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
         $input = json_decode(file_get_contents('php://input'), true);
         $id_ruangan = $input['ruangan'] ?? "";
@@ -32,9 +28,7 @@ class JadwalPresentasiController extends Controller
         $waktu = $input['waktu'] ?? "";
         $mahasiswa = $input['selectedMahasiswa'] ?? "";
         if ( empty($id_ruangan) || empty($tanggal) || empty($waktu) || empty($mahasiswa)) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'All fields are required'. 'id ruangan : '.$id_ruangan.'tanggal : '.$tanggal.'waktu : '.$waktu.'Mahasiswa : '.$mahasiswa]);
-            return;
+            self::jsonError('All fields are required'. 'id ruangan : '.$id_ruangan.'tanggal : '.$tanggal.'waktu : '.$waktu.'Mahasiswa : '.$mahasiswa);
         }
         try {
             $presentasi = new JadwalPresentasi(
@@ -43,15 +37,12 @@ class JadwalPresentasiController extends Controller
                 $waktu
             );
             if ($presentasi->save($presentasi,$mahasiswa)) {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'success', 'message' => 'Jadwal dan mahasiswa berhasil disimpan']);
+                self::jsonSuccess([], 'Jadwal dan mahasiswa berhasil disimpan');
             } else {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'Jadwal gagal disimpan']);
+                self::jsonError('Jadwal gagal disimpan');
             }
         } catch (\Exception $e) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -74,15 +65,9 @@ class JadwalPresentasiController extends Controller
                 $row['photoPath'] = \App\Controllers\HomeController::getUserPhotoPath($row['foto'] ?? 'default.png');
             }
 
-            echo json_encode([
-                'status' => 'success',
-                'data' => $data
-            ]);
+            self::jsonSuccess(['data' => $data]);
         } catch (\Exception $e) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -96,8 +81,7 @@ class JadwalPresentasiController extends Controller
             }
 
             if (!isset($_SESSION['user']['id'])) {
-                echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-                return;
+                self::jsonError('User not logged in');
             }
 
             $id_user = $_SESSION['user']['id'];
@@ -110,22 +94,15 @@ class JadwalPresentasiController extends Controller
             $mahasiswa = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if (!$mahasiswa) {
-                echo json_encode(['status' => 'error', 'message' => 'Mahasiswa not found']);
-                return;
+                self::jsonError('Mahasiswa not found');
             }
 
             $jadwal = new JadwalPresentasi();
             $data = $jadwal->getJadwalByMahasiswaId($mahasiswa['id']);
 
-            echo json_encode([
-                'status' => 'success',
-                'data' => $data
-            ]);
+            self::jsonSuccess(['data' => $data]);
         } catch (\Exception $e) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -146,8 +123,7 @@ class JadwalPresentasiController extends Controller
         header('Content-Type: application/json');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
 
         try {
@@ -157,18 +133,17 @@ class JadwalPresentasiController extends Controller
             $waktu = $_POST['waktu'] ?? null;
 
             if (!$id || !$id_ruangan || !$tanggal || !$waktu) {
-                echo json_encode(['status' => 'error', 'message' => 'Semua field harus diisi']);
-                return;
+                self::jsonError('Semua field harus diisi');
             }
 
             $jadwal = new JadwalPresentasi();
             if ($jadwal->updateJadwal($id, $id_ruangan, $tanggal, $waktu)) {
-                echo json_encode(['status' => 'success', 'message' => 'Jadwal berhasil diupdate']);
+                self::jsonSuccess([], 'Jadwal berhasil diupdate');
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate jadwal']);
+                self::jsonError('Gagal mengupdate jadwal');
             }
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -177,26 +152,24 @@ class JadwalPresentasiController extends Controller
         header('Content-Type: application/json');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
 
         try {
             $id = $_POST['id'] ?? null;
 
             if (!$id) {
-                echo json_encode(['status' => 'error', 'message' => 'ID jadwal diperlukan']);
-                return;
+                self::jsonError('ID jadwal diperlukan');
             }
 
             $jadwal = new JadwalPresentasi();
             if ($jadwal->deleteJadwal($id)) {
-                echo json_encode(['status' => 'success', 'message' => 'Jadwal berhasil dihapus']);
+                self::jsonSuccess([], 'Jadwal berhasil dihapus');
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus jadwal']);
+                self::jsonError('Gagal menghapus jadwal');
             }
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -208,12 +181,9 @@ class JadwalPresentasiController extends Controller
             $jadwal = new JadwalPresentasi();
             $data = $jadwal->getMahasiswaWithoutSchedule();
 
-            echo json_encode([
-                'status' => 'success',
-                'data' => $data
-            ]);
+            self::jsonSuccess(['data' => $data]);
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -225,12 +195,9 @@ class JadwalPresentasiController extends Controller
             $jadwal = new JadwalPresentasi();
             $data = $jadwal->getAllRuangan();
 
-            echo json_encode([
-                'status' => 'success',
-                'data' => $data
-            ]);
+            self::jsonSuccess(['data' => $data]);
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -239,8 +206,7 @@ class JadwalPresentasiController extends Controller
         header('Content-Type: application/json');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
 
         try {
@@ -250,19 +216,18 @@ class JadwalPresentasiController extends Controller
             $waktu = $_POST['waktu'] ?? null;
 
             if (!$id_presentasi || !$id_ruangan || !$tanggal || !$waktu) {
-                echo json_encode(['status' => 'error', 'message' => 'Semua field harus diisi']);
-                return;
+                self::jsonError('Semua field harus diisi');
             }
 
             $jadwal = new JadwalPresentasi();
 
             if ($jadwal->saveSingle($id_presentasi, $id_ruangan, $tanggal, $waktu)) {
-                echo json_encode(['status' => 'success', 'message' => 'Jadwal berhasil disimpan']);
+                self::jsonSuccess([], 'Jadwal berhasil disimpan');
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan jadwal']);
+                self::jsonError('Gagal menyimpan jadwal');
             }
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 }

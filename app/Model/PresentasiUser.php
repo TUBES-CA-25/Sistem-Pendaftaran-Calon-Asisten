@@ -184,15 +184,8 @@ class PresentasiUser extends Model {
     
         return $newFileName;
     }
-    private function getIdMahasiswa($idUser) {
-        $query = "SELECT id FROM mahasiswa WHERE id_user = ?";
-        $stmt = self::getDB()->prepare($query);
-        $stmt->bindParam(1, $idUser, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $result ? $result : null;
-    }
+    // getIdMahasiswa() dipindahkan ke App\Core\Model (induk) karena
+    // isinya identik di 4 model. Lihat catatan kontrak return di sana.
     public function getAllPresentasi($id) {
         $query = "SELECT * FROM " . static::$table . " WHERE id_mahasiswa = ?";
         $idMahasiswa = $this->getIdMahasiswa($id);

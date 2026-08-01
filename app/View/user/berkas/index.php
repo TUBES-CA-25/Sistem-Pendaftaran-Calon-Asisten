@@ -167,6 +167,6 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
     </div>
 </main>
 
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/berkas.js"></script>
+<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/user/berkas.js"></script>
 
 

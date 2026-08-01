@@ -131,20 +131,29 @@ $mySchedule = array_filter($wawancara, function($item) {
 </main>
 
 <script>
-$(document).ready(function() {
+// Vanilla JS (tanpa jQuery). dom.on() = delegasi di document -> idempoten
+// terhadap SPA re-inject #content.
+(function() {
     // Search functionality
-    $('#searchSchedule').on('keyup', function() {
-        var value = $(this).val().toLowerCase();
-        $("table tbody tr").filter(function() {
-            var text = $(this).text().toLowerCase();
-            $(this).toggle(text.indexOf(value) > -1);
+    dom.on('keyup', '#searchSchedule', function() {
+        const value = this.value.toLowerCase();
+        const rows = dom.qsa('table tbody tr:not(#noResultsRow)');
+
+        rows.forEach(function(row) {
+            dom.toggle(row, row.textContent.toLowerCase().indexOf(value) > -1);
         });
-        
+
         // Handle "No results found" if all rows are hidden
-        var visibleRows = $("table tbody tr:not(#noResultsRow):visible").length;
+        const visibleRows = rows.filter(function(row) {
+            return !row.classList.contains('hidden');
+        }).length;
+
+        const tbody = dom.qs('table tbody');
+        const existing = dom.qs('#noResultsRow');
+
         if (visibleRows === 0) {
-            if ($('#noResultsRow').length === 0) {
-                $("table tbody").append(`
+            if (!existing && tbody) {
+                tbody.insertAdjacentHTML('beforeend', `
                     <tr id="noResultsRow">
                         <td colspan="5" class="px-4 py-8 text-center text-slate-400">
                             <i class="bi bi-search text-4xl mb-2 block opacity-50"></i>
@@ -153,10 +162,10 @@ $(document).ready(function() {
                     </tr>
                 `);
             }
-        } else {
-            $('#noResultsRow').remove();
+        } else if (existing) {
+            existing.remove();
         }
     });
-});
+})();
 </script>
 

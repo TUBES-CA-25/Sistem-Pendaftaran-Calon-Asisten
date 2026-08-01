@@ -32,18 +32,11 @@ class NilaiController extends Controller
             }
 
             error_log("Nilai akhir dihitung: " . $score);
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Nilai berhasil disimpan',
-                'score' => $score
-            ]);
+            self::jsonSuccess(['score' => $score], 'Nilai berhasil disimpan');
             http_response_code(200);
 
         } catch (\Exception $e) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ]);
+            self::jsonError($e->getMessage());
             http_response_code(500);
         }
     }
@@ -74,11 +67,7 @@ class NilaiController extends Controller
             }
 
             if (!isset($_SESSION['user']['id'])) {
-                echo json_encode([
-                    'status' => 'error',
-                    'message' => 'User tidak terautentikasi'
-                ]);
-                return;
+                self::jsonError('User tidak terautentikasi');
             }
 
             $id = $_POST['id'] ?? null;
@@ -86,11 +75,7 @@ class NilaiController extends Controller
             
             // Allow 0 but require ID
             if (!$id || ($nilai === null)) {
-                echo json_encode([
-                    'status' => 'error',
-                    'message' => 'ID mahasiswa dan nilai harus diisi'
-                ]);
-                return;
+                self::jsonError('ID mahasiswa dan nilai harus diisi');
             }
 
             // Convert empty string to NULL for database
@@ -103,22 +88,13 @@ class NilaiController extends Controller
                 // Send Notification
                 $this->sendResultNotification($id, $nilai);
 
-                echo json_encode([
-                    'status' => 'success',
-                    'message' => 'Nilai berhasil diupdate'
-                ]);
+                self::jsonSuccess([], 'Nilai berhasil diupdate');
             } else {
-                echo json_encode([
-                    'status' => 'error',
-                    'message' => 'Gagal mengupdate nilai'
-                ]);
+                self::jsonError('Gagal mengupdate nilai');
             }
         } catch (\Exception $e) {
             error_log("Error in updateTotalNilai: " . $e->getMessage());
-            echo json_encode([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -145,24 +121,13 @@ class NilaiController extends Controller
             error_log("Result info: " . json_encode($result));
 
             if (empty($result)) {
-                echo json_encode([
-                    'status' => 'success',
-                    'data' => [],
-                    'message' => 'Tidak ada data soal dan jawaban untuk mahasiswa ini.'
-                ]);
-                return;
+                self::jsonSuccess(['data' => []], 'Tidak ada data soal dan jawaban untuk mahasiswa ini.');
             }
 
-            echo json_encode([
-                'status' => 'success',
-                'data' => $result
-            ]);
+            self::jsonSuccess(['data' => $result]);
         } catch (\Exception $e) {
             error_log("Error in getSoalAndJawabanMahasiswa: " . $e->getMessage());
-            echo json_encode([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ]);
+            self::jsonError($e->getMessage());
         }
     }
 
@@ -197,16 +162,14 @@ class NilaiController extends Controller
             }
 
             if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'Admin') {
-                echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
-                return;
+                self::jsonError('Unauthorized');
             }
 
             $input = json_decode(file_get_contents('php://input'), true);
             $idMahasiswa = $input['id'] ?? null;
             
             if (!$idMahasiswa) {
-                echo json_encode(['status' => 'error', 'message' => 'ID Mahasiswa tidak valid']);
-                return;
+                self::jsonError('ID Mahasiswa tidak valid');
             }
 
             // 1. Reset Absensi (Set ke Alpha/Belum Hadir)
@@ -222,10 +185,7 @@ class NilaiController extends Controller
             $nilaiReset = $nilaiModel->deleteNilaiByMahasiswa($idMahasiswa); // Ensure this method exists
             
             if ($absenReset || $jawabanReset || $nilaiReset) {
-                 echo json_encode([
-                    'status' => 'success', 
-                    'message' => "Berhasil mereset pengerjaan tes mahasiswa."
-                ]);
+                 self::jsonSuccess([], "Berhasil mereset pengerjaan tes mahasiswa.");
             } else {
                  echo json_encode(['status' => 'warning', 'message' => 'Tidak ada data pengerjaan yang aktif (Sudah kosong).']);
             }
@@ -233,10 +193,7 @@ class NilaiController extends Controller
         } catch (\Throwable $e) {
             error_log("Error reset ujian: " . $e->getMessage());
             http_response_code(500);
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Server Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine()
-            ]);
+            self::jsonError('Server Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
         }
     }
 

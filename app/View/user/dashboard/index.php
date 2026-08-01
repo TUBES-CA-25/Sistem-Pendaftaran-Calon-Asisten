@@ -37,13 +37,6 @@ $dokumen = $dokumen ?? [];
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
 
-    <!-- Greeting Header -->
-    <div class="mb-6">
-        <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">
-            Hello <?= htmlspecialchars($biodata['namaLengkap'] ?? $user['username'] ?? 'User') ?> 👋
-        </h1>
-    </div>
-
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         <!-- Main Content (Left Column) - 2/3 width -->
@@ -150,7 +143,7 @@ $dokumen = $dokumen ?? [];
                                 ];
 
                                 foreach ($stepperStages as $step):
-                                    $isActive = $tahapanSelesai >= $step['threshold'];
+                                    $isActive = $tahapanSelesai>= $step['threshold'];
                                 ?>
                                     <div class="text-center relative px-1 z-10 flex-1">
                                         <div class="w-6 h-6 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm transition-all duration-300 <?= $isActive ? $step['bgActive'] : 'bg-slate-100 border border-slate-200' ?>">
@@ -321,10 +314,10 @@ $dokumen = $dokumen ?? [];
                 <div class="flex justify-between items-center mb-4">
                     <h6 class="font-bold text-slate-700">Calendar</h6>
                     <div class="flex gap-1">
-                        <button class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" id="prev-month">
+                        <button class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" id="prev-month" aria-label="Bulan sebelumnya">
                             <i class="bi bi-chevron-left text-xs"></i>
                         </button>
-                        <button class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" id="next-month">
+                        <button class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" id="next-month" aria-label="Bulan berikutnya">
                             <i class="bi bi-chevron-right text-xs"></i>
                         </button>
                     </div>
@@ -398,16 +391,17 @@ $dokumen = $dokumen ?? [];
 </main>
 
 <!-- Custom Message Modal -->
-<div class="modal fade" id="customMessageModal" tabindex="-1" aria-labelledby="customMessageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
-            <div class="modal-header bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 py-4 px-6 flex justify-between items-center">
-                <h5 class="modal-title font-bold text-base" id="customMessageModalLabel">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="customMessageModal" aria-labelledby="customMessageModalLabel" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 py-4 px-6 flex justify-between items-center">
+                <h5 class="font-bold text-base" id="customMessageModalLabel">
                     <i class="bi bi-envelope-fill me-2"></i>Pesan
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
-            <div class="modal-body p-6">
+            <div class="p-6">
                 <div class="space-y-4">
                     <?php if (empty($notifikasi)): ?>
                         <div class="text-center py-8 text-slate-400">
@@ -432,31 +426,32 @@ $dokumen = $dokumen ?? [];
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="modal-footer border-0 p-4 bg-slate-50 flex justify-end">
-                <button type="button" class="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Tutup</button>
+            <div class="border-0 p-4 bg-slate-50 flex justify-end">
+                <button type="button" class="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-sm rounded-xl transition" data-modal-close>Tutup</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Upcoming Activities Modal -->
-<div class="modal fade" id="upcomingActivitiesModal" tabindex="-1" aria-labelledby="upcomingActivitiesModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
-            <div class="modal-header border-0 py-4 px-6 flex justify-between items-center bg-slate-50 border-b border-slate-100">
-                <h5 class="modal-title font-bold text-slate-800 text-base" id="upcomingActivitiesModalLabel">Upcoming Activities</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="upcomingActivitiesModal" aria-labelledby="upcomingActivitiesModalLabel" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
+            <div class="border-0 py-4 px-6 flex justify-between items-center bg-slate-50 border-b border-slate-100">
+                <h5 class="font-bold text-slate-800 text-base" id="upcomingActivitiesModalLabel">Upcoming Activities</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-slate-400 hover:text-slate-600 hover:bg-slate-100"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
-            <div class="modal-body p-6" id="upcomingActivitiesBody">
+            <div class="p-6" id="upcomingActivitiesBody">
                 <!-- Content populated by JS -->
             </div>
-            <div class="modal-footer border-0 p-4 bg-slate-50 flex justify-end">
-                <button type="button" class="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Close</button>
+            <div class="border-0 p-4 bg-slate-50 flex justify-end">
+                <button type="button" class="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-sm rounded-xl transition" data-modal-close>Close</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Load Dashboard JavaScript -->
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/dashboard.js"></script>
+<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/user/dashboard.js"></script>
 

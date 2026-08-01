@@ -65,7 +65,7 @@ class Wawancara extends Model
     }
     public function getWawancaraById($id)
     {
-        $idMhs = $this->getIdMahasiswa($id);
+        $idMhs = $this->getMahasiswaIdValue($id);
         if (!$idMhs) {
             error_log("Error: ID mahasiswa tidak ditemukan for user ID $id");
             return [];
@@ -96,7 +96,7 @@ class Wawancara extends Model
      * Get all activities (Wawancara, Presentasi, and General Activities) with an 'is_mine' flag and attendance status
      */
     public function getJadwalKegiatanById($idUser) {
-        $idMhsOfUser = $this->getIdMahasiswa($idUser);
+        $idMhsOfUser = $this->getMahasiswaIdValue($idUser);
         
         $activities = [];
 
@@ -249,7 +249,14 @@ class Wawancara extends Model
         $stmt->execute();
         return true;
     }
-    private function getIdMahasiswa($id) {
+    /**
+     * Kembalikan ID mahasiswa sebagai SKALAR (bukan array).
+     *
+     * Sengaja TIDAK memakai Model::getIdMahasiswa() milik induk yang
+     * mengembalikan array ['id' => ...]. Namanya dibedakan supaya perbedaan
+     * kontrak ini jelas dan tidak lagi menimpa method induk.
+     */
+    private function getMahasiswaIdValue($id) {
         $sql = "SELECT id FROM mahasiswa WHERE id_user = ?";
         try {
             $stmt = self::getDB()->prepare($sql);
@@ -265,7 +272,7 @@ class Wawancara extends Model
                 return null; // Kembalikan null jika tidak ada hasil
             }
         } catch (\PDOException $e) {
-            error_log("Error in getIdMahasiswa: " . $e->getMessage());
+            error_log("Error in getMahasiswaIdValue: " . $e->getMessage());
             return null; 
         }
     }

@@ -98,16 +98,17 @@ $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
 </main>
 
 <!-- Bootstrap Token Modal (retails classes for Bootstrap modal trigger but styles inner blocks with Tailwind) -->
-<div class="modal fade" id="tokenModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden bg-white">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="tokenModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden bg-white">
             <div class="p-6">
                 <!-- Header -->
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
                         <i class="bx bx-lock-alt text-blue-600"></i>Verifikasi Token Ujian
                     </h5>
-                    <button type="button" class="text-slate-400 hover:text-slate-600" data-bs-dismiss="modal" aria-label="Close">
+                    <button type="button" class="text-slate-400 hover:text-slate-600" data-modal-close aria-label="Close">
                         <i class="bi bi-x-lg text-lg"></i>
                     </button>
                 </div>
@@ -122,7 +123,7 @@ $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
                 
                 <div class="mb-6">
                     <input type="text" id="inputToken" class="w-full px-4 py-3 text-center text-lg font-extrabold text-slate-800 tracking-widest uppercase border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-xl" placeholder="TOKEN UJIAN">
-                    <div id="tokenError" class="text-red-500 text-xs font-semibold mt-2 text-center" style="display: none;">Token yang Anda masukkan salah!</div>
+                    <div id="tokenError" class="hidden text-red-500 text-xs font-semibold mt-2 text-center">Token yang Anda masukkan salah!</div>
                 </div>
                 
                 <button type="button" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition duration-200 flex items-center justify-center gap-2" id="btnSubmitToken">
@@ -134,58 +135,62 @@ $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
 </div>
 
 <script>
-$(document).ready(function () {
-    const startBtn = document.getElementById('startTestButton');
-    if (startBtn) {
-        startBtn.addEventListener('click', function () {
-            const modalEl = document.getElementById('tokenModal');
-            if (modalEl) {
-                const modal = new bootstrap.Modal(modalEl);
-                modal.show();
-            }
-        });
-    }
+// Vanilla JS (tanpa jQuery). dom.on() = delegasi di document -> idempoten
+// terhadap SPA re-inject #content.
+(function () {
+    dom.on('click', '#startTestButton', function () {
+        UI.modal.open('#tokenModal');
+    });
 
-    $('#btnSubmitToken').on('click', function() {
-        const tokenInput = $('#inputToken');
-        const token = tokenInput.val().trim();
-        const errorEl = $('#tokenError');
-        
+    dom.on('click', '#btnSubmitToken', function () {
+        const tokenInput = dom.qs('#inputToken');
+        const token = (tokenInput ? tokenInput.value : '').trim();
+        const errorEl = dom.qs('#tokenError');
+
+        function showError(msg) {
+            if (!errorEl) return;
+            errorEl.textContent = msg;
+            dom.show(errorEl);
+        }
+
         if (!token) {
-            errorEl.text('Masukkan token!').show();
+            showError('Masukkan token!');
             return;
         }
 
-        const btn = $(this);
-        const originalHtml = btn.html();
-        btn.prop('disabled', true).html('<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent inline-block mr-2"></span>Memverifikasi...');
-        errorEl.hide();
+        const btn = this;
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent inline-block mr-2"></span>Memverifikasi...';
+        dom.hide(errorEl);
 
-        $.ajax({
-            url: APP_URL + '/exam/verifyToken',
-            method: 'POST',
-            data: { token: token },
-            dataType: 'json',
-            success: function(res) {
+        function restoreBtn() {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
+
+        dom.postJSON(APP_URL + '/exam/verifyToken', { token: token })
+            .then(function (res) {
                 if (res && res.status === 'success') {
                     window.location.href = APP_URL + '/soal';
                 } else {
-                    errorEl.text(res.message || 'Token salah!').show();
-                    btn.prop('disabled', false).html(originalHtml);
+                    showError(res.message || 'Token salah!');
+                    restoreBtn();
                 }
-            },
-            error: function(xhr) {
-                console.error("Token verification failed:", xhr.responseText);
-                errorEl.text('Terjadi kesalahan server').show();
-                btn.prop('disabled', false).html(originalHtml);
-            }
-        });
+            })
+            .catch(function (err) {
+                console.error('Token verification failed:', err);
+                showError('Terjadi kesalahan server');
+                restoreBtn();
+            });
     });
 
-    $('#inputToken').on('keypress', function(e) {
-        if (e.which === 13) {
-            $('#btnSubmitToken').click();
+    dom.on('keypress', '#inputToken', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const btn = dom.qs('#btnSubmitToken');
+            if (btn) btn.click();
         }
     });
-});
+})();
 </script>

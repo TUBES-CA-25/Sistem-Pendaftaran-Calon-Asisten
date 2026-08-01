@@ -89,7 +89,7 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
                             </div>
                             <div>
                                 <label for="stambuk_display" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Stambuk</label>
-                                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 text-slate-400 cursor-not-allowed text-sm font-semibold" value="<?= htmlspecialchars($stambuk) ?>" readonly>
+                                <input type="text" id="stambuk_display" class="w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 text-slate-400 cursor-not-allowed text-sm font-semibold" value="<?= htmlspecialchars($stambuk) ?>" readonly>
                             </div>
                         </div>
 
@@ -114,13 +114,13 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="jurusan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Jurusan</label>
-                                <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold transition bg-white" name="jurusan" required>
+                                <select id="jurusan" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold transition bg-white" name="jurusan" required>
                                     <option value="Teknik informatika" <?= (strtolower($jurusan) === 'teknik informatika') ? 'selected' : '' ?>>Teknik Informatika</option>
                                     <option value="Sistem informasi" <?= (strtolower($jurusan) === 'sistem informasi') ? 'selected' : '' ?>>Sistem Informasi</option>
                                 </select>
                             </div>
                             <div>
-                                <label for="kelas" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Kelas</label>
+                                <label for="floatingSelect" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Kelas</label>
                                 <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold transition bg-white" id="floatingSelect" name="kelas" required>
                                     <option disabled <?= ($kelas === 'Kelas' || empty($kelas)) ? 'selected' : '' ?>>Pilih Kelas Anda</option>
                                     <?php 
@@ -165,7 +165,7 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
                             </div>
                             <div>
                                 <label for="tempatlahir" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Kota Asal</label>
-                                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold transition" id="tempatlahir" name="tempatlahir" 
+                                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold transition" id="tempatlahir" name="tempatlahir"
                                     placeholder="Tempat Lahir" 
                                     value="<?= ($tempatLahir !== 'Tempat Lahir') ? htmlspecialchars($tempatLahir) : '' ?>" required>
                             </div>
@@ -191,7 +191,7 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
                                     <i class="bi bi-arrow-counterclockwise"></i>Reset
                                 </button>
                             <?php endif; ?>
-                            <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition flex items-center gap-2" name="submit">
+                            <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition flex items-center gap-2" name="submit" aria-label="Konfirmasi">
                                 <i class="bi bi-check-circle"></i><?= $isBiodataEmpty ? 'Submit' : 'Update' ?>
                             </button>
                         </div>
@@ -264,10 +264,10 @@ function enableEditMode() {
     document.getElementById('formSection').style.display = 'block';
     
     if (typeof updateKelasOptions === "function") {
-        updateKelasOptions(); 
-    } else {    
+        updateKelasOptions();
+    } else {
         const gender = document.querySelector('input[name="gender"]:checked');
-        if(gender) $(gender).trigger('change'); 
+        if (gender) gender.dispatchEvent(new Event('change', { bubbles: true }));
     }
 }
 
@@ -276,61 +276,56 @@ function cancelEdit() {
     document.getElementById('displaySection').style.display = 'block';
 }
 
-$(document).ready(function () {
+// Vanilla JS (tanpa jQuery). dom.on() = delegasi di document -> idempoten
+// terhadap SPA re-inject #content.
+(function () {
     // Profile Image Upload Handler (Change Event)
-    $('#profileImageInput').change(function() {
-        if (this.files && this.files[0]) {
-            const formData = new FormData();
-            formData.append('image', this.files[0]);
-            
-            const $overlay = $('.profile-overlay');
-            const originalContent = $overlay.html();
+    dom.on('change', '#profileImageInput', function () {
+        if (!(this.files && this.files[0])) return;
 
-            // Show uploading state using DOM creation
+        const formData = new FormData();
+        formData.append('image', this.files[0]);
+
+        const overlay = dom.qs('.profile-overlay');
+        const originalContent = overlay ? overlay.innerHTML : '';
+
+        // Show uploading state using DOM creation
+        if (overlay) {
             const spinner = document.createElement('div');
             spinner.className = 'animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent';
             spinner.setAttribute('role', 'status');
-            
-            $overlay.empty().append(spinner);
-            $overlay.css('opacity', '1');
-            
-            $.ajax({
-                url: '/Sistem-Pendaftaran-Calon-Asisten/public/updateprofile',
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    try {
-                         const res = typeof response === 'string' ? JSON.parse(response) : response;
-                          if (res.status === 'success') {
-                             showAlert('Upload Success!', true); 
-                             if (res.newPhoto) {
-                                 const newUrl = res.newPhoto + '?t=' + new Date().getTime();
-                                 $('.profile-img-target, .navbar-profile-img, img[alt="Profile Picture"]').attr('src', newUrl);
-                             }
-                         } else {
-                             console.log('Debug Info:', res.debug);
-                             showAlert(res.message || 'Gagal upload foto', false);
-                         }
-                    } catch(e) { 
-                         console.error('JSON Parse Error:', e);
-                         showAlert('Error parsing response from server.', false);
-                    } finally {
-                         $overlay.html(originalContent);
-                         $overlay.css('opacity', '');
-                    }
-                },
-                error: function(xhr, status, error) {
-                     console.error('AJAX Error:', error);
-                     showAlert('Terjadi kesalahan koneksi saat mengunggah gambar.', false);
-                     $overlay.html(originalContent);
-                     $overlay.css('opacity', '');
-                }
-            });
+            overlay.innerHTML = '';
+            overlay.appendChild(spinner);
+            overlay.style.opacity = '1';
         }
+
+        function restoreOverlay() {
+            if (!overlay) return;
+            overlay.innerHTML = originalContent;
+            overlay.style.opacity = '';
+        }
+
+        dom.postForm('/Sistem-Pendaftaran-Calon-Asisten/public/updateprofile', formData)
+            .then(function (res) {
+                if (res.status === 'success') {
+                    showAlert('Upload Success!', true);
+                    if (res.newPhoto) {
+                        const newUrl = res.newPhoto + '?t=' + new Date().getTime();
+                        dom.qsa('.profile-img-target, .navbar-profile-img, img[alt="Profile Picture"]')
+                            .forEach(function (img) { img.setAttribute('src', newUrl); });
+                    }
+                } else {
+                    console.log('Debug Info:', res.debug);
+                    showAlert(res.message || 'Gagal upload foto', false);
+                }
+            })
+            .catch(function (err) {
+                console.error('Upload Error:', err);
+                showAlert('Terjadi kesalahan koneksi saat mengunggah gambar.', false);
+            })
+            .finally(restoreOverlay);
     });
-});
+})();
 </script>
 
-<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/biodata.js"></script>
+<script src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/js/user/biodata.js"></script>

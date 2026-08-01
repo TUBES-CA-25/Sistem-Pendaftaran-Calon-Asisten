@@ -4,7 +4,6 @@ namespace App\Controllers\Admin;
 
 use App\Model\UserModel;
 use App\Core\Controller;
-use App\Core\View;
 use App\Model\Mahasiswa;
 
 class PesertaController extends Controller {
@@ -23,19 +22,16 @@ class PesertaController extends Controller {
         ob_clean();
         
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
 
         if (!isset($_SESSION['user']['id'])) {
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
 
         $id = $_POST['id'] ?? '';
         if (!$id) {
-            echo json_encode(['status' => 'error', 'message' => 'ID peserta tidak ditemukan']);
-            return;
+            self::jsonError('ID peserta tidak ditemukan');
         }
 
         try {
@@ -43,33 +39,30 @@ class PesertaController extends Controller {
             $data = $mahasiswa->getMahasiswaById($id);
             
             if ($data) {
-                echo json_encode(['status' => 'success', 'data' => $data]);
+                self::jsonSuccess(['data' => $data]);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Data peserta tidak ditemukan']);
+                self::jsonError('Data peserta tidak ditemukan');
             }
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
     public static function deleteMahasiswa() {
         header('Content-Type: application/json');
         ob_clean();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
 
         if (!isset($_SESSION['user']['id'])) {
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
 
         $idUser = $_POST['id'] ?? '';   
         $idMahasiswa = $_POST['mahasiswaId'] ?? '';
 
         if (!$idUser && !$idMahasiswa) {
-            echo json_encode(['status' => 'error', 'message' => 'ID peserta tidak ditemukan']);
-            return;
+            self::jsonError('ID peserta tidak ditemukan');
         }
 
         try {
@@ -84,23 +77,20 @@ class PesertaController extends Controller {
 
                 // Primary: Delete User
                 if (UserModel::deleteUser($idUser)) {
-                    echo json_encode(['status' => 'success', 'message' => 'Mahasiswa berhasil dihapus']);
-                    return;
+                    self::jsonSuccess([], 'Mahasiswa berhasil dihapus');
                 }
             } elseif ($idMahasiswa) {
                 // Fallback: Delete Mahasiswa Record Only
                 $mahasiswa = new Mahasiswa();
                 $mahasiswa->deleteMahasiswaById($idMahasiswa);
-                echo json_encode(['status' => 'success', 'message' => 'Data mahasiswa berhasil dihapus']);
-                return;
+                self::jsonSuccess([], 'Data mahasiswa berhasil dihapus');
             }
             
             // If we get here without return, something failed silently or logic gap
             throw new \Exception('Gagal menghapus data');
 
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-            return;
+            self::jsonError($e->getMessage());
         }
     }
 }

@@ -15,31 +15,23 @@ class PresentasiUserController extends Controller
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
 
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
         $idUser = $_SESSION['user']['id'];
         $judul = $_POST['judul'] ?? '';
 
         if (empty($judul)) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'All fields are required']);
-            return;
+            self::jsonError('All fields are required');
         }
         $presentasiUser = new PresentasiUser($idUser, $judul);
         if ($presentasi->saveJudul($presentasiUser)) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'success', 'message' => 'Judul berhasil disimpan']);
+            self::jsonSuccess([], 'Judul berhasil disimpan');
         } else {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Judul gagal disimpan']);
+            self::jsonError('Judul gagal disimpan');
         }
     }
 
@@ -54,23 +46,17 @@ class PresentasiUserController extends Controller
         try {
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 ob_clean(); // Clear previous output
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-                return;
+                self::jsonError('Invalid request method');
             }
     
             if (!isset($_SESSION['user']['id'])) {
                 ob_clean();
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-                return;
+                self::jsonError('User not logged in');
             }
     
             if (!isset($_FILES['makalah']) || !isset($_FILES['ppt'])) {
                 ob_clean();
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'File uploads are invalid']);
-                return;
+                self::jsonError('File uploads are invalid');
             }
     
             if ($_FILES['makalah']['error'] !== UPLOAD_ERR_OK || $_FILES['ppt']['error'] !== UPLOAD_ERR_OK) {
@@ -85,9 +71,7 @@ class PresentasiUserController extends Controller
                 ];
                 $errorCode = $_FILES['makalah']['error'] !== UPLOAD_ERR_OK ? $_FILES['makalah']['error'] : $_FILES['ppt']['error'];
                 ob_clean();
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => $errors[$errorCode] ?? 'Unknown error']);
-                return;
+                self::jsonError($errors[$errorCode] ?? 'Unknown error');
             }
     
             $idUser = $_SESSION['user']['id'];
@@ -101,21 +85,16 @@ class PresentasiUserController extends Controller
     
             if ($presentasiUser->updateMakalahAndPpt($presentasiUser)) {
                 ob_clean();
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'success', 'message' => 'Makalah dan PPT berhasil disimpan']);
-                return;
+                self::jsonSuccess([], 'Makalah dan PPT berhasil disimpan');
             } else {
                 ob_clean();
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'Makalah dan PPT gagal disimpan']);
-                return;
+                self::jsonError('Makalah dan PPT gagal disimpan');
             }
         } catch (\Exception $e) {
             ob_clean(); 
             header('Content-Type: application/json');
             error_log("Error: " . $e->getMessage());
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-            return;
+            self::jsonError($e->getMessage());
         }
     }
     
@@ -160,21 +139,12 @@ class PresentasiUserController extends Controller
                 $notification->insert($notification);
 
                 $message = $status == 1 ? 'Judul berhasil diterima.' : 'Judul ditolak. Mahasiswa akan diminta revisi.';
-                echo json_encode([
-                    'status' => 'success',
-                    'message' => $message
-                ]);
+                self::jsonSuccess([], $message);
             } catch (\Exception $e) {
-                echo json_encode([
-                    'status' => 'error',
-                    'message' => 'Gagal memperbarui status judul: ' . $e->getMessage()
-                ]);
+                self::jsonError('Gagal memperbarui status judul: ' . $e->getMessage());
             }
         } else {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'ID tidak ditemukan atau kosong.'
-            ]);
+            self::jsonError('ID tidak ditemukan atau kosong.');
         }
     }
     public function sendKeteranganAndRevisi()
@@ -183,22 +153,16 @@ class PresentasiUserController extends Controller
             session_start();
         }
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
         $id = $_POST['id'] ?? '';
         $keterangan = $_POST['message'] ?? '';
 
         if (empty($keterangan) || empty($id)) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'All fields are required']);
-            return;
+            self::jsonError('All fields are required');
         }
         try {
             $presentasi = new Presentasi();
@@ -216,11 +180,9 @@ class PresentasiUserController extends Controller
                 $notification->insert($notification);
             }
 
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'success', 'message' => 'Keterangan berhasil disimpan']);
+            self::jsonSuccess([], 'Keterangan berhasil disimpan');
         } catch (\Exception $e) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 

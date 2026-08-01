@@ -16,15 +16,6 @@ class BerkasController extends Controller
         }
         return true;
     }
-    public static function isAcceptedBerkas()
-    {
-        $berkas = new BerkasUser(0, 0, 0, 0, 0, 0, 0, 0, 0);
-        $isAccepted = $berkas->isAcceptedBerkasUser();
-        if (!$isAccepted) {
-            return false;
-        }
-        return true;
-    }
     public function updateAcceptedStatus()
     {
         try {
@@ -35,8 +26,7 @@ class BerkasController extends Controller
             $id = $_POST['id'] ?? null;
             if (!$id) {
                 http_response_code(400);
-                echo json_encode(['status' => 'error', 'message' => 'ID tidak diberikan']);
-                return;
+                self::jsonError('ID tidak diberikan');
             }
 
             $status = $_POST['status'] ?? 1;
@@ -45,14 +35,14 @@ class BerkasController extends Controller
             $isAccepted = $berkas->updateAccepted($id, $status);
 
             if ($isAccepted) {
-                echo json_encode(['status' => 'success', 'message' => 'Status berhasil diperbarui']);
+                self::jsonSuccess([], 'Status berhasil diperbarui');
             } else {
                 http_response_code(500);
-                echo json_encode(['status' => 'error', 'message' => 'Gagal memperbarui status']);
+                self::jsonError('Gagal memperbarui status');
             }
         } catch (\Throwable $e) {
             http_response_code(500);
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine()]);
+            self::jsonError($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
         }
     }
 
@@ -63,15 +53,11 @@ class BerkasController extends Controller
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
 
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
 
         $idUser = $_SESSION['user']['id'];
@@ -86,8 +72,7 @@ class BerkasController extends Controller
             header('Content-Type: application/json');
 
             if (!$foto || !$cv || !$transkrip || !$suratPernyataan) {
-                echo json_encode(['status' => 'error', 'message' => 'Semua file wajib diupload']);
-                return;
+                self::jsonError('Semua file wajib diupload');
             }
 
             $imgSize = $_FILES['foto']['size'] ?? 0;
@@ -112,14 +97,13 @@ class BerkasController extends Controller
             // error_log('File CV: ' . print_r($_FILES['cv'], true));
 
             if ($berkasUser->save($berkasUser)) {
-                echo json_encode(['status' => 'success', 'message' => 'Berkas berhasil diupload']);
+                self::jsonSuccess([], 'Berkas berhasil diupload');
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Berkas gagal diupload']);
+                self::jsonError('Berkas gagal diupload');
             }
         } catch (\Throwable $e) {
             http_response_code(500);
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
     public static function viewBerkas()
@@ -132,16 +116,6 @@ class BerkasController extends Controller
         return $berkas;
     }
 
-    public static function viewPhoto()
-    {
-        $user = new BerkasUser();
-        $photo = $user->getBerkas($_SESSION['user']['id']);
-        if (!$photo) {
-            return null;
-        }
-        $firstPhoto = $photo[0];
-        return $firstPhoto;
-    }
 
     public static function getBerkasAdmin()
     {
@@ -196,50 +170,6 @@ class BerkasController extends Controller
 
         } catch (\Exception $e) {
             echo "Error: " . $e->getMessage();
-        }
-    }
-    public function updateBerkas()
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (!isset($_SESSION['user']['id'])) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'User tidak terautentikasi'
-            ]);
-            return;
-        }
-        $foto = $_FILES['foto']['tmp_name'] ?? '';
-        $cv = $_FILES['cv']['tmp_name'] ?? '';
-        $transkrip = $_FILES['transkrip']['tmp_name'] ?? '';
-        $suratPernyataan = $_FILES['suratpernyataan']['tmp_name'] ?? '';
-        if (!$foto || !$cv || !$transkrip || !$suratPernyataan) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Semua file wajib diupload']);
-            return;
-        }
-        $imgSize = $_FILES['foto']['size'] ?? 0;
-        $cvSize = $_FILES['cv']['size'] ?? 0;
-        $transkripSize = $_FILES['transkrip']['size'] ?? 0;
-        $suratPernyataanSize = $_FILES['suratpernyataan']['size'] ?? 0;
-        $berkasUser = new BerkasUser(
-            $_SESSION['user']['id'],
-            $foto,
-            $cv,
-            $transkrip,
-            $suratPernyataan,
-            $imgSize,
-            $cvSize,
-            $transkripSize,
-            $suratPernyataanSize
-        );
-        if ($berkasUser->update($berkasUser)) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'success', 'message' => 'Berkas berhasil diupdate']);
-        } else {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Berkas gagal diupdate']);
         }
     }
 }

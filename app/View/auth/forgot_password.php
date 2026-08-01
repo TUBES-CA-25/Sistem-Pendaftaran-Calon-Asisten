@@ -16,7 +16,7 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="<?= APP_URL ?>/Assets/js/tailwind-config.js"></script>
+    <script src="<?= APP_URL ?>/Assets/js/core/tailwind-config.js"></script>
 
     <style type="text/tailwindcss">
         @layer utilities {
@@ -116,15 +116,13 @@
             <form id="forgotPasswordForm">
                 <div class="float-group w-full mb-5 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
                     <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/profile.svg" alt="Email" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
-                    <input
-                        type="email"
+                    <input type="email"
                         class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-4"
                         id="email"
                         name="email"
                         placeholder=" "
                         autocomplete="off"
-                        required
-                    >
+                        required>
                     <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left" for="email">Email</label>
                 </div>
 

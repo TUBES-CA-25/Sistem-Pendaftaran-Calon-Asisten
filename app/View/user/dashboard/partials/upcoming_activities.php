@@ -1,7 +1,7 @@
 <?php
 $today = date('Y-m-d');
 $upcoming = array_filter($activities, function($act) use ($today) {
-    return $act['tanggal'] >= $today;
+    return $act['tanggal']>= $today;
 });
 
 usort($upcoming, function($a, $b) {

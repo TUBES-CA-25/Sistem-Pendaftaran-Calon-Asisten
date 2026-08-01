@@ -18,10 +18,14 @@ $bankSoalList = $data['bankSoalList'] ?? [];
     ?>
 
     <div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
-        <!-- Hidden custom buttons for DataTables -->
-        <button class="dt-custom-button hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10" type="button" data-bs-toggle="modal" data-bs-target="#addJadwalModal">
-            <i class="bi bi-plus-circle"></i> Tambah Jadwal
-        </button>
+        <!-- Tombol aksi. Dulu ber-class "hidden" dan hanya dimunculkan oleh
+             initComplete DataTables; karena tabel memakai no-datatable, tombol
+             ini tidak pernah tampil. Sekarang ditampilkan langsung. -->
+        <div class="flex justify-end mb-4">
+            <button class="inline-flex px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10" type="button" data-modal-open="#addJadwalModal">
+                <i class="bi bi-plus-circle"></i> Tambah Jadwal
+            </button>
+        </div>
 
         <!-- Student Schedule Table -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
@@ -97,17 +101,18 @@ $bankSoalList = $data['bankSoalList'] ?? [];
 </main>
 
 <!-- Modal Tambah Jadwal -->
-<div class="modal fade" id="addJadwalModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="addJadwalModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
-                <h5 class="modal-title font-bold flex items-center gap-2"><i class="bi bi-calendar-plus text-lg"></i>Tambah Jadwal Tes</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <h5 class="font-bold flex items-center gap-2"><i class="bi bi-calendar-plus text-lg"></i>Tambah Jadwal Tes</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <div class="p-6">
                 <form id="addJadwalForm" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Pilih Mahasiswa</label>
+                        <label for="mahasiswaSelect" class="block text-sm font-semibold text-slate-700 mb-2">Pilih Mahasiswa</label>
                         <div class="flex gap-2">
                              <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="mahasiswaSelect">
                                 <option value="" disabled selected>-- Pilih Mahasiswa --</option>
@@ -121,7 +126,7 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Ruangan</label>
+                            <label for="ruanganSelect" class="block text-sm font-semibold text-slate-700 mb-2">Ruangan</label>
                             <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="ruanganSelect" required>
                                 <option value="" disabled selected>Pilih</option>
                                 <?php foreach ($ruanganList as $r): ?>
@@ -130,24 +135,24 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Kegiatan</label>
+                            <label for="kegiatanInput" class="block text-sm font-semibold text-slate-700 mb-2">Kegiatan</label>
                             <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="kegiatanInput" value="Tes Tertulis">
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Tanggal</label>
+                            <label for="tanggalInput" class="block text-sm font-semibold text-slate-700 mb-2">Tanggal</label>
                             <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="tanggalInput" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Waktu</label>
+                            <label for="waktuInput" class="block text-sm font-semibold text-slate-700 mb-2">Waktu</label>
                             <input type="time" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="waktuInput" required>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3">
-                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-modal-close>Batal</button>
                 <button type="submit" form="addJadwalForm" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-blue-500/10">Simpan Jadwal</button>
             </div>
         </div>
@@ -155,12 +160,13 @@ $bankSoalList = $data['bankSoalList'] ?? [];
 </div>
 
 <!-- Modal Update Jadwal -->
-<div class="modal fade" id="updateJadwalModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden">
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="updateJadwalModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
-                <h5 class="modal-title font-bold flex items-center gap-2"><i class="bi bi-pencil-square text-lg"></i>Update Jadwal Tes</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <h5 class="font-bold flex items-center gap-2"><i class="bi bi-pencil-square text-lg"></i>Update Jadwal Tes</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <div class="p-6">
                 <form id="updateJadwalForm" class="space-y-4">
@@ -171,7 +177,7 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Ruangan</label>
+                            <label for="editRuangan" class="block text-sm font-semibold text-slate-700 mb-2">Ruangan</label>
                             <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editRuangan" required>
                                 <?php foreach ($ruanganList as $r): ?>
                                     <option value="<?= $r['id'] ?>"><?= $r['nama'] ?></option>
@@ -179,232 +185,29 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Kegiatan</label>
+                            <label for="editKegiatan" class="block text-sm font-semibold text-slate-700 mb-2">Kegiatan</label>
                             <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editKegiatan" required>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Tanggal</label>
+                            <label for="editTanggal" class="block text-sm font-semibold text-slate-700 mb-2">Tanggal</label>
                             <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editTanggal" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Waktu</label>
+                            <label for="editWaktu" class="block text-sm font-semibold text-slate-700 mb-2">Waktu</label>
                             <input type="time" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editWaktu" required>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3">
-                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm rounded-xl transition" data-modal-close>Batal</button>
                 <button type="submit" form="updateJadwalForm" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-blue-500/10">Update Jadwal</button>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-$(document).ready(function() {
-    let selectedMahasiswa = [];
-
-    // Search logic for main table
-    $('#searchInput').on('keyup', function() {
-        let filter = $(this).val().toLowerCase();
-        $('#table-body tr').each(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(filter) > -1);
-        });
-    });
-
-    // Add student to the single-add modal list
-    $('#addMhsToList').click(function() {
-        const id = $('#mahasiswaSelect').val();
-        const text = $('#mahasiswaSelect option:selected').text();
-        if (!id) return;
-        if (selectedMahasiswa.includes(id)) return showAlert('Mahasiswa sudah ada dalam daftar', false);
-
-        selectedMahasiswa.push(id);
-        $('#selectedMhsList').append(`
-            <li class="flex justify-between items-center py-2 px-3 bg-slate-50 rounded-xl text-slate-700 text-sm border border-slate-100" data-id="${id}">
-                <span>${text}</span>
-                <button type="button" class="text-red-500 hover:text-red-700 remove-mhs"><i class="bi bi-x-circle text-lg"></i></button>
-            </li>
-        `);
-    });
-
-    $(document).on('click', '.remove-mhs', function() {
-        const id = $(this).closest('li').data('id').toString();
-        selectedMahasiswa = selectedMahasiswa.filter(item => item !== id);
-        $(this).closest('li').remove();
-    });
-
-    // Save Single Add Schedule
-    $('#addJadwalForm').submit(function(e) {
-        e.preventDefault();
-        if (selectedMahasiswa.length === 0) return showAlert('Pilih minimal satu mahasiswa', false);
-
-        const data = {
-            id: selectedMahasiswa,
-            ruangan: $('#ruanganSelect').val(),
-            kegiatan: $('#kegiatanInput').val(),
-            tanggal: $('#tanggalInput').val(),
-            waktu: $('#waktuInput').val()
-        };
-
-        saveSchedule(data, '#addJadwalModal');
-    });
-
-    // Open Edit Modal
-    $(document).off('click', '.open-edit').on('click', '.open-edit', function() {
-        const btn = $(this);
-        $('#editId').val(btn.data('id'));
-        $('#editMhsInfo').text(btn.data('stambuk') + ' - ' + btn.data('nama'));
-        $('#editKegiatan').val(btn.data('kegiatan'));
-        $('#editTanggal').val(btn.data('tanggal'));
-        
-        // Fix time format to HH:mm
-        let timeStr = btn.data('waktu');
-        if (timeStr && timeStr.length > 5) {
-            timeStr = timeStr.substring(0, 5);
-        }
-        $('#editWaktu').val(timeStr);
-        
-        // Find room ID based on name or set manually
-        const roomName = btn.data('ruangan');
-        $(`#editRuangan option`).each(function() {
-            if ($(this).text() === roomName) $(this).prop('selected', true);
-        });
-
-        new bootstrap.Modal('#updateJadwalModal').show();
-    });
-
-    // Save Update Schedule
-    $(document).off('submit', '#updateJadwalForm').on('submit', '#updateJadwalForm', function(e) {
-        e.preventDefault();
-        const data = {
-            id: $('#editId').val(),
-            ruangan: $('#editRuangan').val(),
-            kegiatan: $('#editKegiatan').val(),
-            tanggal: $('#editTanggal').val(),
-            waktu: $('#editWaktu').val()
-        };
-
-        $.ajax({
-            url: APP_URL + '/updateJadwalTes',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function(res) {
-                if (res.status === 'success') {
-                    const modalEl = document.getElementById('updateJadwalModal');
-                    if(modalEl) bootstrap.Modal.getInstance(modalEl).hide();
-                    showAlert(res.message, true);
-                    document.querySelector('a[data-page="jadwaltes"]').click();
-                } else {
-                    showAlert(res.message, false);
-                }
-            }
-        });
-    });
-
-    function saveSchedule(data, modalId) {
-        $.ajax({
-            url: APP_URL + '/saveJadwalTes',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function(res) {
-                if (res.status === 'success') {
-                    const modalEl = document.querySelector(modalId);
-                    if(modalEl) bootstrap.Modal.getInstance(modalEl).hide();
-                    showAlert(res.message, true);
-                    // Reload the page content
-                    document.querySelector('a[data-page="jadwaltes"]').click();
-                } else {
-                    showAlert(res.message, false);
-                }
-            },
-            error: function() {
-                showAlert('Terjadi kesalahan jaringan', false);
-            }
-        });
-    }
-
-    // Delete Schedule
-    $(document).off('click', '.delete-schedule').on('click', '.delete-schedule', function() {
-        const id = $(this).data('id');
-        showConfirmDelete(function() {
-            $.ajax({
-                url: APP_URL + '/deleteJadwalTes',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ id: id }),
-                success: function(res) {
-                    if (res.status === 'success') {
-                        showAlert(res.message || 'Jadwal berhasil dihapus!', true);
-                        setTimeout(function() {
-                            document.querySelector('a[data-page="jadwaltes"]').click();
-                        }, 1000);
-                    } else {
-                        showAlert(res.message, false);
-                    }
-                },
-                error: function() {
-                    showAlert('Terjadi kesalahan jaringan', false);
-                }
-            });
-        }, 'Apakah Anda yakin ingin menghapus jadwal tes ini?');
-    });
-
-    // Reset Exam Handler
-    $(document).off('click', '.reset-exam').on('click', '.reset-exam', function() {
-        const idMahasiswa = $(this).data('id');
-        const text = $(this).data('nama');
-        
-        showActionConfirmation({
-            title: 'Reset Pengerjaan Tes?',
-            message: `Apakah Anda yakin ingin mereset pengerjaan tes untuk <strong>${text}</strong>? <br><small class="text-red-600 font-semibold">Seluruh jawaban dan nilai akan dihapus permanen.</small>`,
-            btnText: 'Reset Sekarang',
-            type: 'danger',
-            onConfirm: function() {
-                $.ajax({
-                    url: '<?= APP_URL ?>/admin/reset-ujian',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ id: idMahasiswa }),
-                    success: function(response) {
-                        // Clean up any lingering modal backdrops
-                        $('.modal-backdrop').remove();
-                        $('body').removeClass('modal-open').css({
-                            'overflow': '',
-                            'padding-right': ''
-                        });
-
-                        if (response.status === 'success') {
-                            showAlert(response.message, true);
-                        } else {
-                            showAlert(response.message || 'Gagal mereset ujian', false);
-                        }
-                    },
-                    error: function(xhr) {
-                        // Clean up any lingering modal backdrops
-                        $('.modal-backdrop').remove();
-                        $('body').removeClass('modal-open').css({
-                            'overflow': '',
-                            'padding-right': ''
-                        });
-
-                        let msg = 'Terjadi kesalahan server';
-                        if (xhr.responseJSON && xhr.responseJSON.message) {
-                            msg = xhr.responseJSON.message;
-                        } else if (xhr.responseText) {
-                            msg = 'Error: ' + xhr.responseText.substring(0, 100);
-                        }
-                        showAlert(msg, false);
-                    }
-                });
-            }
-        });
-    });
-});
-</script>
+<script src="<?= APP_URL ?>/Assets/js/admin/jadwaltes.js?v=<?= time() ?>"></script>
 

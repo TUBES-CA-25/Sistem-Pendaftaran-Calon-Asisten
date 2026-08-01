@@ -40,7 +40,7 @@ foreach ($soalArray as $index => $soal) {
             // Legacy parsing (fallback)
             $decoded = strip_tags($pilihan);
             preg_match_all('/([A-E])\.\s*(.*?)(?=(?:,\s*[A-E]\.)|$)/s', $decoded, $matches, PREG_SET_ORDER);
-            if (count($matches) > 0) {
+            if (count($matches)> 0) {
                 foreach ($matches as $m) {
                     $options[] = ['key' => $m[1], 'value' => trim($m[2])];
                 }

@@ -6,14 +6,12 @@
     <title>Error</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Config wajib ikut dimuat: di sinilah fontFamily.sans -> Poppins didefinisikan,
+         sehingga tidak perlu lagi blok <style> body{font-family} -->
+    <script src="<?= APP_URL ?>/Assets/js/core/tailwind-config.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-    </style>
 </head>
-<body class="bg-rose-50 flex items-center justify-center min-h-screen p-4">
+<body class="font-sans bg-rose-50 flex items-center justify-center min-h-screen p-4">
     <div class="bg-white rounded-2xl shadow-xl border border-rose-100 max-w-md w-full p-6 text-center">
         <div class="w-16 h-16 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

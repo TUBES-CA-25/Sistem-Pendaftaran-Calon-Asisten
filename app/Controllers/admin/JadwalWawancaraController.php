@@ -19,14 +19,14 @@ class JadwalWawancaraController extends Controller
         try {
             if (!isset($_SESSION['user']['id'])) {
                 error_log("Error: User not logged in");
-                echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
+                self::jsonError('User not logged in');
                 exit;
             }
 
             $input = json_decode(file_get_contents('php://input'), true);
 
             if (!isset($input['id']) || !is_numeric($input['id'])) {
-                echo json_encode(['status' => 'error', 'message' => 'ID ruangan tidak valid']);
+                self::jsonError('ID ruangan tidak valid');
                 exit;
             }
 
@@ -46,16 +46,16 @@ class JadwalWawancaraController extends Controller
             }
 
             if (empty($data)) {
-                echo json_encode(['status' => 'error', 'message' => 'Data tidak ditemukan']);
+                self::jsonError('Data tidak ditemukan');
                 exit;
             }
 
-            echo json_encode(['status' => 'success', 'data' => $data]);
+            self::jsonSuccess(['data' => $data]);
             exit;
 
         } catch (\Exception $e) {
             http_response_code(500);
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
             exit;
         }
     }
@@ -82,15 +82,11 @@ class JadwalWawancaraController extends Controller
     public function save()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
 
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
@@ -101,9 +97,7 @@ class JadwalWawancaraController extends Controller
         $tanggal = $input['tanggal'] ?? "";
 
         if (empty($selectedMahasiswa) || empty($id_ruangan) || empty($jenis_wawancara) || empty($waktu) || empty($tanggal)) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'All fields are required']);
-            return;
+            self::jsonError('All fields are required');
         }
         try {
             $wawancara = new Wawancara(
@@ -113,28 +107,21 @@ class JadwalWawancaraController extends Controller
                 $tanggal
             );
             if ($wawancara->save($wawancara, $selectedMahasiswa)) {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'success', 'message' => 'Jadwal wawancara berhasil disimpan']);
+                self::jsonSuccess([], 'Jadwal wawancara berhasil disimpan');
             } else {
-                header('Content-Type: application/json');
-                echo json_encode(['status' => 'error', 'message' => 'Jadwal gagal disimpan']);
+                self::jsonError('Jadwal gagal disimpan');
             }
         } catch (\Exception $e) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
     public function update()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
         $input = json_decode(file_get_contents('php://input'), true);
         $id = $input['id'] ?? "";
@@ -143,9 +130,7 @@ class JadwalWawancaraController extends Controller
         $waktu = $input['waktu'] ?? "";
         $tanggal = $input['tanggal'] ?? "";
         if (empty($id) || empty($id_ruangan) || empty($jenis_wawancara) || empty($waktu) || empty($tanggal)) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'All fields are required']);
-            return;
+            self::jsonError('All fields are required');
         }
         $wawancara = new Wawancara(
             $id_ruangan,
@@ -154,31 +139,23 @@ class JadwalWawancaraController extends Controller
             $tanggal
         );
         if ($wawancara->updateWawancara($id, $wawancara)) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'success', 'message' => 'Jadwal wawancara berhasil diupdate']);
+            self::jsonSuccess([], 'Jadwal wawancara berhasil diupdate');
         } else {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Jadwal gagal diupdate']);
+            self::jsonError('Jadwal gagal diupdate');
         }
     }
     public function delete()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
         $input = json_decode(file_get_contents('php://input'), true);
         $id = $input['id'] ?? "";
         if (empty($id)) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'All fields are required']);
-            return;
+            self::jsonError('All fields are required');
         }
         $wawancara = new Wawancara(
             0,
@@ -187,11 +164,9 @@ class JadwalWawancaraController extends Controller
             0
         );
         if ($wawancara->deleteWawancara($id)) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'success', 'message' => 'Jadwal wawancara berhasil dihapus']);
+            self::jsonSuccess([], 'Jadwal wawancara berhasil dihapus');
         } else {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Jadwal gagal dihapus']);
+            self::jsonError('Jadwal gagal dihapus');
         }
     }
 

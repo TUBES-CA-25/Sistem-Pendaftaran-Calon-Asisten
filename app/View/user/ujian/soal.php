@@ -25,31 +25,32 @@ $results = $results ?? [];
     <title>ICLabs - Tes Tertulis</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="<?= APP_URL ?>/Assets/js/tailwind-config.js"></script>
+    <script src="<?= APP_URL ?>/Assets/js/core/tailwind-config.js"></script>
+    <!-- Komponen UI vanilla (Modal/Toast) — halaman ini berdiri sendiri, tanpa layout -->
+    <script src="<?= APP_URL ?>/Assets/js/core/ui.js?v=<?= time() ?>"></script>
     <!-- Icon Libraries -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link class="suppress-error" rel="icon" href="<?=APP_URL?>/Assets/Img/iclabs.png">
     
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-        /* Custom scrollbar for sidebar & question pane */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+    <style type="text/tailwindcss">
+        @layer utilities {
+            /* Scrollbar kustom. body{font-family} tidak lagi perlu karena
+               fontFamily.sans -> Poppins sudah diatur di tailwind-config.js */
+            ::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+            ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            ::-webkit-scrollbar-thumb {
+                @apply bg-slate-300 rounded;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                @apply bg-slate-400;
+            }
         }
     </style>
     
@@ -259,7 +260,7 @@ $results = $results ?? [];
     </div>
 
     <!-- Custom Alert Modal -->
-    <div id="customModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 p-4 animate-fade-in">
+    <div data-modal id="customModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 p-4 animate-fade-in">
         <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-md w-full overflow-hidden p-6 text-center">
             <div class="flex justify-center items-center mb-4">
                 <img id="modalGif" src="" alt="Animation" class="w-20 h-20" style="display: none;">
@@ -270,7 +271,7 @@ $results = $results ?? [];
     </div>
 
     <!-- Confirmation Modal -->
-    <div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 p-4 animate-fade-in">
+    <div data-modal id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 p-4 animate-fade-in">
         <div class="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-md w-full overflow-hidden p-6">
             <div class="text-center mb-6">
                 <div class="w-16 h-16 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-4">
@@ -292,27 +293,7 @@ $results = $results ?? [];
 
 
     <script>
-        // Modal Shim for Tailwind Modals
-        class TailwindModalShim {
-            constructor(element) {
-                this.element = element;
-            }
-            show() {
-                this.element.classList.remove('hidden');
-                this.element.classList.add('flex');
-            }
-            hide() {
-                this.element.classList.remove('flex');
-                this.element.classList.add('hidden');
-            }
-        }
-
-        const bootstrap = {
-            Modal: function(element) {
-                return new TailwindModalShim(element);
-            }
-        };
-
+        // Modal ditangani UI.modal (Assets/js/core/ui.js) — shim lokal sudah dihapus.
         let customModalInstance = null;
         let confirmModalInstance = null;
 
@@ -321,10 +302,10 @@ $results = $results ?? [];
             const confirmModalEl = document.getElementById('confirmModal');
 
             if (customModalEl) {
-                customModalInstance = new bootstrap.Modal(customModalEl);
+                customModalInstance = UI.modal.ref(customModalEl);
             }
             if (confirmModalEl) {
-                confirmModalInstance = new bootstrap.Modal(confirmModalEl);
+                confirmModalInstance = UI.modal.ref(confirmModalEl);
             }
         });
 
@@ -397,7 +378,7 @@ $results = $results ?? [];
                             <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
                                 <i class="bi bi-image text-blue-600"></i>Gambar Soal
                             </h5>
-                            <button type="button" class="text-slate-400 hover:text-slate-600" onclick="closeImageModal()">
+                            <button type="button" class="text-slate-400 hover:text-slate-600" onclick="closeImageModal()" aria-label="Tutup">
                                 <i class="bi bi-x-lg text-lg"></i>
                             </button>
                         </div>
@@ -433,7 +414,7 @@ $results = $results ?? [];
         window.examSessionId = 'exam_<?= $bank['id'] ?? 'default' ?>_<?= $_SESSION['user']['id'] ?? 'guest' ?>_<?= $_SESSION['exam_session_timestamp'] ?? time() ?>';
         window.examDuration = <?= isset($bank['durasi']) ? (int)$bank['durasi'] : 45 ?>;
     </script>
-    <script src="<?=APP_URL?>/Assets/js/examScript.js"></script>
+    <script src="<?=APP_URL?>/Assets/js/user/exam.js"></script>
 </body>
 
 </html>

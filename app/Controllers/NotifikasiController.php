@@ -16,24 +16,18 @@ class NotifikasiController extends Controller {
         }
     
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
     
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
     
         $idMahasiswa = $_POST['id'] ?? '';
         $message = $_POST['message'] ?? '';
     
         if (!$idMahasiswa || !$message) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Semua field wajib diisi']);
-            return;
+            self::jsonError('Semua field wajib diisi');
         }
     
         $notification = new NotificationUser($idMahasiswa, $message);
@@ -42,14 +36,12 @@ class NotifikasiController extends Controller {
             if ($notification->insert($notification)) {
                 header('Content-Type: application/json');
                 ob_clean(); 
-                echo json_encode(['status' => 'success', 'message' => 'Pesan berhasil dikirim']);
-                return;
+                self::jsonSuccess([], 'Pesan berhasil dikirim');
             }
         } catch (\Exception $e) {
             header('Content-Type: application/json');
             ob_clean(); 
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-            return;
+            self::jsonError($e->getMessage());
         }
     
         ob_end_clean();
@@ -63,15 +55,11 @@ class NotifikasiController extends Controller {
         }
     
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-            return;
+            self::jsonError('Invalid request method');
         }
     
         if (!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
         $input = json_decode(file_get_contents('php://input'), true);
         $idMahasiswa = $input['mahasiswaIds'] ?? '';
@@ -79,9 +67,7 @@ class NotifikasiController extends Controller {
        
     
         if (!$idMahasiswa || !$message) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'Semua field wajib diisi']);
-            return;
+            self::jsonError('Semua field wajib diisi');
         }
         foreach($idMahasiswa as $id) {
             $notification = new NotificationUser($id, $message);
@@ -92,30 +78,37 @@ class NotifikasiController extends Controller {
             } catch (\Exception $e) {
                 header('Content-Type: application/json');
                 ob_clean(); 
-                echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-                return;
+                self::jsonError($e->getMessage());
             }
         }
         
         ob_end_clean();
-        header('Content-Type: application/json');
-        echo json_encode(['status' => 'success', 'message' => 'Pesan berhasil dikirim']);
-        return;
+        self::jsonSuccess([], 'Pesan berhasil dikirim');
     
         ob_end_clean();
     }
+    /**
+     * Ambil notifikasi milik user yang sedang login.
+     *
+     * Method ini static dan dipakai sebagai pengambil data biasa oleh
+     * ProvidesUserData, HomeController, dan view user/notifikasi — ketiganya
+     * memakai pola `?? []` dan mengharapkan nilai kembali, bukan respons HTTP.
+     * Karena itu saat sesi tidak ada kita cukup mengembalikan array kosong.
+     *
+     * (Sebelumnya di sini memanggil $this->jsonError() padahal konteksnya
+     * static, sehingga melempar Error: "Using $this when not in object
+     * context" — fatal, bukan sekadar pesan gagal.)
+     */
     public static function getMessageById() {
         if(session_status() == PHP_SESSION_NONE) {
             session_start();
         }
         if(!isset($_SESSION['user']['id'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            return [];
         }
         $id = $_SESSION['user']['id'];
         $notifikasi = new NotificationUser($id,'');
-        return $notifikasi->getById($notifikasi);
+        return $notifikasi->getById($notifikasi) ?: [];
     }
 
     public function fetchNotifications() {
@@ -125,8 +118,7 @@ class NotifikasiController extends Controller {
         }
 
         if (!isset($_SESSION['user']['id'])) {
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
 
         $id = $_SESSION['user']['id'];
@@ -142,12 +134,7 @@ class NotifikasiController extends Controller {
         include __DIR__ . '/../View/partials/notification_dropdown.php';
         $html = ob_get_clean();
 
-        echo json_encode([
-            'status' => 'success',
-            'data' => $notifications,
-            'count' => $unreadCount,
-            'html' => $html
-        ]);
+        self::jsonSuccess(['data' => $notifications, 'count' => $unreadCount, 'html' => $html]);
     }
 
     public function markRead() {
@@ -157,8 +144,7 @@ class NotifikasiController extends Controller {
         }
 
         if (!isset($_SESSION['user']['id'])) {
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-            return;
+            self::jsonError('User not logged in');
         }
 
         $id = $_SESSION['user']['id'];
@@ -168,7 +154,7 @@ class NotifikasiController extends Controller {
             $notifikasiModel->markAllAsRead($notifikasiModel);
             echo json_encode(['status' => 'success']);
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            self::jsonError($e->getMessage());
         }
     }
 }

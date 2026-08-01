@@ -36,7 +36,7 @@ $essayCount = $stats['essay_count'];
 ?>
 </div>
 
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-6 [&_.editor-toolbar]:!border-slate-200 [&_.editor-toolbar]:rounded-t-xl [&_.CodeMirror]:!border-slate-200 [&_.CodeMirror]:rounded-b-xl [&_.CodeMirror]:min-h-[200px] [&_.CodeMirror]:max-h-[400px] [&_.editor-statusbar]:hidden [&_.condition-render-markdown_img]:max-w-full [&_.condition-render-markdown_img]:max-h-[400px] [&_.condition-render-markdown_img]:object-contain [&_.condition-render-markdown_img]:rounded-xl [&_.condition-render-markdown_img]:my-2.5 [&_.condition-render-markdown_img]:border [&_.condition-render-markdown_img]:border-slate-200 [&_.condition-render-markdown_img]:block [&_.type-option.selected]:bg-blue-600/5 [&_.type-option.selected]:!border-blue-600 [&_.type-option.selected_.check-icon]:!block [&_.modal-dialog-scrollable_.modal-body]:!overflow-y-auto [&_.modal-dialog-scrollable_.modal-body]:!max-h-[65vh] [&_.modal-dialog-scrollable_.modal-body]:[scrollbar-width:thin] [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar]:w-1.5 [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar-track]:bg-slate-100 [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar-thumb]:bg-slate-300 [&_.modal-dialog-scrollable_.modal-body::-webkit-scrollbar-thumb]:rounded-sm [&_.EasyMDEContainer]:z-[1055]">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-6 [&_.editor-toolbar]:!border-slate-200 [&_.editor-toolbar]:rounded-t-xl [&_.CodeMirror]:!border-slate-200 [&_.CodeMirror]:rounded-b-xl [&_.CodeMirror]:min-h-[200px] [&_.CodeMirror]:max-h-[400px] [&_.editor-statusbar]:hidden [&_.condition-render-markdown_img]:max-w-full [&_.condition-render-markdown_img]:max-h-[400px] [&_.condition-render-markdown_img]:object-contain [&_.condition-render-markdown_img]:rounded-xl [&_.condition-render-markdown_img]:my-2.5 [&_.condition-render-markdown_img]:border [&_.condition-render-markdown_img]:border-slate-200 [&_.condition-render-markdown_img]:block [&_.type-option.selected]:bg-blue-600/5 [&_.type-option.selected]:!border-blue-600 [&_.type-option.selected_.check-icon]:!block [&_.EasyMDEContainer]:z-[1055]">
 <div class="bank-list-view" id="bankListView">
         <!-- Stats Bar -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
@@ -84,7 +84,7 @@ $essayCount = $stats['essay_count'];
             <h2 class="text-lg font-bold text-slate-800">Daftar Bank Soal</h2>
             <p class="text-slate-400 text-sm mt-0.5"><?= count($bankSoalList) ?> bank tersedia &bull; Klik kartu untuk melihat daftar soal</p>
         </div>
-        <button class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl flex items-center gap-2 shadow-md shadow-blue-500/20 transition-all hover:-translate-y-0.5 border-0 text-sm" id="btnCreateBank" data-bs-toggle="modal" data-bs-target="#createBankModal">
+        <button class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl flex items-center gap-2 shadow-md shadow-blue-500/20 transition-all hover:-translate-y-0.5 border-0 text-sm" id="btnCreateBank" data-modal-open="#createBankModal">
             <i class="bi bi-plus-circle-fill"></i>
             <span>Buat Bank Baru</span>
         </button>
@@ -116,8 +116,8 @@ $essayCount = $stats['essay_count'];
                 $total    = (int)($bank['jumlah_soal'] ?? 0);
                 $pg       = (int)($bank['pg_count'] ?? 0);
                 $essay    = (int)($bank['essay_count'] ?? 0);
-                $pgPct    = $total > 0 ? round($pg / $total * 100) : 0;
-                $essayPct = $total > 0 ? round($essay / $total * 100) : 0;
+                $pgPct    = $total> 0 ? round($pg / $total * 100) : 0;
+                $essayPct = $total> 0 ? round($essay / $total * 100) : 0;
             ?>
             <div class="group" id="bank-card-<?= $bank['id'] ?>">
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-lg hover:border-slate-300 transition-all duration-200 hover:-translate-y-0.5 flex flex-col">
@@ -147,19 +147,19 @@ $essayCount = $stats['essay_count'];
                         </div>
 
                         <!-- 3-dot menu top-right -->
-                        <div class="absolute top-1.5 right-1.5 dropdown" onclick="event.stopPropagation()">
-                            <button class="w-6 h-6 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 rounded-lg transition border-0 bg-transparent text-xs" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-three-dots-vertical"></i>
+                        <div data-dropdown class="absolute top-1.5 right-1.5 relative" onclick="event.stopPropagation()">
+                            <button class="w-6 h-6 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 rounded-lg transition border-0 bg-transparent text-xs" type="button" data-dropdown-toggle aria-expanded="false" aria-label="Menu lainnya">
+                                <i class="bi bi-three-dots-vertical pointer-events-none"></i>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-xl rounded-xl p-2 mt-1 bg-white ring-1 ring-slate-100">
+                            <ul data-dropdown-menu class="hidden absolute right-0 top-full z-50 min-w-[150px] border-0 shadow-xl rounded-xl p-2 mt-1 bg-white ring-1 ring-slate-100 list-none">
                                 <li>
-                                    <a class="dropdown-item flex items-center gap-2 px-3 py-1.5 text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-lg text-sm font-medium" href="javascript:void(0)" onclick="window.editBankModal(<?= $bank['id'] ?>)">
+                                    <a class="flex items-center gap-2 px-3 py-1.5 text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-lg text-sm font-medium no-underline" href="javascript:void(0)" onclick="window.editBankModal(<?= $bank['id'] ?>)">
                                         <i class="bi bi-pencil-square text-xs"></i> Edit
                                     </a>
                                 </li>
-                                <li><hr class="dropdown-divider my-1 border-slate-100"></li>
+                                <li><hr class="my-1 border-slate-100"></li>
                                 <li>
-                                    <a class="dropdown-item flex items-center gap-2 px-3 py-1.5 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium" href="javascript:void(0)" onclick="deleteBank(<?= $bank['id'] ?>)">
+                                    <a class="flex items-center gap-2 px-3 py-1.5 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium no-underline" href="javascript:void(0)" onclick="deleteBank(<?= $bank['id'] ?>)">
                                         <i class="bi bi-trash3 text-xs"></i> Hapus
                                     </a>
                                 </li>
@@ -230,7 +230,7 @@ $essayCount = $stats['essay_count'];
             <!-- New Bank Card -->
             <div>
                 <div class="rounded-xl border-2 border-dashed border-slate-200 hover:border-blue-400 hover:bg-blue-50/40 cursor-pointer transition-all duration-200 flex flex-col justify-center items-center text-center min-h-[200px] group"
-                     data-bs-toggle="modal" data-bs-target="#createBankModal">
+                     data-modal-open="#createBankModal">
                     <div class="w-10 h-10 rounded-xl mb-2 flex justify-center items-center bg-white text-blue-500 shadow-sm group-hover:scale-110 group-hover:shadow-md border border-slate-100 group-hover:bg-blue-50 transition-all">
                         <i class="bi bi-plus-lg text-lg"></i>
                     </div>
@@ -273,7 +273,7 @@ $essayCount = $stats['essay_count'];
                     <button class="px-4 py-2 bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 text-sm font-bold rounded-lg flex items-center gap-2 transition shadow-sm" onclick="window.editBankModal(window.currentBankId)">
                         <i class='bx bx-edit'></i> Edit Bank Soal
                     </button>
-                    <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg flex items-center gap-2 transition shadow-sm border border-blue-600" data-bs-toggle="modal" data-bs-target="#addSoalModal">
+                    <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg flex items-center gap-2 transition shadow-sm border border-blue-600" data-modal-open="#addSoalModal">
                         <i class='bx bx-plus'></i> Tambah Soal
                     </button>
                 </div>
@@ -313,7 +313,7 @@ $essayCount = $stats['essay_count'];
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
                         <h4 class="font-bold text-slate-800 text-sm mb-3">Aksi Cepat</h4>
                         <div class="space-y-2">
-                            <button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition group border border-transparent hover:border-blue-100" data-bs-toggle="modal" data-bs-target="#addSoalModal">
+                            <button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition group border border-transparent hover:border-blue-100" data-modal-open="#addSoalModal">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-blue-100 flex items-center justify-center transition">
                                         <i class='bx bx-plus text-lg'></i>
@@ -385,15 +385,16 @@ $essayCount = $stats['essay_count'];
 </main>
 
 <!-- Create Bank Modal -->
-<div class="modal fade" id="createBankModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-2xl overflow-hidden">
-            <div class="modal-header border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl">
-                <h5 class="modal-title font-bold text-lg"><i class='bx bx-folder-plus mr-2'></i>Buat Bank Soal Baru</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="createBankModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
+            <div class="border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
+                <h5 class="font-bold text-lg"><i class='bx bx-folder-plus mr-2'></i>Buat Bank Soal Baru</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <form id="createBankForm">
-                <div class="modal-body p-6 space-y-4">
+                <div class="p-6 space-y-4">
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Nama Bank Soal</label>
                         <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition" name="nama_bank" placeholder="Contoh: Ujian Masuk 2024" required>
@@ -421,8 +422,8 @@ $essayCount = $stats['essay_count'];
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
-                    <button type="button" class="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-bold transition border-0 bg-transparent" data-bs-dismiss="modal">Batal</button>
+                <div class="border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
+                    <button type="button" class="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-bold transition border-0 bg-transparent" data-modal-close>Batal</button>
                     <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition shadow-sm border-0">Buat Bank Soal</button>
                 </div>
             </form>
@@ -431,16 +432,17 @@ $essayCount = $stats['essay_count'];
 </div>
 
 <!-- Edit Bank Modal -->
-<div class="modal fade" id="editBankModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-2xl overflow-hidden">
-            <div class="modal-header border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl">
-                <h5 class="modal-title font-bold text-lg"><i class='bx bx-edit mr-2'></i>Edit Bank Soal</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="editBankModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
+            <div class="border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
+                <h5 class="font-bold text-lg"><i class='bx bx-edit mr-2'></i>Edit Bank Soal</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <form id="editBankForm">
                 <input type="hidden" name="id" id="editBankId">
-                <div class="modal-body p-6 space-y-4">
+                <div class="p-6 space-y-4">
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Nama Bank Soal</label>
                         <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition" name="nama" id="editBankName" required>
@@ -450,7 +452,7 @@ $essayCount = $stats['essay_count'];
                         <textarea class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-medium transition" name="deskripsi" id="editBankDesc" rows="3"></textarea>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Token Ujian</label>
+                        <label for="editBankToken" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Token Ujian</label>
                         <div class="relative">
                             <i class='bx bx-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg'></i>
                             <input type="text" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition uppercase tracking-wider" name="token" id="editBankToken" required>
@@ -458,17 +460,17 @@ $essayCount = $stats['essay_count'];
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Durasi (Menit)</label>
+                            <label for="editBankDurasi" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Durasi (Menit)</label>
                             <input type="number" min="1" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition" name="durasi" id="editBankDurasi" required>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Poin per Soal</label>
+                            <label for="editBankPoin" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Poin per Soal</label>
                             <input type="number" min="1" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition" name="poin_per_soal" id="editBankPoin" required>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
-                    <button type="button" class="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-bold transition border-0 bg-transparent" data-bs-dismiss="modal">Batal</button>
+                <div class="border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
+                    <button type="button" class="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-bold transition border-0 bg-transparent" data-modal-close>Batal</button>
                     <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition shadow-sm border-0">Simpan Perubahan</button>
                 </div>
             </form>
@@ -477,15 +479,16 @@ $essayCount = $stats['essay_count'];
 </div>
 
 <!-- Add Soal Modal -->
-<div class="modal fade" id="addSoalModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg rounded-2xl overflow-hidden">
-            <div class="modal-header border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl">
-                <h5 class="modal-title font-bold text-lg"><i class='bx bx-plus-circle mr-2'></i>Tambah Soal Baru</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="addSoalModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100 max-h-[85vh] overflow-y-auto">
+        <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
+            <div class="border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
+                <h5 class="font-bold text-lg"><i class='bx bx-plus-circle mr-2'></i>Tambah Soal Baru</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <form id="addSoalForm" enctype="multipart/form-data">
-                <div class="modal-body p-6 space-y-6" style="max-height: 65vh; overflow-y: auto;">
+                <div class="p-6 space-y-6" style="max-height: 65vh; overflow-y: auto;">
                     <!-- Tipe Soal Selection -->
                     <div class="text-center">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Pilih Tipe Soal</label>
@@ -510,7 +513,7 @@ $essayCount = $stats['essay_count'];
 
                     <!-- Gambar Soal -->
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Gambar Soal (Opsional)</label>
+                        <label for="soalImageInput" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Gambar Soal (Opsional)</label>
                         <input type="file" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition" name="soal_image" id="soalImageInput" accept="image/*">
                         <div class="text-xs text-slate-400 mt-1 font-semibold">Format: JPG, PNG, GIF. Maksimal 2MB.</div>
                         <div id="imagePreview" class="mt-4" style="display: none;">
@@ -555,8 +558,8 @@ $essayCount = $stats['essay_count'];
                         <textarea class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition" name="jawaban_essay" rows="3" placeholder="Jawaban referensi untuk essay..."></textarea>
                     </div>
                 </div>
-                <div class="modal-footer border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
-                    <button type="button" class="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-bold transition border-0 bg-transparent" data-bs-dismiss="modal">Batal</button>
+                <div class="border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
+                    <button type="button" class="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-bold transition border-0 bg-transparent" data-modal-close>Batal</button>
                     <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition shadow-sm border-0">Simpan Soal</button>
                 </div>
             </form>
@@ -565,16 +568,17 @@ $essayCount = $stats['essay_count'];
 </div>
 
 <!-- Edit Soal Modal -->
-<div class="modal fade" id="editSoalModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg rounded-2xl overflow-hidden">
-            <div class="modal-header border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl">
-                <h5 class="modal-title font-bold text-lg"><i class='bx bx-edit mr-2'></i>Edit Soal</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="editSoalModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100 max-h-[85vh] overflow-y-auto">
+        <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
+            <div class="border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
+                <h5 class="font-bold text-lg"><i class='bx bx-edit mr-2'></i>Edit Soal</h5>
+                <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <form id="editSoalForm" enctype="multipart/form-data">
                 <input type="hidden" name="id" id="editSoalId">
-                <div class="modal-body p-6 space-y-6" style="max-height: 65vh; overflow-y: auto;">
+                <div class="p-6 space-y-6" style="max-height: 65vh; overflow-y: auto;">
                     <!-- Tipe Soal Selection -->
                     <div class="text-center">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Tipe Soal</label>
@@ -599,7 +603,7 @@ $essayCount = $stats['essay_count'];
 
                     <!-- Gambar Soal -->
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Gambar Soal (Opsional)</label>
+                        <label for="soalImageEditInput" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Gambar Soal (Opsional)</label>
                         <input type="file" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition" name="soal_image_edit" id="soalImageEditInput" accept="image/*">
                         <div class="text-xs text-slate-400 mt-1 font-semibold">Format: JPG, PNG, GIF. Maksimal 2MB. Kosongkan jika tidak ingin mengubah gambar.</div>
                         <div id="editImagePreview" class="mt-4" style="display: none;">
@@ -643,8 +647,8 @@ $essayCount = $stats['essay_count'];
                         <textarea class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-semibold transition" name="jawaban_essay" id="editJawabanEssay" rows="3"></textarea>
                     </div>
                 </div>
-                <div class="modal-footer border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
-                    <button type="button" class="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-bold transition border-0 bg-transparent" data-bs-dismiss="modal">Batal</button>
+                <div class="border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
+                    <button type="button" class="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-bold transition border-0 bg-transparent" data-modal-close>Batal</button>
                     <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition shadow-sm border-0">Simpan Perubahan</button>
                 </div>
             </form>
@@ -682,7 +686,7 @@ $essayCount = $stats['essay_count'];
         const modalHtml = `
             <div id="imageModal" class="fixed inset-0 z-[1060] flex items-center justify-center bg-slate-900/75 p-4 animate-fade-in" onclick="closeImageModal()">
                 <div class="relative max-w-5xl w-full flex items-center justify-center" onclick="event.stopPropagation()">
-                    <button type="button" class="absolute -top-12 right-0 md:-right-12 text-white/70 hover:text-white transition w-10 h-10 flex items-center justify-center bg-black/20 hover:bg-black/40 rounded-full" onclick="closeImageModal()">
+                    <button type="button" class="absolute -top-12 right-0 md:-right-12 text-white/70 hover:text-white transition w-10 h-10 flex items-center justify-center bg-black/20 hover:bg-black/40 rounded-full" onclick="closeImageModal()" aria-label="Tutup">
                         <i class="bi bi-x-lg text-xl"></i>
                     </button>
                     <img src="${imageUrl}" class="max-h-[85vh] max-w-full object-contain rounded-xl shadow-2xl" alt="Zoomed Image">
@@ -703,7 +707,7 @@ $essayCount = $stats['essay_count'];
 </script>
 
 <!-- Load External JavaScript -->
-<script src="<?= APP_URL ?>/Assets/js/exam_import_export.js"></script>
-<script src="<?= APP_URL ?>/Assets/js/exam.js"></script>
-<script src="<?= APP_URL ?>/Assets/js/exam_ui.js"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/exam-import.js"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/exam.js"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/exam-ui.js"></script>
 
