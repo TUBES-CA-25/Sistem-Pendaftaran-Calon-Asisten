@@ -98,7 +98,12 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
                     <button class="w-10 h-10 md:w-11 md:h-11 bg-white/10 hover:bg-white/20 active:scale-95 border border-white/10 rounded-full text-white flex items-center justify-center relative transition-all duration-200" type="button" data-dropdown-toggle aria-expanded="false" aria-label="Notifikasi">
                         <i class='bx bx-bell text-lg md:text-xl'></i>
                         <?php if (isset($notificationCount) && $notificationCount> 0): ?>
-                        <span class="absolute -top-1 -right-1 bg-red-500 border-2 border-primary-dark text-white font-bold rounded-full text-[9px] w-5 h-5 flex items-center justify-center">
+                        <!-- data-notif-badge: penanda untuk app.js agar badge bisa
+                             disembunyikan setelah notifikasi dibaca. Sebelumnya JS
+                             mencari '.navbar-action-btn .badge' (kelas Bootstrap)
+                             yang sudah tidak ada di markup, sehingga badge merah
+                             tidak pernah hilang meski notifikasi sudah dibuka. -->
+                        <span data-notif-badge class="absolute -top-1 -right-1 bg-red-500 border-2 border-primary-dark text-white font-bold rounded-full text-[9px] w-5 h-5 flex items-center justify-center">
                             <?= $notificationCount ?>
                         </span>
                         <?php endif; ?>
@@ -109,7 +114,7 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
                         <li class="flex justify-between items-center bg-gray-50/85 backdrop-blur-md px-4 py-3 border-b border-gray-100">
                             <span class="font-bold text-gray-800">Notifikasi</span>
                             <?php if (isset($notificationCount) && $notificationCount> 0): ?>
-                                <span class="bg-primary-dark text-white rounded-full px-2 py-1 text-xs"><?= $notificationCount ?></span>
+                                <span data-notif-badge class="bg-primary-dark text-white rounded-full px-2 py-1 text-xs"><?= $notificationCount ?></span>
                             <?php endif; ?>
                         </li>
                         <li class="block">

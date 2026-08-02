@@ -283,19 +283,34 @@ function initNotificationPolling() {
     attachNotificationListeners();
 }
 
+/**
+ * Tandai notifikasi sudah dibaca saat lonceng diklik.
+ *
+ * Versi lama memakai peninggalan Bootstrap yang seluruhnya sudah tidak ada:
+ * event 'shown.bs.dropdown' (Bootstrap sudah dibuang), selector
+ * '.navbar-action-btn' dan '.badge', serta kelas 'd-none'. Akibatnya fungsi ini
+ * tidak pernah berjalan dan badge merah tidak pernah hilang meski notifikasi
+ * sudah dibuka.
+ *
+ * Sekarang: delegasi klik di document pada tombol lonceng
+ * ([data-dropdown-toggle] di dalam [data-dropdown]) — idempoten terhadap SPA
+ * re-inject, tanpa perlu attach ulang listener.
+ */
 function attachNotificationListeners() {
-    const bellBtn = document.querySelector('.navbar-action-btn');
-    if (!bellBtn) return;
-    const dropdownElement = bellBtn.closest('.dropdown');
-    if (dropdownElement) {
-        dropdownElement.removeEventListener('shown.bs.dropdown', handleDropdownShown);
-        dropdownElement.addEventListener('shown.bs.dropdown', handleDropdownShown);
-    }
+    // Tidak perlu apa-apa: listener sudah didelegasikan di document (lihat bawah).
 }
 
-function handleDropdownShown() {
+document.addEventListener('click', function (e) {
+    const toggle = e.target.closest('[data-dropdown-toggle]');
+    if (!toggle) return;
+    // Hanya tombol lonceng yang punya badge / aria-label Notifikasi
+    if (toggle.getAttribute('aria-label') !== 'Notifikasi') return;
+
+    // Sudah tidak ada badge -> tidak ada yang perlu ditandai
+    if (!document.querySelector('[data-notif-badge]')) return;
+
     markNotificationsAsRead();
-}
+});
 
 function markNotificationsAsRead() {
     fetch(`${APP_URL}/marknotificationsread`, {
@@ -305,15 +320,19 @@ function markNotificationsAsRead() {
     .then(res => res.json())
     .then(data => {
         if (data.status === 'success') {
-            const badge = document.querySelector('.navbar-action-btn .badge');
-            if (badge) badge.classList.add('d-none');
+            // Hapus badge merah di lonceng dan angka di header dropdown.
+            document.querySelectorAll('[data-notif-badge]').forEach(function (el) {
+                el.remove();
+            });
         }
     })
     .catch(err => console.error('Error marking read:', err));
 }
 
 function checkNotifications() {
-    if (!document.querySelector('.navbar-action-btn')) return;
+    // Penanda tombol lonceng pada markup Tailwind sekarang (dulu '.navbar-action-btn',
+    // kelas Bootstrap yang sudah tidak ada sehingga polling ini tidak pernah jalan).
+    if (!document.querySelector('[data-dropdown-toggle][aria-label="Notifikasi"]')) return;
     if (notificationAbortController) notificationAbortController.abort();
     notificationAbortController = new AbortController();
 
@@ -333,20 +352,29 @@ function checkNotifications() {
 }
 
 function updateNotificationUI(count, html) {
-    const badge = document.querySelector('.navbar-action-btn .badge');
-    if (badge) {
-        if (count > 0) {
-            badge.innerText = count;
-            badge.classList.remove('d-none');
-            badge.style.display = '';
-        } else {
-            badge.classList.add('d-none');
+    const bell = document.querySelector('[data-dropdown-toggle][aria-label="Notifikasi"]');
+    if (!bell) return;
+
+    let badge = bell.querySelector('[data-notif-badge]');
+
+    if (count > 0) {
+        // Badge dirender server-side hanya bila count > 0, jadi saat polling
+        // menemukan notifikasi baru badge-nya perlu dibuat sendiri.
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.setAttribute('data-notif-badge', '');
+            badge.className = 'absolute -top-1 -right-1 bg-red-500 border-2 border-primary-dark ' +
+                              'text-white font-bold rounded-full text-[9px] w-5 h-5 flex items-center justify-center';
+            bell.appendChild(badge);
         }
+        badge.textContent = count;
+    } else if (badge) {
+        badge.remove();
     }
-    const dropdownMenu = document.querySelector('.navbar-notification-dropdown');
-    if (dropdownMenu) {
-        dropdownMenu.style.width = '320px';
-        dropdownMenu.style.maxWidth = '90vw';
+
+    // Isi dropdown diperbarui dari HTML yang dirender server.
+    const dropdownMenu = bell.closest('[data-dropdown]')?.querySelector('[data-dropdown-menu]');
+    if (dropdownMenu && html) {
         dropdownMenu.innerHTML = html;
     }
 }

@@ -24,16 +24,16 @@ $mySchedule = array_filter($wawancara, function($item) {
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 p-6 border-b border-slate-100">
+        <!-- Kotak "Cari jadwal" dihapus: fungsinya duplikat dengan kotak
+             "Cari data" yang otomatis disuntik VanillaPaginator tepat di atas
+             tabel, dan keduanya menyembunyikan baris dengan cara berbeda
+             sehingga bisa saling bentrok. Judul kini menyatu dengan tabel
+             (tanpa border pemisah, karena toolbar paginator sudah membawa
+             garisnya sendiri). -->
+        <div class="px-6 pt-6 pb-1">
             <h5 class="text-xl font-bold text-slate-800 flex items-center gap-2">
                 <i class="bi bi-calendar-event text-blue-600"></i>Jadwal Kegiatan Saya
             </h5>
-            <div class="relative w-full sm:w-64">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                    <i class="bi bi-search text-sm"></i>
-                </span>
-                <input type="text" id="searchSchedule" class="w-full pl-10 pr-4 py-2 text-sm text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150" placeholder="Cari jadwal...">
-            </div>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-100 text-sm no-datatable" data-paginator="true" data-paginator-perpage="5">
@@ -130,42 +130,4 @@ $mySchedule = array_filter($wawancara, function($item) {
     </div>
 </main>
 
-<script>
-// Vanilla JS (tanpa jQuery). dom.on() = delegasi di document -> idempoten
-// terhadap SPA re-inject #content.
-(function() {
-    // Search functionality
-    dom.on('keyup', '#searchSchedule', function() {
-        const value = this.value.toLowerCase();
-        const rows = dom.qsa('table tbody tr:not(#noResultsRow)');
-
-        rows.forEach(function(row) {
-            dom.toggle(row, row.textContent.toLowerCase().indexOf(value) > -1);
-        });
-
-        // Handle "No results found" if all rows are hidden
-        const visibleRows = rows.filter(function(row) {
-            return !row.classList.contains('hidden');
-        }).length;
-
-        const tbody = dom.qs('table tbody');
-        const existing = dom.qs('#noResultsRow');
-
-        if (visibleRows === 0) {
-            if (!existing && tbody) {
-                tbody.insertAdjacentHTML('beforeend', `
-                    <tr id="noResultsRow">
-                        <td colspan="5" class="px-4 py-8 text-center text-slate-400">
-                            <i class="bi bi-search text-4xl mb-2 block opacity-50"></i>
-                            <span class="text-xs font-medium">Jadwal yang Anda cari tidak ditemukan</span>
-                        </td>
-                    </tr>
-                `);
-            }
-        } else if (existing) {
-            existing.remove();
-        }
-    });
-})();
-</script>
 
