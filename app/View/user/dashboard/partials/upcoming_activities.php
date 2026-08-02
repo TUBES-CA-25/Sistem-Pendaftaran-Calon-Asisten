@@ -8,7 +8,9 @@ usort($upcoming, function($a, $b) {
     return strcmp($a['tanggal'], $b['tanggal']);
 });
 
-$upcomingFuture = array_slice($upcoming, 0, 1);
+// Daftar ini menempati panel kanan kartu "Kalender Kegiatan" (setengah dari
+// kolom 2/3), jadi muat beberapa kegiatan sekaligus.
+$upcomingFuture = array_slice($upcoming, 0, 3);
 
 if (empty($upcomingFuture)) {
     return;
@@ -24,20 +26,24 @@ foreach ($upcomingFuture as $act) {
     $tanggal = date_create($act['tanggal']);
     $formattedDateStr = date_format($tanggal, 'd M Y');
     
+    // Tanggal & jenis berdampingan (bukan bertumpuk) karena kartunya lebar.
     $html .= '
-        <div class="flex gap-3">
+        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100">
             <div class="w-10 h-10 rounded-full ' . $colorClass . ' flex items-center justify-center shrink-0">
                 <i class="bi ' . $icon . ' text-lg"></i>
             </div>
-            <div>
-                <p class="font-semibold text-slate-800 text-sm mb-0.5">' . htmlspecialchars($act['judul']) . '</p>
-                <span class="text-slate-400 text-xs block mb-0.5">
-                    <i class="bi bi-calendar3 me-1"></i>' . $formattedDateStr . '
-                </span>
-                <span class="text-slate-400 text-xs block">
-                    <i class="bi bi-folder me-1"></i>' . htmlspecialchars($act['jenis']) . '
-                </span>
+            <div class="min-w-0 flex-grow">
+                <p class="font-semibold text-slate-800 text-sm mb-0.5 truncate">' . htmlspecialchars($act['judul']) . '</p>
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-0.5">
+                    <span class="text-slate-400 text-xs">
+                        <i class="bi bi-calendar3 me-1"></i>' . $formattedDateStr . '
+                    </span>
+                    <span class="text-slate-400 text-xs">
+                        <i class="bi bi-folder me-1"></i>' . htmlspecialchars($act['jenis']) . '
+                    </span>
+                </div>
             </div>
         </div>';
 }
-echo $html;
+// space-y-2: jarak antar item bila ada lebih dari satu kegiatan.
+echo '<div class="space-y-2">' . $html . '</div>';

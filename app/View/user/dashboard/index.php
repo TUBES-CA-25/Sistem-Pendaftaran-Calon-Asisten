@@ -23,6 +23,11 @@ $biodata = $biodata ?? [];
 $user = $user ?? [];
 $photo = $photo ?? 'default.png';
 $dokumen = $dokumen ?? [];
+// Tiga nilai di bawah dipakai view tetapi sebelumnya tidak punya default,
+// sehingga view fatal bila dirender tanpa data dari controller.
+$graduationStatus = $graduationStatus ?? 'Pending';
+$currentActivities = $currentActivities ?? [];
+$profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => ''];
 ?>
 
 
@@ -37,9 +42,15 @@ $dokumen = $dokumen ?? [];
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
 
+    <!-- Tanpa items-start: kolom dibiarkan meregang (default `stretch`) supaya
+         tinggi frame kiri dan kanan sejajar. Dengan items-start, tiap kolom
+         hanya setinggi isinya sehingga kartu kanan berhenti di tengah. -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- Main Content (Left Column) - 2/3 width -->
+        <!-- BARIS 1 KIRI (2/3): pengumuman + Progress & Status.
+             Wajib 2 span: di dalamnya ada sub-grid md:grid-cols-12
+             (kartu Progress 5 + Stepper 7 bersebelahan). Kalau dipaksa
+             1/3, kedua kartu itu terjepit dan layout berantakan. -->
         <div class="lg:col-span-2 space-y-6">
 
             <?php if ($graduationStatus === 'Lulus' || $graduationStatus === 'Tidak Lulus'): ?>
@@ -174,8 +185,49 @@ $dokumen = $dokumen ?? [];
                 </div>
             </div>
 
-            <!-- Biodata Diri Card -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+        </div>
+
+        <!-- KOLOM KANAN (1/3, setinggi 2 baris): Profil DI ATAS, lalu Biodata Diri.
+             row-span-2 supaya kolom ini sejajar dengan dua baris di kiri
+             (pengumuman+progress, lalu upcoming+kalender). -->
+        <!-- flex flex-col: agar kartu Biodata di bawah bisa flex-grow mengisi
+             sisa tinggi kolom, sehingga ujung bawahnya sejajar dengan kartu
+             Kalender Kegiatan di sebelah kiri. -->
+        <div class="lg:col-span-1 lg:row-span-2 flex flex-col gap-6">
+            <!-- Profile Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 text-center">
+                <!-- Profile Photo -->
+                <div class="mb-4 flex justify-center">
+                    <?php if ($profileDisplay['hasValidPhoto']): ?>
+                        <img src="<?= htmlspecialchars($profileDisplay['photoPath']) ?>"
+                             alt="Profile"
+                             class="rounded-full border-4 border-blue-50 w-24 h-24 object-cover"
+                             onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/dummy.jpeg'">
+                    <?php else: ?>
+                        <!-- Default Avatar (Fallback) -->
+                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png"
+                             alt="Profile"
+                             class="rounded-full border-4 border-blue-50 w-24 h-24 object-cover">
+                    <?php endif; ?>
+                </div>
+
+                <!-- Name & Title -->
+                <!-- break-words + text-sm: untuk akun yang biodatanya belum diisi,
+                     nilai ini jatuh ke username yang berupa email panjang
+                     (13020230306@student.umi.ac.id) dan tanpa ini teksnya meluber
+                     keluar kartu. -->
+                <h5 class="font-bold text-slate-800 mb-0.5 text-sm break-words leading-snug"><?= htmlspecialchars($biodata['namaLengkap'] ?? $user['username'] ?? 'User') ?></h5>
+                <p class="text-xs text-slate-400 mb-4">Calon Asisten Lab</p>
+
+                <!-- Edit Button -->
+                <button class="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 font-semibold text-sm rounded-xl transition duration-200" onclick="loadPage('biodata')">
+                    <i class="bi bi-pencil me-2"></i>Lihat Biodata
+                </button>
+            </div>
+
+            <!-- Biodata Diri Card. flex-grow: mengisi sisa tinggi kolom kanan
+                 agar bagian bawahnya rata dengan kartu Kalender Kegiatan. -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex-grow">
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="font-bold text-slate-800 text-lg">Biodata Diri</h5>
                     <button class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition" onclick="navigateTo('biodata')">
@@ -183,7 +235,9 @@ $dokumen = $dokumen ?? [];
                     </button>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- SATU kolom: kartu ini kini berada di kolom sempit (1/3),
+                     jadi md:grid-cols-2 akan membuat isinya terjepit. -->
+                <div class="grid grid-cols-1 gap-4">
                     <!-- Nama Lengkap -->
                     <div class="flex items-start gap-3">
                         <div class="rounded-xl bg-blue-50 p-2.5 shrink-0 text-blue-600">
@@ -276,74 +330,89 @@ $dokumen = $dokumen ?? [];
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <!-- Sidebar (Right Column) - 1/3 width -->
-        <div class="lg:col-span-1 space-y-6">
-
-            <!-- Profile Card -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 text-center">
-                <!-- Profile Photo -->
-                <div class="mb-4 flex justify-center">
-                    <?php if ($profileDisplay['hasValidPhoto']): ?>
-                        <img src="<?= htmlspecialchars($profileDisplay['photoPath']) ?>"
-                             alt="Profile"
-                             class="rounded-full border-4 border-blue-50 w-24 h-24 object-cover"
-                             onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/dummy.jpeg'">
-                    <?php else: ?>
-                        <!-- Default Avatar (Fallback) -->
-                        <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png"
-                             alt="Profile"
-                             class="rounded-full border-4 border-blue-50 w-24 h-24 object-cover">
-                    <?php endif; ?>
-                </div>
-
-                <!-- Name & Title -->
-                <h5 class="font-bold text-slate-800 mb-0.5 text-base"><?= htmlspecialchars($biodata['namaLengkap'] ?? $user['username'] ?? 'User') ?></h5>
-                <p class="text-xs text-slate-400 mb-4">Calon Asisten Lab</p>
-
-                <!-- Edit Button -->
-                <button class="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 font-semibold text-sm rounded-xl transition duration-200" onclick="loadPage('biodata')">
-                    <i class="bi bi-pencil me-2"></i>Lihat Biodata
-                </button>
-            </div>
-
-            <!-- Calendar Widget -->
+        <!-- BARIS 2 KIRI (2/3): kartu gabungan Kalender Kegiatan. -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Upcoming: dipindah ke kolom 2/3 ini agar memanjang dan
+                 berada tepat di atas kartu Biodata Diri. -->
+            <!-- Kalender Kegiatan: gabungan Kalender + Upcoming.
+                 Keduanya memakai data yang sama ($activities dari
+                 getKegiatanByMonth), jadi disatukan agar hubungannya jelas:
+                 kiri menandai tanggal, kanan merinci kegiatannya. -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h6 class="font-bold text-slate-700">Calendar</h6>
-                    <div class="flex gap-1">
-                        <button class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" id="prev-month" aria-label="Bulan sebelumnya">
-                            <i class="bi bi-chevron-left text-xs"></i>
-                        </button>
-                        <button class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" id="next-month" aria-label="Bulan berikutnya">
-                            <i class="bi bi-chevron-right text-xs"></i>
-                        </button>
+                <div class="flex justify-between items-center mb-5">
+                    <h6 class="font-bold text-slate-700">Kalender Kegiatan</h6>
+                    <a href="javascript:void(0)" onclick="navigateTo('wawancara')" class="text-xs text-blue-600 hover:text-blue-700 font-bold transition">Lihat Semua</a>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-6">
+
+                    <!-- KIRI: kalender -->
+                    <div class="md:w-1/2 shrink-0">
+                        <div class="flex justify-between items-center mb-3">
+                            <p class="font-bold text-sm text-slate-800" id="calendar-month-year">
+                                <?= date('F Y') ?>
+                            </p>
+                            <div class="flex gap-1">
+                                <button class="w-7 h-7 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" id="prev-month" aria-label="Bulan sebelumnya">
+                                    <i class="bi bi-chevron-left text-xs"></i>
+                                </button>
+                                <button class="w-7 h-7 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" id="next-month" aria-label="Bulan berikutnya">
+                                    <i class="bi bi-chevron-right text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Day headers -->
+                        <div class="grid grid-cols-7 gap-1 mb-2 text-center text-slate-400 text-[10px] font-bold tracking-wider">
+                            <div>SUN</div>
+                            <div>MON</div>
+                            <div>TUE</div>
+                            <div>WED</div>
+                            <div>THU</div>
+                            <div>FRI</div>
+                            <div>SAT</div>
+                        </div>
+
+                        <!-- Calendar dates -->
+                        <div class="grid grid-cols-7 gap-1" id="calendar-dates">
+                            <!-- Dates will be generated by JavaScript -->
+                        </div>
                     </div>
-                </div>
-                
-                <!-- Calendar Header -->
-                <div class="text-center mb-3">
-                    <p class="font-bold text-sm text-slate-800" id="calendar-month-year">
-                        <?= date('F Y') ?>
-                    </p>
-                </div>
 
-                <!-- Day headers -->
-                <div class="grid grid-cols-7 gap-1 mb-2 text-center text-slate-400 text-[10px] font-bold tracking-wider">
-                    <div>SUN</div>
-                    <div>MON</div>
-                    <div>TUE</div>
-                    <div>WED</div>
-                    <div>THU</div>
-                    <div>FRI</div>
-                    <div>SAT</div>
-                </div>
+                    <!-- KANAN: daftar kegiatan (diisi ulang oleh dashboard.js) -->
+                    <div class="md:w-1/2 md:border-l md:border-slate-100 md:pl-6">
+                        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-3">Kegiatan Terdekat</p>
+                        <div id="upcomingEventsList">
+                            <?php if ($jadwalPresentasiUser): ?>
+                                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100">
+                                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                                        <i class="bi bi-calendar-event text-lg"></i>
+                                    </div>
+                                    <div class="min-w-0 flex-grow">
+                                        <p class="font-semibold text-slate-800 text-sm mb-0.5 truncate"><?= htmlspecialchars($jadwalPresentasiUser['judul'] ?? 'Presentasi') ?></p>
+                                        <div class="flex flex-wrap items-center gap-x-4 gap-y-0.5">
+                                            <span class="text-slate-400 text-xs">
+                                                <i class="bi bi-calendar3 me-1"></i>
+                                                <?= $jadwalPresentasiUser['formattedDate'] ?? '-' ?>
+                                            </span>
+                                            <span class="text-slate-400 text-xs">
+                                                <i class="bi bi-clock me-1"></i>
+                                                <?= $jadwalPresentasiUser['formattedTime'] ?? '-' ?> WIB
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="text-center py-8 text-slate-400">
+                                    <i class="bi bi-calendar-x text-3xl mb-2 block opacity-65"></i>
+                                    <span class="text-xs">Tidak ada kegiatan di bulan ini</span>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
 
-                <!-- Calendar dates -->
-                <div class="grid grid-cols-7 gap-1" id="calendar-dates">
-                    <!-- Dates will be generated by JavaScript -->
                 </div>
             </div>
 
@@ -351,42 +420,8 @@ $dokumen = $dokumen ?? [];
             <script>
                 window.initialActivities = <?= json_encode($currentActivities) ?>;
             </script>
-
-            <!-- Upcoming Events -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h6 class="font-bold text-slate-700">Upcoming</h6>
-                    <a href="javascript:void(0)" onclick="navigateTo('wawancara')" class="text-xs text-blue-600 hover:text-blue-700 font-bold transition">View All</a>
-                </div>
-                
-                <div id="upcomingEventsList">
-                    <?php if ($jadwalPresentasiUser): ?>
-                        <div class="flex gap-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                                <i class="bi bi-calendar-event text-lg"></i>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-slate-800 text-sm mb-0.5"><?= htmlspecialchars($jadwalPresentasiUser['judul'] ?? 'Presentasi') ?></p>
-                                <span class="text-slate-400 text-xs block mb-0.5">
-                                    <i class="bi bi-calendar3 me-1"></i>
-                                    <?= $jadwalPresentasiUser['formattedDate'] ?? '-' ?>
-                                </span>
-                                <span class="text-slate-400 text-xs block">
-                                    <i class="bi bi-clock me-1"></i>
-                                    <?= $jadwalPresentasiUser['formattedTime'] ?? '-' ?> WIB
-                                </span>
-                            </div>
-                        </div>
-                    <?php else: ?>
-                        <div class="text-center py-6 text-slate-400">
-                            <i class="bi bi-calendar-x text-3xl mb-2 block opacity-65"></i>
-                            <span class="text-xs">No upcoming events</span>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
         </div>
+
     </div>
 </main>
 
