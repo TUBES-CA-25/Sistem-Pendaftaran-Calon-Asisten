@@ -361,6 +361,57 @@ class BerkasUser extends Model {
 
         return $result;
     }
+    /**
+     * Hapus SELURUH submission berkas milik satu mahasiswa (satu baris riwayat).
+     *
+     * Tabel ini menyimpan satu baris per mahasiswa yang di-update tiap submit
+     * ulang, jadi menghapus "baris riwayat" berarti menghapus keempat berkas
+     * sekaligus beserta file fisiknya.
+     *
+     * Ditolak bila berkas sudah diverifikasi admin (accepted = 1).
+     */
+    public function deleteSubmission($idUser) {
+        $idMahasiswa = $this->getIdMahasiswa($idUser);
+        if ($idMahasiswa === null) {
+            throw new Exception("Data mahasiswa tidak ditemukan.");
+        }
+
+        $stmt = self::getDB()->prepare(
+            "SELECT foto, cv, transkrip_nilai, surat_pernyataan, accepted
+             FROM " . static::$table . " WHERE id_mahasiswa = ?"
+        );
+        $stmt->bindValue(1, $idMahasiswa['id']);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            throw new Exception("Data berkas tidak ditemukan.");
+        }
+        if ((int) $row['accepted'] === 1) {
+            throw new Exception("Berkas sudah diverifikasi dan tidak dapat dihapus.");
+        }
+
+        // Hapus file fisiknya lebih dulu; basename() menjaga agar nama dari DB
+        // tidak bisa menunjuk ke luar folder res/.
+        $base = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/';
+        foreach (['foto', 'cv', 'transkrip_nilai', 'surat_pernyataan'] as $kolom) {
+            if (empty($row[$kolom])) {
+                continue;
+            }
+            $dir = ($kolom === 'foto') ? 'imageUser/' : 'berkasUser/';
+            $path = $base . $dir . basename($row[$kolom]);
+            if (is_file($path)) {
+                @unlink($path);
+            }
+        }
+
+        $del = self::getDB()->prepare(
+            "DELETE FROM " . static::$table . " WHERE id_mahasiswa = ?"
+        );
+        $del->bindValue(1, $idMahasiswa['id']);
+        return $del->execute();
+    }
+
     public function getBerkasAdmin() {
         $query = "SELECT * FROM " . static::$table;
         $stmt = self::getDB()->prepare($query);

@@ -37,28 +37,11 @@ $isBiodataEmpty = $isBiodataEmpty ?? true;
 ?>
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-        <!-- Left Column: Profile Card -->
-        <div class="md:col-span-4 lg:col-span-3">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 text-center p-6 h-full flex flex-col justify-center items-center">
-                <div class="relative w-32 h-32 mb-4 group cursor-pointer overflow-hidden rounded-2xl border-4 border-slate-50 shadow-inner profile-img-container">
-                    <img src="<?= $photo ?>" alt="Profile Picture" class="w-full h-full object-cover profile-img-target" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
-                    <div onclick="document.getElementById('profileImageInput').click();" 
-                         class="absolute inset-0 bg-slate-900/60 flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 profile-overlay">
-                        <i class="bx bx-camera text-2xl mb-1"></i>
-                        <span class="text-[10px] font-bold tracking-wider uppercase">Ubah Foto</span>
-                    </div>
-                </div>
-                <input type="file" id="profileImageInput" class="hidden" accept="image/*">
-                <h5 class="font-bold text-slate-800 mb-1 text-wrap text-break"><?= htmlspecialchars($nama) ?></h5>
-                <p class="text-slate-400 text-xs flex items-center justify-center gap-1">
-                    <i class="bx bx-id-card"></i><?= htmlspecialchars($stambuk) ?>
-                </p>
-            </div>
-        </div>
+    <div class="grid grid-cols-1 gap-6">
 
-        <!-- Right Column: Form / Display Card -->
-        <div class="md:col-span-8 lg:col-span-9">
+        <!-- Form / Display Card (kartu foto+nama di kiri sudah dihapus, jadi
+             kartu ini memakai lebar penuh) -->
+        <div>
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 lg:p-8 h-full">
                 <?php 
                     // Determine initial visibility
@@ -279,52 +262,6 @@ function cancelEdit() {
 // Vanilla JS (tanpa jQuery). dom.on() = delegasi di document -> idempoten
 // terhadap SPA re-inject #content.
 (function () {
-    // Profile Image Upload Handler (Change Event)
-    dom.on('change', '#profileImageInput', function () {
-        if (!(this.files && this.files[0])) return;
-
-        const formData = new FormData();
-        formData.append('image', this.files[0]);
-
-        const overlay = dom.qs('.profile-overlay');
-        const originalContent = overlay ? overlay.innerHTML : '';
-
-        // Show uploading state using DOM creation
-        if (overlay) {
-            const spinner = document.createElement('div');
-            spinner.className = 'animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent';
-            spinner.setAttribute('role', 'status');
-            overlay.innerHTML = '';
-            overlay.appendChild(spinner);
-            overlay.style.opacity = '1';
-        }
-
-        function restoreOverlay() {
-            if (!overlay) return;
-            overlay.innerHTML = originalContent;
-            overlay.style.opacity = '';
-        }
-
-        dom.postForm('/Sistem-Pendaftaran-Calon-Asisten/public/updateprofile', formData)
-            .then(function (res) {
-                if (res.status === 'success') {
-                    showAlert('Upload Success!', true);
-                    if (res.newPhoto) {
-                        const newUrl = res.newPhoto + '?t=' + new Date().getTime();
-                        dom.qsa('.profile-img-target, .navbar-profile-img, img[alt="Profile Picture"]')
-                            .forEach(function (img) { img.setAttribute('src', newUrl); });
-                    }
-                } else {
-                    console.log('Debug Info:', res.debug);
-                    showAlert(res.message || 'Gagal upload foto', false);
-                }
-            })
-            .catch(function (err) {
-                console.error('Upload Error:', err);
-                showAlert('Terjadi kesalahan koneksi saat mengunggah gambar.', false);
-            })
-            .finally(restoreOverlay);
-    });
 })();
 </script>
 

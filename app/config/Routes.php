@@ -61,6 +61,7 @@ Router::post('/reset-password/update', [new ForgotPasswordController, 'updatePas
 Router::post('/logout', [new AuthController, 'logout']);
 Router::post("/store", [new BiodataController, 'saveBiodata']);
 Router::post("/berkas", [new BerkasController, 'saveBerkas']);
+Router::post("/hapussubmitberkas", [new BerkasController, 'deleteSubmission']);
 Router::post("/judul", [new PresentasiUserController, 'saveJudul']);
 Router::post("/presentasi", [new PresentasiUserController, 'saveMakalahAndPpt']);
 Router::post("/hasil",[new TesTulisController, 'saveAnswer']);

@@ -97,6 +97,13 @@ class BerkasController extends Controller
             // error_log('File CV: ' . print_r($_FILES['cv'], true));
 
             if ($berkasUser->save($berkasUser)) {
+                // Foto 3x4 yang baru diunggah sekaligus dijadikan foto profil,
+                // supaya yang tampil di dashboard/sidebar mengikuti berkas
+                // terakhir. Sebelumnya dashboard membaca mahasiswa.foto_profil
+                // yang tidak pernah ikut diperbarui saat submit berkas, sehingga
+                // foto profil tertinggal memakai file lama.
+                $this->syncFotoProfilDariBerkas($idUser);
+
                 self::jsonSuccess([], 'Berkas berhasil diupload');
             } else {
                 self::jsonError('Berkas gagal diupload');
@@ -106,6 +113,52 @@ class BerkasController extends Controller
             self::jsonError($e->getMessage());
         }
     }
+    /**
+     * Salin nama file foto dari berkas_mahasiswa.foto ke mahasiswa.foto_profil.
+     *
+     * Keduanya kolom terpisah: berkas menyimpan foto 3x4 di res/imageUser/,
+     * sedangkan foto profil dibaca dari mahasiswa.foto_profil. Tanpa sinkronisasi
+     * ini, foto yang diunggah lewat halaman Upload Berkas tidak pernah muncul
+     * sebagai foto profil di dashboard.
+     *
+     * Kegagalan di sini tidak boleh membatalkan upload yang sudah berhasil,
+     * jadi errornya ditelan dan hanya dicatat ke log.
+     */
+    private function syncFotoProfilDariBerkas($idUser): void
+    {
+        try {
+            $berkas = (new BerkasUser())->getBerkas($idUser);
+            $namaFoto = $berkas[0]['foto'] ?? '';
+            if ($namaFoto === '') {
+                return;
+            }
+            (new Mahasiswa())->updateProfilePhoto($idUser, $namaFoto);
+        } catch (\Throwable $e) {
+            error_log('Gagal menyinkronkan foto profil dari berkas: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Hapus seluruh submission berkas (satu baris di Riwayat Submit Berkas).
+     * Hanya boleh bila berkas belum diverifikasi admin.
+     */
+    public function deleteSubmission()
+    {
+        $idUser = self::requireAuth();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            self::jsonError('Invalid request method');
+        }
+
+        try {
+            $berkas = new BerkasUser();
+            $berkas->deleteSubmission($idUser);
+            self::jsonSuccess([], 'Data berkas berhasil dihapus');
+        } catch (\Throwable $e) {
+            self::jsonError($e->getMessage());
+        }
+    }
+
     public static function viewBerkas()
     {
         $user = new BerkasUser();

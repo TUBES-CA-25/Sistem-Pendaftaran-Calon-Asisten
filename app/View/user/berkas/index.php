@@ -32,9 +32,11 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
 ?>
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- 5 kolom: Upload Dokumen 2/5 (dipersempit), Riwayat 3/5 (diperlebar)
+         supaya tabel riwayat punya ruang lebih lega. -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <!-- Upload Form Card -->
-        <div>
+        <div class="lg:col-span-2">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-full flex flex-col">
                 <div class="flex items-center gap-2 mb-6">
                     <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -65,7 +67,8 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                     <i class="bi bi-image text-blue-600"></i>Foto 3x4
                                 </label>
                                 <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150" type="file" id="foto" name="foto" accept="image/png, image/jpeg, image/jpg" required>
-                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PNG, JPG, JPEG</span>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PNG, JPG, JPEG &middot; maks 5 MB</span>
+                                <p class="hidden mt-1.5 text-[11px] font-semibold text-red-600 items-center gap-1" data-error-for="foto"><i class="bi bi-exclamation-circle-fill"></i><span></span></p>
                             </div>
 
                             <div>
@@ -73,7 +76,8 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                     <i class="bi bi-file-earmark-text text-blue-600"></i>CV
                                 </label>
                                 <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150" type="file" id="cv" name="cv" accept="application/pdf" required>
-                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF</span>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF &middot; maks 5 MB</span>
+                                <p class="hidden mt-1.5 text-[11px] font-semibold text-red-600 items-center gap-1" data-error-for="cv"><i class="bi bi-exclamation-circle-fill"></i><span></span></p>
                             </div>
 
                             <div>
@@ -81,7 +85,8 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                     <i class="bi bi-file-earmark-bar-graph text-blue-600"></i>Transkrip Nilai
                                 </label>
                                 <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150" type="file" id="transkrip" name="transkrip" accept="application/pdf" required>
-                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF</span>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF &middot; maks 5 MB</span>
+                                <p class="hidden mt-1.5 text-[11px] font-semibold text-red-600 items-center gap-1" data-error-for="transkrip"><i class="bi bi-exclamation-circle-fill"></i><span></span></p>
                             </div>
 
                             <div>
@@ -89,7 +94,8 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                     <i class="bi bi-file-earmark-check text-blue-600"></i>Surat Pernyataan
                                 </label>
                                 <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150" type="file" id="suratpernyataan" name="suratpernyataan" accept="application/pdf" required>
-                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF</span>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF &middot; maks 5 MB</span>
+                                <p class="hidden mt-1.5 text-[11px] font-semibold text-red-600 items-center gap-1" data-error-for="suratpernyataan"><i class="bi bi-exclamation-circle-fill"></i><span></span></p>
                             </div>
 
                             <div class="p-4 rounded-xl bg-blue-50 border border-blue-100/50 hover:bg-blue-100/70 transition duration-200 mb-6">
@@ -113,8 +119,11 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
             </div>
         </div>
 
-        <!-- History Table Card -->
-        <div>
+        <!-- Riwayat Submit Berkas -->
+        <div class="lg:col-span-3">
+
+            <!-- h-full: samakan tinggi frame dengan kartu Upload di sebelah kiri.
+                 Tanpa ini kartu hanya setinggi isinya sehingga terlihat pendek. -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-full flex flex-col">
                 <div class="flex items-center gap-2 mb-6">
                     <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -124,11 +133,12 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                 <div class="overflow-x-auto rounded-xl border border-slate-100">
                     <table class="min-w-full divide-y divide-slate-100 text-sm no-datatable" data-paginator="true" data-paginator-perpage="5">
                         <thead>
-                            <tr> 
-                                <th class="dt-head-cell">No</th>                                   
+                            <tr>
+                                <th class="dt-head-cell">No</th>
                                 <th class="dt-head-cell">Tanggal</th>
                                 <th class="dt-head-cell">Nama</th>
                                 <th class="dt-head-cell">Status</th>
+                                <th class="dt-head-cell text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 bg-white">
@@ -149,11 +159,30 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                                 </span>
                                             <?php endif; ?>
                                         </td>
+                                        <td class="px-4 py-3 whitespace-nowrap">
+                                            <div class="flex items-center justify-center">
+                                                <?php if ($result['accepted'] == 1): ?>
+                                                    <!-- Sudah diverifikasi: hapus dikunci. Tombol tetap
+                                                         ditampilkan (disabled) agar peserta paham kenapa
+                                                         tidak bisa menghapus, bukan sekadar hilang. -->
+                                                    <span class="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 text-slate-300 cursor-not-allowed"
+                                                          title="Berkas sudah diverifikasi, tidak dapat dihapus">
+                                                        <i class="bi bi-lock-fill"></i>
+                                                    </span>
+                                                <?php else: ?>
+                                                    <button type="button"
+                                                            class="w-8 h-8 rounded-lg flex items-center justify-center transition bg-red-50 hover:bg-red-100 text-red-600 btn-hapus-submit"
+                                                            title="Hapus data berkas ini">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                <?php endif; ?>
+                                            </div>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="4" class="px-4 py-8 text-center text-slate-400">
+                                    <td colspan="5" class="px-4 py-8 text-center text-slate-400">
                                         <i class="bi bi-inbox text-4xl mb-2 block opacity-50"></i>
                                         <span class="text-xs font-medium">Belum ada data berkas</span>
                                     </td>
