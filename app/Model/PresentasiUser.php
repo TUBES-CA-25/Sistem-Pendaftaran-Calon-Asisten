@@ -57,38 +57,62 @@ class PresentasiUser extends Model {
         }
     }
 
+    /**
+     * Simpan pengajuan judul.
+     *
+     * Perilaku riwayat: tiap pengajuan dicatat sebagai BARIS BARU, sehingga
+     * judul yang pernah ditolak tetap tersimpan dan terlihat di tabel riwayat.
+     * Baris "aktif" adalah yang terbaru (id terbesar) — lihat getAllPresentasi()
+     * dan getValueForTable().
+     *
+     * Baris baru selalu dimulai dengan status MENUNGGU
+     * (is_accepted = 0, is_revisi = 0, keterangan kosong), supaya keterangan
+     * penolakan sebelumnya tidak ikut terbawa ke pengajuan yang baru.
+     *
+     * Judul hanya di-UPDATE bila pengajuan terakhir masih menunggu — artinya
+     * mahasiswa sekadar mengoreksi ketikan sebelum dinilai admin, bukan
+     * mengajukan ulang setelah ditolak.
+     */
     public function saveJudul(PresentasiUser $presentasiUser) {
-        $queryCheck = "SELECT id FROM " . static::$table . " WHERE id_mahasiswa = ?";
-        $stmtCheck = self::getDB()->prepare($queryCheck);
-    
         $idMahasiswa = $this->getIdMahasiswa($presentasiUser->id_mahasiswa);
         if (!$idMahasiswa || !isset($idMahasiswa['id'])) {
             throw new Exception("Mahasiswa tidak ditemukan: " . var_export($idMahasiswa, true));
         }
         $idMahasiswa = $idMahasiswa['id'];
-    
+
+        // Ambil pengajuan TERAKHIR untuk menentukan update vs insert baru.
+        $stmtCheck = self::getDB()->prepare(
+            "SELECT id, is_accepted, is_revisi FROM " . static::$table . "
+             WHERE id_mahasiswa = ? ORDER BY id DESC LIMIT 1"
+        );
         $stmtCheck->bindParam(1, $idMahasiswa, PDO::PARAM_INT);
         $stmtCheck->execute();
-        $existingRecord = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-    
-        if ($existingRecord) {
-            $queryUpdate = "UPDATE " . static::$table . " 
-                            SET judul = ? 
-                            WHERE id_mahasiswa = ?";
-            $stmtUpdate = self::getDB()->prepare($queryUpdate);
-            $stmtUpdate->bindParam(1, $presentasiUser->judul, PDO::PARAM_STR);
-            $stmtUpdate->bindParam(2, $idMahasiswa, PDO::PARAM_INT);
-            return $stmtUpdate->execute();
-        } else {
-            $queryInsert = "INSERT INTO " . static::$table . " 
-                            (id_mahasiswa, judul) 
-                            VALUES 
-                            (?, ?)";
-            $stmtInsert = self::getDB()->prepare($queryInsert);
-            $stmtInsert->bindParam(1, $idMahasiswa, PDO::PARAM_INT);
-            $stmtInsert->bindParam(2, $presentasiUser->judul, PDO::PARAM_STR);
-            return $stmtInsert->execute();
+        $last = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+        $masihMenunggu = $last
+            && (int) $last['is_accepted'] === 0
+            && (int) $last['is_revisi'] === 0;
+
+        if ($masihMenunggu) {
+            // Belum dinilai admin -> cukup perbarui judulnya.
+            $stmt = self::getDB()->prepare(
+                "UPDATE " . static::$table . " SET judul = ? WHERE id = ?"
+            );
+            $stmt->bindParam(1, $presentasiUser->judul, PDO::PARAM_STR);
+            $stmt->bindParam(2, $last['id'], PDO::PARAM_INT);
+            return $stmt->execute();
         }
+
+        // Belum pernah mengajukan, atau pengajuan terakhir sudah dinilai
+        // (ditolak/diterima) -> catat sebagai pengajuan baru berstatus menunggu.
+        $stmt = self::getDB()->prepare(
+            "INSERT INTO " . static::$table . "
+             (id_mahasiswa, judul, is_accepted, is_revisi, keterangan)
+             VALUES (?, ?, 0, 0, '')"
+        );
+        $stmt->bindParam(1, $idMahasiswa, PDO::PARAM_INT);
+        $stmt->bindParam(2, $presentasiUser->judul, PDO::PARAM_STR);
+        return $stmt->execute();
     }
     
     public function updateMakalahAndPpt(PresentasiUser $presentasiUser) {
@@ -186,34 +210,53 @@ class PresentasiUser extends Model {
     }
     // getIdMahasiswa() dipindahkan ke App\Core\Model (induk) karena
     // isinya identik di 4 model. Lihat catatan kontrak return di sana.
+    /**
+     * Pengajuan AKTIF (terbaru) milik seorang mahasiswa.
+     * ORDER BY id DESC penting: sejak riwayat disimpan per-baris, tanpa ini
+     * yang terambil adalah pengajuan paling lama.
+     */
     public function getAllPresentasi($id) {
-        $query = "SELECT * FROM " . static::$table . " WHERE id_mahasiswa = ?";
         $idMahasiswa = $this->getIdMahasiswa($id);
-        $stmt = self::getDB()->prepare($query);
-        $stmt->bindParam(1,$idMahasiswa['id']);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if(!$result) {
+        if (!$idMahasiswa || !isset($idMahasiswa['id'])) {
             return null;
         }
-        return $result;
+        $stmt = self::getDB()->prepare(
+            "SELECT * FROM " . static::$table . "
+             WHERE id_mahasiswa = ? ORDER BY id DESC LIMIT 1"
+        );
+        $stmt->bindValue(1, $idMahasiswa['id'], PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null;
     }
+
+    /**
+     * SELURUH riwayat pengajuan judul, terbaru di atas.
+     * Mengembalikan array-of-rows (dulu hanya satu baris), sehingga judul yang
+     * pernah ditolak tetap terlihat di tabel riwayat.
+     */
     public function getValueForTable($id) {
-        $query = "SELECT judul, is_revisi, is_accepted,created_at, keterangan FROM " . static::$table . " WHERE id_mahasiswa = ?";
-        $stmt = self::getDB()->prepare($query);
         $idMahasiswa = $this->getIdMahasiswa($id);
-        $stmt->bindParam(1,$idMahasiswa['id']);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if(!$result) {
-            return null;
+        if (!$idMahasiswa || !isset($idMahasiswa['id'])) {
+            return [];
         }
-        return $result ?? [];
+        $stmt = self::getDB()->prepare(
+            "SELECT id, judul, is_revisi, is_accepted, created_at, keterangan
+             FROM " . static::$table . "
+             WHERE id_mahasiswa = ? ORDER BY id DESC"
+        );
+        $stmt->bindValue(1, $idMahasiswa['id'], PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
+
+    /** Status penerimaan pengajuan TERBARU. */
     public function isAccepted($id) {
-        $query = "SELECT is_accepted FROM " . static::$table . " WHERE id_mahasiswa = ?";
-        $stmt = self::getDB()->prepare($query);
-        $stmt->bindParam(1,$id);
+        $stmt = self::getDB()->prepare(
+            "SELECT is_accepted FROM " . static::$table . "
+             WHERE id_mahasiswa = ? ORDER BY id DESC LIMIT 1"
+        );
+        $stmt->bindValue(1, $id, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if(!$result) {

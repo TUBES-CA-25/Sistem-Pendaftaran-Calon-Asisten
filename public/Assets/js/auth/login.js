@@ -135,6 +135,22 @@ function validateEmail(email) {
   return { success: true, message: "Email Valid" };
 }
 
+/**
+ * Email kampus wajib memakai stambuk sendiri sebagai bagian sebelum '@'.
+ * Cerminan dari validasi server di AuthController::register(); server tetap
+ * jadi penentu akhir, ini hanya agar pengguna tahu sebelum submit.
+ */
+function validateEmailStambukCocok(email, stambuk) {
+  const lokal = email.split("@")[0];
+  if (lokal.toLowerCase() !== stambuk.toLowerCase()) {
+    return {
+      success: false,
+      message: "Email harus memakai stambuk Anda sendiri, yaitu " + stambuk + "@student.umi.ac.id.",
+    };
+  }
+  return { success: true, message: "Email cocok dengan stambuk." };
+}
+
 function validatePassword(password, confirmPassword) {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
@@ -304,6 +320,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!emailResult.success)   { emailinput.setCustomValidity(emailResult.message);   emailinput.reportValidity();   isValid = false; }
             if (!stambukResult.success) { stambukInput.setCustomValidity(stambukResult.message); stambukInput.reportValidity(); isValid = false; }
             if (!passwordResult.success){ passwordinput.setCustomValidity(passwordResult.message); passwordinput.reportValidity(); isValid = false; }
+
+            // Kecocokan email<->stambuk hanya diperiksa bila keduanya sudah
+            // valid, supaya pesan yang muncul tidak menumpuk/membingungkan.
+            if (emailResult.success && stambukResult.success) {
+                const cocokResult = validateEmailStambukCocok(email, stambuk);
+                if (!cocokResult.success) {
+                    emailinput.setCustomValidity(cocokResult.message);
+                    emailinput.reportValidity();
+                    isValid = false;
+                }
+            }
+
             if (!isValid) { console.log('Form validation failed, exiting'); return; }
 
             console.log('Form validation passed, submitting...');

@@ -123,6 +123,21 @@ class AuthController extends Controller
                     return;
                 }
 
+                // Email kampus WAJIB memakai stambuk sendiri sebagai bagian
+                // sebelum '@'. Ini mencegah satu orang mendaftarkan stambuk
+                // milik orang lain memakai emailnya sendiri.
+                // Dicek setelah format email & stambuk valid agar pesan errornya
+                // berurutan dari yang paling mendasar.
+                $lokalEmail = substr($name, 0, strrpos($name, '@'));
+                if (strcasecmp($lokalEmail, $stambuk) !== 0) {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'status'  => 'error',
+                        'message' => 'Email harus memakai stambuk Anda sendiri, yaitu ' . $stambuk . '@student.umi.ac.id.'
+                    ]);
+                    return;
+                }
+
                 if ($password !== $confirmPassword) {
                     header('Content-Type: application/json');
                     echo json_encode(['status' => 'error', 'message' => 'Passwords do not match.']);

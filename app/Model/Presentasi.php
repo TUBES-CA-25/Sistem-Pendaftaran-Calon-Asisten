@@ -98,10 +98,21 @@ class Presentasi extends Model {
         return $stmt->fetch();
     }
 
+    /**
+     * Terima/tolak judul.
+     *
+     * ORDER BY id DESC LIMIT 1 penting: sejak riwayat pengajuan disimpan
+     * sebagai baris terpisah, tanpa pembatas ini SELURUH riwayat mahasiswa
+     * ikut berubah statusnya. Yang dinilai hanya pengajuan terbaru.
+     *
+     * Status: 1 = diterima, 2 = ditolak.
+     */
     public function updateJudulStatus($id, $status = 1) {
-        // Status: 0 = pending, 1 = accepted, 2 = rejected
         $is_revisi = ($status == 2) ? 1 : 0;
-        $sql = "UPDATE " . static::$table . " SET is_accepted = :status, is_revisi = :is_revisi WHERE id_mahasiswa = :id";
+        $sql = "UPDATE " . static::$table . "
+                SET is_accepted = :status, is_revisi = :is_revisi
+                WHERE id_mahasiswa = :id
+                ORDER BY id DESC LIMIT 1";
         $stmt = self::getDB()->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':status', $status);

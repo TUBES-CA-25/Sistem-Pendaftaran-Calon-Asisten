@@ -111,7 +111,10 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
                     <!-- z-[1045]: harus di atas konten halaman DAN sidebar (z-[1040]),
                          tetapi tetap di bawah modal (z-[1050]). -->
                     <ul data-dropdown-menu class="hidden absolute right-0 top-full z-[1045] border-0 shadow-2xl rounded-2xl p-0 overflow-hidden bg-white w-[340px] max-w-[90vw] mt-2 list-none">
-                        <li class="flex justify-between items-center bg-gray-50/85 backdrop-blur-md px-4 py-3 border-b border-gray-100">
+                        <!-- bg-gray-50 SOLID (dulu bg-gray-50/85 semi-transparan):
+                             dengan latar tembus, teks halaman di belakang dropdown
+                             ikut terlihat sehingga tampak tumpang tindih. -->
+                        <li class="flex justify-between items-center bg-gray-50 px-4 py-3 border-b border-gray-100">
                             <span class="font-bold text-gray-800">Notifikasi</span>
                             <?php if (isset($notificationCount) && $notificationCount> 0): ?>
                                 <span data-notif-badge class="bg-primary-dark text-white rounded-full px-2 py-1 text-xs"><?= $notificationCount ?></span>
@@ -119,8 +122,9 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
                         </li>
                         <li class="block">
                         <?php if (isset($notifikasi) && !empty($notifikasi)): ?>
-                            <?php foreach (array_slice($notifikasi, 0, 5) as $notif): ?>
-                                <a class="block px-4 py-3 hover:bg-blue-50/40 transition-colors border-b border-gray-100 last:border-0 notification-item no-underline" href="#" data-page="notification">
+                            <?php // Hanya 3 notifikasi TERBARU yang ditampilkan di dropdown. ?>
+                            <?php foreach (array_slice($notifikasi, 0, 3) as $notif): ?>
+                                <a class="block px-4 py-3 bg-white hover:bg-blue-50 transition-colors border-b border-gray-100 last:border-0 notification-item no-underline" href="#" data-page="notification">
                                     <div class="flex gap-3 items-start">
                                         <div class="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center text-primary-dark shrink-0 mt-0.5">
                                             <i class='bx bx-info-circle text-lg'></i>
@@ -136,11 +140,11 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
                                     </div>
                                 </a>
                             <?php endforeach; ?>
-                            <a class="block text-center text-xs text-primary-dark hover:text-primary hover:bg-blue-50/50 font-semibold py-2.5 bg-gray-50/80 border-t border-gray-100 no-underline" href="#" data-page="notification">
+                            <a class="block text-center text-xs text-primary-dark hover:text-primary hover:bg-blue-50 font-semibold py-2.5 bg-gray-50 border-t border-gray-100 no-underline" href="#" data-page="notification">
                                 Lihat Semua Notifikasi
                             </a>
                         <?php else: ?>
-                            <div class="text-center text-gray-400 py-6 px-4">
+                            <div class="text-center text-gray-400 py-6 px-4 bg-white">
                                 <i class='bx bx-bell-off text-3xl block mb-2 text-gray-300'></i>
                                 <small class="text-xs">Tidak ada notifikasi</small>
                             </div>

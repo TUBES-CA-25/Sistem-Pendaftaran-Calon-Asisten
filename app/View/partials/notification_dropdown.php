@@ -3,7 +3,7 @@ $notifications = $notifications ?? [];
 $count = $count ?? 0;
 
 $html = '
-<li class="flex justify-between items-center bg-gray-50/85 px-4 py-3 border-b border-gray-100">
+<li class="flex justify-between items-center bg-gray-50 px-4 py-3 border-b border-gray-100">
     <span class="font-bold text-gray-800">Notifikasi</span>';
 if ($count> 0) {
     $html .= '<span class="bg-primary-dark text-white rounded-full px-2 py-1 text-xs">' . $count . '</span>';
@@ -12,7 +12,10 @@ $html .= '
 </li>';
 
 if (count($notifications)> 0) {
-    $limitedNotifs = array_slice($notifications, 0, 5);
+    // Hanya 3 notifikasi TERBARU. Nilai ini harus sama dengan yang di
+    // PageHeader.php, karena partial inilah yang menimpa isi dropdown
+    // saat polling notifikasi berjalan.
+    $limitedNotifs = array_slice($notifications, 0, 3);
     foreach ($limitedNotifs as $notif) {
         $dateStr = '';
         if (!empty($notif['created_at'])) {
@@ -29,7 +32,7 @@ if (count($notifications)> 0) {
 
         $html .= '
         <li>
-            <a class="notification-item block px-4 py-3 hover:bg-blue-50/40 transition-colors border-b border-gray-100 last:border-0 no-underline" href="#" data-page="notification" style="white-space: normal;">
+            <a class="notification-item block px-4 py-3 bg-white hover:bg-blue-50 transition-colors border-b border-gray-100 last:border-0 no-underline" href="#" data-page="notification" style="white-space: normal;">
                 <div class="flex gap-3 items-start">
                     <div class="notification-icon w-8 h-8 rounded-full bg-primary-light flex items-center justify-center text-primary-dark shrink-0 mt-0.5">
                         <i class=\'bx bx-info-circle text-lg\'></i>
@@ -44,14 +47,14 @@ if (count($notifications)> 0) {
     }
     $html .= '
     <li>
-        <a class="block text-center text-xs text-primary-dark hover:text-primary hover:bg-blue-50/50 font-semibold py-2.5 bg-gray-50/80 border-t border-gray-100 no-underline" href="#" data-page="notification">
+        <a class="block text-center text-xs text-primary-dark hover:text-primary hover:bg-blue-50 font-semibold py-2.5 bg-gray-50 border-t border-gray-100 no-underline" href="#" data-page="notification">
             Lihat Semua Notifikasi
         </a>
     </li>';
 } else {
     $html .= '
     <li>
-        <div class="text-center text-gray-400 py-6 px-4">
+        <div class="text-center text-gray-400 py-6 px-4 bg-white">
             <i class=\'bx bx-bell-off text-3xl block mb-2 text-gray-300\'></i>
             <small class="text-xs">Tidak ada notifikasi</small>
         </div>

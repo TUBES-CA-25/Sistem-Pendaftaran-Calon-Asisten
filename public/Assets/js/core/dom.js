@@ -22,8 +22,29 @@
      * Event — selalu delegasi di document supaya idempoten terhadap
      * SPA re-inject (#content diganti app.js). Ini yang dulu dipaksakan
      * dengan pola $(document).off(...).on(...).
+     *
+     * PENTING — penjaga duplikasi:
+     * Delegasi di document memang membuat handler tetap hidup saat elemen
+     * diganti, TAPI tidak melindungi dari skrip halaman yang DIEKSEKUSI ULANG.
+     * app.js menjalankan ulang <script src> tiap navigasi SPA, sehingga tiap
+     * kunjungan ke halaman yang sama menambah satu listener baru. Akibatnya
+     * satu klik/submit mengirim request berkali-kali — inilah yang membuat
+     * notifikasi tersimpan ganda.
+     *
+     * Solusi: tiap kombinasi (event + selector + kode handler) hanya boleh
+     * didaftarkan sekali per halaman. Kode handler dipakai sebagai bagian
+     * kunci supaya dua handler berbeda pada selector yang sama tetap bisa
+     * hidup berdampingan.
      * ---------------------------------------------------------------- */
+    const registered = new Set();
+
     function on(eventName, selector, handler) {
+        const key = eventName + '||' + selector + '||' + String(handler);
+        if (registered.has(key)) {
+            return; // sudah terpasang -> jangan tumpuk listener lagi
+        }
+        registered.add(key);
+
         document.addEventListener(eventName, function (e) {
             const target = e.target.closest(selector);
             if (target && document.contains(target)) {

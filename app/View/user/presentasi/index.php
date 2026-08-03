@@ -16,6 +16,33 @@ $absensiTesTertulis = $absensiTesTertulis ?? false;
 $pptStatus = $pptStatus ?? false;
 $canSubmitJudul = $biodataStatus && $absensiTesTertulis;
 $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
+
+/* --------------------------------------------------------------------- *
+ * $results kini berisi SELURUH riwayat pengajuan (terbaru di atas), bukan
+ * lagi satu baris. Kondisi form ditentukan oleh pengajuan TERBARU saja.
+ * Bentuk lama (satu baris asosiatif) tetap ditangani agar view ini aman
+ * bila dipanggil dengan data lama.
+ * --------------------------------------------------------------------- */
+$riwayatJudul = [];
+if (!empty($results)) {
+    $riwayatJudul = isset($results['judul']) ? [$results] : $results;
+}
+$pengajuanAktif = $riwayatJudul[0] ?? null;
+
+/**
+ * Status pengajuan judul:
+ *   diterima -> is_accepted = 1
+ *   ditolak  -> is_revisi   = 1
+ *   menunggu -> selain itu (baru diajukan, belum dinilai admin)
+ */
+function statusJudul(?array $row): string {
+    if (!$row) return 'kosong';
+    if ((int) ($row['is_accepted'] ?? 0) === 1) return 'diterima';
+    if ((int) ($row['is_revisi'] ?? 0) === 1)  return 'ditolak';
+    return 'menunggu';
+}
+
+$statusAktif = statusJudul($pengajuanAktif);
 ?>
 
 <!-- Page Header -->
@@ -52,7 +79,35 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
                             <i class="bi bi-exclamation-triangle-fill"></i>
                             <div class="font-semibold">Anda belum mengikuti tes tertulis!</div>
                         </div>
-                    <?php elseif (empty($results) || (isset($results['is_accepted']) && $results['is_accepted'] == 0) || (isset($results['is_revisi']) && $results['is_revisi'] == 1)): ?>
+                    <?php elseif ($statusAktif === 'menunggu'): ?>
+                        <!-- Sudah mengajukan, menunggu penilaian admin. -->
+                        <div class="flex items-start gap-3 p-5 rounded-xl bg-amber-50 border border-amber-100 text-amber-800" role="alert">
+                            <i class="bi bi-hourglass-split text-xl shrink-0"></i>
+                            <div>
+                                <h6 class="font-bold mb-1">Menunggu Verifikasi</h6>
+                                <p class="text-xs opacity-90 leading-relaxed">
+                                    Judul <strong>&ldquo;<?= htmlspecialchars($pengajuanAktif['judul'] ?? '-') ?>&rdquo;</strong>
+                                    sudah diajukan dan sedang ditinjau admin. Anda dapat mengajukan judul
+                                    baru bila judul ini ditolak.
+                                </p>
+                            </div>
+                        </div>
+
+                    <?php elseif ($statusAktif === 'kosong' || $statusAktif === 'ditolak'): ?>
+                        <?php if ($statusAktif === 'ditolak'): ?>
+                            <!-- Judul terakhir ditolak: tampilkan alasannya, lalu izinkan ajukan ulang. -->
+                            <div class="flex items-start gap-3 p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-800 mb-4" role="alert">
+                                <i class="bi bi-x-circle-fill text-lg shrink-0"></i>
+                                <div>
+                                    <h6 class="font-bold mb-0.5 text-sm">Judul Sebelumnya Ditolak</h6>
+                                    <p class="text-xs opacity-90 leading-relaxed">
+                                        <?= !empty($pengajuanAktif['keterangan'])
+                                            ? htmlspecialchars($pengajuanAktif['keterangan'])
+                                            : 'Silakan ajukan judul baru.' ?>
+                                    </p>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                         <!-- Form Submit Judul -->
                         <form id="berkasPresentasiForm" class="space-y-5">
                             <div>
@@ -65,7 +120,7 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
                                 <i class="bi bi-send"></i>Submit Judul
                             </button>
                         </form>
-                    <?php elseif (isset($results['is_accepted']) && $results['is_accepted'] == 1): ?>
+                    <?php elseif ($statusAktif === 'diterima'): ?>
                         <!-- Form Submit PPT & Makalah -->
                         <div class="flex items-center gap-2.5 p-4 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-800 text-sm mb-4" role="alert">
                             <i class="bi bi-check-circle-fill"></i>
@@ -131,38 +186,43 @@ $canSubmitPpt = $biodataStatus && $absensiTesTertulis && $pptStatus;
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 bg-white">
-                            <?php if (!empty($results)): ?>
+                            <?php if (!empty($riwayatJudul)): ?>
                                 <?php
+                                // $riwayatJudul sudah terurut terbaru di atas (ORDER BY id DESC),
+                                // jadi penomoran dimulai dari yang paling baru.
                                 $i = 1;
-                                if (isset($results['judul'])) {
-                                    $results = [$results];
-                                }
-                                foreach ($results as $row):
-                                    $revisi = !$row['is_accepted']
-                                        ? (!empty($row['revisi']) ? 'Revisi: ' . $row['revisi'] : 'Ditolak')
-                                        : 'Diterima';
-                                    $keterangan = !$row['is_accepted']
-                                        ? (!empty($row['is_revisi'] && (!empty($row['keterangan']) || !$row['keterangan'])) ? $row['keterangan'] : 'Belum Diterima')
-                                        : 'Silahkan submit PPT and makalah!';
-                                    $isAccepted = $row['is_accepted'];
+                                foreach ($riwayatJudul as $row):
+                                    $status = statusJudul($row);
+                                    $keterangan = $row['keterangan'] ?? '';
+                                    if ($keterangan === '') {
+                                        $keterangan = [
+                                            'diterima' => 'Silakan submit PPT dan makalah.',
+                                            'ditolak'  => 'Judul ditolak, ajukan judul baru.',
+                                            'menunggu' => 'Menunggu peninjauan admin.',
+                                        ][$status] ?? '-';
+                                    }
                                 ?>
                                     <tr>
                                         <td class="px-4 py-3 text-slate-500 font-medium text-xs"><?= $i ?></td>
                                         <td class="px-4 py-3 text-slate-700 font-bold text-xs">
-                                            <span class="break-words"><?= htmlspecialchars($row['judul']) ?></span>
+                                            <span class="break-words"><?= htmlspecialchars($row['judul'] ?? '-') ?></span>
                                         </td>
                                         <td class="px-4 py-3 whitespace-nowrap">
-                                            <?php if ($isAccepted): ?>
+                                            <?php if ($status === 'diterima'): ?>
                                                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-100">
-                                                    <i class="bi bi-check-circle-fill"></i><?= htmlspecialchars($revisi) ?>
+                                                    <i class="bi bi-check-circle-fill"></i>Diterima
+                                                </span>
+                                            <?php elseif ($status === 'ditolak'): ?>
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-600 border border-rose-100">
+                                                    <i class="bi bi-x-circle-fill"></i>Ditolak
                                                 </span>
                                             <?php else: ?>
                                                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-100">
-                                                    <i class="bi bi-clock-fill"></i><?= htmlspecialchars($revisi) ?>
+                                                    <i class="bi bi-clock-fill"></i>Menunggu
                                                 </span>
                                             <?php endif; ?>
                                         </td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-slate-500 font-medium text-xs"><?= htmlspecialchars($row['created_at']) ?></td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-slate-500 font-medium text-xs"><?= htmlspecialchars($row['created_at'] ?? '-') ?></td>
                                         <td class="px-4 py-3 text-slate-500 text-xs font-medium"><?= htmlspecialchars($keterangan) ?></td>
                                     </tr>
                                 <?php $i++;
