@@ -1,5 +1,17 @@
 <?php
-// Menerima variabel $soalArray dari Controller
+/**
+ * Daftar soal dalam bentuk TABEL.
+ *
+ * Kontrak yang WAJIB dipertahankan (dipakai admin/exam.js):
+ *  - Tiap baris  : <tr class="card" data-id="<id>" data-type="<status_soal>">
+ *                  · data-type              -> window.filterSoal() (toggle 'hidden')
+ *                  · class card + data-id   -> window.editSoal() / window.deleteSoal()
+ *  - Markdown    : .condition-render-markdown (tersembunyi, teks mentah) yang
+ *                  DIIKUTI LANGSUNG .markdown-rendered-content sebagai tujuan
+ *                  render — exam.js mencarinya lewat nextElementSibling.
+ *
+ * Menerima $soalArray dari controller.
+ */
 if (empty($soalArray)) {
     echo '<div class="text-center py-12 flex flex-col items-center">
         <i class="bx bx-file-blank text-slate-300 text-6xl mb-4"></i>
@@ -8,25 +20,36 @@ if (empty($soalArray)) {
     </div>';
     return;
 }
-
+?>
+<table class="min-w-full divide-y divide-slate-100 text-sm">
+    <thead class="bg-slate-50/80">
+        <tr>
+            <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-400 w-12">No</th>
+            <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-400">Pertanyaan</th>
+            <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-400 w-36">Tipe</th>
+            <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-400 w-56">Jawaban Benar</th>
+            <th class="px-4 py-3 text-center text-[10px] font-bold uppercase tracking-wider text-slate-400 w-24">Aksi</th>
+        </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100 bg-white">
+<?php
 foreach ($soalArray as $index => $soal) {
-    $isPG = (($soal['status_soal'] ?? '') === 'pilihan_ganda');
-    $questionType = $isPG ? 'PILIHAN GANDA' : 'ESSAY';
-    $points = 5; // Default 5 points per question
-    $timeLimit = '45 detik'; // Mock
-    $soalId = $soal['id'];
+    $isPG      = (($soal['status_soal'] ?? '') === 'pilihan_ganda');
+    $soalId    = $soal['id'];
     $deskripsi = $soal['deskripsi'] ?? '';
-    $imageUrl = $soal['image_url'] ?? '';
-    $jawaban = $soal['jawaban'] ?? '';
-    $pilihan = $soal['pilihan'] ?? '';
-    
-    // Parse pilihan for PG
-    $optionsHtml = '';
+    $imageUrl  = $soal['image_url'] ?? '';
+    $jawaban   = $soal['jawaban'] ?? '';
+    $pilihan   = $soal['pilihan'] ?? '';
+
+    /* ------------------------------------------------------------------ *
+     * Uraikan pilihan ganda -> tentukan kunci jawaban benar.
+     * Logika parsing dipertahankan apa adanya dari versi kartu.
+     * ------------------------------------------------------------------ */
+    $options    = [];
+    $correctKey = null;
     if ($isPG && !empty($pilihan)) {
-        $options = [];
         $parsed = json_decode($pilihan, true);
         if (is_array($parsed)) {
-            // Check if associative or sequential
             if (array_keys($parsed) !== range(0, count($parsed) - 1)) {
                 foreach ($parsed as $k => $v) {
                     $options[] = ['key' => $k, 'value' => $v];
@@ -37,10 +60,9 @@ foreach ($soalArray as $index => $soal) {
                 }
             }
         } else {
-            // Legacy parsing (fallback)
             $decoded = strip_tags($pilihan);
             preg_match_all('/([A-E])\.\s*(.*?)(?=(?:,\s*[A-E]\.)|$)/s', $decoded, $matches, PREG_SET_ORDER);
-            if (count($matches)> 0) {
+            if (count($matches) > 0) {
                 foreach ($matches as $m) {
                     $options[] = ['key' => $m[1], 'value' => trim($m[2])];
                 }
@@ -51,9 +73,7 @@ foreach ($soalArray as $index => $soal) {
                 }
             }
         }
-        
-        // Correct Key
-        $correctKey = null;
+
         if (!empty($jawaban)) {
             $jwb = strtoupper(trim($jawaban));
             foreach ($options as $opt) {
@@ -66,89 +86,92 @@ foreach ($soalArray as $index => $soal) {
                 $correctKey = $m[1];
             }
         }
-        
-        $optionsHtml = '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">';
-        foreach ($options as $opt) {
-            $val = $opt['value'];
-            $key = $opt['key'];
-            
-            // basic check for image
-            $isImage = preg_match('/\.(jpg|jpeg|png|gif|webp)[\'"]?\s*$/i', $val) || str_starts_with(trim($val), 'http');
-            if ($isImage && !str_contains($val, '<img')) {
-                $content = '<img src="' . htmlspecialchars(trim($val)) . '" class="max-h-24 object-contain rounded-md" onerror="this.style.display=\'none\'">';
-            } else {
-                $content = '<div class="text-slate-700 text-sm">' . nl2br(htmlspecialchars($val)) . '</div>';
-            }
-            
-            // Mark correct answer with JS class for toggling later if needed, but since we render it server-side, 
-            // we will let JS toggle the visibility of correct answers if needed, or we just render it.
-            // By default, admin view shows the correct answer marked.
-            $isCorrect = ($key === $correctKey);
-            $bgColor = $isCorrect ? 'bg-blue-50 border-blue-200' : 'bg-slate-50 border-slate-200';
-            $badgeColor = $isCorrect ? 'bg-blue-600 text-white shadow-sm' : 'bg-white text-slate-500 border border-slate-200';
-            $correctMark = $isCorrect ? '<i class="bx bxs-check-circle text-blue-600 text-lg ml-auto"></i>' : '';
-            
-            // Optional correct-answer-element class so JS can hide/show them
-            $correctClass = $isCorrect ? 'is-correct-option' : '';
+    }
 
-            $optionsHtml .= '
-            <div class="flex items-center gap-3 p-3 rounded-xl border ' . $bgColor . ' ' . $correctClass . ' transition-colors">
-                <div class="w-8 h-8 shrink-0 flex items-center justify-center rounded-lg text-sm font-bold ' . $badgeColor . '">' . $key . '</div>
-                <div class="flex-grow">' . $content . '</div>
-                ' . $correctMark . '
-            </div>';
+    // Teks untuk kolom "Jawaban Benar"
+    $correctText = '';
+    if ($isPG) {
+        foreach ($options as $opt) {
+            if ($opt['key'] === $correctKey) {
+                $correctText = trim(strip_tags((string) $opt['value']));
+                break;
+            }
         }
-        $optionsHtml .= '</div>';
+        if ($correctText === '' && $correctKey !== null) {
+            $correctText = 'Pilihan ' . $correctKey;
+        }
+    } else {
+        $correctText = trim(strip_tags((string) $jawaban));
     }
 ?>
-    <div class="bg-white border-b border-slate-100 last:border-0 p-6 sm:px-8 hover:bg-slate-50/50 transition duration-300 group" data-id="<?= $soalId ?>" data-type="<?= htmlspecialchars($soal['status_soal'] ?? 'essay') ?>">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-4">
-            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                <?= $index + 1 ?>. <?= $questionType ?> &bull; <?= $timeLimit ?> &bull; <?= $points ?> poin
-            </div>
-            <!-- Action Buttons -->
-            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-200 text-slate-500 transition" onclick="window.editSoal(<?= $soalId ?>)" title="Edit">
-                    <i class='bx bx-edit'></i>
-                </button>
-                <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-200 text-slate-500 transition" onclick="window.deleteSoal(<?= $soalId ?>)" title="Hapus">
-                    <i class='bx bx-trash'></i>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Question Content -->
-        <div class="flex flex-col gap-4">
-            <!-- Image if any -->
-            <?php if (!empty($imageUrl)): ?>
-            <div class="w-full">
-                <img src="<?= htmlspecialchars((str_starts_with($imageUrl, 'http') ? '' : '/Sistem-Pendaftaran-Calon-Asisten/') . $imageUrl) ?>" 
-                     alt="Gambar Soal" 
-                     class="w-full h-48 sm:h-64 object-contain bg-slate-50 rounded-xl border border-slate-200 cursor-zoom-in hover:opacity-95 transition-opacity" 
-                     onerror="this.style.display='none'"
-                     onclick="showImageModal(this.src)">
-            </div>
-            <?php endif; ?>
-            
-            <!-- Text -->
-            <div class="w-full">
-                <!-- We output raw deskripsi inside a hidden textarea or custom attribute, and let JS parse it via marked, OR we just let JS parse the innerHTML.
-                     In exam.js, it looks for elements with 'condition-render-markdown' and parses them. So we put raw markdown here. -->
-                <div class="text-slate-800 text-[15px] font-medium leading-relaxed mb-4 condition-render-markdown" style="display:none;"><?= htmlspecialchars($deskripsi) ?></div>
-                <div class="markdown-rendered-content text-slate-800 text-[15px] font-medium leading-relaxed mb-4"></div>
-                
-                <?= $optionsHtml ?>
-                
-                <?php if (!$isPG && !empty($jawaban)): ?>
-                <div class="mt-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100 essay-correct-answer">
-                    <div class="text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1 flex items-center gap-1.5"><i class='bx bxs-check-circle'></i> Jawaban Benar</div>
-                    <div class="text-emerald-800 text-sm font-medium"><?= nl2br(htmlspecialchars($jawaban)) ?></div>
-                </div>
+        <tr class="card hover:bg-slate-50/70 transition-colors align-top"
+            data-id="<?= $soalId ?>"
+            data-type="<?= htmlspecialchars($soal['status_soal'] ?? 'essay') ?>">
+
+            <td class="px-4 py-4 text-slate-400 font-semibold text-xs"><?= $index + 1 ?></td>
+
+            <td class="px-4 py-4">
+                <?php if (!empty($imageUrl)): ?>
+                    <img src="<?= htmlspecialchars((str_starts_with($imageUrl, 'http') ? '' : '/Sistem-Pendaftaran-Calon-Asisten/') . $imageUrl) ?>"
+                         alt="Gambar Soal"
+                         class="h-16 w-24 object-cover rounded-lg border border-slate-200 mb-2 cursor-zoom-in hover:opacity-90 transition-opacity"
+                         onerror="this.style.display='none'"
+                         onclick="showImageModal(this.src)">
                 <?php endif; ?>
-            </div>
-        </div>
-    </div>
-<?php
-}
-?>
+
+                <div class="condition-render-markdown" style="display:none;"><?= htmlspecialchars($deskripsi) ?></div>
+                <div class="markdown-rendered-content text-slate-800 font-medium leading-relaxed"></div>
+
+                <?php if ($isPG && !empty($options)): ?>
+                    <div class="flex flex-wrap gap-1.5 mt-2">
+                        <?php foreach ($options as $opt): ?>
+                            <?php $benar = ($opt['key'] === $correctKey); ?>
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold border <?= $benar ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-slate-50 text-slate-500 border-slate-200' ?>">
+                                <?= htmlspecialchars($opt['key']) ?><?php if ($benar): ?><i class="bx bxs-check-circle"></i><?php endif; ?>
+                            </span>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </td>
+
+            <td class="px-4 py-4">
+                <?php if ($isPG): ?>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-100 whitespace-nowrap">
+                        <i class="bx bx-list-check"></i>Pilihan Ganda
+                    </span>
+                <?php else: ?>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100 whitespace-nowrap">
+                        <i class="bx bx-edit-alt"></i>Essay
+                    </span>
+                <?php endif; ?>
+            </td>
+
+            <td class="px-4 py-4">
+                <?php if ($correctText !== ''): ?>
+                    <div class="flex items-start gap-1.5 text-emerald-700">
+                        <i class="bx bxs-check-circle text-emerald-500 mt-0.5 shrink-0"></i>
+                        <span class="text-xs font-medium" title="<?= htmlspecialchars($correctText) ?>"><?= htmlspecialchars($correctText) ?></span>
+                    </div>
+                <?php else: ?>
+                    <span class="text-xs text-slate-300">&mdash;</span>
+                <?php endif; ?>
+            </td>
+
+            <td class="px-4 py-4">
+                <div class="flex items-center justify-center gap-1.5">
+                    <button type="button"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 transition"
+                            onclick="window.editSoal(<?= $soalId ?>)" title="Edit soal">
+                        <i class='bx bx-edit'></i>
+                    </button>
+                    <button type="button"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 text-red-600 transition"
+                            onclick="window.deleteSoal(<?= $soalId ?>)" title="Hapus soal">
+                        <i class='bx bx-trash'></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+<?php } ?>
+    </tbody>
+</table>

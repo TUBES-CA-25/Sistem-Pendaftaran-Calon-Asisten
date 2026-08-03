@@ -373,9 +373,12 @@ $essayCount = $stats['essay_count'];
                     <button class="filter-btn px-3.5 py-1.5 text-xs font-bold rounded-lg transition border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white whitespace-nowrap" data-filter="essay">Essay</button>
                 </div>
 
-                <!-- Soal List -->
-                <div class="bg-white" style="min-height: 400px; max-height: 800px; overflow-y: auto;">
-                    <div id="soalList" class="flex flex-col">
+                <!-- Soal List (tabel) -->
+                <!-- overflow-x-auto: tabel bisa lebih lebar dari panel pada layar
+                     kecil. `flex flex-col` dilepas dari #soalList karena isinya
+                     kini <table> — flex akan merusak layout tabelnya. -->
+                <div class="bg-white overflow-x-auto" style="min-height: 400px; max-height: 800px; overflow-y: auto;">
+                    <div id="soalList">
                         <!-- Soal items rendered by JS -->
                     </div>
                 </div>
