@@ -18,20 +18,88 @@ const emailinput = document.getElementById('email');
 const passwordinput = document.getElementById('password');
 const stambukInput = document.getElementById('stambukregister');
 
+// Durasi harus SAMA dengan duration-200 pada markup modal.
+// Kalau lebih kecil, modal disembunyikan sebelum fade selesai (terlihat putus);
+// kalau lebih besar, backdrop tertinggal di layar.
+const MODAL_TRANSITION_MS = 200;
+
 // ── Modal Helper (Tailwind Implementation) ──────────────────
+// Mengikuti urutan kanonik di core/ui.js: tampilkan -> paksa reflow -> set
+// data-open. Reflow WAJIB; tanpanya penambahan atribut terjadi di frame yang
+// sama dengan perubahan class sehingga transisi tidak pernah berjalan.
 function showModalUI(modalId) {
     const modal = document.getElementById(modalId);
-    if(modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    modal.removeAttribute('aria-hidden');
+    modal.setAttribute('aria-modal', 'true');
+
+    void modal.offsetHeight;          // paksa reflow
+    modal.setAttribute('data-open', '');
 }
+
 function hideModalUI(modalId) {
     const modal = document.getElementById(modalId);
-    if(modal) {
+    if (!modal) return;
+
+    // Lepas fokus dari dalam modal sebelum disembunyikan agar tidak terjebak.
+    if (modal.contains(document.activeElement) && document.activeElement.blur) {
+        document.activeElement.blur();
+    }
+
+    modal.removeAttribute('data-open');
+    modal.setAttribute('aria-hidden', 'true');
+    modal.removeAttribute('aria-modal');
+
+    setTimeout(function () {
+        // PENJAGA: halaman ini kerap membuka ulang modal dari callback DI DALAM
+        // jendela 200ms ini. Tanpa penjaga, modal yang baru dibuka langsung
+        // kena `hidden` lagi dan hilang.
+        if (modal.hasAttribute('data-open')) return;
         modal.classList.remove('flex');
         modal.classList.add('hidden');
-    }
+    }, MODAL_TRANSITION_MS);
+}
+
+// ── Loading state tombol ────────────────────────────────────
+// Mengganti pola lama `innerHTML = '<span class="spinner-border">…'` yang mati
+// total (Bootstrap CSS tidak dimuat di halaman auth). Memakai .loading yang
+// sudah ada di ketiga halaman auth, dan TIDAK menyentuh innerHTML supaya node
+// tidak dibongkar-pasang tiap submit.
+function setBtnLoading(btn, teks) {
+    if (!btn) return function () {};
+
+    const spinner = btn.querySelector('.loading');
+    const icon    = btn.querySelector('.btn-icon');
+    const label   = btn.querySelector('.btn-text');
+    const teksAsli = label ? label.textContent : '';
+
+    btn.disabled = true;
+    if (spinner) spinner.classList.add('active');
+    if (icon) icon.classList.add('hidden');
+    if (label && teks) label.textContent = teks;
+
+    return function restore() {
+        btn.disabled = false;
+        if (spinner) spinner.classList.remove('active');
+        if (icon) icon.classList.remove('hidden');
+        if (label) label.textContent = teksAsli;
+    };
+}
+
+// ── Umpan balik error: getarkan elemen ──────────────────────
+// Mengaktifkan keyframe `shake` yang sudah lama didefinisikan di
+// tailwind-config.js tetapi tidak pernah dipakai.
+function shakeElement(el) {
+    if (!el) return;
+    el.classList.remove('animate-shake');
+    void el.offsetWidth;              // paksa reflow agar bisa menyala lagi
+    el.classList.add('animate-shake');
+    el.addEventListener('animationend', function () {
+        el.classList.remove('animate-shake');
+    }, { once: true });
 }
 
 // Define showModal function for login page (global scope)
@@ -70,10 +138,17 @@ window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
     }
 };
 
-// Close modals when clicking outside
+// Close modals when clicking outside.
+// Sejak backdrop menjadi elemen sendiri (bg-slate-900/50 backdrop-blur-sm),
+// klik mengenai backdrop-nya, bukan wadah modal — jadi kedua id diperiksa.
+// Penutupan diarahkan ke tombol tutup masing-masing, bukan hideModalUI
+// langsung, karena penutupan OTP juga harus membersihkan timer.
 window.addEventListener('click', function(e) {
-    if (e.target.id === 'customModal') {
+    if (e.target.id === 'customModal' || e.target.id === 'customModalBackdrop') {
         document.getElementById('closeModal')?.click();
+    }
+    if (e.target.id === 'otpModal' || e.target.id === 'otpModalBackdrop') {
+        document.getElementById('closeOtpModal')?.click();
     }
 });
 document.getElementById('closeOtpModal')?.addEventListener('click', function() {
@@ -171,25 +246,46 @@ function validatePassword(password, confirmPassword) {
 
 
 // ── Toggle Login / Register ───────────────────────────────────
-registerBtn.addEventListener('click', () => container.classList.add('active'));
-loginBtn.addEventListener('click',    () => container.classList.remove('active'));
+// Dulu logikanya tersebar di 3 tempat (onclick inline di view, listener di sini,
+// dan <script> inline di bawah view) plus satu blok mati yang mengacu ke ID
+// #mobile-register-btn / #mobile-login-btn — ID yang tidak pernah ada di markup
+// (markup memakai register-mobile / login-mobile). Kini terpusat di sini.
+//
+// Hanya menyentuh container.classList add/remove('active'); variant
+// `group-active` (.group.active &) di tailwind-config.js tetap utuh.
 
-const mobileRegisterBtn = document.getElementById('mobile-register-btn');
-const mobileLoginBtn    = document.getElementById('mobile-login-btn');
-
-if (mobileRegisterBtn) {
-    mobileRegisterBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        container.classList.add('active');
+/**
+ * Putar ulang animasi masuk pada panel yang baru ditampilkan.
+ * `fade-up` memakai fill-mode `both` dan hanya berjalan sekali saat load,
+ * sehingga tanpa pemicu ulang ini stagger panel Daftar tidak akan pernah
+ * terlihat (panelnya tidak tampil saat halaman dimuat).
+ */
+function replayEntrance(form) {
+    if (!form) return;
+    form.querySelectorAll('.animate-fade-up').forEach(function (el) {
+        el.classList.remove('animate-fade-up');
+        void el.offsetWidth;          // paksa reflow
+        el.classList.add('animate-fade-up');
     });
 }
 
-if (mobileLoginBtn) {
-    mobileLoginBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        container.classList.remove('active');
-    });
+function showRegister() {
+    container.classList.add('active');
+    replayEntrance(document.getElementById('registerForm'));
 }
+
+function showLogin() {
+    container.classList.remove('active');
+    replayEntrance(document.getElementById('loginForm'));
+}
+
+// Keempat tombol (desktop + mobile) memakai fungsi yang sama.
+['register', 'register-mobile'].forEach(function (id) {
+    document.getElementById(id)?.addEventListener('click', showRegister);
+});
+['login', 'login-mobile'].forEach(function (id) {
+    document.getElementById(id)?.addEventListener('click', showLogin);
+});
 
 
 togglePassword.addEventListener("click", function () {
@@ -308,18 +404,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const confirmPassword = document.getElementById('confirmPass').value;
             const stambuk         = document.getElementById('stambukregister').value;
 
-            console.log('Values captured:', { email, password, confirmPassword, stambuk });
-
             const stambukResult   = validateStambuk(stambuk);
             const emailResult     = validateEmail(email);
             const passwordResult  = validatePassword(password, confirmPassword);
 
-            console.log('Validation results:', { stambukResult, emailResult, passwordResult });
-
             let isValid = true;
-            if (!emailResult.success)   { emailinput.setCustomValidity(emailResult.message);   emailinput.reportValidity();   isValid = false; }
-            if (!stambukResult.success) { stambukInput.setCustomValidity(stambukResult.message); stambukInput.reportValidity(); isValid = false; }
-            if (!passwordResult.success){ passwordinput.setCustomValidity(passwordResult.message); passwordinput.reportValidity(); isValid = false; }
+            if (!emailResult.success)   { emailinput.setCustomValidity(emailResult.message);   emailinput.reportValidity();   shakeElement(emailinput.closest('.float-group'));   isValid = false; }
+            if (!stambukResult.success) { stambukInput.setCustomValidity(stambukResult.message); stambukInput.reportValidity(); shakeElement(stambukInput.closest('.float-group')); isValid = false; }
+            if (!passwordResult.success){ passwordinput.setCustomValidity(passwordResult.message); passwordinput.reportValidity(); shakeElement(passwordinput.closest('.float-group')); isValid = false; }
 
             // Kecocokan email<->stambuk hanya diperiksa bila keduanya sudah
             // valid, supaya pesan yang muncul tidak menumpuk/membingungkan.
@@ -328,16 +420,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!cocokResult.success) {
                     emailinput.setCustomValidity(cocokResult.message);
                     emailinput.reportValidity();
+                    shakeElement(emailinput.closest('.float-group'));
                     isValid = false;
                 }
             }
 
-            if (!isValid) { console.log('Form validation failed, exiting'); return; }
+            if (!isValid) return;
 
-            console.log('Form validation passed, submitting...');
             const btnRegister = registerForm.querySelector('button[type="submit"]');
-            const originalBtnText = btnRegister ? btnRegister.innerHTML : '';
-            if (btnRegister) { btnRegister.disabled = true; btnRegister.innerHTML = '<span class="spinner-border spinner-border-sm mr-2"></span>Loading...'; }
+            const restoreRegister = setBtnLoading(btnRegister, 'Mendaftar...');
 
             const formData = new FormData(registerForm);
             fetch('/Sistem-Pendaftaran-Calon-Asisten/public/register/authenticate', {
@@ -346,7 +437,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(res => res.json())
             .then(response => {
-                if (btnRegister) { btnRegister.disabled = false; btnRegister.innerHTML = originalBtnText; }
+                restoreRegister();
                 if (response.status === 'success') {
                     showModal('Register Berhasil', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/registergif.gif');
                     document.getElementById('login').click();
@@ -369,7 +460,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             })
             .catch(error => {
-                if (btnRegister) { btnRegister.disabled = false; btnRegister.innerHTML = originalBtnText; }
+                restoreRegister();
                 console.log('Terjadi kesalahan: ' + error);
                 showModal('Terjadi kesalahan koneksi server', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif');
             });
@@ -392,6 +483,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         inp.addEventListener('input', function () {
             this.value = this.value.replace(/[^0-9]/g, '');
+            // Penanda visual kotak yang sudah terisi (.otp-input.filled)
+            this.classList.toggle('filled', this.value.length > 0);
         });
     });
 
@@ -406,8 +499,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (otpCodeEl) otpCodeEl.value = combinedOtp;
 
             const btnVerify = document.getElementById('btnVerifyOtp');
-            const originalText = btnVerify ? btnVerify.innerHTML : '';
-            if (btnVerify) { btnVerify.disabled = true; btnVerify.innerHTML = '<span class="spinner-border spinner-border-sm mr-2"></span>Memverifikasi...'; }
+            const restoreVerify = setBtnLoading(btnVerify, 'Memverifikasi...');
 
             fetch('/Sistem-Pendaftaran-Calon-Asisten/public/register/verify-otp', {
                 method: 'POST',
@@ -416,7 +508,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(res => res.json())
             .then(response => {
-                if (btnVerify) { btnVerify.disabled = false; btnVerify.innerHTML = originalText; }
+                restoreVerify();
                 if (response.status === 'success') {
                     hideModalUI('otpModal');
                     showModal('Registrasi Berhasil', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/registergif.gif');
@@ -425,13 +517,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     hideModalUI('otpModal');
                     showModal(response.message || 'Verifikasi Gagal', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif', function () {
                         showModalUI('otpModal');
-                        otpInputs.forEach(inp => inp.value = '');
+                        otpInputs.forEach(inp => { inp.value = ''; inp.classList.remove('filled'); });
                         setTimeout(() => { if (otpInputs[0]) otpInputs[0].focus(); }, 500);
                     });
                 }
             })
             .catch(error => {
-                if (btnVerify) { btnVerify.disabled = false; btnVerify.innerHTML = originalText; }
+                restoreVerify();
                 console.log('Terjadi kesalahan: ' + error);
                 hideModalUI('otpModal');
                 showModal('Terjadi kesalahan koneksi server', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif', function () {
@@ -460,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     hideModalUI('otpModal');
                     showModal(response.message, '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/registergif.gif', function () {
                         showModalUI('otpModal');
-                        otpInputs.forEach(inp => inp.value = '');
+                        otpInputs.forEach(inp => { inp.value = ''; inp.classList.remove('filled'); });
                         setTimeout(() => { if (otpInputs[0]) otpInputs[0].focus(); }, 500);
                     });
 
@@ -517,6 +609,14 @@ document.addEventListener('DOMContentLoaded', function () {
         loginForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
+            const btnLogin = document.getElementById('btnlogin');
+
+            // Cegah pengiriman ganda saat jaringan lambat: dulu tombol ini
+            // sama sekali tidak punya umpan balik sehingga pengguna menekannya
+            // berkali-kali.
+            if (btnLogin && btnLogin.disabled) return;
+            const restoreLogin = setBtnLoading(btnLogin, 'Masuk...');
+
             fetch('/Sistem-Pendaftaran-Calon-Asisten/public/login/authenticate', {
                 method: 'POST',
                 body: new URLSearchParams(new FormData(loginForm))
@@ -524,14 +624,25 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(res => res.json())
             .then(response => {
                 if (response.status === 'success') {
+                    // Sengaja TIDAK di-restore: halaman sedang berpindah,
+                    // biarkan tetap nonaktif agar tidak bisa disubmit ulang.
                     showModal('Login Berhasil', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/loginsuccess.gif');
                     setTimeout(() => { window.location.href = response.redirect; }, 1000);
                 } else {
+                    restoreLogin();
+                    shakeElement(loginForm);
+                    // Sengaja memakai teks Indonesia sendiri: pesan server untuk
+                    // kasus ini masih berbahasa Inggris ("Stambuk or password is
+                    // incorrect."), sedangkan seluruh UI berbahasa Indonesia.
                     showModal('Stambuk atau password salah', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif');
                 }
             })
             .catch(error => {
-                console.log('Terjadi kesalahan: ' + error);
+                // Dulu hanya console.log -> layar diam, pengguna tidak tahu
+                // apa pun ketika server mati atau koneksi putus.
+                restoreLogin();
+                showModal('Terjadi kesalahan koneksi ke server. Coba lagi.', '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/gif/failedregistergif.gif');
+                console.error('Login error:', error);
             });
         });
     }

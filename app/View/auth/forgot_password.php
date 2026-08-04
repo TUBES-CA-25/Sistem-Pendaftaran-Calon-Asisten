@@ -78,13 +78,21 @@
         /* Hormati preferensi pengguna: matikan animasi dekoratif */
         @media (prefers-reduced-motion: reduce) {
             .animate-blob,
-            .animate-fade-up {
+            .animate-fade-up,
+            .animate-shake,
+            .animate-spin {
                 animation: none !important;
+            }
+            /* Guard di atas hanya menutup `animation`, bukan `transition`. */
+            .transition-all,
+            .transition-opacity,
+            .transition-transform {
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
 </head>
-<body class="bg-auth flex items-center justify-center min-h-screen py-8 px-4 text-gray-800 relative overflow-x-hidden">
+<body class="bg-auth flex items-center justify-center min-h-screen py-8 px-4 text-gray-800 relative overflow-x-hidden animate-page-fade">
 
     <!-- ===== BLOB LATAR (dekoratif) ===== -->
     <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
