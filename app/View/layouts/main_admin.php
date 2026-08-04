@@ -301,6 +301,8 @@
             'jadwalPresentasi' => 'admin/presentasi/index.php',
             'wawancara' => 'admin/wawancara/index.php',
             'ruangan' => 'admin/ruangan/index.php',
+            // Halaman 404 (dirender saat nama halaman tidak dikenal)
+            '404' => 'errors/404.php',
         ];
         $viewFile = $pageViewMap[$initialPage] ?? 'admin/dashboard/index.php';
         require_once __DIR__ . "/../" . $viewFile;

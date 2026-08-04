@@ -14,7 +14,6 @@ $pendaftarGagal = $pendaftarGagal ?? 0;
 $statusKegiatan = $statusKegiatan ?? [];
 $kegiatanBulanIni = $kegiatanBulanIni ?? [];
 $jadwalPresentasiMendatang = $jadwalPresentasiMendatang ?? [];
-
 ?>
 
 <!-- Page Header -->

@@ -286,10 +286,10 @@
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" id="customModalBackdrop"></div>
         <!-- scale mengikuti data-open pada WADAH (#customModal), bukan pada panel
              ini sendiri - karena itu memakai varian arbitrary [&] terhadap induk. -->
-        <div class="relative w-auto my-6 mx-auto max-w-sm z-50 scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
+        <div class="relative my-6 mx-auto w-[90%] max-w-[340px] z-50 scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
             <div class="relative flex w-full flex-col rounded-[20px] border-0 bg-white shadow-2xl outline-none focus:outline-none">
-                <div class="relative flex-auto p-8 text-center">
-                    <img id="modalGif" src="" alt="Animation" class="mb-4 mx-auto w-[80px] md:w-[100px] rounded-xl" style="display: none;">
+                <div class="relative flex-auto p-7 text-center">
+                    <img id="modalGif" src="" alt="Animation" class="mb-4 mx-auto w-[72px] md:w-[84px] rounded-xl" style="display: none;">
                     <p id="modalMessage" class="text-[1rem] md:text-[1.05rem] font-medium text-gray-800 mb-4">Pesan akan ditampilkan di sini.</p>
                     <button type="button" id="closeModal" class="bg-gradient-to-br from-primary to-secondary border-none rounded-[10px] px-7 py-2 text-white font-semibold shadow-sm hover:shadow-md transition-shadow">Tutup</button>
                 </div>

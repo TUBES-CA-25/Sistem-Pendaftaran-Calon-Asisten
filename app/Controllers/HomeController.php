@@ -55,12 +55,44 @@ class HomeController extends Controller
      * ('tesTulis', 'dashboard'). Karena itu cabang is_array($page) yang
      * dulu ada di sini tidak pernah tercapai dan sudah dihapus.
      */
+    /**
+     * Daftar nama halaman yang sah per peran.
+     *
+     * Sumber kebenaran tunggal untuk validasi URL. Harus selalu sinkron dengan
+     * label `case` di getPageData() dan renderPageContent().
+     */
+    private const HALAMAN_VALID = [
+        'Admin' => [
+            'dashboard', 'ruangan', 'lihatPeserta', 'daftarKehadiran',
+            'presentasi', 'pengajuanJudul', 'jadwalPresentasi', 'tesTulis',
+            'importSoal', 'bankSoal', 'wawancara', 'profile', 'lihatnilai',
+        ],
+        'User' => [
+            'dashboard', 'biodata', 'presentasi', 'tesTulis', 'uploadBerkas',
+            'wawancara', 'profile', 'editprofile', 'notifikasi', 'notification',
+            'pengumuman',
+        ],
+    ];
+
     public function loadContent(string $page): void
     {
         if (!$this->isLoggedIn()) {
             $baseUrl = dirname($_SERVER['SCRIPT_NAME']);
             header('Location: ' . $baseUrl . '/login');
             exit();
+        }
+
+        // Tolak nama halaman yang tidak dikenal.
+        //
+        // Dulu cabang `default:` mengembalikan array kosong TETAPI layout tetap
+        // dirender, sehingga URL ngawur seperti /admin atau /xyz123 membalas
+        // HTTP 200 dengan halaman yang terlihat normal namun seluruh datanya
+        // kosong (statistik 0, kalender tanpa tanggal). Menyesatkan bagi
+        // pengguna maupun mesin pencari.
+        $peran = $this->getRole() === 'Admin' ? 'Admin' : 'User';
+        if (!in_array($page, self::HALAMAN_VALID[$peran], true)) {
+            $this->renderNotFound($page);
+            return;
         }
 
         // Detect if AJAX request
@@ -74,6 +106,33 @@ class HomeController extends Controller
             // Direct URL: Return full layout with content
             $this->renderFullPage($page);
         }
+    }
+
+    /**
+     * Balas 404 untuk halaman yang tidak ada.
+     *
+     * Permintaan SPA (AJAX) menerima potongan HTML agar app.js bisa
+     * menyuntikkannya ke #content; akses URL langsung menerima halaman utuh.
+     */
+    private function renderNotFound(string $page): void
+    {
+        http_response_code(404);
+
+        $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+                  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
+        $data = ['pageTidakDikenal' => $page];
+
+        if ($isAjax) {
+            View::render('404', 'errors', $data);
+            return;
+        }
+
+        // Akses langsung: bungkus dengan layout supaya sidebar tetap ada dan
+        // pengguna bisa langsung menavigasi ke halaman lain.
+        $data = array_merge($this->getSidebarData(), $data);
+        $data['initialPage'] = '404';
+        View::render($this->getRole() === 'Admin' ? 'main_admin' : 'main', 'layouts', $data);
     }
 
     /**

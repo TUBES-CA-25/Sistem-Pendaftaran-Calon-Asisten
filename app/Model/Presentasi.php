@@ -7,12 +7,23 @@ class Presentasi extends Model {
     protected $keterangan;
     static protected $table = 'presentasi';
 
+    /**
+     * Daftar pengajuan judul untuk admin — SATU baris per mahasiswa.
+     *
+     * Sejak riwayat pengajuan disimpan sebagai baris terpisah (judul yang
+     * ditolak tetap tersimpan), tabel ini bisa berisi beberapa baris untuk
+     * mahasiswa yang sama. Tanpa pembatas di bawah, nama mahasiswa muncul
+     * berulang di halaman admin — satu baris untuk tiap judul yang pernah
+     * diajukan. Admin hanya perlu melihat pengajuan TERBARU.
+     */
     public function getAll() {
         $sql = "SELECT p.*, m.nama_lengkap, m.stambuk,
                        (SELECT COUNT(*) FROM jadwal_presentasi jp WHERE jp.id_presentasi = p.id) as has_schedule,
                        (SELECT foto FROM berkas_mahasiswa WHERE id_mahasiswa = m.id ORDER BY id DESC LIMIT 1) as foto
                 FROM " . static::$table . " p
                 JOIN mahasiswa m ON p.id_mahasiswa = m.id
+                WHERE p.id = (SELECT MAX(p2.id) FROM " . static::$table . " p2
+                              WHERE p2.id_mahasiswa = p.id_mahasiswa)
                 ORDER BY p.id DESC";
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute();
@@ -38,12 +49,18 @@ class Presentasi extends Model {
         return $data;
     }
 
+    /**
+     * Daftar judul yang DITERIMA — juga satu baris per mahasiswa (yang terbaru),
+     * dengan alasan yang sama seperti getAll().
+     */
     public function getAllAccStatus() {
         $sql = "SELECT p.*, m.nama_lengkap, m.stambuk,
                        (SELECT foto FROM berkas_mahasiswa WHERE id_mahasiswa = m.id ORDER BY id DESC LIMIT 1) as foto
                 FROM " . static::$table . " p
                 JOIN mahasiswa m ON p.id_mahasiswa = m.id
                 WHERE p.is_accepted = 1
+                  AND p.id = (SELECT MAX(p2.id) FROM " . static::$table . " p2
+                              WHERE p2.id_mahasiswa = p.id_mahasiswa)
                 ORDER BY p.id DESC";
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute();

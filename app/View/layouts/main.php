@@ -180,6 +180,11 @@
             'editprofile' => 'user/biodata/index.php',
             'pengumuman' => 'user/dashboard/pengumuman.php',
             'notification' => 'user/notifikasi/index.php',
+            // Ejaan Indonesia juga diterima; getPageData() mengenali keduanya,
+            // tanpa baris ini akses langsung /notifikasi jatuh ke dashboard.
+            'notifikasi' => 'user/notifikasi/index.php',
+            // Halaman 404 (dirender saat nama halaman tidak dikenal)
+            '404' => 'errors/404.php',
         ];
         $viewFile = $pageViewMap[$initialPage] ?? 'user/dashboard/index.php';
         require_once __DIR__ . "/../" . $viewFile;

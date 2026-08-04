@@ -115,7 +115,7 @@ window.showModal = function(message, gifUrl = null, onCloseCallback = null) {
     const modalGif = document.getElementById("modalGif");
 
     if (modalMessage) modalMessage.textContent = message;
-    
+
     if (modalGif) {
         if (gifUrl) {
             modalGif.src = gifUrl;

@@ -78,7 +78,10 @@ function loadPage(page, updateUrl = true) {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
         .then(res => {
-            if (!res.ok) throw new Error('Network response was not ok');
+            // 404 tetap dibaca isinya: server mengirim halaman "Halaman Tidak
+            // Ditemukan" yang memang untuk ditampilkan. Kalau ikut dilempar
+            // sebagai error, pengguna hanya melihat konten lama tanpa penjelasan.
+            if (!res.ok && res.status !== 404) throw new Error('Network response was not ok');
             return res.text();
         })
         .then(html => {
