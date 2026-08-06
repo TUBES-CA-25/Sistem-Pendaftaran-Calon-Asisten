@@ -430,7 +430,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 py-4 px-6 flex justify-between items-center">
+            <div class="bg-gradient-to-r from-primary to-secondary text-white border-0 py-4 px-6 flex justify-between items-center">
                 <h5 class="font-bold text-base" id="customMessageModalLabel">
                     <i class="bi bi-envelope-fill me-2"></i>Pesan
                 </h5>

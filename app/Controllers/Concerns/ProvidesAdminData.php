@@ -28,11 +28,13 @@ trait ProvidesAdminData
 
         return [
             'totalPendaftar' => DashboardAdminController::getTotalPendaftar(),
+            'pendaftarPerAngkatan' => DashboardAdminController::getPendaftarPerAngkatan(),
             'pendaftarLulus' => DashboardAdminController::getPendaftarLulus(),
             'pendaftarPending' => DashboardAdminController::getPendaftarPending(),
             'pendaftarGagal' => DashboardAdminController::getPendaftarGagal(),
             'statusKegiatan' => DashboardAdminController::getStatusKegiatan(),
             'kegiatanBulanIni' => $kegiatanBulanIni,
+            'kegiatanMendatang' => DashboardAdminController::getKegiatanMendatang(4),
             'jadwalPresentasiMendatang' => JadwalPresentasiController::getUpcomingJadwal(5),
             'presentationStats' => DashboardAdminController::getPresentationStats(),
             'statusMeta' => DashboardAdminController::getStatusMetadata(),

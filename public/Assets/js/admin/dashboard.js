@@ -53,7 +53,10 @@
                     const editBtn = document.querySelector(`.edit-deadline-btn[data-jenis="${updatedJenis}"]`);
                     if (editBtn) {
                         editBtn.setAttribute('data-date', updatedDate);
-                        const span = editBtn.previousElementSibling;
+                        // Cari span lewat penanda kelasnya, BUKAN previousElementSibling.
+                        // Cara lama membuat markup timeline tidak boleh digeser sama
+                        // sekali; sedikit penataan ulang saja langsung mematikannya.
+                        const span = document.querySelector(`.deadline-date[data-jenis="${updatedJenis}"]`);
                         if (span) {
                             const d = new Date(updatedDate);
                             const options = { day: '2-digit', month: 'short', year: 'numeric' };

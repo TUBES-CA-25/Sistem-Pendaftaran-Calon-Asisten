@@ -22,7 +22,7 @@ $ruanganList = $ruanganList ?? [];
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6 relative">
                 
                 <!-- Hidden Custom Button for VanillaPaginator -->
-                <button class="vp-custom-button hidden px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10 btn-add-room" data-modal-open="#tambahRuanganModal">
+                <button class="vp-custom-button hidden px-5 py-2.5 bg-gradient-to-r from-primary to-secondary hover:from-primary-hover hover:to-secondary-hover text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10 btn-add-room" data-modal-open="#tambahRuanganModal">
                     <i class="bi bi-plus-circle-fill"></i>
                     <span>Tambah Ruangan</span>
                 </button>
@@ -45,7 +45,7 @@ $ruanganList = $ruanganList ?? [];
                                          </div>
                                          <h4 class="text-base font-bold text-slate-800 mb-1">Belum ada Ruangan</h4>
                                          <p class="text-slate-500 text-xs mb-4">Mulai dengan menambahkan ruangan baru untuk seleksi.</p>
-                                         <button class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs rounded-xl transition shadow-sm shadow-blue-500/10 btn-add-room" data-modal-open="#tambahRuanganModal">
+                                         <button class="px-4 py-2 bg-gradient-to-r from-primary to-secondary hover:from-primary-hover hover:to-secondary-hover text-white font-semibold text-xs rounded-xl transition shadow-sm shadow-blue-500/10 btn-add-room" data-modal-open="#tambahRuanganModal">
                                             <i class="bi bi-plus-circle me-1"></i> Tambah Ruangan
                                          </button>
                                     </td>
@@ -100,7 +100,7 @@ $ruanganList = $ruanganList ?? [];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2"><i class="bi bi-plus-circle text-lg"></i>Tambah Ruangan Baru</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
@@ -124,7 +124,7 @@ $ruanganList = $ruanganList ?? [];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2"><i class="bi bi-pencil-square text-lg"></i>Ubah Nama Ruangan</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>

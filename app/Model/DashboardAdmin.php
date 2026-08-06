@@ -59,6 +59,44 @@ class DashboardAdmin extends Model
     }
 
     /**
+     * Jumlah pendaftar dikelompokkan per angkatan.
+     *
+     * Angkatan dibaca dari stambuk 11 digit dengan format:
+     *   130      2023        0306
+     *   |        |           |
+     *   fakultas angkatan    nomor urut pendaftaran
+     *   (1-3)    (4-7)       (8-11)
+     *
+     * REGEXP menyaring stambuk yang bukan 11 digit angka (mis. akun 'admin'),
+     * supaya tidak memunculkan kelompok angkatan palsu.
+     *
+     * @return array<int, array{angkatan: string, jumlah: int}> terurut menaik
+     */
+    public static function getPendaftarPerAngkatan(): array
+    {
+        try {
+            $sql = "SELECT SUBSTRING(stambuk, 4, 4) AS angkatan, COUNT(*) AS jumlah
+                    FROM " . self::$tableMahasiswa . "
+                    WHERE stambuk REGEXP '^[0-9]{11}$'
+                    GROUP BY angkatan
+                    ORDER BY angkatan ASC";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->execute();
+
+            $hasil = [];
+            foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+                $hasil[] = [
+                    'angkatan' => (string) $row['angkatan'],
+                    'jumlah'   => (int) $row['jumlah'],
+                ];
+            }
+            return $hasil;
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
+
+    /**
      * @return array<int, array{tanggal: string, judul: string, jenis: string, deskripsi?: string}>
      */
     public static function getKegiatanByMonth(int $year, int $month): array
@@ -110,6 +148,32 @@ class DashboardAdmin extends Model
         } catch (\Throwable $e) {}
 
         return $results;
+    }
+
+    /**
+     * Kegiatan terdekat mulai hari ini, untuk panel ringkas di dashboard.
+     *
+     * Sengaja TIDAK dibatasi bulan berjalan (berbeda dari getKegiatanByMonth):
+     * kegiatan terdekat bisa jatuh di bulan berikutnya, dan panel ini justru
+     * berguna untuk mengingatkan hal itu.
+     *
+     * @return array<int, array{id: int, judul: string, tanggal: string, deskripsi: string}>
+     */
+    public static function getKegiatanMendatang(int $limit = 4): array
+    {
+        try {
+            $sql = "SELECT id, judul, tanggal, deskripsi
+                    FROM kegiatan_admin
+                    WHERE tanggal >= CURDATE()
+                    ORDER BY tanggal ASC
+                    LIMIT :limit";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        } catch (\Throwable $e) {
+            return [];
+        }
     }
 
     public static function addKegiatan(array $data): bool
@@ -211,7 +275,7 @@ class DashboardAdmin extends Model
             if (!$prevStatusIsDone) {
                 return [
                     'status' => 'Akan Datang',
-                    'css_class' => 'bg-secondary bg-opacity-10 text-secondary' // Gray
+                    'css_class' => 'bg-slate-100 text-slate-500'
                 ];
             }
 
@@ -219,14 +283,14 @@ class DashboardAdmin extends Model
             if ($deadline && $today > $deadline) {
                 return [
                     'status' => 'Selesai',
-                    'css_class' => 'bg-success bg-opacity-10 text-success' // Green
+                    'css_class' => 'bg-emerald-50 text-emerald-600'
                 ];
             }
 
             // Otherwise, it's "Sedang Berlangsung"
             return [
                 'status' => 'Sedang Berlangsung',
-                'css_class' => 'bg-warning bg-opacity-10 text-warning' // Yellow
+                'css_class' => 'bg-amber-50 text-amber-600'
             ];
         };
 
@@ -239,8 +303,8 @@ class DashboardAdmin extends Model
         $berkasIsDone = ($berkasDeadline && $today > $berkasDeadline);
         
         $berkasState = $berkasIsDone 
-            ? ['status' => 'Selesai', 'css_class' => 'bg-success bg-opacity-10 text-success']
-            : ['status' => 'Sedang Berlangsung', 'css_class' => 'bg-warning bg-opacity-10 text-warning'];
+            ? ['status' => 'Selesai', 'css_class' => 'bg-emerald-50 text-emerald-600']
+            : ['status' => 'Sedang Berlangsung', 'css_class' => 'bg-amber-50 text-amber-600'];
 
         $status['kelengkapan_berkas'] = [
             'label' => 'Kelengkapan Berkas',

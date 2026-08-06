@@ -18,17 +18,23 @@ $bankSoalList = $data['bankSoalList'] ?? [];
     ?>
 
     <div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
-        <!-- Tombol aksi. Dulu ber-class "hidden" dan hanya dimunculkan oleh
-             initComplete DataTables; karena tabel memakai no-datatable, tombol
-             ini tidak pernah tampil. Sekarang ditampilkan langsung. -->
-        <div class="flex justify-end mb-4">
-            <button class="inline-flex px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10" type="button" data-modal-open="#addJadwalModal">
-                <i class="bi bi-plus-circle"></i> Tambah Jadwal
-            </button>
-        </div>
-
         <!-- Student Schedule Table -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
+
+            <?php /* Tombol dipindah MASUK ke dalam kartu tabel dan diberi class
+                     vp-custom-button. VanillaPaginator (app.js) memindahkannya ke
+                     baris kontrol di samping kotak "Cari data..." saat membangun
+                     toolbar, lalu melepas class "hidden"-nya.
+
+                     Posisi elemen ini penting: paginator hanya memindai tombol di
+                     dalam table.closest('div').parentElement - yaitu kartu ini.
+                     Kalau tombol ditaruh di luar kartu, ia tidak akan ditemukan
+                     dan tetap tersembunyi. */ ?>
+            <button class="vp-custom-button hidden px-5 py-2.5 bg-gradient-to-r from-primary to-secondary hover:from-primary-hover hover:to-secondary-hover text-white font-semibold text-sm rounded-xl transition items-center gap-2 shadow-md shadow-blue-500/10 whitespace-nowrap" type="button" data-modal-open="#addJadwalModal">
+                <i class="bi bi-plus-circle"></i>
+                <span>Tambah Jadwal</span>
+            </button>
+
             <div class="overflow-x-auto">
                 <table class="min-w-full align-middle text-sm text-left no-datatable" id="jadwalTable" data-paginator="true" data-paginator-perpage="10">
                     <thead>
@@ -105,7 +111,7 @@ $bankSoalList = $data['bankSoalList'] ?? [];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2"><i class="bi bi-calendar-plus text-lg"></i>Tambah Jadwal Tes</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
@@ -164,7 +170,7 @@ $bankSoalList = $data['bankSoalList'] ?? [];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2"><i class="bi bi-pencil-square text-lg"></i>Update Jadwal Tes</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>

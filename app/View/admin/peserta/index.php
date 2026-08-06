@@ -117,7 +117,7 @@ $result = $result ?? [];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2" id="addNotificationLabel">
                     <i class="bi bi-send text-lg"></i>Kirim Notifikasi ke Peserta
                 </h5>
@@ -264,12 +264,12 @@ $result = $result ?? [];
                                 <span class="text-[9px] font-bold text-blue-500 uppercase tracking-wider block mb-0.5">Nama Lengkap</span>
                                 <span class="font-bold text-slate-800 text-xs" id="modalNama">-</span>
                             </div>
-                            <div class="p-3 bg-indigo-50/50 rounded-xl border border-indigo-100 hover:bg-indigo-50 transition-colors shadow-sm shadow-indigo-100/50">
-                                <span class="text-[9px] font-bold text-indigo-500 uppercase tracking-wider block mb-0.5">Stambuk / NIM</span>
+                            <div class="p-3 bg-sky-50/50 rounded-xl border border-sky-100 hover:bg-sky-50 transition-colors shadow-sm shadow-sky-100/50">
+                                <span class="text-[9px] font-bold text-sky-500 uppercase tracking-wider block mb-0.5">Stambuk / NIM</span>
                                 <span class="font-bold text-slate-800 text-xs" id="modalStambuk">-</span>
                             </div>
-                            <div class="p-3 bg-purple-50/50 rounded-xl border border-purple-100 hover:bg-purple-50 transition-colors shadow-sm shadow-purple-100/50">
-                                <span class="text-[9px] font-bold text-purple-500 uppercase tracking-wider block mb-0.5">Jurusan</span>
+                            <div class="p-3 bg-cyan-50/50 rounded-xl border border-cyan-100 hover:bg-cyan-50 transition-colors shadow-sm shadow-cyan-100/50">
+                                <span class="text-[9px] font-bold text-cyan-600 uppercase tracking-wider block mb-0.5">Jurusan</span>
                                 <span class="font-bold text-slate-800 text-xs" id="modalJurusanTab">-</span>
                             </div>
                             <div class="p-3 bg-pink-50/50 rounded-xl border border-pink-100 hover:bg-pink-50 transition-colors shadow-sm shadow-pink-100/50">
@@ -327,7 +327,7 @@ $result = $result ?? [];
                             <!-- CV -->
                             <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-100 rounded-xl hover:bg-slate-50 hover:border-slate-200 hover:shadow-sm hover:scale-[1.01] transition-all duration-200">
                                 <div class="flex items-center gap-3 flex-grow min-w-0">
-                                    <div class="rounded-lg flex items-center justify-center w-10 h-10 bg-purple-50 text-purple-600 shrink-0">
+                                    <div class="rounded-lg flex items-center justify-center w-10 h-10 bg-sky-50 text-sky-600 shrink-0">
                                         <i class="bi bi-file-person text-lg"></i>
                                     </div>
                                     <div class="min-w-0">
@@ -335,7 +335,7 @@ $result = $result ?? [];
                                         <small class="text-slate-400 text-[10px] block truncate mt-0.5">Format PDF</small>
                                     </div>
                                 </div>
-                                <button type="button" class="btn-download-berkas w-8 h-8 rounded-lg flex items-center justify-center transition bg-purple-50 hover:bg-purple-100 text-purple-600 shadow-sm" id="downloadCVButton" data-download-url="" aria-label="Unduh CV">
+                                <button type="button" class="btn-download-berkas w-8 h-8 rounded-lg flex items-center justify-center transition bg-sky-50 hover:bg-sky-100 text-sky-600 shadow-sm" id="downloadCVButton" data-download-url="" aria-label="Unduh CV">
                                     <i class="bi bi-download text-xs"></i>
                                 </button>
                             </div>
@@ -379,13 +379,13 @@ $result = $result ?? [];
                 <div id="tab-presentasi" class="tab-panel hidden [grid-area:1/1] transition-opacity duration-200 ease-in-out space-y-4">
                     <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
                         <h6 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-1.5">
-                            <span class="w-1.5 h-3.5 bg-indigo-600 rounded-full"></span>
+                            <span class="w-1.5 h-3.5 bg-blue-600 rounded-full"></span>
                             Informasi Presentasi & Judul
                         </h6>
                         
                         <!-- Judul Presentasi -->
-                        <div class="p-3.5 bg-indigo-50/45 rounded-xl border border-indigo-100/60 mb-4">
-                            <span class="text-[9px] font-bold text-indigo-400 uppercase tracking-wider block mb-0.5">Judul Presentasi</span>
+                        <div class="p-3.5 bg-blue-50/45 rounded-xl border border-blue-100/60 mb-4">
+                            <span class="text-[9px] font-bold text-blue-400 uppercase tracking-wider block mb-0.5">Judul Presentasi</span>
                             <h5 class="text-slate-800 font-bold text-xs leading-relaxed mb-0" id="modalJudulPresentasi">Belum diisi oleh peserta</h5>
                         </div>
  
@@ -474,7 +474,7 @@ $result = $result ?? [];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2" id="sendMessageModalLabel">
                     <i class="bi bi-chat-dots text-lg"></i>Kirim Pesan
                 </h5>

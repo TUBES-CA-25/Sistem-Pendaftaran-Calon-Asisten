@@ -211,7 +211,7 @@
         <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
             <div class="relative bg-white w-full bg-white/95 backdrop-blur-md rounded-[24px] shadow-2xl overflow-hidden">
                 <!-- Header with Icon & Title -->
-                <div id="actionConfirmHeader" class="px-6 py-8 flex flex-col items-center relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600">
+                <div id="actionConfirmHeader" class="px-6 py-8 flex flex-col items-center relative overflow-hidden bg-gradient-to-r from-primary to-secondary">
                     <!-- Background sparkles/glow -->
                     <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10 blur-xl"></div>
                     <div class="absolute -left-10 -bottom-10 w-40 h-40 rounded-full bg-white/10 blur-xl"></div>

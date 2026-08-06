@@ -212,7 +212,7 @@
                                         <div class="inline-block px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 font-bold text-sm rounded-lg shadow-sm">${item.jawaban}</div>
                                     </div>
                                     <div>
-                                        <div class="text-indigo-600 font-bold uppercase tracking-wider text-[10px] mb-1.5 flex items-center gap-1.5"><i class="bi bi-card-text"></i> Jawaban</div>
+                                        <div class="text-blue-600 font-bold uppercase tracking-wider text-[10px] mb-1.5 flex items-center gap-1.5"><i class="bi bi-card-text"></i> Jawaban</div>
                                         ${isAnswered
                                             ? `<div class="inline-block px-3 py-1.5 ${isCorrect ? 'bg-emerald-50 text-emerald-800 border-emerald-400' : 'bg-red-50 text-red-800 border-red-400'} border font-bold text-sm rounded-lg shadow-sm">${item.jawaban_user}</div>`
                                             : '<div class="inline-block px-3 py-1.5 bg-slate-200 text-slate-500 font-bold text-sm rounded-lg border border-slate-300 border-dashed shadow-sm">KOSONG</div>'

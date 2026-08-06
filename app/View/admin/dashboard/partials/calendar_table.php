@@ -1,78 +1,96 @@
 <?php
 $calendarWeeks = $calendarWeeks ?? [];
 
+/* Penghitung sel untuk animasi "timbul" bertingkat. Nilainya di-reset setiap
+   partial ini dirender - termasuk saat ganti bulan lewat AJAX - sehingga
+   animasinya ikut berjalan lagi pada tiap navigasi bulan, bukan hanya saat
+   halaman pertama dimuat. */
+$nSel = 0;
+
+/* Gaya mengikuti referensi "TimeFrame": tanpa garis kotak, tiap sel berupa
+   permukaan membulat, hari ini ditandai lingkaran biru penuh, dan acara
+   tampil sebagai kartu berwarna.
+
+   Warna kartu acara dipetakan per jenis dan ditulis sebagai string kelas
+   LITERAL UTUH (bukan dirakit dari potongan) - syarat Tailwind Play CDN,
+   yang memindai nama kelas sebagai teks di sumber. Kelas hasil rakitan
+   tidak akan pernah dikompilasi. */
+$gayaAcara = [
+    'Kegiatan'   => 'bg-blue-100 text-blue-700 ring-1 ring-blue-200',
+    'Wawancara'  => 'bg-amber-100 text-amber-700 ring-1 ring-amber-200',
+    'Presentasi' => 'bg-lime-100 text-lime-800 ring-1 ring-lime-200',
+];
+$gayaDefault = 'bg-slate-100 text-slate-700 ring-1 ring-slate-200';
+
 foreach ($calendarWeeks as $week):
 ?>
 <tr>
     <?php foreach ($week as $day): ?>
         <?php if ($day === null): ?>
-            <td class="text-gray-800 bg-slate-50/50" style="height: 70px; vertical-align: top; border: 1px solid #f1f5f9; position: relative; padding: 6px;"></td>
+            <?php $nSel++; ?>
+            <td class="h-[72px] align-top p-1"></td>
         <?php else: ?>
             <?php
-                $fontWeight = '500';
-                $dateColor = '#64748b'; // slate-500
-                $cellBg = 'transparent';
-                $cellBorder = '1px solid #f1f5f9'; // slate-100
-                $cursor = 'default';
-                $onclick = '';
-                $eventsHtml = '';
-                
-                $isToday = $day['isToday'];
-                if ($isToday) {
-                    $dateColor = '#2563eb'; // blue-600
-                    $fontWeight = '700';
-                }
+                $isToday  = $day['isToday'];
+                $adaAcara = count($day['events']) > 0;
+                $delaySel = $nSel * 14;
+                $nSel++;
 
-                if (count($day['events'])> 0) {
-                    $cursor = 'pointer';
+                $onclick = '';
+                if ($adaAcara) {
                     $escapedEvents = htmlspecialchars(json_encode($day['events']), ENT_QUOTES, 'UTF-8');
                     $onclick = " onclick='showActivityActions(this.getAttribute(\"data-events\"))' data-events=\"$escapedEvents\"";
-                    $cellBg = '#ffffff';
-                    
-                    $eventsHtml .= '<div class="mt-1 space-y-1 flex flex-col items-center">';
-                    // Show max 2 events to prevent cell from overflowing too much
-                    $displayEvents = array_slice($day['events'], 0, 2);
-                    foreach ($displayEvents as $event) {
-                        $jenis = $event['jenis'];
-                        $bgColor = 'bg-slate-100';
-                        $textColor = 'text-slate-700';
-                        
-                        if ($jenis === 'Kegiatan') {
-                            $bgColor = 'bg-blue-100';
-                            $textColor = 'text-blue-700';
-                        } elseif ($jenis === 'Wawancara') {
-                            $bgColor = 'bg-amber-100';
-                            $textColor = 'text-amber-700';
-                        } elseif ($jenis === 'Presentasi') {
-                            $bgColor = 'bg-emerald-100';
-                            $textColor = 'text-emerald-700';
-                        }
-                        
-                        // Limit title length
-                        $title = htmlspecialchars($event['judul']);
-                        if (strlen($title)> 12) {
-                            $title = substr($title, 0, 10) . '...';
-                        }
-                        
-                        $eventsHtml .= "<div class=\"text-[10px] w-full text-center px-1 py-0.5 rounded-md font-bold truncate $bgColor $textColor\" title=\"" . htmlspecialchars($event['judul']) . "\">";
-                        $eventsHtml .= $title;
-                        $eventsHtml .= "</div>";
-                    }
-                    if (count($day['events'])> 2) {
-                        $eventsHtml .= "<div class=\"text-[10px] font-bold text-slate-400\">+" . (count($day['events']) - 2) . " lagi</div>";
-                    }
-                    $eventsHtml .= '</div>';
                 }
-                
-                $cellStyle = "height: 70px; vertical-align: top; border: $cellBorder; position: relative; padding: 6px; cursor: $cursor; background-color: $cellBg; transition: all 0.2s;";
+
+                /* Permukaan sel: hari ini berlatar biru lembut, hari berkegiatan
+                   berlatar putih dengan cincin tipis, sisanya polos. */
+                if ($isToday) {
+                    $gayaSel = 'bg-blue-50 ring-1 ring-blue-200';
+                } elseif ($adaAcara) {
+                    $gayaSel = 'bg-white ring-1 ring-slate-200/70 hover:ring-blue-200 hover:shadow-sm';
+                } else {
+                    $gayaSel = 'hover:bg-slate-50';
+                }
+
+                /* Angka tanggal: hari ini jadi lingkaran gradasi biru penuh. */
+                if ($isToday) {
+                    $gayaAngka = 'w-6 h-6 rounded-full bg-gradient-to-br from-primary to-secondary text-white font-bold shadow-sm shadow-blue-500/40';
+                } elseif ($adaAcara) {
+                    $gayaAngka = 'w-6 h-6 text-slate-700 font-bold';
+                } else {
+                    $gayaAngka = 'w-6 h-6 text-slate-400 font-medium';
+                }
             ?>
-            <td class="calendar-cell hover:bg-slate-50" style="<?= $cellStyle ?>"<?= $onclick ?>>
-                <div class="flex justify-center">
-                    <div style="font-size: 11px; font-weight: <?= $fontWeight ?>; color: <?= $dateColor ?>; <?= $isToday ? 'background-color: #eff6ff; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%;' : 'margin-bottom: 2px;' ?>">
+            <td class="calendar-cell h-[72px] align-top p-1<?= $adaAcara ? ' cursor-pointer' : '' ?>"<?= $onclick ?>>
+              <div class="animate-cell-rise h-full" style="animation-delay: <?= $delaySel ?>ms;">
+                <div class="h-full rounded-xl p-1.5 flex flex-col items-center gap-1 transition-all duration-200 <?= $gayaSel ?>">
+                    <span class="flex items-center justify-center text-[11px] leading-none shrink-0 <?= $gayaAngka ?>">
                         <?= $day['date'] ?>
-                    </div>
+                    </span>
+
+                    <?php if ($adaAcara): ?>
+                        <div class="w-full flex flex-col gap-0.5 min-w-0">
+                            <?php
+                            // Tampilkan maksimal 2 acara supaya sel tidak meluber
+                            foreach (array_slice($day['events'], 0, 2) as $event):
+                                $jenis = $event['jenis'] ?? '';
+                                $gaya  = $gayaAcara[$jenis] ?? $gayaDefault;
+                            ?>
+                                <div class="text-[9px] leading-tight w-full px-1.5 py-1 rounded-md font-bold truncate <?= $gaya ?>"
+                                     title="<?= htmlspecialchars($event['judul']) ?>">
+                                    <?= htmlspecialchars($event['judul']) ?>
+                                </div>
+                            <?php endforeach; ?>
+
+                            <?php if (count($day['events']) > 2): ?>
+                                <div class="text-[9px] font-bold text-slate-400 text-center leading-tight">
+                                    +<?= count($day['events']) - 2 ?> lagi
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
-                <?= $eventsHtml ?>
+              </div>
             </td>
         <?php endif; ?>
     <?php endforeach; ?>

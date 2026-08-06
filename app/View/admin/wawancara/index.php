@@ -22,15 +22,21 @@ $colors = ['#2f66f6'];
 
 <div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
 
-    <!-- Tombol aksi (dulu tersembunyi menunggu initComplete DataTables) -->
-    <div class="flex justify-end mb-4">
-        <button class="inline-flex px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl items-center gap-2 transition shadow-sm border-0" type="button" data-modal-open="#addJadwalModal">
-            <i class="bi bi-plus-circle"></i> Tambah Jadwal
-        </button>
-    </div>
-
     <!-- Data Table -->
     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
+
+        <?php /* Tombol dipindah MASUK ke dalam kartu tabel + class vp-custom-button.
+                 VanillaPaginator (app.js) memindahkannya ke baris kontrol di samping
+                 kotak "Cari data..." lalu melepas class "hidden"-nya.
+
+                 Letak elemen ini penting: paginator hanya memindai tombol di dalam
+                 table.closest('div').parentElement - yaitu kartu ini. Kalau ditaruh
+                 di luar kartu, tombol tidak ditemukan dan tetap tersembunyi. */ ?>
+        <button class="vp-custom-button hidden px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl items-center gap-2 transition shadow-sm border-0 whitespace-nowrap" type="button" data-modal-open="#addJadwalModal">
+            <i class="bi bi-plus-circle"></i>
+            <span>Tambah Jadwal</span>
+        </button>
+
         <div class="overflow-x-auto">
             <table id="wawancaraMahasiswa" class="min-w-full align-middle text-sm text-left no-datatable" data-paginator="true" data-paginator-perpage="10">
                 <thead>

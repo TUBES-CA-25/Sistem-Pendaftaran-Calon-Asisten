@@ -155,7 +155,7 @@ function renderStatusBadge($val) {
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2">
                     <i class="bi bi-person-plus text-lg"></i>
                     Tambah Data Kehadiran
@@ -247,7 +247,7 @@ function renderStatusBadge($val) {
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-5 py-3 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2 text-base">
                     <i class="bi bi-card-checklist text-lg"></i>
                     Rekap Peserta
@@ -257,7 +257,7 @@ function renderStatusBadge($val) {
             <div class="p-0">
                 <div class="p-4 text-center bg-slate-50 border-b border-slate-100 flex flex-col items-center">
                     <img id="rekapFoto" src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png" alt="Foto Profil" class="rounded-full w-16 h-16 object-cover border-4 border-white shadow-sm mb-2" style="display: none;" onerror="this.style.display='none'; document.getElementById('rekapAvatarContainer').style.display='flex';">
-                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xl shadow-sm mb-2" id="rekapAvatarContainer">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-secondary text-white flex items-center justify-center font-bold text-xl shadow-sm mb-2" id="rekapAvatarContainer">
                         <span id="rekapAvatar">U</span>
                     </div>
                     <h5 class="text-base font-bold text-slate-800 mb-0.5" id="rekapNama">Nama Peserta</h5>
@@ -327,7 +327,7 @@ function renderStatusBadge($val) {
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2">
                     <i class="bi bi-pencil-square text-lg"></i>
                     Edit Data Kehadiran
@@ -336,7 +336,7 @@ function renderStatusBadge($val) {
             </div>
             <div class="p-6 space-y-4">
                 <div class="text-center flex flex-col items-center pb-4 border-b border-slate-100">
-                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-2xl shadow-sm mb-3">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-secondary text-white flex items-center justify-center font-bold text-2xl shadow-sm mb-3">
                         <span id="avatarInitial">U</span>
                     </div>
                     <h5 class="text-lg font-bold text-slate-800 mb-1" id="detailNama">Name</h5>

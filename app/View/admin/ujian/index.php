@@ -41,7 +41,7 @@ $essayCount = $stats['essay_count'];
         <!-- Stats Bar -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
             <div class="bg-white rounded-xl shadow-sm border border-slate-100 px-4 py-3 flex items-center gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-                <div class="w-9 h-9 rounded-lg flex justify-center items-center shrink-0 bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-sm">
+                <div class="w-9 h-9 rounded-lg flex justify-center items-center shrink-0 bg-gradient-to-br from-primary to-secondary text-white shadow-sm">
                     <i class="bi bi-folder-fill text-sm"></i>
                 </div>
                 <div>
@@ -78,167 +78,167 @@ $essayCount = $stats['essay_count'];
             </div>
         </div>
 
-    <!-- Header & Controls -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
-        <div>
-            <h2 class="text-lg font-bold text-slate-800">Daftar Bank Soal</h2>
-            <p class="text-slate-400 text-sm mt-0.5"><?= count($bankSoalList) ?> bank tersedia &bull; Klik kartu untuk melihat daftar soal</p>
-        </div>
-        <button class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl flex items-center gap-2 shadow-md shadow-blue-500/20 transition-all hover:-translate-y-0.5 border-0 text-sm" id="btnCreateBank" data-modal-open="#createBankModal">
+    <!-- Bank Soal List Table -->
+    <?php /* Bentuk tabel menggantikan grid kartu. Kontrak JS dipertahankan
+             seluruhnya: id bank-card-<id> kini menempel pada <tr> (exam.js
+             menghapusnya lewat .remove(), jadi <tr> aman), sedangkan
+             #bankGrid berpindah ke <tbody> - exam.js membaca .children.length
+             untuk mendeteksi tabel kosong, dan <tbody> tetap memenuhi itu. */ ?>
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
+
+        <?php /* Tombol dipindah MASUK ke dalam kartu tabel + class vp-custom-button.
+                 VanillaPaginator (app.js) memindahkannya ke baris kontrol di samping
+                 kotak "Cari data..." lalu melepas class "hidden"-nya.
+
+                 Letak elemen ini penting: paginator hanya memindai tombol di dalam
+                 table.closest('div').parentElement - yaitu kartu ini. Kalau ditaruh
+                 di luar kartu, tombol tidak ditemukan dan tetap tersembunyi.
+
+                 #btnCreateBank dipertahankan - dipakai sebagai pemicu modal. */ ?>
+        <button class="vp-custom-button hidden px-5 py-2.5 bg-gradient-to-r from-primary to-secondary hover:from-primary-hover hover:to-secondary-hover text-white font-bold rounded-xl items-center gap-2 shadow-md shadow-blue-500/20 transition-all border-0 text-sm whitespace-nowrap" type="button" id="btnCreateBank" data-modal-open="#createBankModal">
             <i class="bi bi-plus-circle-fill"></i>
             <span>Buat Bank Baru</span>
         </button>
-    </div>
 
-    <!-- Bank Soal List Grid -->
         <?php if (empty($bankSoalList)): ?>
-        <div class="text-center py-16 flex flex-col items-center justify-center bg-white rounded-2xl border border-slate-100 shadow-sm p-8 mb-6">
+        <div class="text-center py-16 flex flex-col items-center justify-center p-8">
             <i class='bx bx-folder-open text-slate-300 text-6xl mb-4'></i>
             <h3 class="text-lg font-bold text-slate-700 mb-1">Belum Ada Bank Soal</h3>
             <p class="text-slate-500 text-sm max-w-sm">Klik tombol "Buat Bank Baru" untuk membuat bank soal pertama</p>
         </div>
         <?php endif; ?>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2" id="bankGrid">
-            <?php
-            $cardThemes = [
-                ['from' => 'from-blue-500',   'via' => 'via-blue-600',   'to' => 'to-indigo-600'],
-                ['from' => 'from-violet-500', 'via' => 'via-violet-600', 'to' => 'to-purple-700'],
-                ['from' => 'from-emerald-500','via' => 'via-emerald-600','to' => 'to-teal-700'],
-                ['from' => 'from-rose-500',   'via' => 'via-rose-600',   'to' => 'to-pink-700'],
-                ['from' => 'from-amber-500',  'via' => 'via-amber-500',  'to' => 'to-orange-600'],
-                ['from' => 'from-sky-500',    'via' => 'via-sky-600',    'to' => 'to-cyan-700'],
-            ];
-            $themeIdx = 0;
-            ?>
-            <?php foreach ($bankSoalList as $bank):
-                $theme    = $cardThemes[$themeIdx % count($cardThemes)];
-                $themeIdx++;
-                $total    = (int)($bank['jumlah_soal'] ?? 0);
-                $pg       = (int)($bank['pg_count'] ?? 0);
-                $essay    = (int)($bank['essay_count'] ?? 0);
-                $pgPct    = $total> 0 ? round($pg / $total * 100) : 0;
-                $essayPct = $total> 0 ? round($essay / $total * 100) : 0;
-            ?>
-            <div class="group" id="bank-card-<?= $bank['id'] ?>">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-lg hover:border-slate-300 transition-all duration-200 hover:-translate-y-0.5 flex flex-col">
 
-                    <!-- Header -->
-                    <div class="relative h-[88px] bg-gradient-to-br <?= $theme['from'] ?> <?= $theme['via'] ?> <?= $theme['to'] ?> shrink-0 rounded-t-xl">
-                        <!-- Decorative background -->
-                        <div class="absolute inset-0 overflow-hidden pointer-events-none rounded-t-xl">
-                            <div class="absolute inset-0 opacity-[0.07]" style="background-image:radial-gradient(circle at 20% 50%,#fff 1px,transparent 1px),radial-gradient(circle at 80% 20%,#fff 1px,transparent 1px);background-size:24px 24px;"></div>
-                            <div class="absolute -top-6 -right-6 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
-                        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full align-middle text-sm text-left no-datatable" id="bankSoalTable" data-paginator="true" data-paginator-perpage="10">
+                <thead>
+                    <tr>
+                        <th class="dt-head-cell text-center" style="width: 5%;">No</th>
+                        <th class="dt-head-cell text-left" style="width: 28%;">Nama Bank Soal</th>
+                        <th class="dt-head-cell text-left" style="width: 13%;">Token</th>
+                        <th class="dt-head-cell text-center" style="width: 8%;">Total</th>
+                        <th class="dt-head-cell text-left" style="width: 20%;">Komposisi</th>
+                        <th class="dt-head-cell text-center" style="width: 13%;">Status</th>
+                        <th class="dt-head-cell text-center" style="width: 13%;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="bankGrid" class="dt-tbody">
+                    <?php $nomor = 0; foreach ($bankSoalList as $bank):
+                        $nomor++;
+                        $total    = (int)($bank['jumlah_soal'] ?? 0);
+                        $pg       = (int)($bank['pg_count'] ?? 0);
+                        $essay    = (int)($bank['essay_count'] ?? 0);
+                        $pgPct    = $total > 0 ? round($pg / $total * 100) : 0;
+                        $essayPct = $total > 0 ? round($essay / $total * 100) : 0;
+                        $aktif    = ($bank['is_active'] ?? 0) == 1;
+                        $namaBank = htmlspecialchars($bank['nama'] ?? '');
+                    ?>
+                    <tr id="bank-card-<?= $bank['id'] ?>" class="border-t border-slate-100 hover:bg-blue-50/40 transition-colors">
+                        <td class="px-4 py-3.5 text-center text-[13px] text-slate-400 font-semibold tabular-nums"><?= $nomor ?></td>
 
-                        <!-- Center icon -->
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
-                                <i class="bi bi-folder-fill text-white text-base"></i>
-                            </div>
-                        </div>
-
-                        <!-- Status badge top-left -->
-                        <div class="absolute top-2 left-2">
-                            <?php if (($bank['is_active'] ?? 0) == 1): ?>
-                            <span id="topBadge_<?= $bank['id'] ?>" class="top-status-badge bg-emerald-500/90 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full transition-colors">● AKTIF</span>
-                            <?php else: ?>
-                            <span id="topBadge_<?= $bank['id'] ?>" class="top-status-badge bg-black/30 text-white/80 text-[8px] font-bold px-1.5 py-0.5 rounded-full transition-colors">○ NON-AKTIF</span>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- 3-dot menu top-right -->
-                        <div data-dropdown class="absolute top-1.5 right-1.5 relative" onclick="event.stopPropagation()">
-                            <button class="w-6 h-6 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 rounded-lg transition border-0 bg-transparent text-xs" type="button" data-dropdown-toggle aria-expanded="false" aria-label="Menu lainnya">
-                                <i class="bi bi-three-dots-vertical pointer-events-none"></i>
+                        <!-- Nama bank: pemicu buka detail -->
+                        <td class="px-4 py-3.5">
+                            <button type="button"
+                                    class="group/nama flex items-center gap-3 text-left bg-transparent border-0 p-0 cursor-pointer w-full"
+                                    onclick="openBankDetail(<?= $bank['id'] ?>, '<?= $namaBank ?>')"
+                                    title="<?= $namaBank ?>">
+                                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center shrink-0 shadow-sm transition-transform duration-200 group-hover/nama:scale-105">
+                                    <i class="bi bi-folder-fill text-sm"></i>
+                                </span>
+                                <span class="min-w-0">
+                                    <span class="block font-bold text-slate-700 text-[13px] leading-snug group-hover/nama:text-blue-600 transition-colors line-clamp-1">
+                                        <?= $namaBank ?>
+                                    </span>
+                                    <span class="block text-[11px] font-medium text-slate-400 leading-tight">
+                                        <?= $total ?> soal &middot; klik untuk detail
+                                    </span>
+                                </span>
                             </button>
-                            <ul data-dropdown-menu class="hidden absolute right-0 top-full z-50 min-w-[150px] border-0 shadow-xl rounded-xl p-2 mt-1 bg-white ring-1 ring-slate-100 list-none">
-                                <li>
-                                    <a class="flex items-center gap-2 px-3 py-1.5 text-slate-700 hover:bg-slate-50 hover:text-blue-600 rounded-lg text-sm font-medium no-underline" href="javascript:void(0)" onclick="window.editBankModal(<?= $bank['id'] ?>)">
-                                        <i class="bi bi-pencil-square text-xs"></i> Edit
-                                    </a>
-                                </li>
-                                <li><hr class="my-1 border-slate-100"></li>
-                                <li>
-                                    <a class="flex items-center gap-2 px-3 py-1.5 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium no-underline" href="javascript:void(0)" onclick="deleteBank(<?= $bank['id'] ?>)">
-                                        <i class="bi bi-trash3 text-xs"></i> Hapus
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                        </td>
 
-                    <!-- Body -->
-                    <div class="p-3 flex flex-col flex-grow">
-                        <!-- Name + total -->
-                        <div class="flex items-start justify-between gap-2 mb-1.5">
-                            <h3 class="font-bold text-slate-800 text-[13px] leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors cursor-pointer flex-1"
-                                onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama'] ?? '') ?>')"
-                                title="<?= htmlspecialchars($bank['nama'] ?? '') ?>">
-                                <?= htmlspecialchars($bank['nama'] ?? '') ?>
-                            </h3>
-                            <div class="text-right shrink-0">
-                                <div class="text-base font-extrabold text-blue-600 leading-none"><?= $total ?></div>
-                                <div class="text-[8px] font-bold text-slate-400 uppercase tracking-wide">Soal</div>
-                            </div>
-                        </div>
+                        <!-- Token -->
+                        <td class="px-4 py-3.5">
+                            <span class="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 tracking-wide">
+                                <i class="bi bi-key-fill text-[10px]"></i><?= htmlspecialchars($bank['token'] ?? '') ?>
+                            </span>
+                        </td>
 
-                        <!-- Token badge -->
-                        <span class="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 mb-2 self-start">
-                            <i class="bi bi-key-fill text-[8px]"></i><?= htmlspecialchars($bank['token'] ?? '') ?>
-                        </span>
+                        <!-- Total soal -->
+                        <td class="px-4 py-3.5 text-center">
+                            <span class="inline-flex items-center justify-center min-w-[2rem] px-2 py-1 rounded-lg text-[13px] font-extrabold tabular-nums <?= $total > 0 ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-400' ?>"><?= $total ?></span>
+                        </td>
 
-                        <!-- Distribution bar -->
-                        <div class="mb-2">
-                            <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden flex mb-1">
-                                <div class="h-full bg-blue-500 transition-all duration-500" style="width:<?= $pgPct ?>%"></div>
-                                <div class="h-full bg-amber-400 transition-all duration-500" style="width:<?= $essayPct ?>%"></div>
-                            </div>
-                            <div class="flex gap-2.5">
-                                <span class="flex items-center gap-1 text-[8px] font-bold text-slate-400">
-                                    <span class="w-1.5 h-1.5 rounded-sm bg-blue-500 inline-block"></span>PG (<?= $pg ?>)
-                                </span>
-                                <span class="flex items-center gap-1 text-[8px] font-bold text-slate-400">
-                                    <span class="w-1.5 h-1.5 rounded-sm bg-amber-400 inline-block"></span>Essay (<?= $essay ?>)
-                                </span>
-                            </div>
-                        </div>
+                        <!-- Komposisi PG / Essay -->
+                        <td class="px-4 py-3.5">
+                            <?php /* Bank tanpa soal: bar kosong tidak menyampaikan apa-apa,
+                                     jadi diganti keterangan eksplisit. Sebelumnya barnya
+                                     tampil sebagai garis abu polos yang membingungkan. */ ?>
+                            <?php if ($total === 0): ?>
+                                <span class="text-[11px] font-medium text-slate-400 italic">Belum ada soal</span>
+                            <?php else: ?>
+                                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex mb-1.5">
+                                    <div class="h-full bg-blue-500 transition-all duration-500" style="width:<?= $pgPct ?>%"></div>
+                                    <div class="h-full bg-amber-400 transition-all duration-500" style="width:<?= $essayPct ?>%"></div>
+                                </div>
+                                <div class="flex gap-3">
+                                    <span class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block"></span>PG <?= $pg ?>
+                                    </span>
+                                    <span class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block"></span>Essay <?= $essay ?>
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+                        </td>
 
-                        <!-- Footer: toggle + button -->
-                        <div class="mt-auto pt-2 border-t border-slate-100 flex items-center justify-between" onclick="event.stopPropagation()">
-                            <div class="flex items-center gap-1.5">
+                        <!-- Status: saklar + label + badge (ketiganya kontrak exam.js) -->
+                        <td class="px-4 py-3.5">
+                            <div class="flex items-center justify-center gap-2">
                                 <label class="relative inline-flex items-center cursor-pointer mb-0">
-                                    <input type="checkbox" id="activeSwitch_<?= $bank['id'] ?>" 
+                                    <input type="checkbox" id="activeSwitch_<?= $bank['id'] ?>"
                                         class="sr-only peer bank-active-switch"
-                                        <?= ($bank['is_active'] ?? 0) == 1 ? 'checked' : '' ?>
+                                        <?= $aktif ? 'checked' : '' ?>
                                         onchange="window.activateBank(<?= $bank['id'] ?>)">
                                     <div class="w-8 h-4 bg-slate-300 rounded-full peer peer-checked:after:translate-x-4 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
                                 </label>
-                                <span id="statusText_<?= $bank['id'] ?>" class="text-[9px] font-semibold <?= ($bank['is_active'] ?? 0) == 1 ? 'text-emerald-600' : 'text-slate-500' ?>">
-                                    <?= ($bank['is_active'] ?? 0) == 1 ? 'Aktif' : 'Non-aktif' ?>
+                                <span id="statusText_<?= $bank['id'] ?>" class="text-[11px] font-semibold <?= $aktif ? 'text-emerald-600' : 'text-slate-500' ?>">
+                                    <?= $aktif ? 'Aktif' : 'Non-aktif' ?>
                                 </span>
+                                <?php /* Badge disembunyikan tapi TETAP ADA: exam.js menulis
+                                         ulang isinya saat status diubah. Menghapusnya akan
+                                         mematikan pembaruan itu tanpa error yang terlihat. */ ?>
+                                <span id="topBadge_<?= $bank['id'] ?>" class="hidden top-status-badge <?= $aktif ? 'bg-emerald-500/90 text-white' : 'bg-black/30 text-white/80' ?> text-[8px] font-bold px-1.5 py-0.5 rounded-full transition-colors"><?= $aktif ? '● AKTIF' : '○ NON-AKTIF' ?></span>
                             </div>
-                            <button class="flex items-center gap-1 text-[10px] font-bold text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-400 hover:bg-blue-50 px-2 py-1 rounded-lg transition-all bg-transparent"
-                                    onclick="openBankDetail(<?= $bank['id'] ?>, '<?= htmlspecialchars($bank['nama'] ?? '') ?>')">
-                                Detail <i class="bi bi-arrow-right text-[9px]"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <?php endforeach; ?>
+                        </td>
 
-            <!-- New Bank Card -->
-            <div>
-                <div class="rounded-xl border-2 border-dashed border-slate-200 hover:border-blue-400 hover:bg-blue-50/40 cursor-pointer transition-all duration-200 flex flex-col justify-center items-center text-center min-h-[200px] group"
-                     data-modal-open="#createBankModal">
-                    <div class="w-10 h-10 rounded-xl mb-2 flex justify-center items-center bg-white text-blue-500 shadow-sm group-hover:scale-110 group-hover:shadow-md border border-slate-100 group-hover:bg-blue-50 transition-all">
-                        <i class="bi bi-plus-lg text-lg"></i>
-                    </div>
-                    <p class="font-bold text-slate-500 text-xs group-hover:text-blue-600 transition-colors">Bank Soal Baru</p>
-                    <p class="text-slate-400 text-[10px] mt-0.5 max-w-[110px] leading-relaxed">Buat set soal ujian baru</p>
-                </div>
-            </div>
+                        <!-- Aksi -->
+                        <td class="px-4 py-3.5">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <button type="button"
+                                        class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center transition-colors border-0 cursor-pointer"
+                                        onclick="openBankDetail(<?= $bank['id'] ?>, '<?= $namaBank ?>')"
+                                        title="Lihat detail soal">
+                                    <i class="bi bi-box-arrow-in-right text-sm"></i>
+                                </button>
+                                <button type="button"
+                                        class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 flex items-center justify-center transition-colors border-0 cursor-pointer"
+                                        onclick="window.editBankModal(<?= $bank['id'] ?>)"
+                                        title="Edit bank soal">
+                                    <i class="bi bi-pencil-square text-sm"></i>
+                                </button>
+                                <button type="button"
+                                        class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center transition-colors border-0 cursor-pointer"
+                                        onclick="deleteBank(<?= $bank['id'] ?>)"
+                                        title="Hapus bank soal">
+                                    <i class="bi bi-trash3 text-sm"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
+    </div>
     </div><!-- end bankListView -->
 
     <!-- Bank Detail View -->
@@ -287,7 +287,7 @@ $essayCount = $stats['essay_count'];
                 <div class="sticky top-6 space-y-4">
                     <!-- Progress / Status Card -->
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative group">
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary"></div>
                         <div class="p-5">
                             <div class="flex items-center justify-between mb-4">
                                 <h4 class="font-bold text-slate-800 text-sm">Status Bank Soal</h4>
@@ -333,14 +333,14 @@ $essayCount = $stats['essay_count'];
                                 <i class='bx bx-chevron-right text-slate-400 group-hover:text-emerald-500'></i>
                             </button>
 
-                            <button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-purple-50 text-slate-600 hover:text-purple-600 transition group border border-transparent hover:border-purple-100">
+                            <button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition group border border-transparent hover:border-blue-100">
                                 <div class="flex items-center gap-2.5">
-                                    <div class="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-purple-100 flex items-center justify-center transition">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-blue-100 flex items-center justify-center transition">
                                         <i class='bx bx-cog text-lg'></i>
                                     </div>
                                     <span class="text-sm font-semibold">Pengaturan Ujian</span>
                                 </div>
-                                <i class='bx bx-chevron-right text-slate-400 group-hover:text-purple-500'></i>
+                                <i class='bx bx-chevron-right text-slate-400 group-hover:text-blue-500'></i>
                             </button>
                         </div>
                     </div>

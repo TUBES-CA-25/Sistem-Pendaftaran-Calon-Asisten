@@ -13,6 +13,15 @@ class DashboardAdminController extends Controller
         return DashboardAdmin::getTotalPendaftar();
     }
 
+    /**
+     * Jumlah pendaftar per angkatan (dibaca dari digit 4-7 stambuk).
+     * @return array<int, array{angkatan: string, jumlah: int}>
+     */
+    public static function getPendaftarPerAngkatan(): array
+    {
+        return DashboardAdmin::getPendaftarPerAngkatan();
+    }
+
     public static function getPendaftarLulus(): int
     {
         return DashboardAdmin::getPendaftarLulus();
@@ -37,6 +46,15 @@ class DashboardAdminController extends Controller
         $month ??= (int) date('m');
 
         return DashboardAdmin::getKegiatanByMonth($year, $month);
+    }
+
+    /**
+     * Kegiatan terdekat (mulai hari ini) untuk panel ringkas di dashboard.
+     * @return array<int, array{id: int, judul: string, tanggal: string, deskripsi: string}>
+     */
+    public static function getKegiatanMendatang(int $limit = 4): array
+    {
+        return DashboardAdmin::getKegiatanMendatang($limit);
     }
 
     /**
@@ -191,12 +209,12 @@ class DashboardAdminController extends Controller
      */
     private static function getActivityStatusBadge($status)
     {
-        $badgeClass = 'bg-light text-secondary border';
+        $badgeClass = 'bg-slate-50 text-slate-500 border border-slate-200';
 
         if ($status === 'Selesai') {
-            $badgeClass = 'bg-success text-white border-0';
+            $badgeClass = 'bg-emerald-500 text-white';
         } elseif ($status === 'Sedang Berlangsung') {
-            $badgeClass = 'bg-warning-subtle text-warning border border-warning';
+            $badgeClass = 'bg-amber-50 text-amber-600 border border-amber-200';
         }
 
         return $badgeClass;
