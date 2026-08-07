@@ -201,7 +201,8 @@
             const jenisColors = {
                 'Kegiatan':   'text-blue-500',
                 'Wawancara':  'text-amber-500',
-                'Presentasi': 'text-emerald-500'
+                'Presentasi': 'text-emerald-500',
+                'Tes Tertulis': 'text-indigo-500'
             };
             jenisEl.textContent = event.jenis || '';
             // Add 'hidden' to the class so it doesn't break the layout if used as a hidden data holder
@@ -216,7 +217,7 @@
 
         if (event.jenis === 'Kegiatan') {
             if (actionsDiv) actionsDiv.style.display = 'grid';
-        } else if (['Wawancara', 'Presentasi'].includes(event.jenis)) {
+        } else if (['Wawancara', 'Presentasi', 'Tes Tertulis'].includes(event.jenis)) {
             if (manageDiv) {
                 manageDiv.style.display = 'block';
                 const manageBtn = document.getElementById('btnManageSchedule');
@@ -225,11 +226,9 @@
                     if (event.jenis === 'Presentasi') {
                         targetUrl = '/jadwalPresentasi';
                     } else if (event.jenis === 'Wawancara') {
-                        if (event.judul && event.judul.includes('Tes Tertulis')) {
-                            targetUrl = '/jadwaltes';
-                        } else {
-                            targetUrl = '/wawancara';
-                        }
+                        targetUrl = '/wawancara';
+                    } else if (event.jenis === 'Tes Tertulis') {
+                        targetUrl = '/jadwaltes';
                     }
                     
                     if (typeof baseUrl === 'undefined') {

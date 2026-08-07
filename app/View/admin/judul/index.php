@@ -109,12 +109,12 @@ $mahasiswaList = $mahasiswaList ?? [];
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="detailPengajuanModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
+        <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2"><i class="bi bi-person-badge text-lg"></i>Detail Presentasi</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
-            <div class="p-6">
+            <div class="bg-white p-6">
                 <div class="space-y-4">
                     <div><strong class="text-xs text-slate-400 font-bold uppercase tracking-wider block mb-1">Nama:</strong> <p class="text-slate-800 font-semibold" id="detailNama">-</p></div>
                     <div><strong class="text-xs text-slate-400 font-bold uppercase tracking-wider block mb-1">Stambuk:</strong> <p class="text-slate-800 font-semibold" id="detailStambuk">-</p></div>
@@ -142,12 +142,12 @@ $mahasiswaList = $mahasiswaList ?? [];
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="sendMessageModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
+        <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2"><i class="bi bi-chat-dots text-lg"></i>Kirim Pesan Revisi</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
-            <div class="p-6">
+            <div class="bg-white p-6">
                 <form id="formSendMessage">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Pesan:</label>

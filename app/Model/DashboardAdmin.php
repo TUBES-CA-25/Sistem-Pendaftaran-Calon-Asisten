@@ -113,10 +113,11 @@ class DashboardAdmin extends Model
             $wawancaraRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($wawancaraRows) {
                 foreach ($wawancaraRows as $row) {
+                    $isTes = stripos($row['judul'], 'tes tertulis') !== false;
                     $results[] = [
                         'tanggal' => $row['tanggal'],
                         'judul' => $row['judul'],
-                        'jenis' => 'Wawancara'
+                        'jenis' => $isTes ? 'Tes Tertulis' : 'Wawancara'
                     ];
                 }
             }

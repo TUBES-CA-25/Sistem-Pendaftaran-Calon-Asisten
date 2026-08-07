@@ -129,17 +129,30 @@ foreach ($pendaftarPerAngkatan as $baris) {
             <span class="pointer-events-none absolute -right-4 -top-6 w-16 h-16 rounded-full transition-transform duration-700 group-hover:scale-[1.35] <?= $isTotal ? 'bg-white/10' : 'bg-slate-50' ?>" aria-hidden="true"></span>
 
             <div class="relative">
-                <div class="flex items-start justify-between gap-2 mb-2">
-                    <p class="text-[10px] font-bold uppercase tracking-wider leading-tight <?= $isTotal ? 'text-white/75' : 'text-slate-400' ?>"><?= $stat['label'] ?></p>
-                    <div class="relative w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 <?= $isTotal ? 'bg-white/20 text-white' : $stat['tile'] ?>">
+                <p class="text-[10px] font-bold uppercase tracking-wider leading-tight mb-2.5 <?= $isTotal ? 'text-white/75' : 'text-slate-400' ?>"><?= $stat['label'] ?></p>
+
+                <?php /* Angka dan ikon disejajarkan pada satu baris. Sebelumnya ikon
+                         menempel di pojok atas sehingga ruang di samping angka menganggur
+                         dan kartu terlihat kosong di bagian bawah. */ ?>
+                <div class="flex items-end justify-between gap-2 mb-2.5">
+                    <h2 class="text-[1.75rem] font-extrabold leading-none tracking-tight animate-count-in <?= $isTotal ? 'text-white' : $stat['angka'] ?>"
+                        id="<?= $stat['id'] ?>" style="animation-delay: <?= $delayStat + 160 ?>ms;"><?= $stat['value'] ?></h2>
+                    <div class="relative w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 <?= $isTotal ? 'bg-white/20 text-white' : $stat['tile'] ?>">
                         <i class='<?= $stat['icon'] ?>'></i>
                     </div>
                 </div>
-                <h2 class="text-[1.35rem] font-extrabold leading-none mb-1 tracking-tight animate-count-in <?= $isTotal ? 'text-white' : $stat['angka'] ?>"
-                    id="<?= $stat['id'] ?>" style="animation-delay: <?= $delayStat + 160 ?>ms;"><?= $stat['value'] ?></h2>
 
                 <?php if ($isTotal): ?>
-                    <p class="text-[10px] font-semibold text-white/80">Seluruh pendaftar terdaftar</p>
+                    <?php /* Kartu total tidak punya porsi (100% terhadap dirinya sendiri
+                             tidak bermakna), jadi diberi bar penuh sebagai penyeimbang
+                             visual supaya tingginya sama dengan tiga kartu lain. */ ?>
+                    <div class="flex items-center gap-2">
+                        <div class="h-1 flex-grow rounded-full bg-white/25 overflow-hidden">
+                            <div class="h-full w-full rounded-full bg-white/80 origin-left animate-grow-right"
+                                 style="animation-delay: <?= $delayStat + 260 ?>ms;"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-white/90 shrink-0">Total</span>
+                    </div>
                 <?php else: ?>
                     <?php /* Bar porsi mini: membuat persentase terlihat, bukan hanya terbaca.
                              Lebar via style inline karena nilainya hasil hitung. */ ?>
@@ -186,7 +199,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
                                 $delayK   = 520 + ($ik * 90);
                                 $ik++;
                             ?>
-                            <div class="group/keg flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-100 transition-all duration-300 hover:bg-white hover:border-slate-200 hover:shadow-md hover:translate-x-1 animate-fade-up"
+                            <div class="group/keg flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-100 transition-all duration-300 hover:bg-white hover:border-slate-200 hover:shadow-md hover:-translate-y-0.5 animate-fade-up"
                                  style="animation-delay: <?= $delayK ?>ms;">
                                 <!-- Tanggal sebagai blok kalender mini -->
                                 <div class="w-11 shrink-0 rounded-lg bg-white border border-slate-200 overflow-hidden text-center transition-colors duration-300 group-hover/keg:border-blue-200">
@@ -205,12 +218,12 @@ foreach ($pendaftarPerAngkatan as $baris) {
         </div>
 
         <!-- Kanan: grafik pendaftar per angkatan -->
-        <div class="lg:col-span-2 flex self-start w-full">
+        <div class="lg:col-span-2 flex w-full">
             <!-- Grafik pendaftar per angkatan (ringkas) -->
             <?php /* Kartu sengaja dibuat kecil: datanya hanya beberapa angkatan,
                      jadi bentuk lebar memakan ruang tanpa menambah informasi.
                      Ditaruh di kolom kanan agar kolom kiri fokus pada kalender. */ ?>
-            <div class="bg-white rounded-[18px] shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] p-4 animate-pop-in w-full" style="animation-delay: 360ms;">
+            <div class="bg-white rounded-[18px] shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] p-4 animate-pop-in w-full flex flex-col" style="animation-delay: 360ms;">
                 <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3 mb-3">
                     <div class="flex items-center gap-2.5 min-w-0">
                         <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-base shrink-0">
@@ -242,9 +255,25 @@ foreach ($pendaftarPerAngkatan as $baris) {
                            supaya garis grid jatuh di angka bulat (bukan 1.33, 2.67, ...).
                            Ini yang membuat bentuknya terbaca sebagai grafik, bukan
                            sekadar batang mengambang. */
-                        $langkah   = $puncakAngkatan <= 4 ? 1 : (int) ceil($puncakAngkatan / 4);
+                        /* Skala sumbu Y naik bertahap mengikuti data.
+                           Dulu dibulatkan ke kelipatan 100 dengan minimum 100,
+                           sehingga sumbu selalu 0-100 walau puncaknya cuma 4 dan
+                           batangnya nyaris rata tanah.
+
+                           Sekarang: pilih kelipatan terkecil dari tangga di bawah
+                           yang sanggup menampung puncak dalam 4 garis. Tangganya
+                           naik terus (25, 50, 100, 250, ... 100.000) jadi grafik
+                           tetap terbaca berapa pun jumlah pendaftar nanti. */
+                        $tangga = [1, 2, 5, 10, 25, 50, 100, 250, 500,
+                                   1000, 2500, 5000, 10000, 25000, 50000, 100000];
+                        $langkah = end($tangga);
+                        foreach ($tangga as $kandidat) {
+                            if ($kandidat * 4 >= $puncakAngkatan) { $langkah = $kandidat; break; }
+                        }
                         $skalaAtas = (int) (ceil($puncakAngkatan / $langkah) * $langkah);
-                        $skalaAtas = max($skalaAtas, 1);
+                        /* Minimal 4 petak supaya sumbu tidak gundul saat datanya
+                           masih sedikit (mis. puncak 1 hanya menghasilkan "1, 0"). */
+                        $skalaAtas = max($skalaAtas, $langkah * 4);
                         // Garis grid dari atas ke bawah: skalaAtas ... 0
                         $tikPembagi = [];
                         for ($v = $skalaAtas; $v >= 0; $v -= $langkah) { $tikPembagi[] = $v; }
@@ -253,13 +282,13 @@ foreach ($pendaftarPerAngkatan as $baris) {
                              isinya sendiri, tidak ikut meregang mengikuti kolom kiri
                              yang lebih panjang. Itu penyebab kartu ini tampak
                              memanjang dengan ruang kosong besar di atas batang. */ ?>
-                    <div class="flex gap-2 items-start">
+                    <div class="flex gap-2 items-stretch flex-grow">
                         <?php /* Label sumbu Y: tiap label dibungkus kotak setinggi
                                  sama dan diberi -translate-y-1/2, sehingga TEKS-nya
                                  (bukan kotaknya) yang sejajar tepat di garis grid.
                                  Sebelumnya justify-between hanya meratakan kotaknya,
                                  jadi angka tampak melenceng dari garisnya. */ ?>
-                        <div class="relative h-[96px] shrink-0 w-4">
+                        <div class="relative h-[260px] shrink-0 w-[34px]">
                             <?php
                                 $nTik = count($tikPembagi);
                                 foreach ($tikPembagi as $iTik => $tik):
@@ -273,7 +302,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
 
                         <!-- Area plot -->
                         <div class="flex-grow min-w-0">
-                            <div class="relative h-[96px]">
+                            <div class="relative h-[260px]">
                                 <?php /* Garis grid horizontal. inset-0 + justify-between
                                          menempatkannya persis di posisi label sumbu Y. */ ?>
                                 <div class="absolute inset-0 flex flex-col justify-between pointer-events-none" aria-hidden="true">
@@ -293,7 +322,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
                                             $delayG = $ig * 110;
                                             $ig++;
                                         ?>
-                                        <div class="group/bar relative flex-1 max-w-[46px] h-full flex items-end animate-fade-up"
+                                        <div class="group/bar relative flex-1 max-w-[52px] h-full flex items-end animate-fade-up"
                                              style="animation-delay: <?= 460 + $delayG ?>ms;">
                                             <!-- Batang: origin-bottom + animate-grow-up = tumbuh dari dasar -->
                                             <div class="relative w-full rounded-t-md bg-gradient-to-t from-primary to-secondary origin-bottom animate-grow-up transition-all duration-300 group-hover/bar:brightness-110"
@@ -310,7 +339,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
                             <!-- Sumbu X: label angkatan, kolomnya sejajar dengan batang -->
                             <div class="flex items-start justify-around gap-4 px-2 pt-2">
                                 <?php foreach ($pendaftarPerAngkatan as $baris): ?>
-                                    <span class="flex-1 max-w-[46px] text-center text-[11px] font-bold text-slate-500 tabular-nums"><?= htmlspecialchars($baris['angkatan']) ?></span>
+                                    <span class="flex-1 max-w-[52px] text-center text-[11px] font-bold text-slate-500 tabular-nums"><?= htmlspecialchars($baris['angkatan']) ?></span>
                                 <?php endforeach; ?>
                             </div>
                         </div>
@@ -404,12 +433,12 @@ foreach ($pendaftarPerAngkatan as $baris) {
         </div>
 
         <!-- Status Activities -->
-        <div class="lg:col-span-2 flex flex-col gap-6">
+        <div class="lg:col-span-2 flex flex-col gap-6 self-start">
             <?php /* h-full diganti flex-grow: kolom ini kini berisi DUA kartu
                      (timeline + grafik). Dengan h-full, timeline memakan seluruh
                      tinggi kolom dan grafik terdorong keluar. */ ?>
 
-            <div class="bg-white rounded-[18px] shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] p-4 flex flex-col flex-grow animate-slide-in-right" style="animation-delay: 300ms;">
+            <div class="bg-white rounded-[18px] shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] p-4 flex flex-col animate-slide-in-right" style="animation-delay: 300ms;">
                 <?php /* Header diberi hitungan tahap selesai supaya kartu ini
                          menyampaikan progres sekilas, bukan cuma judul. */ ?>
                 <?php
@@ -441,7 +470,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
                 <!-- Timeline: garis vertikal + titik penanda di kiri, kartu tahapan
                      di kanan. Tahap yang sedang berlangsung di-highlight biru
                      penuh sebagai fokus utama. -->
-                <div class="flex-grow relative pl-6">
+                <div class="relative pl-6">
                     <!-- Garis penghubung. inset-y dibuat menjorok agar garis
                          berhenti di titik pertama & terakhir, bukan menggantung. -->
                     <span class="absolute left-[5px] top-3 bottom-3 w-px bg-gradient-to-b from-emerald-400 via-slate-200 to-slate-200 origin-top animate-grow-down" style="animation-delay: 380ms;" aria-hidden="true"></span>
@@ -492,7 +521,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
                                      literal utuh per cabang (syarat Play CDN). */ ?>
                             <div class="<?= $aktif
                                     ? 'relative overflow-hidden p-3 rounded-xl bg-gradient-to-br from-primary to-secondary text-white animate-glow transition-all duration-300'
-                                    : 'p-3 rounded-xl bg-slate-50 border border-slate-100 transition-all duration-300 hover:bg-white hover:border-slate-200 hover:shadow-md hover:translate-x-1' ?>">
+                                    : 'p-3 rounded-xl bg-slate-50 border border-slate-100 transition-all duration-300 hover:bg-white hover:border-slate-200 hover:shadow-md hover:-translate-y-0.5' ?>">
 
                                 <?php if ($aktif): ?>
                                     <?php /* Kilau melintas berulang di kartu yang berjalan. */ ?>

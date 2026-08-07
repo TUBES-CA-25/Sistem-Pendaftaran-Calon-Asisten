@@ -28,7 +28,7 @@ foreach ($calendarWeeks as $week):
     <?php foreach ($week as $day): ?>
         <?php if ($day === null): ?>
             <?php $nSel++; ?>
-            <td class="h-[72px] align-top p-1"></td>
+            <td class="h-[58px] align-top p-1"></td>
         <?php else: ?>
             <?php
                 $isToday  = $day['isToday'];
@@ -61,7 +61,7 @@ foreach ($calendarWeeks as $week):
                     $gayaAngka = 'w-6 h-6 text-slate-400 font-medium';
                 }
             ?>
-            <td class="calendar-cell h-[72px] align-top p-1<?= $adaAcara ? ' cursor-pointer' : '' ?>"<?= $onclick ?>>
+            <td class="calendar-cell h-[58px] align-top p-1<?= $adaAcara ? ' cursor-pointer' : '' ?>"<?= $onclick ?>>
               <div class="animate-cell-rise h-full" style="animation-delay: <?= $delaySel ?>ms;">
                 <div class="h-full rounded-xl p-1.5 flex flex-col items-center gap-1 transition-all duration-200 <?= $gayaSel ?>">
                     <span class="flex items-center justify-center text-[11px] leading-none shrink-0 <?= $gayaAngka ?>">

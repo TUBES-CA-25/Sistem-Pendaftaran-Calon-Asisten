@@ -214,9 +214,9 @@
     <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="actionConfirmModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
         <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-            <div class="relative bg-white w-full bg-white/95 backdrop-blur-md rounded-[24px] shadow-2xl overflow-hidden">
+            <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <!-- Header with Gradient & Decoration -->
-                <div id="actionConfirmHeader" class="border-0 text-white relative p-6 flex flex-col items-center text-center bg-gradient-to-r from-primary to-secondary border-b border-slate-100/10">
+                <div id="actionConfirmHeader" class="border-0 text-white relative p-6 flex flex-col items-center text-center bg-gradient-to-r from-primary to-secondary rounded-t-[24px]">
                     <!-- Decorative Circles -->
                     <div class="absolute -top-5 -right-5 w-24 h-24 bg-white/10 rounded-full pointer-events-none"></div>
                     <div class="absolute bottom-2.5 left-2.5 w-12 h-12 bg-white/5 rounded-full pointer-events-none"></div>
@@ -255,8 +255,8 @@
     <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="deleteConfirmModal" aria-labelledby="deleteConfirmModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
         <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-            <div class="relative bg-white w-full bg-white/95 backdrop-blur-md rounded-[24px] shadow-2xl overflow-hidden">
-                <div class="bg-gradient-to-r from-red-500 to-rose-600 text-white border-b border-red-100/10 px-6 py-4 flex justify-between items-center">
+            <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
+                <div class="bg-gradient-to-r from-red-500 to-rose-600 text-white px-6 py-4 flex justify-between items-center rounded-t-[24px]">
                     <h5 class="font-bold text-base flex items-center gap-2" id="deleteConfirmModalLabel">
                         <i class="bi bi-exclamation-triangle-fill"></i>
                         Konfirmasi Hapus
@@ -314,7 +314,7 @@
     <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="customModal" aria-labelledby="customModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
         <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-            <div class="relative bg-white w-full bg-white/95 backdrop-blur-md rounded-[24px] shadow-2xl overflow-hidden">
+            <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <div class="text-center p-6 md:p-8 flex flex-col items-center">
                     <img id="modalGif" src="" alt="Animation" class="mb-4" style="width: 100px; display: none;">
                     <p id="modalMessage" class="text-slate-700 font-semibold text-base md:text-lg mb-6 leading-relaxed">Pesan akan ditampilkan di sini.</p>
@@ -328,8 +328,8 @@
     <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="confirmModal" aria-labelledby="confirmModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
         <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-            <div class="relative bg-white w-full bg-white/95 backdrop-blur-md rounded-[24px] shadow-2xl overflow-hidden">
-                <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white border-b border-blue-100/10">
+            <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
+                <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-[24px]">
                     <h5 class="font-bold text-white text-base" id="confirmModalLabel">Konfirmasi</h5>
                     <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
                 </div>

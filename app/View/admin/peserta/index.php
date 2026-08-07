@@ -116,14 +116,14 @@ $result = $result ?? [];
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="addNotification" aria-labelledby="addNotificationLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
+        <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2" id="addNotificationLabel">
                     <i class="bi bi-send text-lg"></i>Kirim Notifikasi ke Peserta
                 </h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
-            <div class="p-6">
+            <div class="bg-white p-6">
                 <form id="addNotificationForm" class="space-y-4">
                     <!-- Hidden Select for Logic Compatibility -->
                     <div class="hidden">
@@ -473,14 +473,14 @@ $result = $result ?? [];
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="sendMessageModal" aria-labelledby="sendMessageModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
+        <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2" id="sendMessageModalLabel">
                     <i class="bi bi-chat-dots text-lg"></i>Kirim Pesan
                 </h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
-            <div class="p-6 space-y-4">
+            <div class="bg-white p-6 space-y-4">
                  <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kepada:</label>
                     <p class="text-slate-800 font-semibold mb-0" id="messageRecipient">-</p>

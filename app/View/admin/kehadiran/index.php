@@ -154,7 +154,7 @@ function renderStatusBadge($val) {
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="addMahasiswaModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
+        <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2">
                     <i class="bi bi-person-plus text-lg"></i>
@@ -162,7 +162,7 @@ function renderStatusBadge($val) {
                 </h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
-            <div class="p-6">
+            <div class="bg-white p-6">
                 <form id="addJadwalForm" class="space-y-4">
                     <div>
                         <label for="mahasiswa" class="block text-sm font-semibold text-slate-700 mb-2">Pilih Mahasiswa</label>
@@ -246,7 +246,7 @@ function renderStatusBadge($val) {
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="rekapDetailModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
+        <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-5 py-3 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2 text-base">
                     <i class="bi bi-card-checklist text-lg"></i>
@@ -326,7 +326,7 @@ function renderStatusBadge($val) {
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="detailAbsensiModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
+        <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
                 <h5 class="font-bold flex items-center gap-2">
                     <i class="bi bi-pencil-square text-lg"></i>
@@ -334,7 +334,7 @@ function renderStatusBadge($val) {
                 </h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
-            <div class="p-6 space-y-4">
+            <div class="bg-white p-6 space-y-4">
                 <div class="text-center flex flex-col items-center pb-4 border-b border-slate-100">
                     <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-secondary text-white flex items-center justify-center font-bold text-2xl shadow-sm mb-3">
                         <span id="avatarInitial">U</span>

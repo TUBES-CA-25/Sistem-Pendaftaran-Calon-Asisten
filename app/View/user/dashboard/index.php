@@ -55,7 +55,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
 
             <?php if ($graduationStatus === 'Lulus' || $graduationStatus === 'Tidak Lulus'): ?>
                 <!-- Graduation Announcement Card (Visible when finalized or announcement open) -->
-                <div class="relative overflow-hidden rounded-2xl shadow-sm p-6 text-center text-white" 
+                <div class="relative overflow-hidden rounded-2xl shadow-sm p-6 text-center text-white animate-fade-up" style="animation-delay: 0ms;" 
                      style="background: <?= $graduationStatus === 'Lulus' ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #dc2626)' ?>;">
                     <div class="relative z-10">
                         <div class="mb-3">
@@ -76,8 +76,8 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                 </div>
             <?php else: ?>
                 <!-- Announcement Coming Soon Card (Visible when closed and pending) -->
-                <div class="flex items-center gap-4 p-5 rounded-2xl bg-blue-50 border border-blue-100/50">
-                    <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
+                <div class="flex items-center gap-4 p-5 rounded-2xl bg-blue-50 border border-blue-100/50 shadow-[0_2px_12px_-2px_rgba(37,99,235,0.12)] animate-fade-up" style="animation-delay: 0ms;">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0 animate-dot-pulse">
                         <i class="bi bi-bell-fill text-white text-lg"></i>
                     </div>
                     <div>
@@ -90,7 +90,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
             <!-- Progress & Stepper Row -->
             <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
                 <!-- Progress Circular Card -->
-                <div class="md:col-span-5 bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col justify-center">
+                <div class="md:col-span-5 bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col justify-center animate-pop-in" style="animation-delay: 90ms;">
                     <h6 class="font-bold text-slate-700 mb-4 text-center">Progress Pendaftaran</h6>
 
                     <div class="relative mx-auto mb-4 w-36 h-36">
@@ -109,7 +109,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
 
                         <!-- Text di tengah -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                            <span class="text-2xl font-black text-blue-600"><?= $percentage ?>%</span>
+                            <span class="text-2xl font-black text-blue-600 animate-count-in" style="animation-delay: 380ms;"><?= $percentage ?>%</span>
                             <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Complete</span>
                         </div>
                     </div>
@@ -128,7 +128,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                 </div>
 
                 <!-- Status Stepper Card -->
-                <div class="md:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col justify-between">
+                <div class="md:col-span-7 bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col justify-between animate-pop-in" style="animation-delay: 170ms;">
                     <div>
                         <h6 class="font-bold text-slate-700 mb-2">Status Pendaftaran</h6>
                         
@@ -142,7 +142,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                                 <div class="absolute h-0.5 bg-slate-100 top-2.5 left-0 right-0 z-0"></div>
                                 <!-- Progress Line Active -->
                                 <?php $stepProgress = min(($tahapanSelesai / 5) * 100, 100); ?>
-                                <div class="absolute h-0.5 bg-blue-600 top-2.5 left-0 stepper-line transition-all duration-1000" style="width:<?= $stepProgress ?>%; z-index:1;"></div>
+                                <div class="absolute h-0.5 bg-gradient-to-r from-primary to-secondary top-2.5 left-0 stepper-line transition-all duration-1000" style="width:<?= $stepProgress ?>%; z-index:1;"></div>
 
                                 <?php
                                 $stepperStages = [
@@ -153,11 +153,14 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                                     ['number' => 5, 'bgActive' => 'bg-blue-600', 'textActive' => 'text-blue-600', 'label' => 'Pengumuman', 'threshold' => 5]
                                 ];
 
+                                $iStep = 0;
                                 foreach ($stepperStages as $step):
                                     $isActive = $tahapanSelesai>= $step['threshold'];
+                                    $delayStep = 260 + ($iStep * 90);   // stagger antar langkah
+                                    $iStep++;
                                 ?>
-                                    <div class="text-center relative px-1 z-10 flex-1">
-                                        <div class="w-6 h-6 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm transition-all duration-300 <?= $isActive ? $step['bgActive'] : 'bg-slate-100 border border-slate-200' ?>">
+                                    <div class="group/step text-center relative px-1 z-10 flex-1 animate-pop-in" style="animation-delay: <?= $delayStep ?>ms;">
+                                        <div class="relative w-6 h-6 rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm transition-transform duration-300 group-hover/step:scale-125 <?= $isActive ? $step['bgActive'] : 'bg-slate-100 border border-slate-200' ?>">
                                             <?php if ($isActive): ?>
                                                 <i class="bi bi-check text-white text-xs font-bold"></i>
                                             <?php else: ?>
@@ -175,11 +178,11 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     <div class="border-t border-slate-100 pt-4 mt-2">
                         <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-2">Sistem Seleksi:</span>
                         <div class="flex flex-wrap gap-2">
-                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-red-50 text-red-600 border-red-100">Berkas</span>
-                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-amber-50 text-amber-600 border-amber-100">Tes Tertulis</span>
-                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-cyan-50 text-cyan-600 border-cyan-100">Presentasi</span>
-                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-emerald-50 text-emerald-600 border-emerald-100">Wawancara</span>
-                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-blue-50 text-blue-600 border-blue-100">Pengumuman</span>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-red-50 text-red-600 border-red-100 animate-pop-in transition-transform duration-200 hover:scale-110 cursor-default" style="animation-delay: 480ms;">Berkas</span>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-amber-50 text-amber-600 border-amber-100 animate-pop-in transition-transform duration-200 hover:scale-110 cursor-default" style="animation-delay: 540ms;">Tes Tertulis</span>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-cyan-50 text-cyan-600 border-cyan-100 animate-pop-in transition-transform duration-200 hover:scale-110 cursor-default" style="animation-delay: 600ms;">Presentasi</span>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-emerald-50 text-emerald-600 border-emerald-100 animate-pop-in transition-transform duration-200 hover:scale-110 cursor-default" style="animation-delay: 660ms;">Wawancara</span>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-blue-50 text-blue-600 border-blue-100 animate-pop-in transition-transform duration-200 hover:scale-110 cursor-default" style="animation-delay: 720ms;">Pengumuman</span>
                         </div>
                     </div>
                 </div>
@@ -195,7 +198,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
              Kalender Kegiatan di sebelah kiri. -->
         <div class="lg:col-span-1 lg:row-span-2 flex flex-col gap-6">
             <!-- Profile Card -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 text-center">
+            <div class="bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-6 text-center animate-slide-in-right" style="animation-delay: 120ms;">
                 <!-- Profile Photo -->
                 <div class="mb-4 flex justify-center">
                     <?php if ($profileDisplay['hasValidPhoto']): ?>
@@ -227,7 +230,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
 
             <!-- Biodata Diri Card. flex-grow: mengisi sisa tinggi kolom kanan
                  agar bagian bawahnya rata dengan kartu Kalender Kegiatan. -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex-grow">
+            <div class="bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-6 flex-grow animate-slide-in-right" style="animation-delay: 220ms;">
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="font-bold text-slate-800 text-lg">Biodata Diri</h5>
                     <button class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition" onclick="navigateTo('biodata')">
@@ -237,10 +240,10 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                 
                 <!-- SATU kolom: kartu ini kini berada di kolom sempit (1/3),
                      jadi md:grid-cols-2 akan membuat isinya terjepit. -->
-                <div class="grid grid-cols-1 gap-4">
+                <div class="grid grid-cols-1 gap-2.5">
                     <!-- Nama Lengkap -->
-                    <div class="flex items-start gap-3">
-                        <div class="rounded-xl bg-blue-50 p-2.5 shrink-0 text-blue-600">
+                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 300ms;">
+                        <div class="rounded-xl bg-blue-50 p-2.5 shrink-0 text-blue-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-person-fill text-lg"></i>
                         </div>
                         <div>
@@ -250,8 +253,8 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- NIM -->
-                    <div class="flex items-start gap-3">
-                        <div class="rounded-xl bg-emerald-50 p-2.5 shrink-0 text-emerald-600">
+                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 370ms;">
+                        <div class="rounded-xl bg-emerald-50 p-2.5 shrink-0 text-emerald-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-123 text-lg"></i>
                         </div>
                         <div>
@@ -261,8 +264,8 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- Email -->
-                    <div class="flex items-start gap-3">
-                        <div class="rounded-xl bg-cyan-50 p-2.5 shrink-0 text-cyan-600">
+                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 440ms;">
+                        <div class="rounded-xl bg-cyan-50 p-2.5 shrink-0 text-cyan-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-envelope-fill text-lg"></i>
                         </div>
                         <div>
@@ -272,8 +275,8 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- Tempat, Tanggal Lahir -->
-                    <div class="flex items-start gap-3">
-                        <div class="rounded-xl bg-amber-50 p-2.5 shrink-0 text-amber-600">
+                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 510ms;">
+                        <div class="rounded-xl bg-amber-50 p-2.5 shrink-0 text-amber-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-calendar-event text-lg"></i>
                         </div>
                         <div>
@@ -286,8 +289,8 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- Jenis Kelamin -->
-                    <div class="flex items-start gap-3">
-                        <div class="rounded-xl bg-slate-50 p-2.5 shrink-0 text-slate-600">
+                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 580ms;">
+                        <div class="rounded-xl bg-slate-50 p-2.5 shrink-0 text-slate-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-gender-ambiguous text-lg"></i>
                         </div>
                         <div>
@@ -297,8 +300,8 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- Nomor HP -->
-                    <div class="flex items-start gap-3">
-                        <div class="rounded-xl bg-red-50 p-2.5 shrink-0 text-red-600">
+                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 650ms;">
+                        <div class="rounded-xl bg-red-50 p-2.5 shrink-0 text-red-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-telephone-fill text-lg"></i>
                         </div>
                         <div>
@@ -308,8 +311,8 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- Program Studi -->
-                    <div class="flex items-start gap-3">
-                        <div class="rounded-xl bg-emerald-50 p-2.5 shrink-0 text-emerald-600">
+                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 720ms;">
+                        <div class="rounded-xl bg-emerald-50 p-2.5 shrink-0 text-emerald-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-book-fill text-lg"></i>
                         </div>
                         <div>
@@ -319,8 +322,8 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- Alamat -->
-                    <div class="flex items-start gap-3">
-                        <div class="rounded-xl bg-cyan-50 p-2.5 shrink-0 text-cyan-600">
+                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 790ms;">
+                        <div class="rounded-xl bg-cyan-50 p-2.5 shrink-0 text-cyan-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-geo-alt-fill text-lg"></i>
                         </div>
                         <div>
@@ -340,32 +343,44 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                  Keduanya memakai data yang sama ($activities dari
                  getKegiatanByMonth), jadi disatukan agar hubungannya jelas:
                  kiri menandai tanggal, kanan merinci kegiatannya. -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                <div class="flex justify-between items-center mb-5">
-                    <h6 class="font-bold text-slate-700">Kalender Kegiatan</h6>
-                    <a href="javascript:void(0)" onclick="navigateTo('wawancara')" class="text-xs text-blue-600 hover:text-blue-700 font-bold transition">Lihat Semua</a>
+            <div class="bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-6 animate-fade-up" style="animation-delay: 280ms;">
+                <div class="flex justify-between items-center mb-5 pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg shrink-0">
+                            <i class="bi bi-calendar3"></i>
+                        </span>
+                        <div class="min-w-0">
+                            <h6 class="font-bold text-slate-800 text-[15px] leading-tight">Kalender Kegiatan</h6>
+                            <p class="text-[11px] font-medium text-slate-400 leading-tight">Klik tanggal untuk melihat detail</p>
+                        </div>
+                    </div>
+                    <a href="javascript:void(0)" onclick="navigateTo('wawancara')" class="text-xs text-blue-600 hover:text-blue-700 font-bold transition shrink-0">Lihat Semua</a>
                 </div>
 
-                <div class="flex flex-col md:flex-row gap-6">
+                <div class="flex flex-col md:flex-row gap-6 min-w-0">
 
                     <!-- KIRI: kalender -->
-                    <div class="md:w-1/2 shrink-0">
-                        <div class="flex justify-between items-center mb-3">
-                            <p class="font-bold text-sm text-slate-800" id="calendar-month-year">
+                    <div class="md:flex-1 min-w-0">
+                        <?php /* Nama bulan + navigasi disatukan jadi satu pil,
+                                 seragam dengan kalender di dashboard admin. */ ?>
+                        <div class="flex justify-between items-center mb-4">
+                            <p class="font-bold text-sm text-slate-800 tabular-nums" id="calendar-month-year">
                                 <?= date('F Y') ?>
                             </p>
-                            <div class="flex gap-1">
-                                <button class="w-7 h-7 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" id="prev-month" aria-label="Bulan sebelumnya">
+                            <div class="flex items-center gap-1 bg-slate-100 rounded-full p-1">
+                                <button class="w-7 h-7 rounded-full hover:bg-white hover:text-blue-600 hover:shadow-sm flex items-center justify-center text-slate-500 transition-all duration-200 active:scale-90 border-0" id="prev-month" aria-label="Bulan sebelumnya">
                                     <i class="bi bi-chevron-left text-xs"></i>
                                 </button>
-                                <button class="w-7 h-7 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-600 transition" id="next-month" aria-label="Bulan berikutnya">
+                                <button class="w-7 h-7 rounded-full hover:bg-white hover:text-blue-600 hover:shadow-sm flex items-center justify-center text-slate-500 transition-all duration-200 active:scale-90 border-0" id="next-month" aria-label="Bulan berikutnya">
                                     <i class="bi bi-chevron-right text-xs"></i>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Day headers -->
-                        <div class="grid grid-cols-7 gap-1 mb-2 text-center text-slate-400 text-[10px] font-bold tracking-wider">
+                        <?php /* Baris hari dibungkus permukaan biru lembut supaya
+                                 terbaca sebagai kepala tabel, bukan teks mengambang. */ ?>
+                        <div class="grid grid-cols-7 gap-1 mb-2 text-center text-blue-600 text-[10px] font-bold tracking-wider bg-blue-50/70 rounded-lg py-2">
                             <div>SUN</div>
                             <div>MON</div>
                             <div>TUE</div>
@@ -376,13 +391,30 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                         </div>
 
                         <!-- Calendar dates -->
-                        <div class="grid grid-cols-7 gap-1" id="calendar-dates">
+                        <div class="grid grid-cols-7 gap-1.5" id="calendar-dates">
                             <!-- Dates will be generated by JavaScript -->
+                        </div>
+
+                        <?php /* Keterangan warna titik. Tanpa ini, titik berwarna di
+                                 bawah tanggal tidak punya arti yang bisa dibaca. */ ?>
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-4 pt-3 border-t border-slate-100">
+                            <span class="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500">
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>Wawancara
+                            </span>
+                            <span class="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500">
+                                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>Presentasi
+                            </span>
+                            <span class="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500">
+                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>Tes Tertulis
+                            </span>
+                            <span class="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Lainnya
+                            </span>
                         </div>
                     </div>
 
                     <!-- KANAN: daftar kegiatan (diisi ulang oleh dashboard.js) -->
-                    <div class="md:w-1/2 md:border-l md:border-slate-100 md:pl-6">
+                    <div class="md:flex-1 min-w-0 md:border-l md:border-slate-100 md:pl-6">
                         <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-3">Kegiatan Terdekat</p>
                         <div id="upcomingEventsList">
                             <?php if ($jadwalPresentasiUser): ?>
@@ -429,14 +461,14 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="customMessageModal" aria-labelledby="customMessageModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
+        <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary text-white border-0 py-4 px-6 flex justify-between items-center">
                 <h5 class="font-bold text-base" id="customMessageModalLabel">
                     <i class="bi bi-envelope-fill me-2"></i>Pesan
                 </h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
-            <div class="p-6">
+            <div class="bg-white p-6">
                 <div class="space-y-4">
                     <?php if (empty($notifikasi)): ?>
                         <div class="text-center py-8 text-slate-400">

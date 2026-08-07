@@ -195,7 +195,7 @@
     <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="customModal" aria-labelledby="customModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
         <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-            <div class="relative bg-white w-full bg-white/95 backdrop-blur-md rounded-[24px] shadow-2xl overflow-hidden">
+            <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <div class="text-center p-6 md:p-8 flex flex-col items-center">
                     <img id="modalGif" src="" alt="Animation" class="mb-4" style="width: 100px; display: none;">
                     <p id="modalMessage" class="text-slate-700 font-semibold text-base md:text-lg mb-6 leading-relaxed">Pesan akan ditampilkan di sini.</p>
@@ -209,9 +209,9 @@
     <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="actionConfirmModal" aria-labelledby="actionConfirmModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
         <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
-            <div class="relative bg-white w-full bg-white/95 backdrop-blur-md rounded-[24px] shadow-2xl overflow-hidden">
+            <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <!-- Header with Icon & Title -->
-                <div id="actionConfirmHeader" class="px-6 py-8 flex flex-col items-center relative overflow-hidden bg-gradient-to-r from-primary to-secondary">
+                <div id="actionConfirmHeader" class="px-6 py-8 flex flex-col items-center relative overflow-hidden bg-gradient-to-r from-primary to-secondary rounded-t-[24px]">
                     <!-- Background sparkles/glow -->
                     <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10 blur-xl"></div>
                     <div class="absolute -left-10 -bottom-10 w-40 h-40 rounded-full bg-white/10 blur-xl"></div>
