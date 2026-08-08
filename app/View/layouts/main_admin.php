@@ -284,7 +284,7 @@
         </div>
     </div>
 
-    <div class="lg:ml-[240px] lg:w-[calc(100%-240px)] w-full min-h-screen p-3 md:p-4 lg:p-6 bg-[#f8fafc] transition-all duration-300" id="content">
+    <div class="lg:ml-[240px] lg:w-[calc(100%-240px)] w-full min-h-screen p-3 pt-1 md:p-4 md:pt-1.5 lg:p-6 lg:pt-2 bg-[#f8fafc] transition-all duration-300" id="content">
         <?php
         // Load initial page content based on URL or default to dashboard
         $initialPage = $initialPage ?? 'dashboard';

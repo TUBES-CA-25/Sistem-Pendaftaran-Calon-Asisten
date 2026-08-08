@@ -8,19 +8,9 @@ $calendarWeeks = $calendarWeeks ?? [];
 $nSel = 0;
 
 /* Gaya mengikuti referensi "TimeFrame": tanpa garis kotak, tiap sel berupa
-   permukaan membulat, hari ini ditandai lingkaran biru penuh, dan acara
-   tampil sebagai kartu berwarna.
+   permukaan membulat, hari ini ditandai lingkaran biru penuh.
 
-   Warna kartu acara dipetakan per jenis dan ditulis sebagai string kelas
-   LITERAL UTUH (bukan dirakit dari potongan) - syarat Tailwind Play CDN,
-   yang memindai nama kelas sebagai teks di sumber. Kelas hasil rakitan
-   tidak akan pernah dikompilasi. */
-$gayaAcara = [
-    'Kegiatan'   => 'bg-blue-100 text-blue-700 ring-1 ring-blue-200',
-    'Wawancara'  => 'bg-amber-100 text-amber-700 ring-1 ring-amber-200',
-    'Presentasi' => 'bg-lime-100 text-lime-800 ring-1 ring-lime-200',
-];
-$gayaDefault = 'bg-slate-100 text-slate-700 ring-1 ring-slate-200';
+   Nama kegiatan ditulis apa adanya sebagai teks - tanpa latar berwarna. */
 
 foreach ($calendarWeeks as $week):
 ?>
@@ -35,7 +25,7 @@ foreach ($calendarWeeks as $week):
     ?>
         <?php if ($day === null): ?>
             <?php $nSel++; ?>
-            <td class="h-[66px] align-top p-1">
+            <td class="h-[54px] align-top p-1">
                 <div class="h-full rounded-2xl bg-slate-50/60"></div>
             </td>
         <?php else: ?>
@@ -74,7 +64,7 @@ foreach ($calendarWeeks as $week):
                     $gayaAngka = 'w-6 h-6 text-slate-400 font-semibold';
                 }
             ?>
-            <td class="calendar-cell h-[66px] align-top p-1<?= $adaAcara ? ' cursor-pointer' : '' ?>"<?= $onclick ?>>
+            <td class="calendar-cell h-[54px] align-top p-1<?= $adaAcara ? ' cursor-pointer' : '' ?>"<?= $onclick ?>>
               <div class="animate-cell-rise h-full" style="animation-delay: <?= $delaySel ?>ms;">
                 <div class="h-full rounded-2xl p-1 flex flex-col items-center gap-0.5 transition-all duration-200 <?= $gayaSel ?>">
                     <span class="flex items-center justify-center text-[11px] leading-none shrink-0 transition-transform duration-200 <?= $gayaAngka ?>">
@@ -82,23 +72,34 @@ foreach ($calendarWeeks as $week):
                     </span>
 
                     <?php if ($adaAcara): ?>
-                        <div class="w-full flex flex-col gap-[2px] min-w-0 overflow-hidden">
+                        <?php /* Nama kegiatan ditulis sebagai TEKS POLOS - tanpa
+                                 latar atau kotak berwarna.
+
+                                 Yang ditulis adalah JENIS kegiatannya, bukan judul
+                                 mentahnya: judul bisa sepanjang 84 karakter (mis.
+                                 judul skripsi) sehingga di sel selebar ~100px hanya
+                                 tampil potongan tak bermakna. Judul lengkap tetap
+                                 ada di tooltip dan di modal saat sel diklik. */ ?>
+                        <div class="w-full flex flex-col gap-0.5 min-w-0 mt-0.5">
                             <?php
-                            // Tampilkan maksimal 2 acara supaya sel tidak meluber
+                            // Maksimal 2 baris supaya sel tidak meluber
                             foreach (array_slice($day['events'], 0, 2) as $event):
                                 $jenis = $event['jenis'] ?? '';
-                                $gaya  = $gayaAcara[$jenis] ?? $gayaDefault;
+                                $judulAcara = trim((string) ($event['judul'] ?? ''));
+                                $labelSel = $jenis !== '' ? $jenis : ($judulAcara !== '' ? $judulAcara : 'Kegiatan');
+                                /* Judul sering sama persis dengan jenisnya
+                                   (mis. "Tes Tertulis"); jangan diulang di tooltip. */
+                                $tip = $labelSel;
+                                if ($judulAcara !== '' && $judulAcara !== $jenis) {
+                                    $tip .= ' - ' . $judulAcara;
+                                }
                             ?>
-                                <div class="text-[9px] leading-none w-full px-1.5 py-[3px] rounded font-bold truncate <?= $gaya ?>"
-                                     title="<?= htmlspecialchars($event['judul']) ?>">
-                                    <?= htmlspecialchars($event['judul']) ?>
-                                </div>
+                                <span class="block w-full text-[9px] font-semibold text-slate-500 leading-tight text-center truncate"
+                                      title="<?= htmlspecialchars($tip) ?>"><?= htmlspecialchars($labelSel) ?></span>
                             <?php endforeach; ?>
 
                             <?php if (count($day['events']) > 2): ?>
-                                <div class="text-[9px] font-bold text-slate-400 text-center leading-tight">
-                                    +<?= count($day['events']) - 2 ?> lagi
-                                </div>
+                                <span class="block text-[9px] font-semibold text-slate-400 leading-tight text-center">+<?= count($day['events']) - 2 ?> lagi</span>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>

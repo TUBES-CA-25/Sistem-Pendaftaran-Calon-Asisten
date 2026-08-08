@@ -40,18 +40,18 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-3">
 
     <!-- Tanpa items-start: kolom dibiarkan meregang (default `stretch`) supaya
          tinggi frame kiri dan kanan sejajar. Dengan items-start, tiap kolom
          hanya setinggi isinya sehingga kartu kanan berhenti di tengah. -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
 
         <!-- BARIS 1 KIRI (2/3): pengumuman + Progress & Status.
              Wajib 2 span: di dalamnya ada sub-grid md:grid-cols-12
              (kartu Progress 5 + Stepper 7 bersebelahan). Kalau dipaksa
              1/3, kedua kartu itu terjepit dan layout berantakan. -->
-        <div class="lg:col-span-2 space-y-6">
+        <div class="lg:col-span-2 space-y-3">
 
             <?php if ($graduationStatus === 'Lulus' || $graduationStatus === 'Tidak Lulus'): ?>
                 <!-- Graduation Announcement Card (Visible when finalized or announcement open) -->
@@ -79,7 +79,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                 </div>
             <?php else: ?>
                 <!-- Announcement Coming Soon Card (Visible when closed and pending) -->
-                <div class="flex items-center gap-4 p-5 rounded-2xl bg-blue-50 border border-blue-100/50 shadow-[0_2px_12px_-2px_rgba(37,99,235,0.12)] animate-fade-up" style="animation-delay: 0ms;">
+                <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-blue-50 border border-blue-100/50 shadow-[0_2px_12px_-2px_rgba(37,99,235,0.12)] animate-fade-up" style="animation-delay: 0ms;">
                     <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0 animate-dot-pulse">
                         <i class="bi bi-bell-fill text-white text-lg"></i>
                     </div>
@@ -91,12 +91,12 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
             <?php endif; ?>
 
             <!-- Progress & Stepper Row -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
                 <!-- Progress Circular Card -->
-                <div class="md:col-span-5 bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col justify-center animate-pop-in" style="animation-delay: 90ms;">
+                <div class="md:col-span-5 bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-4 flex flex-col justify-center animate-pop-in" style="animation-delay: 90ms;">
                     <h6 class="font-bold text-slate-700 mb-4 text-center">Progress Pendaftaran</h6>
 
-                    <div class="relative mx-auto mb-4 w-36 h-36">
+                    <div class="relative mx-auto mb-2 w-28 h-28">
                         <!-- SVG Circular Progress (Responsive) -->
                         <svg viewBox="0 0 150 150" class="w-full h-full">
                             <defs>
@@ -131,7 +131,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                 </div>
 
                 <!-- Status Stepper Card -->
-                <div class="md:col-span-7 bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col justify-between animate-pop-in" style="animation-delay: 170ms;">
+                <div class="md:col-span-7 bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-4 flex flex-col justify-between animate-pop-in" style="animation-delay: 170ms;">
                     <div>
                         <h6 class="font-bold text-slate-700 mb-2">Status Pendaftaran</h6>
                         
@@ -199,9 +199,9 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
         <!-- flex flex-col: agar kartu Biodata di bawah bisa flex-grow mengisi
              sisa tinggi kolom, sehingga ujung bawahnya sejajar dengan kartu
              Kalender Kegiatan di sebelah kiri. -->
-        <div class="lg:col-span-1 lg:row-span-2 flex flex-col gap-6">
+        <div class="lg:col-span-1 lg:row-span-2 flex flex-col gap-3">
             <!-- Profile Card -->
-            <div class="bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-6 text-center animate-slide-in-right" style="animation-delay: 120ms;">
+            <div class="bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-4 text-center animate-slide-in-right" style="animation-delay: 120ms;">
                 <!-- Profile Photo -->
                 <div class="mb-4 flex justify-center">
                     <?php if ($profileDisplay['hasValidPhoto']): ?>
@@ -233,7 +233,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
 
             <!-- Biodata Diri Card. flex-grow: mengisi sisa tinggi kolom kanan
                  agar bagian bawahnya rata dengan kartu Kalender Kegiatan. -->
-            <div class="bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-6 flex-grow animate-slide-in-right" style="animation-delay: 220ms;">
+            <div class="bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-4 flex-grow animate-slide-in-right" style="animation-delay: 220ms;">
                 <div class="flex justify-between items-center mb-6">
                     <h5 class="font-bold text-slate-800 text-lg">Biodata Diri</h5>
                     <button class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition" onclick="navigateTo('biodata')">
@@ -243,9 +243,9 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                 
                 <!-- SATU kolom: kartu ini kini berada di kolom sempit (1/3),
                      jadi md:grid-cols-2 akan membuat isinya terjepit. -->
-                <div class="grid grid-cols-1 gap-2.5">
+                <div class="grid grid-cols-1 gap-1.5">
                     <!-- Nama Lengkap -->
-                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 300ms;">
+                    <div class="group/bio flex items-start gap-3 p-2 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 300ms;">
                         <div class="rounded-xl bg-blue-50 p-2.5 shrink-0 text-blue-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-person-fill text-lg"></i>
                         </div>
@@ -256,7 +256,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- NIM -->
-                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 370ms;">
+                    <div class="group/bio flex items-start gap-3 p-2 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 370ms;">
                         <div class="rounded-xl bg-emerald-50 p-2.5 shrink-0 text-emerald-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-123 text-lg"></i>
                         </div>
@@ -267,7 +267,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- Email -->
-                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 440ms;">
+                    <div class="group/bio flex items-start gap-3 p-2 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 440ms;">
                         <div class="rounded-xl bg-cyan-50 p-2.5 shrink-0 text-cyan-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-envelope-fill text-lg"></i>
                         </div>
@@ -278,7 +278,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- Tempat, Tanggal Lahir -->
-                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 510ms;">
+                    <div class="group/bio flex items-start gap-3 p-2 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 510ms;">
                         <div class="rounded-xl bg-amber-50 p-2.5 shrink-0 text-amber-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-calendar-event text-lg"></i>
                         </div>
@@ -292,7 +292,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- Jenis Kelamin -->
-                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 580ms;">
+                    <div class="group/bio flex items-start gap-3 p-2 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 580ms;">
                         <div class="rounded-xl bg-slate-50 p-2.5 shrink-0 text-slate-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-gender-ambiguous text-lg"></i>
                         </div>
@@ -303,7 +303,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- Nomor HP -->
-                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 650ms;">
+                    <div class="group/bio flex items-start gap-3 p-2 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 650ms;">
                         <div class="rounded-xl bg-red-50 p-2.5 shrink-0 text-red-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-telephone-fill text-lg"></i>
                         </div>
@@ -314,7 +314,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- Program Studi -->
-                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 720ms;">
+                    <div class="group/bio flex items-start gap-3 p-2 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 720ms;">
                         <div class="rounded-xl bg-emerald-50 p-2.5 shrink-0 text-emerald-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-book-fill text-lg"></i>
                         </div>
@@ -325,7 +325,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                     </div>
 
                     <!-- Alamat -->
-                    <div class="group/bio flex items-start gap-3 p-3 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 790ms;">
+                    <div class="group/bio flex items-start gap-3 p-2 rounded-xl bg-slate-50/60 border border-slate-100 transition-all duration-200 hover:bg-white hover:border-blue-200 hover:shadow-md animate-fade-up" style="animation-delay: 790ms;">
                         <div class="rounded-xl bg-cyan-50 p-2.5 shrink-0 text-cyan-600 transition-transform duration-200 group-hover/bio:scale-110">
                             <i class="bi bi-geo-alt-fill text-lg"></i>
                         </div>
@@ -339,14 +339,14 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
         </div>
 
         <!-- BARIS 2 KIRI (2/3): kartu gabungan Kalender Kegiatan. -->
-        <div class="lg:col-span-2 space-y-6">
+        <div class="lg:col-span-2 space-y-3">
             <!-- Upcoming: dipindah ke kolom 2/3 ini agar memanjang dan
                  berada tepat di atas kartu Biodata Diri. -->
             <!-- Kalender Kegiatan: gabungan Kalender + Upcoming.
                  Keduanya memakai data yang sama ($activities dari
                  getKegiatanByMonth), jadi disatukan agar hubungannya jelas:
                  kiri menandai tanggal, kanan merinci kegiatannya. -->
-            <div class="bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-6 animate-fade-up" style="animation-delay: 280ms;">
+            <div class="bg-white rounded-2xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_12px_28px_-6px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 p-4 animate-fade-up" style="animation-delay: 280ms;">
                 <div class="flex justify-between items-center mb-5 pb-4 border-b border-slate-100">
                     <div class="flex items-center gap-2.5 min-w-0">
                         <span class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg shrink-0">

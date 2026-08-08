@@ -165,7 +165,7 @@
     <!-- Offset sidebar HARUS di breakpoint lg, sama dengan sidebar (lg:translate-x-0
          di Templates/sidebar.php). Jika dipasang di md, rentang 768-1024px menyisakan
          gutter 240px untuk sidebar yang masih tersembunyi. -->
-    <div class="min-h-screen bg-[#f8fafc] w-full lg:w-[calc(100%-240px)] lg:ml-[240px] p-3 md:p-4 lg:p-6 transition-all duration-300 ease-in-out" id="content">
+    <div class="min-h-screen bg-[#f8fafc] w-full lg:w-[calc(100%-240px)] lg:ml-[240px] p-3 pt-1 md:p-4 md:pt-1.5 lg:p-6 lg:pt-2 transition-all duration-300 ease-in-out" id="content">
         <?php
         // Load initial page content based on URL or default to dashboard
         $initialPage = $initialPage ?? 'dashboard';
