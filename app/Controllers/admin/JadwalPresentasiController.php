@@ -16,6 +16,7 @@ class JadwalPresentasiController extends Controller
     // Methods dari PresentasiController (JadwalPresentasi)
     public function saveJadwal()
     {
+        self::requireAuth();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             self::jsonError('Invalid request method');
         }
@@ -54,6 +55,7 @@ class JadwalPresentasiController extends Controller
 
     public function getAllJadwal()
     {
+        self::requireAuth();
         header('Content-Type: application/json');
 
         try {
@@ -73,6 +75,7 @@ class JadwalPresentasiController extends Controller
 
     public function getJadwalUser()
     {
+        self::requireAuth();
         header('Content-Type: application/json');
 
         try {
@@ -120,6 +123,7 @@ class JadwalPresentasiController extends Controller
 
     public function updateJadwal()
     {
+        self::requireAuth();
         header('Content-Type: application/json');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -149,6 +153,7 @@ class JadwalPresentasiController extends Controller
 
     public function deleteJadwal()
     {
+        self::requireAuth();
         header('Content-Type: application/json');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -175,6 +180,7 @@ class JadwalPresentasiController extends Controller
 
     public function getAvailableMahasiswa()
     {
+        self::requireAuth();
         header('Content-Type: application/json');
 
         try {
@@ -189,6 +195,7 @@ class JadwalPresentasiController extends Controller
 
     public function getAllRuangan()
     {
+        self::requireAuth();
         header('Content-Type: application/json');
 
         try {
@@ -203,6 +210,7 @@ class JadwalPresentasiController extends Controller
 
     public function saveSingleJadwal()
     {
+        self::requireAuth();
         header('Content-Type: application/json');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

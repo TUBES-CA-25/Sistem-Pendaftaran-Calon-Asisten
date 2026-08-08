@@ -25,10 +25,19 @@ $gayaDefault = 'bg-slate-100 text-slate-700 ring-1 ring-slate-200';
 foreach ($calendarWeeks as $week):
 ?>
 <tr>
-    <?php foreach ($week as $day): ?>
+    <?php
+    /* $kolom dipakai untuk menandai akhir pekan. Minggu dimulai Senin,
+       jadi indeks 5 = Sabtu dan 6 = Minggu. */
+    $kolom = -1;
+    foreach ($week as $day):
+        $kolom++;
+        $akhirPekan = ($kolom >= 5);
+    ?>
         <?php if ($day === null): ?>
             <?php $nSel++; ?>
-            <td class="h-[58px] align-top p-1"></td>
+            <td class="h-[66px] align-top p-1">
+                <div class="h-full rounded-2xl bg-slate-50/60"></div>
+            </td>
         <?php else: ?>
             <?php
                 $isToday  = $day['isToday'];
@@ -45,38 +54,42 @@ foreach ($calendarWeeks as $week):
                 /* Permukaan sel: hari ini berlatar biru lembut, hari berkegiatan
                    berlatar putih dengan cincin tipis, sisanya polos. */
                 if ($isToday) {
-                    $gayaSel = 'bg-blue-50 ring-1 ring-blue-200';
+                    $gayaSel = 'bg-blue-50/80 ring-2 ring-blue-400 shadow-sm shadow-blue-500/20';
                 } elseif ($adaAcara) {
-                    $gayaSel = 'bg-white ring-1 ring-slate-200/70 hover:ring-blue-200 hover:shadow-sm';
+                    $gayaSel = 'bg-white ring-1 ring-slate-200 shadow-sm hover:ring-blue-300 hover:shadow-md';
+                } elseif ($akhirPekan) {
+                    $gayaSel = 'bg-slate-50/60 hover:bg-slate-100';
                 } else {
-                    $gayaSel = 'hover:bg-slate-50';
+                    $gayaSel = 'bg-slate-50/60 hover:bg-slate-100';
                 }
 
                 /* Angka tanggal: hari ini jadi lingkaran gradasi biru penuh. */
                 if ($isToday) {
-                    $gayaAngka = 'w-6 h-6 rounded-full bg-gradient-to-br from-primary to-secondary text-white font-bold shadow-sm shadow-blue-500/40';
+                    $gayaAngka = 'w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary text-white font-bold shadow-md shadow-blue-500/40';
                 } elseif ($adaAcara) {
                     $gayaAngka = 'w-6 h-6 text-slate-700 font-bold';
+                } elseif ($akhirPekan) {
+                    $gayaAngka = 'w-6 h-6 text-slate-300 font-semibold';
                 } else {
-                    $gayaAngka = 'w-6 h-6 text-slate-400 font-medium';
+                    $gayaAngka = 'w-6 h-6 text-slate-400 font-semibold';
                 }
             ?>
-            <td class="calendar-cell h-[58px] align-top p-1<?= $adaAcara ? ' cursor-pointer' : '' ?>"<?= $onclick ?>>
+            <td class="calendar-cell h-[66px] align-top p-1<?= $adaAcara ? ' cursor-pointer' : '' ?>"<?= $onclick ?>>
               <div class="animate-cell-rise h-full" style="animation-delay: <?= $delaySel ?>ms;">
-                <div class="h-full rounded-xl p-1.5 flex flex-col items-center gap-1 transition-all duration-200 <?= $gayaSel ?>">
-                    <span class="flex items-center justify-center text-[11px] leading-none shrink-0 <?= $gayaAngka ?>">
+                <div class="h-full rounded-2xl p-1 flex flex-col items-center gap-0.5 transition-all duration-200 <?= $gayaSel ?>">
+                    <span class="flex items-center justify-center text-[11px] leading-none shrink-0 transition-transform duration-200 <?= $gayaAngka ?>">
                         <?= $day['date'] ?>
                     </span>
 
                     <?php if ($adaAcara): ?>
-                        <div class="w-full flex flex-col gap-0.5 min-w-0">
+                        <div class="w-full flex flex-col gap-[2px] min-w-0 overflow-hidden">
                             <?php
                             // Tampilkan maksimal 2 acara supaya sel tidak meluber
                             foreach (array_slice($day['events'], 0, 2) as $event):
                                 $jenis = $event['jenis'] ?? '';
                                 $gaya  = $gayaAcara[$jenis] ?? $gayaDefault;
                             ?>
-                                <div class="text-[9px] leading-tight w-full px-1.5 py-1 rounded-md font-bold truncate <?= $gaya ?>"
+                                <div class="text-[9px] leading-none w-full px-1.5 py-[3px] rounded font-bold truncate <?= $gaya ?>"
                                      title="<?= htmlspecialchars($event['judul']) ?>">
                                     <?= htmlspecialchars($event['judul']) ?>
                                 </div>

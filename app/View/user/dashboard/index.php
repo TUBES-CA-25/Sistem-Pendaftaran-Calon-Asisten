@@ -55,8 +55,11 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
 
             <?php if ($graduationStatus === 'Lulus' || $graduationStatus === 'Tidak Lulus'): ?>
                 <!-- Graduation Announcement Card (Visible when finalized or announcement open) -->
-                <div class="relative overflow-hidden rounded-2xl shadow-sm p-6 text-center text-white animate-fade-up" style="animation-delay: 0ms;" 
-                     style="background: <?= $graduationStatus === 'Lulus' ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #dc2626)' ?>;">
+                <?php /* Dua atribut style pada satu elemen membuat yang kedua DIABAIKAN
+                         browser - latar gradasi hilang dan kartu jadi putih dengan
+                         teks putih (tak terbaca). Keduanya digabung jadi satu. */ ?>
+                <div class="relative overflow-hidden rounded-2xl shadow-sm p-6 text-center text-white animate-fade-up"
+                     style="animation-delay: 0ms; background: <?= $graduationStatus === 'Lulus' ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #dc2626)' ?>;">
                     <div class="relative z-10">
                         <div class="mb-3">
                             <i class="bi bi-patch-check-fill text-5xl opacity-90"></i>
@@ -136,7 +139,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                             Anda telah menyelesaikan <strong class="text-slate-800"><?= $tahapanSelesai ?></strong> dari 5 tahapan pendaftaran.
                         </p>
 
-                        <div class="w-full overflow-x-auto pb-2 mb-4">
+                        <div class="w-full overflow-x-auto overflow-y-hidden pb-2 mb-4">
                             <div class="flex items-start justify-between relative mt-2 px-1 mx-auto min-w-[340px]">
                                 <!-- Progress Line Background -->
                                 <div class="absolute h-0.5 bg-slate-100 top-2.5 left-0 right-0 z-0"></div>

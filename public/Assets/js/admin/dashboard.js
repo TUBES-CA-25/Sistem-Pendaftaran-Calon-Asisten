@@ -48,27 +48,28 @@
                 if (data.status === 'success') {
                     showAlert('Deadline berhasil diperbarui!', true);
                     
-                    const updatedJenis = formData.jenis;
-                    const updatedDate = formData.tanggal;
-                    const editBtn = document.querySelector(`.edit-deadline-btn[data-jenis="${updatedJenis}"]`);
-                    if (editBtn) {
-                        editBtn.setAttribute('data-date', updatedDate);
-                        // Cari span lewat penanda kelasnya, BUKAN previousElementSibling.
-                        // Cara lama membuat markup timeline tidak boleh digeser sama
-                        // sekali; sedikit penataan ulang saja langsung mematikannya.
-                        const span = document.querySelector(`.deadline-date[data-jenis="${updatedJenis}"]`);
-                        if (span) {
-                            const d = new Date(updatedDate);
-                            const options = { day: '2-digit', month: 'short', year: 'numeric' };
-                            span.textContent = 'Deadline: ' + d.toLocaleDateString('id-ID', options);
-                        }
-                    }
-                    
                     const modalEl = document.getElementById('editDeadlineModal');
                     if (modalEl) {
                         const modal = UI.modal.ref(modalEl);
                         if (modal) modal.hide();
                     }
+
+                    /* Muat ulang halaman setelah deadline disimpan.
+                    
+                       Sebelumnya JS hanya menulis ulang TEKS TANGGAL-nya saja,
+                       sedangkan status tiap tahap (Selesai / Sedang Berlangsung /
+                       Akan Datang), warna kartu, titik penanda, dan persentase
+                       progres semuanya dihitung di server dari perbandingan
+                       deadline vs hari ini - dan bergantung berantai antar-tahap.
+                    
+                       Akibatnya, mengubah satu deadline membuat timeline
+                       menampilkan tanggal baru tetapi status LAMA, sampai halaman
+                       dimuat ulang secara manual. Menghitung ulang seluruh rantai
+                       itu di sisi klien berarti menduplikasi logika server, jadi
+                       lebih tepat meminta server merendernya kembali. */
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 600);
                 } else {
                     showAlert('Gagal: ' + data.message, false);
                 }

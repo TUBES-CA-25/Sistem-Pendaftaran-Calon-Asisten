@@ -39,20 +39,12 @@ foreach ($pendaftarPerAngkatan as $baris) {
          yang tidak punya pt-0 sehingga ada celah ekstra di bawah header. */ ?>
 <div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
 
-    <!-- Baris atas: statistik 2x2 (kiri) + grafik angkatan (kanan) -->
-    <?php /* Grafik dipindah ke baris atas berdampingan dengan statistik. Karena
-             kolomnya kini jauh lebih sempit daripada saat ia menempati kolom kanan
-             penuh, grafiknya otomatis tidak lagi memanjang. */ ?>
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6 items-stretch">
-
-        <!-- Kiri: statistik tersusun 2x2 -->
-        <div class="lg:col-span-3 flex flex-col gap-4">
-            <div class="grid grid-cols-2 gap-3.5">
+    <!-- Baris atas: statistik, satu baris selebar halaman (4 kolom sejajar) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 mb-4">
         <?php
-        /* 'tile' berisi kelas Tailwind LENGKAP (bukan potongan yang dirakit),
-           karena Play CDN memindai nama kelas sebagai teks literal di sumber.
-           Ini sekaligus menghapus style inline background-color yang dulu perlu
-           karena warnanya berupa hex dinamis.
+        /* 'bulat' & 'angka' berisi kelas Tailwind LENGKAP (bukan potongan yang
+           dirakit), karena Play CDN memindai nama kelas sebagai teks literal di
+           sumber - kelas hasil rakitan tidak akan pernah dikompilasi.
 
            'id' dipakai oleh dashboard.js untuk polling statistik tiap 5 detik.
            Sebelumnya id ini tidak ada di markup sama sekali, sehingga polling
@@ -62,37 +54,37 @@ foreach ($pendaftarPerAngkatan as $baris) {
                 'label' => 'Total Pendaftar',
                 'value' => $totalPendaftar,
                 'icon'  => 'bx bxs-group',
-                'tile'  => 'bg-blue-50 text-blue-600',
                 'angka' => 'text-slate-800',
                 'id'    => 'stat-total',
-                'bar'   => 'bg-blue-500',
+                'bulat' => 'bg-gradient-to-br from-blue-500 to-blue-600',
+                'ombak' => 'text-blue-200',
             ],
             [
                 'label' => 'Pendaftar Lulus',
                 'value' => $pendaftarLulus,
                 'icon'  => 'bx bxs-check-shield',
-                'tile'  => 'bg-emerald-50 text-emerald-600',
                 'angka' => 'text-emerald-600',
                 'id'    => 'stat-lulus',
-                'bar'   => 'bg-emerald-500',
+                'bulat' => 'bg-gradient-to-br from-emerald-500 to-emerald-600',
+                'ombak' => 'text-emerald-200',
             ],
             [
                 'label' => 'Pendaftar Pending',
                 'value' => $pendaftarPending,
                 'icon'  => 'bx bxs-time-five',
-                'tile'  => 'bg-amber-50 text-amber-600',
                 'angka' => 'text-amber-600',
                 'id'    => 'stat-pending',
-                'bar'   => 'bg-amber-500',
+                'bulat' => 'bg-gradient-to-br from-amber-500 to-amber-600',
+                'ombak' => 'text-amber-200',
             ],
             [
                 'label' => 'Pendaftar Gagal',
                 'value' => $pendaftarGagal,
                 'icon'  => 'bx bxs-x-circle',
-                'tile'  => 'bg-rose-50 text-rose-600',
                 'angka' => 'text-rose-600',
                 'id'    => 'stat-gagal',
-                'bar'   => 'bg-rose-500',
+                'bulat' => 'bg-gradient-to-br from-rose-500 to-rose-600',
+                'ombak' => 'text-rose-200',
             ],
         ];
 
@@ -108,72 +100,84 @@ foreach ($pendaftarPerAngkatan as $baris) {
             $isTotal = ($stat['id'] === 'stat-total');
             $porsi   = ($totalPendaftar > 0) ? round($stat['value'] / $totalPendaftar * 100) : 0;
 
-            /* Kartu "Total" jadi kartu highlight bergradien sebagai jangkar visual,
-               tiga sisanya putih bersih. Sebelumnya keempat kartu identik sehingga
-               tidak ada yang menuntun mata. Kedua cabang ditulis sebagai string
-               kelas literal utuh - wajib untuk Play CDN yang memindai teks sumber. */
         ?>
-        <div class="group relative overflow-hidden rounded-[16px] p-3.5 animate-pop-in transition-all duration-500 <?= $isTotal
-                ? 'bg-gradient-to-br from-primary via-primary to-primary-dark shadow-[0_10px_30px_-8px_rgba(37,99,235,0.5)] hover:shadow-[0_18px_40px_-10px_rgba(37,99,235,0.6)] hover:-translate-y-1'
-                : 'bg-white shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_14px_32px_-8px_rgba(15,23,42,0.16)] hover:-translate-y-1' ?>"
+        <?php /* Ikon bulat besar berwarna di kiri, teks dan angka di kanan.
+                 Keempat kartu setara - warna dibawa oleh ikonnya, bukan oleh
+                 latar kartu. */ ?>
+        <div class="group relative overflow-hidden rounded-2xl px-5 py-5 bg-white animate-pop-in transition-all duration-300 shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] hover:shadow-[0_14px_32px_-8px_rgba(15,23,42,0.16)] hover:-translate-y-1"
              style="animation-delay: <?= $delayStat ?>ms;">
 
-            <?php /* Kilau melintas sekali di kartu highlight saat halaman dimuat.
-                     pointer-events-none supaya tidak menghalangi hover/klik. */ ?>
-            <?php if ($isTotal): ?>
-                <span class="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-white/20 blur-md animate-sheen" aria-hidden="true"></span>
-            <?php endif; ?>
+            <?php /* Gelombang MENGALIR di sudut kanan bawah, naik landai ke kanan.
 
-            <?php /* Lingkaran dekoratif besar yang membesar saat hover. Memberi
-                     kedalaman tanpa menambah elemen konten. */ ?>
-            <span class="pointer-events-none absolute -right-4 -top-6 w-16 h-16 rounded-full transition-transform duration-700 group-hover:scale-[1.35] <?= $isTotal ? 'bg-white/10' : 'bg-slate-50' ?>" aria-hidden="true"></span>
+                     DUA lapis dengan kecepatan berbeda (14s dan 22s) plus satu
+                     lapis yang naik-turun pelan. Kalau keduanya bergerak seragam,
+                     hasilnya terlihat seperti gambar yang digeser - bukan air.
 
-            <div class="relative">
-                <p class="text-[10px] font-bold uppercase tracking-wider leading-tight mb-2.5 <?= $isTotal ? 'text-white/75' : 'text-slate-400' ?>"><?= $stat['label'] ?></p>
+                     Tiap lapis: wadah selebar 200% berisi pola yang digambar DUA
+                     KALI berdampingan, digeser -50% (tepat satu salinan), sehingga
+                     saat perulangan kembali ke awal sambungannya tidak terlihat.
 
-                <?php /* Angka dan ikon disejajarkan pada satu baris. Sebelumnya ikon
-                         menempel di pojok atas sehingga ruang di samping angka menganggur
-                         dan kartu terlihat kosong di bagian bawah. */ ?>
-                <div class="flex items-end justify-between gap-2 mb-2.5">
-                    <h2 class="text-[1.75rem] font-extrabold leading-none tracking-tight animate-count-in <?= $isTotal ? 'text-white' : $stat['angka'] ?>"
-                        id="<?= $stat['id'] ?>" style="animation-delay: <?= $delayStat + 160 ?>ms;"><?= $stat['value'] ?></h2>
-                    <div class="relative w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 <?= $isTotal ? 'bg-white/20 text-white' : $stat['tile'] ?>">
-                        <i class='<?= $stat['icon'] ?>'></i>
-                    </div>
+                     Pola path dibuat BERULANG (y sama di x=0, 120, 240) supaya
+                     geseran -50% menyambung mulus. Kemiringan "naik ke kanan"
+                     karena itu dipindah ke wadahnya lewat -rotate-6; wadahnya
+                     dilebihkan sedikit keluar tepi agar sudut tetap tertutup.
+
+                     Ujung KIRI memudar lewat mask gradasi pada wadah - bukan
+                     dengan mengubah path, karena itu akan merusak sambungan
+                     mulusnya. Tanpa mask, gelombang berhenti mendadak dengan
+                     tepi tegak lurus di sisi kiri.
+
+                     currentColor dipakai agar warnanya cukup diatur lewat kelas
+                     text-* pada wadah (kelas literal utuh, syarat Play CDN). */ ?>
+            <span class="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl" aria-hidden="true">
+            <span class="absolute -bottom-1 -right-2 w-[85%] h-20 overflow-hidden -rotate-6 origin-bottom-right opacity-80 transition-opacity duration-300 group-hover:opacity-100 [mask-image:linear-gradient(to_right,transparent_0%,rgba(0,0,0,0.35)_18%,black_45%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,rgba(0,0,0,0.35)_18%,black_45%)] <?= $stat['ombak'] ?>">
+                <?php /* Lapis belakang: lebih lambat, lebih pucat. */ ?>
+                <span class="absolute inset-0 block animate-wave-bob">
+                    <span class="block w-[200%] h-full animate-wave-flow-slow">
+                        <svg class="w-full h-full" viewBox="0 0 240 56" preserveAspectRatio="none" fill="currentColor">
+                            <path d="M0 32 Q 30 18 60 32 T 120 32 T 180 32 T 240 32 V56 H0 Z" opacity="0.5"/>
+                        </svg>
+                    </span>
+                </span>
+                <?php /* Lapis depan: lebih cepat, lebih pekat. */ ?>
+                <span class="absolute inset-0 block">
+                    <span class="block w-[200%] h-full animate-wave-flow">
+                        <svg class="w-full h-full" viewBox="0 0 240 56" preserveAspectRatio="none" fill="currentColor">
+                            <path d="M0 40 Q 30 23 60 40 T 120 40 T 180 40 T 240 40 V56 H0 Z" opacity="0.75"/>
+                        </svg>
+                    </span>
+                </span>
+            </span>
+            </span>
+
+            <div class="relative flex items-center gap-4">
+                <?php /* Ikon: bulatan gradasi solid, membesar sedikit saat hover. */ ?>
+                <div class="w-[52px] h-[52px] rounded-2xl flex items-center justify-center text-[26px] text-white shrink-0 shadow-lg transition-transform duration-300 group-hover:scale-105 <?= $stat['bulat'] ?>">
+                    <i class='<?= $stat['icon'] ?>'></i>
                 </div>
 
-                <?php if ($isTotal): ?>
-                    <?php /* Kartu total tidak punya porsi (100% terhadap dirinya sendiri
-                             tidak bermakna), jadi diberi bar penuh sebagai penyeimbang
-                             visual supaya tingginya sama dengan tiga kartu lain. */ ?>
-                    <div class="flex items-center gap-2">
-                        <div class="h-1 flex-grow rounded-full bg-white/25 overflow-hidden">
-                            <div class="h-full w-full rounded-full bg-white/80 origin-left animate-grow-right"
-                                 style="animation-delay: <?= $delayStat + 260 ?>ms;"></div>
-                        </div>
-                        <span class="text-[10px] font-bold text-white/90 shrink-0">Total</span>
-                    </div>
-                <?php else: ?>
-                    <?php /* Bar porsi mini: membuat persentase terlihat, bukan hanya terbaca.
-                             Lebar via style inline karena nilainya hasil hitung. */ ?>
-                    <div class="flex items-center gap-2">
-                        <div class="h-1 flex-grow rounded-full bg-slate-100 overflow-hidden">
-                            <div class="h-full rounded-full origin-left animate-grow-right <?= $stat['bar'] ?>"
-                                 style="width: <?= max($porsi, 2) ?>%; animation-delay: <?= $delayStat + 260 ?>ms;"></div>
-                        </div>
-                        <span class="text-[10px] font-bold text-slate-500 shrink-0 tabular-nums"><?= $porsi ?>%</span>
-                    </div>
-                <?php endif; ?>
+                <div class="min-w-0">
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 leading-tight mb-1.5"><?= $stat['label'] ?></p>
+                    <h2 class="text-[2rem] font-extrabold leading-none tracking-tight animate-count-in <?= $stat['angka'] ?>"
+                        id="<?= $stat['id'] ?>" style="animation-delay: <?= $delayStat + 160 ?>ms;"><?= $stat['value'] ?></h2>
+                    <p class="text-[10px] font-semibold text-slate-400 mt-1.5 truncate">
+                        <?= $isTotal ? 'Seluruh pendaftar' : $porsi . '% dari total' ?>
+                    </p>
+                </div>
             </div>
         </div>
         <?php endforeach; ?>
-            </div>
+    </div>
 
-            <!-- Kegiatan Terdekat: di bawah kartu statistik -->
+    <!-- Baris kedua: Kegiatan Terdekat (3/5) + grafik angkatan (2/5) -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6 items-stretch">
+
+        <div class="lg:col-span-3 flex">
+            <!-- Kegiatan Terdekat -->
             <?php /* Memakai data nyata dari tabel kegiatan_admin - kegiatan yang sama
                      dengan yang ditandai di kalender. Sengaja TIDAK dibatasi bulan
                      berjalan supaya kegiatan bulan depan tetap terlihat. */ ?>
-            <div class="bg-white rounded-[18px] shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] p-4 animate-fade-up" style="animation-delay: 420ms;">
+            <div class="bg-white rounded-[18px] shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] p-4 w-full animate-fade-up" style="animation-delay: 420ms;">
                 <div class="flex items-center gap-2.5 border-b border-slate-100 pb-3 mb-3">
                     <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-base shrink-0">
                         <i class='bx bx-calendar-star'></i>
@@ -215,6 +219,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
                     </div>
                 <?php endif; ?>
             </div>
+
         </div>
 
         <!-- Kanan: grafik pendaftar per angkatan -->
@@ -288,7 +293,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
                                  (bukan kotaknya) yang sejajar tepat di garis grid.
                                  Sebelumnya justify-between hanya meratakan kotaknya,
                                  jadi angka tampak melenceng dari garisnya. */ ?>
-                        <div class="relative h-[260px] shrink-0 w-[34px]">
+                        <div class="relative h-[190px] shrink-0 w-[34px]">
                             <?php
                                 $nTik = count($tikPembagi);
                                 foreach ($tikPembagi as $iTik => $tik):
@@ -302,7 +307,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
 
                         <!-- Area plot -->
                         <div class="flex-grow min-w-0">
-                            <div class="relative h-[260px]">
+                            <div class="relative h-[190px]">
                                 <?php /* Garis grid horizontal. inset-0 + justify-between
                                          menempatkannya persis di posisi label sumbu Y. */ ?>
                                 <div class="absolute inset-0 flex flex-col justify-between pointer-events-none" aria-hidden="true">
@@ -363,7 +368,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
                  mengikuti kolom kanan. Dengan flex-grow sebelumnya, kalender ikut
                  memanjang hingga sejajar kolom kanan dan menyisakan area putih kosong
                  besar di bawah tabelnya. */ ?>
-        <div class="lg:col-span-3 flex flex-col gap-6 items-stretch self-start w-full">
+        <div class="lg:col-span-3 flex flex-col gap-6 items-stretch w-full">
             <!-- Calendar Card -->
             <div class="bg-white rounded-[22px] shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] p-6 animate-fade-up" style="animation-delay: 240ms;">
                 <!-- Header kartu: judul + aksi, sejajar dengan pola kartu grafik
@@ -433,12 +438,12 @@ foreach ($pendaftarPerAngkatan as $baris) {
         </div>
 
         <!-- Status Activities -->
-        <div class="lg:col-span-2 flex flex-col gap-6 self-start">
+        <div class="lg:col-span-2 flex flex-col gap-6">
             <?php /* h-full diganti flex-grow: kolom ini kini berisi DUA kartu
                      (timeline + grafik). Dengan h-full, timeline memakan seluruh
                      tinggi kolom dan grafik terdorong keluar. */ ?>
 
-            <div class="bg-white rounded-[18px] shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] p-4 flex flex-col animate-slide-in-right" style="animation-delay: 300ms;">
+            <div class="bg-white rounded-[18px] shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] p-4 flex flex-col flex-grow animate-slide-in-right" style="animation-delay: 300ms;">
                 <?php /* Header diberi hitungan tahap selesai supaya kartu ini
                          menyampaikan progres sekilas, bukan cuma judul. */ ?>
                 <?php
@@ -473,19 +478,66 @@ foreach ($pendaftarPerAngkatan as $baris) {
                 <div class="relative pl-6">
                     <!-- Garis penghubung. inset-y dibuat menjorok agar garis
                          berhenti di titik pertama & terakhir, bukan menggantung. -->
-                    <span class="absolute left-[5px] top-3 bottom-3 w-px bg-gradient-to-b from-emerald-400 via-slate-200 to-slate-200 origin-top animate-grow-down" style="animation-delay: 380ms;" aria-hidden="true"></span>
+                    <span class="absolute left-[5px] top-3 bottom-3 w-px bg-gradient-to-b from-rose-400 via-amber-400 to-emerald-400 origin-top animate-grow-down" style="animation-delay: 380ms;" aria-hidden="true"></span>
                     <?php /* Lapis kedua garis: hijau berkedip lembut menimpa garis dasar,
                              menyambungkan titik-titik yang menyala agar seluruh jalur
                              terasa hidup. */ ?>
-                    <span class="absolute left-[5px] top-3 bottom-3 w-px bg-gradient-to-b from-emerald-400 to-transparent animate-dot-glow" aria-hidden="true"></span>
+                    <span class="absolute left-[5px] top-3 bottom-3 w-px bg-gradient-to-b from-rose-400 via-cyan-400 to-emerald-400 animate-dot-glow" aria-hidden="true"></span>
 
                     <div class="flex flex-col gap-2">
                     <?php
                     // Status metadata for calendar legend
                     $statusMeta = $statusMeta ?? [];
 
+                    /* Warna khas tiap tahap. Sebelumnya semua kartu abu seragam
+                       sehingga timeline terlihat datar dan tahapnya sulit dibedakan
+                       sekilas. Kunci array = jenis tahap dari getStatusKegiatan(). */
+                    $warnaTahap = [
+                        'kelengkapan_berkas' => [
+                            'kartu' => 'bg-rose-50/70 border-rose-100 hover:border-rose-300',
+                            'judul' => 'text-rose-900',
+                            'titik' => 'bg-rose-500',
+                            'cincin'=> 'ring-rose-100',
+                            'aura'  => 'bg-rose-400/50',
+                            'ikon'  => 'text-rose-500',
+                        ],
+                        'tes_tertulis' => [
+                            'kartu' => 'bg-amber-50/70 border-amber-100 hover:border-amber-300',
+                            'judul' => 'text-amber-900',
+                            'titik' => 'bg-amber-500',
+                            'cincin'=> 'ring-amber-100',
+                            'aura'  => 'bg-amber-400/50',
+                            'ikon'  => 'text-amber-500',
+                        ],
+                        'tahap_wawancara' => [
+                            'kartu' => 'bg-cyan-50/70 border-cyan-100 hover:border-cyan-300',
+                            'judul' => 'text-cyan-900',
+                            'titik' => 'bg-cyan-500',
+                            'cincin'=> 'ring-cyan-100',
+                            'aura'  => 'bg-cyan-400/50',
+                            'ikon'  => 'text-cyan-500',
+                        ],
+                        'pengumuman' => [
+                            'kartu' => 'bg-emerald-50/70 border-emerald-100 hover:border-emerald-300',
+                            'judul' => 'text-emerald-900',
+                            'titik' => 'bg-emerald-500',
+                            'cincin'=> 'ring-emerald-100',
+                            'aura'  => 'bg-emerald-400/50',
+                            'ikon'  => 'text-emerald-500',
+                        ],
+                    ];
+                    $warnaDefault = [
+                        'kartu' => 'bg-slate-50 border-slate-100 hover:border-slate-300',
+                        'judul' => 'text-slate-700',
+                        'titik' => 'bg-slate-400',
+                        'cincin'=> 'ring-slate-100',
+                        'aura'  => 'bg-slate-400/50',
+                        'ikon'  => 'text-slate-400',
+                    ];
+
                     $urutan = 0;
                     foreach ($statusKegiatan as $key => $status):
+                        $w = $warnaTahap[$key] ?? $warnaDefault;
                         $statusText = $status['status'] ?? '';
                         $aktif    = ($statusText === 'Sedang Berlangsung');
                         $selesai  = ($statusText === 'Selesai');
@@ -508,8 +560,8 @@ foreach ($pendaftarPerAngkatan as $baris) {
                                          mengikuti urutan tahap sehingga titik-titiknya
                                          berdenyut berurutan dari atas ke bawah, bukan
                                          serentak. */ ?>
-                                <span class="absolute -left-6 top-3.5 w-3 h-3 rounded-full bg-emerald-400/50 animate-ring-pulse" style="animation-delay: <?= $delay ?>ms;" aria-hidden="true"></span>
-                                <span class="absolute -left-6 top-3.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white shadow ring-2 ring-emerald-100 animate-dot-pulse-green transition-transform duration-300 group-hover/step:scale-125" style="animation-delay: <?= $delay ?>ms;" aria-hidden="true"></span>
+                                <span class="absolute -left-6 top-3.5 w-3 h-3 rounded-full animate-ring-pulse <?= $w['aura'] ?>" style="animation-delay: <?= $delay ?>ms;" aria-hidden="true"></span>
+                                <span class="absolute -left-6 top-3.5 w-3 h-3 rounded-full border-2 border-white shadow ring-2 animate-dot-pulse-green transition-transform duration-300 group-hover/step:scale-125 <?= $w['titik'] ?> <?= $w['cincin'] ?>" style="animation-delay: <?= $delay ?>ms;" aria-hidden="true"></span>
                             <?php else: ?>
                                 <span class="absolute -left-6 top-3.5 w-3 h-3 rounded-full bg-white border-2 border-slate-300 transition-transform duration-300 group-hover/step:scale-125" aria-hidden="true"></span>
                             <?php endif; ?>
@@ -521,7 +573,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
                                      literal utuh per cabang (syarat Play CDN). */ ?>
                             <div class="<?= $aktif
                                     ? 'relative overflow-hidden p-3 rounded-xl bg-gradient-to-br from-primary to-secondary text-white animate-glow transition-all duration-300'
-                                    : 'p-3 rounded-xl bg-slate-50 border border-slate-100 transition-all duration-300 hover:bg-white hover:border-slate-200 hover:shadow-md hover:-translate-y-0.5' ?>">
+                                    : 'p-3 rounded-xl border transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 ' . $w['kartu'] ?>">
 
                                 <?php if ($aktif): ?>
                                     <?php /* Kilau melintas berulang di kartu yang berjalan. */ ?>
@@ -529,12 +581,12 @@ foreach ($pendaftarPerAngkatan as $baris) {
                                 <?php endif; ?>
 
                                 <div class="relative flex justify-between items-start gap-2 mb-0.5">
-                                    <h6 class="font-bold text-[13px] <?= $aktif ? 'text-white' : 'text-slate-700' ?>">
+                                    <h6 class="font-bold text-[13px] <?= $aktif ? 'text-white' : $w['judul'] ?>">
                                         <?= htmlspecialchars($status['label']) ?>
                                     </h6>
 
                                     <?php if ($selesai): ?>
-                                        <i class="bx bxs-check-circle text-emerald-500 text-base shrink-0"></i>
+                                        <i class="bx bxs-check-circle text-base shrink-0 <?= $w['ikon'] ?>"></i>
                                     <?php elseif ($aktif): ?>
                                         <span class="text-[9px] font-bold uppercase tracking-wider bg-white/25 px-2 py-0.5 rounded-full shrink-0 animate-shimmer">Berjalan</span>
                                     <?php endif; ?>

@@ -136,6 +136,20 @@ tailwind.config = {
                     "0%, 100%": { opacity: "1", transform: "scale(1)" },
                     "50%": { opacity: "0.72", transform: "scale(1.12)" },
                 },
+                // Gelombang mengalir. Pola SVG-nya digambar DUA KALI berdampingan
+                // di wadah selebar 200%, lalu digeser -50% (tepat satu salinan)
+                // sehingga saat perulangan kembali ke 0% sambungannya tidak
+                // terlihat - alirannya mulus tanpa lompatan.
+                "wave-flow": {
+                    from: { transform: "translateX(0)" },
+                    to: { transform: "translateX(-50%)" },
+                },
+                // Lapis kedua gelombang: naik-turun pelan supaya kedua lapisnya
+                // tidak bergerak seragam - itu yang membuatnya terasa seperti air.
+                "wave-bob": {
+                    "0%, 100%": { transform: "translateY(0)" },
+                    "50%": { transform: "translateY(3px)" },
+                },
                 // Sel kalender "timbul": naik sedikit sambil membesar dari kecil.
                 // Dipakai bertingkat per sel sehingga tabel tersusun seperti
                 // gelombang dari kiri-atas ke kanan-bawah.
@@ -165,6 +179,10 @@ tailwind.config = {
                 "sheen-loop": "sheen 3.2s cubic-bezier(0.65, 0, 0.35, 1) 1s infinite",
                 shimmer: "shimmer 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite",
                 "cell-rise": "cell-rise 0.4s cubic-bezier(0.34, 1.4, 0.64, 1) both",
+                // linear + durasi panjang: aliran tenang, bukan berkedut.
+                "wave-flow": "wave-flow 14s linear infinite",
+                "wave-flow-slow": "wave-flow 22s linear infinite",
+                "wave-bob": "wave-bob 5s ease-in-out infinite",
                 "dot-pulse-green": "dot-pulse-green 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite",
                 "dot-glow": "dot-glow 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite",
             }

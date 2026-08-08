@@ -13,6 +13,7 @@ class JadwalWawancaraController extends Controller
 
     public function getAllFilterByIdRuangan()
     {
+        self::requireAuth();
         header('Content-Type: application/json');
         ob_clean();
 
@@ -81,6 +82,7 @@ class JadwalWawancaraController extends Controller
 
     public function save()
     {
+        self::requireAuth();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             self::jsonError('Invalid request method');
         }
@@ -117,6 +119,7 @@ class JadwalWawancaraController extends Controller
     }
     public function update()
     {
+        self::requireAuth();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             self::jsonError('Invalid request method');
         }
@@ -146,6 +149,7 @@ class JadwalWawancaraController extends Controller
     }
     public function delete()
     {
+        self::requireAuth();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             self::jsonError('Invalid request method');
         }

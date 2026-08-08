@@ -76,6 +76,7 @@ class JadwalTesController extends Controller
      */
     public function save()
     {
+        self::requireAuth();
         header('Content-Type: application/json');
         
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -91,6 +92,14 @@ class JadwalTesController extends Controller
 
         if (empty($ids) || !$id_ruangan || !$tanggal || !$waktu) {
             self::jsonError('Lengkapi semua data');
+        }
+
+        /* Bentrok dicek terhadap jadwal yang SUDAH ada di ruangan+jam itu.
+           Menjadwalkan banyak mahasiswa sekaligus ke satu ruangan pada jam
+           yang sama tetap boleh - itu memang bentuk ujian massal. */
+        $bentrok = self::cariBentrok($id_ruangan, $tanggal, $waktu);
+        if ($bentrok !== null) {
+            self::jsonError('Ruangan sudah dipakai pada jam tersebut oleh ' . $bentrok);
         }
 
         try {
@@ -134,6 +143,7 @@ class JadwalTesController extends Controller
      */
     public function delete()
     {
+        self::requireAuth();
         header('Content-Type: application/json');
         
         $input = json_decode(file_get_contents('php://input'), true);
@@ -154,10 +164,43 @@ class JadwalTesController extends Controller
     }
 
     /**
+     * Cek apakah ruangan sudah terpakai pada tanggal & jam yang sama.
+     *
+     * Tabel `wawancara` menampung Tes Tertulis DAN Wawancara, jadi
+     * pengecekan sengaja TIDAK memfilter jenis_wawancara - satu ruangan
+     * tidak bisa dipakai dua kegiatan berbeda pada jam yang sama.
+     *
+     * @param int|null $abaikanId id jadwal yang sedang diedit (dikecualikan)
+     * @return string|null nama kegiatan yang bentrok, atau null bila aman
+     */
+    private static function cariBentrok($id_ruangan, $tanggal, $waktu, $abaikanId = null): ?string
+    {
+        $db = \App\Core\Model::getDB();
+        $sql = "SELECT m.nama_lengkap, w.jenis_wawancara
+                FROM wawancara w
+                JOIN mahasiswa m ON w.id_mahasiswa = m.id
+                WHERE w.id_ruangan = ? AND w.tanggal = ? AND w.waktu = ?";
+        $params = [$id_ruangan, $tanggal, $waktu];
+        if ($abaikanId !== null) {
+            $sql .= " AND w.id <> ?";
+            $params[] = $abaikanId;
+        }
+        $sql .= " LIMIT 1";
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if (!$row) {
+            return null;
+        }
+        return trim($row['nama_lengkap']) . ' (' . $row['jenis_wawancara'] . ')';
+    }
+
+    /**
      * AJAX Endpoint to update schedule
      */
     public function update()
     {
+        self::requireAuth();
         header('Content-Type: application/json');
         
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -173,6 +216,11 @@ class JadwalTesController extends Controller
 
         if (!$id || !$id_ruangan || !$tanggal || !$waktu || !$kegiatan) {
             self::jsonError('Lengkapi semua data');
+        }
+
+        $bentrok = self::cariBentrok($id_ruangan, $tanggal, $waktu, $id);
+        if ($bentrok !== null) {
+            self::jsonError('Ruangan sudah dipakai pada jam tersebut oleh ' . $bentrok);
         }
 
         try {
