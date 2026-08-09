@@ -81,6 +81,11 @@ class TesTulisController extends Controller {
 
     public function verifyToken() {
         header('Content-Type: application/json');
+
+        // Wajib login: tanpa ini token ujian bisa dicoba berulang oleh
+        // siapa pun tanpa sesi.
+        self::requireAuth();
+
         try {
             $inputToken = $_POST['token'] ?? '';
 

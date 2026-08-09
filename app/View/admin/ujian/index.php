@@ -36,7 +36,7 @@ $essayCount = $stats['essay_count'];
 ?>
 </div>
 
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-6 [&_.editor-toolbar]:!border-slate-200 [&_.editor-toolbar]:rounded-t-xl [&_.CodeMirror]:!border-slate-200 [&_.CodeMirror]:rounded-b-xl [&_.CodeMirror]:min-h-[200px] [&_.CodeMirror]:max-h-[400px] [&_.editor-statusbar]:hidden [&_.condition-render-markdown_img]:max-w-full [&_.condition-render-markdown_img]:max-h-[400px] [&_.condition-render-markdown_img]:object-contain [&_.condition-render-markdown_img]:rounded-xl [&_.condition-render-markdown_img]:my-2.5 [&_.condition-render-markdown_img]:border [&_.condition-render-markdown_img]:border-slate-200 [&_.condition-render-markdown_img]:block [&_.type-option.selected]:bg-blue-600/5 [&_.type-option.selected]:!border-blue-600 [&_.type-option.selected_.check-icon]:!block [&_.EasyMDEContainer]:z-[1055]">
+<main class="max-w-7xl mx-auto pt-0 pb-6 [&_.editor-toolbar]:!border-slate-200 [&_.editor-toolbar]:rounded-t-xl [&_.CodeMirror]:!border-slate-200 [&_.CodeMirror]:rounded-b-xl [&_.CodeMirror]:min-h-[200px] [&_.CodeMirror]:max-h-[400px] [&_.editor-statusbar]:hidden [&_.condition-render-markdown_img]:max-w-full [&_.condition-render-markdown_img]:max-h-[400px] [&_.condition-render-markdown_img]:object-contain [&_.condition-render-markdown_img]:rounded-xl [&_.condition-render-markdown_img]:my-2.5 [&_.condition-render-markdown_img]:border [&_.condition-render-markdown_img]:border-slate-200 [&_.condition-render-markdown_img]:block [&_.type-option.selected]:bg-blue-600/5 [&_.type-option.selected]:!border-blue-600 [&_.type-option.selected_.check-icon]:!block [&_.EasyMDEContainer]:z-[1055]">
 <div class="bank-list-view" id="bankListView">
         <!-- Stats Bar -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
@@ -145,7 +145,7 @@ $essayCount = $stats['essay_count'];
                                     <i class="bi bi-folder-fill text-sm"></i>
                                 </span>
                                 <span class="min-w-0">
-                                    <span class="block font-bold text-slate-700 text-[13px] leading-snug group-hover/nama:text-blue-600 transition-colors line-clamp-1">
+                                    <span class="bank-nama block font-bold text-slate-700 text-[13px] leading-snug group-hover/nama:text-blue-600 transition-colors line-clamp-1">
                                         <?= $namaBank ?>
                                     </span>
                                     <span class="block text-[11px] font-medium text-slate-400 leading-tight">
@@ -392,7 +392,7 @@ $essayCount = $stats['essay_count'];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
-            <div class="border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
+            <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
                 <h5 class="font-bold text-lg"><i class='bx bx-folder-plus mr-2'></i>Buat Bank Soal Baru</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
@@ -439,7 +439,7 @@ $essayCount = $stats['essay_count'];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
-            <div class="border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
+            <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
                 <h5 class="font-bold text-lg"><i class='bx bx-edit mr-2'></i>Edit Bank Soal</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
@@ -486,7 +486,7 @@ $essayCount = $stats['essay_count'];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100 max-h-[85vh] overflow-y-auto">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
-            <div class="border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
+            <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
                 <h5 class="font-bold text-lg"><i class='bx bx-plus-circle mr-2'></i>Tambah Soal Baru</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
@@ -575,7 +575,7 @@ $essayCount = $stats['essay_count'];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100 max-h-[85vh] overflow-y-auto">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
-            <div class="border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
+            <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
                 <h5 class="font-bold text-lg"><i class='bx bx-edit mr-2'></i>Edit Soal</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>

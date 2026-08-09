@@ -18,7 +18,7 @@ $result = $result ?? [];
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 <!-- Main Content -->
-<div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
+<div class="max-w-7xl mx-auto pt-0 pb-6">
 
     <!-- Table Container -->
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
@@ -117,7 +117,7 @@ $result = $result ?? [];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-2xl">
                 <h5 class="font-bold flex items-center gap-2" id="addNotificationLabel">
                     <i class="bi bi-send text-lg"></i>Kirim Notifikasi ke Peserta
                 </h5>
@@ -176,7 +176,7 @@ $result = $result ?? [];
     <div class="relative w-full max-w-4xl mx-auto h-[85vh] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full h-full flex flex-col rounded-2xl shadow-2xl overflow-hidden">
             <!-- Header dengan Background Gradient -->
-            <div class="relative bg-gradient-to-br from-primary to-secondary px-6 py-4 text-white overflow-hidden shrink-0">
+            <div class="relative bg-gradient-to-br from-primary to-secondary px-6 py-4 text-white overflow-hidden shrink-0 rounded-t-2xl">
                 <!-- Decorative Elements -->
                 <div class="absolute -top-10 -right-10 w-28 h-28 bg-white/10 rounded-full"></div>
                 <div class="absolute bottom-5 -left-10 w-20 h-20 bg-white/5 rounded-full"></div>
@@ -474,7 +474,7 @@ $result = $result ?? [];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-2xl">
                 <h5 class="font-bold flex items-center gap-2" id="sendMessageModalLabel">
                     <i class="bi bi-chat-dots text-lg"></i>Kirim Pesan
                 </h5>

@@ -31,7 +31,7 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+<main class="max-w-7xl mx-auto pb-8">
     <!-- 5 kolom: Upload Dokumen 2/5 (dipersempit), Riwayat 3/5 (diperlebar)
          supaya tabel riwayat punya ruang lebih lega. -->
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">

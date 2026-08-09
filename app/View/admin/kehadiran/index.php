@@ -14,7 +14,7 @@ $mahasiswaList = $mahasiswaList ?? [];
         $icon = 'bi bi-clipboard-check';
         require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
-    <div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
+    <div class="max-w-7xl mx-auto pt-0 pb-6">
 
 
         <?php if (empty($absensiList)): ?>
@@ -155,7 +155,7 @@ function renderStatusBadge($val) {
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-2xl">
                 <h5 class="font-bold flex items-center gap-2">
                     <i class="bi bi-person-plus text-lg"></i>
                     Tambah Data Kehadiran
@@ -247,7 +247,7 @@ function renderStatusBadge($val) {
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-primary to-secondary px-5 py-3 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-5 py-3 flex justify-between items-center text-white rounded-t-2xl">
                 <h5 class="font-bold flex items-center gap-2 text-base">
                     <i class="bi bi-card-checklist text-lg"></i>
                     Rekap Peserta
@@ -327,7 +327,7 @@ function renderStatusBadge($val) {
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white">
+            <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-2xl">
                 <h5 class="font-bold flex items-center gap-2">
                     <i class="bi bi-pencil-square text-lg"></i>
                     Edit Data Kehadiran

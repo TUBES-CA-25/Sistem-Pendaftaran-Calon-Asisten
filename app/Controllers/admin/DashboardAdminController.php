@@ -89,6 +89,10 @@ class DashboardAdminController extends Controller
 
     public static function updateKegiatan(): void
     {
+        // Endpoint admin: wajib login. Tanpa ini siapa pun bisa mengubah
+        // kegiatan lewat POST langsung tanpa sesi.
+        self::requireAuth();
+
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
 
@@ -129,6 +133,10 @@ class DashboardAdminController extends Controller
 
     public static function saveDeadline(): void
     {
+        // Endpoint admin: wajib login. Tanpa ini deadline seleksi bisa
+        // diubah siapa pun lewat POST langsung tanpa sesi.
+        self::requireAuth();
+
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
 
@@ -174,6 +182,9 @@ class DashboardAdminController extends Controller
     public static function getAdminActivities(): void
     {
         header('Content-Type: application/json');
+
+        // Endpoint admin: wajib login sebelum data kegiatan dibaca.
+        self::requireAuth();
         
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
@@ -290,10 +301,15 @@ class DashboardAdminController extends Controller
                     $date++;
                 }
             }
-            if ($hasDateInRow || $i === 0) {
-                $calendar[] = $week;
-            }
-            if ($date > $daysInMonth) break;
+            /* SELALU 6 baris, termasuk baris yang seluruhnya kosong.
+
+               Jumlah baris sebuah bulan bervariasi 4-6 tergantung tanggal 1
+               jatuh di hari apa. Dengan melewati baris kosong (dan break lebih
+               awal), tinggi kalender ikut berubah tiap ganti bulan sehingga
+               frame kartunya "melompat". Baris tetap 6 membuat tingginya
+               konsisten. Variabel $hasDateInRow tidak lagi dipakai untuk
+               menyaring, tetapi dibiarkan karena tidak mengganggu. */
+            $calendar[] = $week;
         }
 
         return $calendar;

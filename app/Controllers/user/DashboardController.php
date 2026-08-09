@@ -93,6 +93,9 @@ class DashboardController extends Controller {
     
     public static function getActivities() {
         header('Content-Type: application/json');
+
+        // Wajib login: data kegiatan tidak boleh dibaca anonim.
+        self::requireAuth();
         
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);

@@ -19,7 +19,7 @@ $nilai = $nilai ?? [];
             require_once __DIR__ . '/../../templates/components/PageHeader.php';
         ?>
 
-        <div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
+        <div class="max-w-7xl mx-auto pt-0 pb-6">
 
 
             <?php if (empty($nilai)): ?>
@@ -112,7 +112,7 @@ $nilai = $nilai ?? [];
     </div>
 
     <!-- View Detail (Inline) -->
-    <div id="view-detail" class="hidden max-w-7xl mx-auto px-4 py-6">
+    <div id="view-detail" class="hidden max-w-7xl mx-auto py-6">
         <!-- Compact Header -->
         <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-4 w-full xl:w-auto">

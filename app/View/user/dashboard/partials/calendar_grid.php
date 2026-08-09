@@ -100,13 +100,16 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
         </div>';
 }
 
-// Sel sisa agar baris terakhir tetap penuh
+/* Isi sampai GENAP 6 BARIS (42 sel), bukan hanya sampai akhir baris terakhir.
+
+   Jumlah baris sebuah bulan bervariasi 4-6 tergantung tanggal 1 jatuh di hari
+   apa (mis. Februari 2026 = 4 baris, Agustus 2026 = 6 baris). Kalau hanya
+   diisi sampai baris terakhir, tinggi kalender ikut berubah tiap ganti bulan
+   sehingga frame kartunya "melompat". Dengan selalu 42 sel, tingginya tetap. */
 $totalCells = $firstDay + $daysInMonth;
-$remainingCells = 7 - ($totalCells % 7);
-if ($remainingCells < 7) {
-    for ($i = 0; $i < $remainingCells; $i++) {
-        $html .= '<div class="aspect-square"></div>';
-    }
+$targetCells = 42; // 6 baris x 7 hari
+for ($i = $totalCells; $i < $targetCells; $i++) {
+    $html .= '<div class="aspect-square"></div>';
 }
 
 echo $html;

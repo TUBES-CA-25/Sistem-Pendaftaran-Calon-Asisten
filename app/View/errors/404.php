@@ -10,7 +10,7 @@
  */
 $pageTidakDikenal = $pageTidakDikenal ?? '';
 ?>
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+<main class="max-w-7xl mx-auto pb-8">
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-10 md:p-16 text-center">
 
         <div class="w-20 h-20 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-6">

@@ -22,7 +22,7 @@ $mySchedule = array_filter($wawancara, function($item) {
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+<main class="max-w-7xl mx-auto pb-8">
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
         <!-- Kotak "Cari jadwal" dihapus: fungsinya duplikat dengan kotak
              "Cari data" yang otomatis disuntik VanillaPaginator tepat di atas

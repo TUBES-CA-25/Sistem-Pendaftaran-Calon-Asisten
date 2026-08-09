@@ -59,7 +59,7 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
      overflow-hidden di sini, dropdown-nya terpotong (tertimbun konten
      halaman). Lingkaran dekorasi yang sengaja meluber tetap dipotong,
      tetapi oleh pembungkusnya sendiri di bawah ini. -->
-<nav class="w-[96%] lg:w-[98%] max-w-[1400px] mx-auto mt-0 mb-2.5 bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-lg shadow-blue-500/10 relative transition-all duration-300 py-3.5 px-4 md:py-4 md:px-6">
+<nav class="w-full max-w-7xl mx-auto mt-0 mb-2.5 bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-lg shadow-blue-500/10 relative transition-all duration-300 py-3.5 px-4 md:py-4 md:px-6">
     <!-- Background Decoration Container: overflow-hidden dipindah ke sini -->
     <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
         <div class="absolute -top-16 -right-16 w-80 h-80 bg-white/10 rounded-full"></div>

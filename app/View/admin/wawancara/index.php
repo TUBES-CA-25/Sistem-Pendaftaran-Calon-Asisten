@@ -20,7 +20,7 @@ $colors = ['#2f66f6'];
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
+<div class="max-w-7xl mx-auto pt-0 pb-6">
 
     <!-- Data Table -->
     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
@@ -115,7 +115,7 @@ $colors = ['#2f66f6'];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
-            <div class="border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
+            <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
                 <h5 class="font-bold text-lg" id="addJadwalModalLabel"><i class="bi bi-plus-circle me-2"></i>Tambah Jadwal</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
@@ -185,7 +185,7 @@ $colors = ['#2f66f6'];
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
-            <div class="border-b border-slate-100 bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
+            <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
                 <h5 class="font-bold text-lg" id="updateWawancaraModalLabel"><i class="bi bi-pencil-square me-2"></i>Update Wawancara</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>

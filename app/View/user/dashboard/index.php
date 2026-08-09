@@ -40,7 +40,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
     require_once __DIR__ . '/../../templates/components/PageHeader.php';
 ?>
 
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-3">
+<main class="max-w-7xl mx-auto pb-3">
 
     <!-- Tanpa items-start: kolom dibiarkan meregang (default `stretch`) supaya
          tinggi frame kiri dan kanan sejajar. Dengan items-start, tiap kolom
@@ -79,14 +79,43 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                 </div>
             <?php else: ?>
                 <!-- Announcement Coming Soon Card (Visible when closed and pending) -->
-                <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-blue-50 border border-blue-100/50 shadow-[0_2px_12px_-2px_rgba(37,99,235,0.12)] animate-fade-up" style="animation-delay: 0ms;">
+                <div class="relative overflow-hidden flex items-center gap-3 p-3.5 rounded-2xl bg-blue-50 border border-blue-100/50 shadow-[0_2px_12px_-2px_rgba(37,99,235,0.12)] animate-fade-up" style="animation-delay: 0ms;">
                     <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0 animate-dot-pulse">
                         <i class="bi bi-bell-fill text-white text-lg"></i>
                     </div>
-                    <div>
+                    <div class="relative z-10 pr-24 sm:pr-28">
                         <h6 class="font-bold text-blue-800 mb-1">Hasil Seleksi Sedang Diproses</h6>
                         <p class="text-sm text-slate-600">Pengumuman kelulusan akan ditampilkan di sini setelah seluruh tahapan seleksi berakhir. Tetap pantau!</p>
                     </div>
+
+                    <?php /* Ilustrasi papan-klip bercentang di sisi kanan.
+
+                             Digambar sebagai SVG inline, BUKAN <img> ke berkas atau
+                             CDN: Content-Security-Policy aplikasi ini membatasi
+                             sumber gambar, dan SVG inline juga bebas dari permintaan
+                             jaringan tambahan.
+
+                             pointer-events-none + aria-hidden supaya murni dekoratif
+                             dan tidak mengganggu klik maupun pembaca layar. */ ?>
+                    <span class="pointer-events-none absolute right-2 -bottom-1 w-24 sm:w-28 opacity-90 hidden sm:block" aria-hidden="true">
+                        <svg viewBox="0 0 120 96" fill="none" class="w-full h-auto">
+                            <!-- lingkaran latar lembut -->
+                            <circle cx="66" cy="46" r="40" fill="#dbeafe" opacity="0.85"/>
+                            <!-- papan klip -->
+                            <rect x="40" y="16" width="52" height="66" rx="7" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/>
+                            <rect x="54" y="10" width="24" height="12" rx="4" fill="#93c5fd"/>
+                            <!-- baris teks -->
+                            <rect x="50" y="36" width="32" height="4" rx="2" fill="#dbeafe"/>
+                            <rect x="50" y="46" width="24" height="4" rx="2" fill="#dbeafe"/>
+                            <!-- lencana centang -->
+                            <circle cx="76" cy="64" r="14" fill="#3b82f6"/>
+                            <path d="M69.5 64.5l4.5 4.5 8.5-9" stroke="#ffffff" stroke-width="3.2"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- pena -->
+                            <rect x="18" y="52" width="26" height="7" rx="3.5" transform="rotate(-28 18 52)" fill="#bfdbfe"/>
+                            <path d="M14 72l2-7 5 3z" fill="#93c5fd"/>
+                        </svg>
+                    </span>
                 </div>
             <?php endif; ?>
 
@@ -465,7 +494,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-gradient-to-r from-primary to-secondary text-white border-0 py-4 px-6 flex justify-between items-center">
+            <div class="bg-gradient-to-r from-primary to-secondary text-white border-0 py-4 px-6 flex justify-between items-center rounded-t-2xl">
                 <h5 class="font-bold text-base" id="customMessageModalLabel">
                     <i class="bi bi-envelope-fill me-2"></i>Pesan
                 </h5>
@@ -508,7 +537,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="border-0 py-4 px-6 flex justify-between items-center bg-slate-50 border-b border-slate-100">
+            <div class="border-0 py-4 px-6 flex justify-between items-center bg-slate-50 border-b border-slate-100 rounded-t-2xl">
                 <h5 class="font-bold text-slate-800 text-base" id="upcomingActivitiesModalLabel">Upcoming Activities</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-slate-400 hover:text-slate-600 hover:bg-slate-100"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>

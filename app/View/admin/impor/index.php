@@ -15,7 +15,7 @@ $bankSoalList = $data['bankSoalList'] ?? [];
         require_once __DIR__ . '/../../templates/components/PageHeader.php';
     ?>
 
-    <div class="max-w-7xl mx-auto px-4 pt-0 pb-6">
+    <div class="max-w-7xl mx-auto pt-0 pb-6">
         <!-- View: Import/Export -->
         <div id="contentImportExport" class="pb-12">
             <div class="flex flex-col gap-8">

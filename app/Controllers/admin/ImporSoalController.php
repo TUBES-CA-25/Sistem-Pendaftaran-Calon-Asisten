@@ -27,6 +27,13 @@ class ImporSoalController extends Controller
 
     public function downloadTemplate()
     {
+        // Endpoint ini mengirim CSV, bukan JSON - kegagalan dibalas teks polos
+        // supaya unduhan tidak rusak. Pola sama dengan exportSoal di bawah.
+        if (self::currentUserId() === null) {
+            header('HTTP/1.1 403 Forbidden');
+            die('User tidak terautentikasi. Silakan login kembali.');
+        }
+
         // Try to serve physical file if exists
         $rootPath = dirname(__DIR__, 3);
         $physicalFilePath = $rootPath . '/public/Assets/Downloads/template_soal.csv';

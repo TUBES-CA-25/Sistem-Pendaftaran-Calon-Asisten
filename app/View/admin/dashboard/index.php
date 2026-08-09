@@ -37,7 +37,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
 <!-- Main Content -->
 <?php /* Wrapper disamakan dengan 9 halaman admin lain; dashboard satu-satunya
          yang tidak punya pt-0 sehingga ada celah ekstra di bawah header. */ ?>
-<div class="max-w-7xl mx-auto px-4 pt-0 pb-3">
+<div class="max-w-7xl mx-auto pt-0 pb-3">
 
     <!-- Baris atas: statistik, satu baris selebar halaman (4 kolom sejajar) -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 mb-2.5">
@@ -684,9 +684,9 @@ foreach ($pendaftarPerAngkatan as $baris) {
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
     <div class="relative w-full max-w-[480px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
-            
+
             <!-- Header section (Gradient Blue to Cyan) -->
-            <div class="bg-gradient-to-br from-primary to-secondary p-6 pb-5 relative">
+            <div class="bg-gradient-to-br from-primary to-secondary p-6 pb-5 relative rounded-t-[24px]">
                 <button type="button" class="absolute top-3 right-3 w-8 h-8 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition-colors shadow-sm cursor-pointer border-0" data-modal-close aria-label="Tutup">
                     <i class="bi bi-x-lg text-xs"></i>
                 </button>

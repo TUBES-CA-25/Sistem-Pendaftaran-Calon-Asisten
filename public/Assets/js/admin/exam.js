@@ -445,11 +445,16 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
                         window.bankSoalList[bankIdx].poin_per_soal = formData.get('poin_per_soal');
                     }
                     
-                    // Update UI if in list view
-                    const cardTitle = document.querySelector(`#bank-card-${id} .fw-bold`);
-                    const cardDesc = document.querySelector(`#bank-card-${id} .text-secondary.small`);
+                    // Segarkan nama di baris tabel.
+                    //
+                    // Dulu memakai `.fw-bold` dan `.text-secondary.small` - keduanya
+                    // kelas Bootstrap yang sudah tidak ada sejak tampilan pindah ke
+                    // Tailwind, jadi nama tidak pernah ikut berubah sampai halaman
+                    // dimuat ulang. Sekarang memakai penanda khusus `.bank-nama`
+                    // yang tidak ikut berubah bila gayanya diubah lagi nanti.
+                    // Deskripsi tidak disegarkan karena tabel tidak menampilkannya.
+                    const cardTitle = document.querySelector(`#bank-card-${id} .bank-nama`);
                     if (cardTitle) cardTitle.textContent = formData.get('nama');
-                    if (cardDesc) cardDesc.textContent = formData.get('deskripsi');
                     
                     // Update UI if in detail view
                     if (window.currentBankId == id) {
