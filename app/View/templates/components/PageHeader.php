@@ -63,7 +63,7 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
      dibuang saat markup halaman disuntik sebagai isi tab (lihat
      penjadwalan.js) - halaman induk sudah punya headernya sendiri. Jangan
      dihapus; mengandalkan urutan <nav> atau nama kelas jauh lebih rapuh. -->
-<nav data-page-header class="w-full max-w-7xl mx-auto mt-0 mb-2.5 bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-lg shadow-blue-500/10 relative transition-all duration-300 py-3.5 px-4 md:py-4 md:px-6">
+<nav data-page-header class="w-full max-w-7xl mx-auto mt-0 mb-2.5 bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-lg shadow-blue-500/10 relative z-30 transition-all duration-300 py-3.5 px-4 md:py-4 md:px-6">
     <!-- Background Decoration Container: overflow-hidden dipindah ke sini -->
     <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
         <div class="absolute -top-16 -right-16 w-80 h-80 bg-white/10 rounded-full"></div>
@@ -114,7 +114,7 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
                     </button>
                     <!-- z-[1045]: harus di atas konten halaman DAN sidebar (z-[1040]),
                          tetapi tetap di bawah modal (z-[1050]). -->
-                    <ul data-dropdown-menu class="hidden absolute right-0 top-full z-[1045] border-0 shadow-2xl rounded-2xl p-0 overflow-hidden bg-white w-[340px] max-w-[90vw] mt-2 list-none">
+                    <ul data-dropdown-menu class="hidden z-[1045] border-0 shadow-2xl rounded-2xl p-0 overflow-hidden bg-white list-none" data-notif-panel>
                         <!-- bg-gray-50 SOLID (dulu bg-gray-50/85 semi-transparan):
                              dengan latar tembus, teks halaman di belakang dropdown
                              ikut terlihat sehingga tampak tumpang tindih. -->
@@ -162,13 +162,13 @@ if (!isset($notificationCount) && isset($notifikasi) && is_array($notifikasi)) {
             <?php if ($role === 'Admin'): ?>
                 <!-- Admin: Simple static display without dropdown -->
                 <div class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full py-1.5 px-3 md:px-4 transition-all duration-200">
-                    <img src="<?= $photo ?>" alt="Profile" class="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover border-2 border-white/60 bg-white" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/Rectangle.png'">
+                    <img src="<?= $photo ?>" alt="Profile" class="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover border-2 border-white/60 bg-white shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/Rectangle.png'">
                     <span class="text-white text-xs md:text-sm font-semibold tracking-wide truncate max-w-[100px] md:max-w-[150px] hidden sm:inline"><?= htmlspecialchars($userName) ?></span>
                 </div>
             <?php else: ?>
                 <!-- User: Simple static display without dropdown -->
                 <div class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full py-1.5 px-3 md:px-4 transition-all duration-200">
-                    <img src="<?= $photo ?>" alt="Profile" class="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover border-2 border-white/60 bg-white" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
+                    <img src="<?= $photo ?>" alt="Profile" class="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover border-2 border-white/60 bg-white shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
                     <span class="text-white text-xs md:text-sm font-semibold tracking-wide truncate max-w-[100px] md:max-w-[150px] hidden sm:inline"><?= htmlspecialchars($userName) ?></span>
                 </div>
             <?php endif; ?>

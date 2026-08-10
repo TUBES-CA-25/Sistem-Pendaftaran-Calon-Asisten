@@ -31,7 +31,7 @@ if (isset($photo) && is_array($photo) && !empty($photo)) {
         </div>
     </div>
 
-    <ul class="flex-grow py-4 list-none m-0 overflow-y-auto">
+    <ul class="flex-grow min-h-0 py-4 list-none m-0 overflow-y-auto">
         <li class="relative mx-3 my-1">
             <a href="<?= APP_URL ?>/dashboard" data-page="dashboard" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
                 <i class="bx bx-home text-lg shrink-0 w-6 flex justify-center"></i>

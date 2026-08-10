@@ -98,7 +98,7 @@
         }
     </style>
 </head>
-<body class="bg-auth flex items-center justify-center min-h-screen py-8 px-4 text-gray-800 relative overflow-x-hidden animate-page-fade">
+<body class="bg-auth flex items-start sm:items-center justify-center min-h-screen overflow-y-auto py-8 px-4 text-gray-800 relative overflow-x-hidden animate-page-fade">
 
     <!-- ===== BLOB LATAR (dekoratif) ===== -->
     <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">

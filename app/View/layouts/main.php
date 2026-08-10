@@ -157,6 +157,100 @@
         }
     </style>
 
+    <style>
+    /* Panel notifikasi.
+
+       Posisi & lebar ditulis sebagai CSS biasa, BUKAN kelas Tailwind arbitrer
+       (top-[4.5rem], sm:left-auto, dst). Play CDN mengompilasi kelas saat
+       runtime dan tidak selalu menyertakan varian arbitrer bersyarat, sehingga
+       panel bisa tetap memakai posisi lama lalu keluar layar di HP.
+
+       Di layar kecil panel ditambatkan ke tepi layar (fixed), bukan ke tombol
+       lonceng - di kanan lonceng masih ada blok profil sehingga right-0
+       mendorong panel melewati tepi kiri. */
+    [data-notif-panel] {
+        position: fixed;
+        left: 1rem;
+        right: 1rem;
+        top: 4.75rem;
+        width: auto;
+    }
+    [data-notif-panel].hidden { display: none; }
+
+    /* Toast yang sedang TERSEMBUNYI tidak boleh menangkap sentuhan.
+
+       #liveToast selalu ada di DOM dan memakai pointer-events-auto,
+       tetapi saat tidak aktif ia hanya opacity-0 - masih menempati
+       ruang di pojok kanan atas. Di layar sempit kotak 280px itu
+       menutupi tombol notifikasi, sehingga ketukan mengenai toast
+       dan tombol terasa mati. */
+    #liveToast[class*="opacity-0"] { pointer-events: none; }
+
+    /* Sidebar HP: buka/tutup.
+
+       translate-x-0 ditambahkan oleh sidebar.js saat runtime, sehingga
+       Play CDN tidak pernah melihatnya sebagai teks di sumber dan tidak
+       mengompilasinya. Akibatnya kelas terpasang tetapi transform tetap
+       -240px - sidebar tidak pernah muncul saat burger ditekan.
+       CSS biasa di bawah selalu berlaku. */
+    @media (max-width: 1023.98px) {
+        .sidebar.translate-x-0 { transform: translateX(0) !important; }
+        .sidebar.-translate-x-full { transform: translateX(-100%) !important; }
+    }
+
+    /* Tinggi sidebar memakai dvh, bukan vh.
+
+       Di peramban HP, 100vh dihitung TANPA memperhitungkan bilah alamat,
+       sehingga lebih tinggi dari area yang benar-benar terlihat. Footer
+       sidebar (tombol Logout) jadi terdorong ke bawah layar dan tidak
+       bisa dijangkau - sidebar sendiri tidak menggulung karena hanya
+       <ul> di dalamnya yang overflow-y-auto.
+
+       Baris 100vh dipertahankan sebagai cadangan untuk peramban lama
+       yang belum mengenal dvh. */
+    .sidebar {
+        /* Urutan penting: nilai terakhir yang DIDUKUNG peramban yang dipakai.
+           --app-vh diisi JS dari window.innerHeight (paling akurat, jalan di
+           semua peramban); dvh sebagai cadangan; vh sebagai cadangan terakhir. */
+        height: 100vh;
+        height: 100dvh;
+        height: var(--app-vh, 100vh);
+        overflow-y: auto;
+    }
+    @media (min-width: 640px) {
+        [data-notif-panel] {
+            position: absolute;
+            left: auto;
+            right: 0;
+            top: 100%;
+            width: 340px;
+            max-width: 340px;
+            margin-top: 0.5rem;
+        }
+    }
+    </style>
+    <script>
+    /* Tinggi viewport nyata untuk sidebar.
+
+       100vh di peramban HP tidak memperhitungkan bilah alamat, sehingga
+       footer sidebar (tombol Logout) terdorong ke bawah layar. Sebagian
+       peramban Android lama juga belum mengenal dvh, jadi tingginya diukur
+       langsung dari window.innerHeight.
+
+       Dipasang di <head> supaya nilainya sudah ada sebelum halaman dilukis;
+       resize & orientationchange menjaganya tetap benar saat bilah alamat
+       muncul/hilang atau layar diputar. */
+    (function () {
+        function setTinggiViewport() {
+            document.documentElement.style.setProperty(
+                '--app-vh', window.innerHeight + 'px'
+            );
+        }
+        setTinggiViewport();
+        window.addEventListener('resize', setTinggiViewport);
+        window.addEventListener('orientationchange', setTinggiViewport);
+    })();
+    </script>
 </head>
 
 <body class="animate-page-fade">

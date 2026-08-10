@@ -266,6 +266,16 @@
             return;
         }
 
+        // Menu di DALAM dropdown yang menavigasi (mis. daftar notifikasi)
+        // harus ikut menutup dropdown-nya. Tanpa ini halaman berpindah
+        // tetapi panel dropdown tetap menempel terbuka dan menutupi
+        // konten - paling terasa di layar HP karena panelnya selebar
+        // hampir seluruh layar.
+        if (e.target.closest('[data-dropdown-menu] [data-page]')) {
+            closeAllDropdowns();
+            return;
+        }
+
         // Klik di luar dropdown mana pun -> tutup semua
         if (!e.target.closest('[data-dropdown-menu]')) closeAllDropdowns();
     });

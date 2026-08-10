@@ -98,7 +98,7 @@
     <title>Pendaftaran Calon Asisten ICLABS</title>
 </head>
 
-<body class="bg-auth flex items-center justify-center min-h-screen py-5 hide-scroll text-gray-800 relative animate-page-fade">
+<body class="bg-auth flex items-start sm:items-center justify-center min-h-screen overflow-y-auto py-5 hide-scroll text-gray-800 relative animate-page-fade">
 
     <!-- ===== BLOB LATAR (dekoratif) ===== -->
     <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">

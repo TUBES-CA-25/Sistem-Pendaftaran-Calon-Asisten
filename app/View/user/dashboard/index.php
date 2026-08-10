@@ -252,7 +252,7 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                      (13020230306@student.umi.ac.id) dan tanpa ini teksnya meluber
                      keluar kartu. -->
                 <h5 class="font-bold text-slate-800 mb-0.5 text-sm break-words leading-snug"><?= htmlspecialchars($biodata['namaLengkap'] ?? $user['username'] ?? 'User') ?></h5>
-                <p class="text-xs text-slate-400 mb-4">Calon Asisten Lab</p>
+                <p class="text-xs text-slate-400 mb-4">Calon Asisten Laboratorium</p>
 
                 <!-- Edit Button -->
                 <button class="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 font-semibold text-sm rounded-xl transition duration-200" onclick="loadPage('biodata')">

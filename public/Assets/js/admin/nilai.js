@@ -78,7 +78,7 @@
         resetFilterButtons();
 
         // Loading State for Questions
-        dom.html(dom.qs('#soalJawabanList'), '<tr><td colspan="5" class="py-12 text-center text-slate-400">Memuat data...</td></tr>');
+        dom.html(dom.qs('#soalJawabanList'), '<tr><td colspan="1" class="py-12 text-center text-slate-400">Memuat data...</td></tr>');
 
         // Fetch Questions
         dom.postJSON(APP_URL + '/getsoaljawaban', { id: id }).then(function(response) {
@@ -106,6 +106,7 @@
                         const tipeSoal = item.status_soal || 'essay';
                         const isPilihanGanda = tipeSoal === 'pilihan_ganda';
 
+                        let statusBadge;
                         if (isCorrect) {
                             benarCount++;
                             if (isPilihanGanda) pgBenarCount++;
@@ -169,58 +170,66 @@
 
                         const hasImage = item.image_url && item.image_url.trim() !== '';
 
-                        let numberClasses = '';
+                        let numberClasses;
+                        let kartuBorder;
                         if (isCorrect) {
                             numberClasses = 'bg-emerald-100 text-emerald-800 border-emerald-300';
+                            kartuBorder = 'border-emerald-200';
                         } else if (!isAnswered) {
                             numberClasses = 'bg-slate-200 text-slate-800 border-slate-300';
+                            kartuBorder = 'border-slate-200';
                         } else {
                             numberClasses = 'bg-red-100 text-red-800 border-red-300';
+                            kartuBorder = 'border-red-200';
                         }
-                        let rowBg = 'bg-white hover:bg-slate-50';
-                        if (isCorrect) {
-                            rowBg = 'bg-emerald-50/40 hover:bg-emerald-50/80';
-                        } else if (isAnswered && !isCorrect) {
-                            rowBg = 'bg-red-50/40 hover:bg-red-50/80';
-                        }
-                        
+
+                        // Satu soal = satu KARTU, bukan baris tabel 5 kolom.
+                        //
+                        // Struktur <tr>/<td> dipertahankan karena VanillaPaginator
+                        // beroperasi pada baris tabel dan filter membaca data-tipe di
+                        // <tr>. Kartunya diletakkan di dalam satu <td> yang dijadikan
+                        // block, sehingga tata letaknya bebas dari kolom tabel.
                         html += `
-                            <tr class="soal-item transition-colors border-b border-slate-200 ${rowBg}" data-tipe="${tipeSoal}">
-                                <td class="p-4 align-top text-center">
-                                    <div class="w-8 h-8 mx-auto ${numberClasses} rounded-lg flex items-center justify-center font-bold text-sm shadow-sm border">${index + 1}</div>
-                                </td>
-                                <td class="p-4 align-top">
-                                    ${tipeBadge}
-                                </td>
-                                <td class="p-4 align-top">
-                                    ${hasImage ? `
-                                    <div class="mb-3">
-                                        <img src="${getImageUrl(item.image_url)}" alt="Gambar Soal ${index + 1}" class="max-w-xs h-auto max-h-48 rounded-xl border border-slate-200 object-cover shadow-sm">
+                            <tr class="soal-item block mb-4" data-tipe="${tipeSoal}">
+                                <td class="block p-0 border-0">
+                                    <div class="bg-white rounded-2xl border ${kartuBorder} shadow-sm overflow-hidden">
+                                        <div class="flex items-center gap-3 px-4 py-3 border-b border-slate-100 bg-slate-50/60">
+                                            <div class="w-8 h-8 ${numberClasses} rounded-lg flex items-center justify-center font-bold text-sm shadow-sm border shrink-0">${index + 1}</div>
+                                            ${tipeBadge}
+                                            <div class="ml-auto">${statusBadge}</div>
+                                        </div>
+
+                                        <div class="p-4">
+                                            ${hasImage ? `
+                                            <div class="mb-3">
+                                                <img src="${getImageUrl(item.image_url)}" alt="Gambar Soal ${index + 1}" class="max-w-full sm:max-w-sm h-auto max-h-56 rounded-xl border border-slate-200 object-contain">
+                                            </div>
+                                            ` : ''}
+                                            <div class="font-semibold text-slate-800 text-sm leading-relaxed whitespace-pre-wrap">${item.deskripsi}</div>
+
+                                            ${isPilihanGanda ? `
+                                            <div class="space-y-1.5 mt-4">
+                                                ${pilihanHTML}
+                                            </div>
+                                            ` : ''}
+                                        </div>
+
+                                        <div class="px-4 py-3 border-t border-slate-100 bg-slate-50/60 flex flex-col sm:flex-row gap-4">
+                                            <div class="sm:w-40 shrink-0">
+                                                <div class="text-blue-500 font-bold uppercase tracking-wider text-[10px] mb-1.5 flex items-center gap-1.5"><i class="bi bi-shield-check"></i> Kunci</div>
+                                                <div class="inline-block px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 font-bold text-sm rounded-lg">${item.jawaban}</div>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="text-slate-500 font-bold uppercase tracking-wider text-[10px] mb-1.5 flex items-center gap-1.5"><i class="bi bi-card-text"></i> Jawaban Peserta</div>
+                                                ${isAnswered
+                                                    ? (isPilihanGanda
+                                                        ? `<div class="inline-block px-3 py-1.5 ${isCorrect ? 'bg-emerald-50 text-emerald-800 border-emerald-400' : 'bg-red-50 text-red-800 border-red-400'} border font-bold text-sm rounded-lg">${item.jawaban_user}</div>`
+                                                        : `<div class="px-3 py-2 bg-white text-slate-700 border border-slate-200 text-sm rounded-lg whitespace-pre-wrap leading-relaxed">${item.jawaban_user}</div>`)
+                                                    : '<div class="inline-block px-3 py-1.5 bg-slate-100 text-slate-500 font-bold text-sm rounded-lg border border-slate-300 border-dashed">KOSONG</div>'
+                                                }
+                                            </div>
+                                        </div>
                                     </div>
-                                    ` : ''}
-                                    <div class="font-bold text-slate-800 text-sm mb-3">${item.deskripsi}</div>
-                                    
-                                    ${isPilihanGanda ? `
-                                    <div class="space-y-1.5 mt-3">
-                                        ${pilihanHTML}
-                                    </div>
-                                    ` : ''}
-                                </td>
-                                <td class="p-4 align-top space-y-4">
-                                    <div>
-                                        <div class="text-blue-500 font-bold uppercase tracking-wider text-[10px] mb-1.5 flex items-center gap-1.5"><i class="bi bi-shield-check"></i> Kunci</div>
-                                        <div class="inline-block px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 font-bold text-sm rounded-lg shadow-sm">${item.jawaban}</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-blue-600 font-bold uppercase tracking-wider text-[10px] mb-1.5 flex items-center gap-1.5"><i class="bi bi-card-text"></i> Jawaban</div>
-                                        ${isAnswered
-                                            ? `<div class="inline-block px-3 py-1.5 ${isCorrect ? 'bg-emerald-50 text-emerald-800 border-emerald-400' : 'bg-red-50 text-red-800 border-red-400'} border font-bold text-sm rounded-lg shadow-sm">${item.jawaban_user}</div>`
-                                            : '<div class="inline-block px-3 py-1.5 bg-slate-200 text-slate-500 font-bold text-sm rounded-lg border border-slate-300 border-dashed shadow-sm">KOSONG</div>'
-                                        }
-                                    </div>
-                                </td>
-                                <td class="p-4 align-top text-center">
-                                    ${statusBadge}
                                 </td>
                             </tr>
                         `;
@@ -247,14 +256,14 @@
                         window.vp_soal = new VanillaPaginator('soalJawabanTable', { defaultPerPage: 10, searchable: true });
                     }
                 } else {
-                    dom.html(dom.qs('#soalJawabanList'), '<tr><td colspan="5" class="py-12 text-center text-slate-400">Tidak ada data soal dan jawaban.</td></tr>');
+                    dom.html(dom.qs('#soalJawabanList'), '<tr><td colspan="1" class="py-12 text-center text-slate-400">Tidak ada data soal dan jawaban.</td></tr>');
                     ['#statTotal','#statBenar','#statSalah','#statTidakDijawab','#statPgBenar','#statPgSalah']
                         .forEach(function(sel) { dom.text(dom.qs(sel), 0); });
 
                     if (window.vp_soal) window.vp_soal.updateData();
                 }
         }).catch(function() {
-            dom.html(dom.qs('#soalJawabanList'), '<tr><td colspan="5" class="py-12 text-center text-red-500">Gagal memuat data.</td></tr>');
+            dom.html(dom.qs('#soalJawabanList'), '<tr><td colspan="1" class="py-12 text-center text-red-500">Gagal memuat data.</td></tr>');
         });
 
         dom.addClass(dom.qs('#view-list'), 'hidden');

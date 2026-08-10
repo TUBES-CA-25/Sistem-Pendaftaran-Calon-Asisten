@@ -127,14 +127,6 @@ $nilai = $nilai ?? [];
             </div>
             
             <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto justify-start xl:justify-end">
-                <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-600">
-                    <span class="text-slate-500">PG:</span>
-                    <span class="text-emerald-600 flex items-center gap-1"><i class="bi bi-check-circle-fill"></i> <span id="statPgBenar">0</span></span>
-                    <span class="text-red-600 flex items-center gap-1 ml-1"><i class="bi bi-x-circle-fill"></i> <span id="statPgSalah">0</span></span>
-                </div>
-
-                <div class="w-px h-6 bg-slate-200 hidden sm:block"></div>
-
                 <div class="flex items-center gap-2">
                     <div class="text-xs font-semibold text-slate-500">Nilai Akhir: <span id="detailTotalNilai" class="text-blue-600 font-bold text-sm">-</span></div>
                     <form id="formNilaiAkhir" class="flex items-center gap-2 border-l border-slate-200 pl-3 ml-1">
@@ -147,40 +139,99 @@ $nilai = $nilai ?? [];
 
                 <div class="w-px h-6 bg-slate-200 hidden md:block"></div>
 
-                <!-- Filters -->
-                <div class="bg-slate-50 p-1 rounded-lg border border-slate-200 flex">
-                    <button class="filter-btn px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-md transition" data-filter="semua">Semua</button>
-                    <button class="filter-btn px-3 py-1.5 text-slate-600 hover:bg-slate-200 text-xs font-semibold rounded-md transition" data-filter="pilihan_ganda">Pil. Ganda</button>
-                    <button class="filter-btn px-3 py-1.5 text-slate-600 hover:bg-slate-200 text-xs font-semibold rounded-md transition" data-filter="essay">Essay</button>
+                <?php /* Kelas warna sengaja TIDAK ditulis di sini. resetFilterButtons()
+                        di nilai.js yang memasang FILTER_ON/FILTER_OFF; kalau markup ikut
+                        membawa kelas warna sendiri, keduanya menumpuk dan tombol aktif
+                        tampil keliru pada klik pertama. */ ?>
+                <div class="bg-slate-50 p-1 rounded-lg border border-slate-200 flex gap-1">
+                    <button class="filter-btn px-3 py-1.5 border text-xs font-semibold rounded-md transition" data-filter="semua">Semua</button>
+                    <button class="filter-btn px-3 py-1.5 border text-xs font-semibold rounded-md transition" data-filter="pilihan_ganda">Pil. Ganda</button>
+                    <button class="filter-btn px-3 py-1.5 border text-xs font-semibold rounded-md transition" data-filter="essay">Essay</button>
                 </div>
             </div>
         </div>
 
-        <!-- Soal Jawaban Section (Table) -->
-        <div class="space-y-4 pb-10">
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse no-datatable" id="soalJawabanTable">
-                        <thead>
-                            <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 text-xs uppercase tracking-wider">
-                                <th class="p-4 font-bold w-16 text-center">No</th>
-                                <th class="p-4 font-bold w-28">Tipe</th>
-                                <th class="p-4 font-bold min-w-[300px]">Soal & Pilihan</th>
-                                <th class="p-4 font-bold w-40">Kunci & Jawaban</th>
-                                <th class="p-4 font-bold w-32 text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="soalJawabanList" class="divide-y divide-slate-100">
-                            <tr>
-                                <td colspan="5" class="py-12 text-center">
-                                    <i class="bi bi-hourglass-split text-4xl text-slate-300 mb-3 block"></i>
-                                    <p class="text-slate-500 font-medium">Memuat data pekerjaan...</p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <?php /* Kartu statistik. Keempat id di bawah SUDAH ditulis nilai.js sejak lama
+                (#statTotal/#statBenar/#statSalah/#statTidakDijawab) tetapi elemennya
+                tidak pernah ada di markup, jadi angkanya tidak pernah terlihat.
+                #statPgBenar / #statPgSalah dipertahankan sebagai rincian PG. */ ?>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+                        <i class="bi bi-list-ol text-lg"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Soal</div>
+                        <div class="text-2xl font-bold text-slate-800 leading-tight" id="statTotal">0</div>
+                    </div>
                 </div>
             </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <i class="bi bi-check-circle-fill text-lg"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Benar</div>
+                        <div class="text-2xl font-bold text-emerald-600 leading-tight" id="statBenar">0</div>
+                        <div class="text-[10px] font-semibold text-slate-400">PG: <span id="statPgBenar">0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+                        <i class="bi bi-x-circle-fill text-lg"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Salah</div>
+                        <div class="text-2xl font-bold text-red-600 leading-tight" id="statSalah">0</div>
+                        <div class="text-[10px] font-semibold text-slate-400">PG: <span id="statPgSalah">0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                        <i class="bi bi-pencil-square text-lg"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Tidak Dijawab</div>
+                        <div class="text-2xl font-bold text-amber-600 leading-tight" id="statTidakDijawab">0</div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <?php /* Daftar pekerjaan peserta.
+
+                Struktur <table> DIPERTAHANKAN meski isinya kini berupa kartu:
+                VanillaPaginator beroperasi pada baris tabel, dan filter tipe soal
+                membaca data-tipe di <tr>. Mengganti ke <div> murni akan mematikan
+                paginasi sekaligus filter.
+
+                Header disembunyikan karena tiap baris hanya berisi SATU sel kartu -
+                judul kolom per-field sudah tidak punya arti. */ ?>
+        <div class="pb-10">
+            <table class="w-full border-collapse no-datatable" id="soalJawabanTable">
+                <thead class="hidden">
+                    <tr><th>Soal</th></tr>
+                </thead>
+                <tbody id="soalJawabanList">
+                    <tr>
+                        <td class="py-12 text-center">
+                            <i class="bi bi-hourglass-split text-4xl text-slate-300 mb-3 block"></i>
+                            <p class="text-slate-500 font-medium">Memuat data pekerjaan...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </main>
