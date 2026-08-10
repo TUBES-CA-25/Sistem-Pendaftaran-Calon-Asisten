@@ -239,7 +239,7 @@ class BankSoalController extends Controller
             
             // Pass variable and include view
             ob_start();
-            include __DIR__ . '/../../View/admin/ujian/partials/soal_list.php';
+            include __DIR__ . '/../../View/admin/bank-soal/partials/soal_list.php';
             $html = ob_get_clean();
             
             self::jsonSuccess([

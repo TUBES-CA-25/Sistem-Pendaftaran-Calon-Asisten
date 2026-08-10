@@ -1,5 +1,5 @@
 /**
- * admin/wawancara.js
+ * admin/penjadwalan/wawancara.js
  *
  * Dipindahkan dari app/View/admin/wawancara/index.php agar berkas view tetap ringkas
  * (markup saja) dan skrip halaman bisa di-cache browser.

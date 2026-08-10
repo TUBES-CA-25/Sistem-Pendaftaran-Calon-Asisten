@@ -1,5 +1,5 @@
 /**
- * admin/jadwaltes.js
+ * admin/penjadwalan/tes.js
  *
  * Dipindahkan dari app/View/admin/jadwaltes/index.php agar berkas view tetap ringkas
  * (markup saja) dan skrip halaman bisa di-cache browser.

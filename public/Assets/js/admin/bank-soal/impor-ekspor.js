@@ -1,8 +1,13 @@
 /**
- * Exam Import/Export JavaScript
- * Handles import/export functionality and dropdown updates
+ * admin/bank-soal/impor-ekspor.js
+ *
+ * Tab "Import & Export" pada halaman Bank Soal.
+ * Mengunggah soal massal dari berkas Excel/CSV, mengunduh soal ke Excel,
+ * mengunduh berkas template, dan menyegarkan dropdown bank soal setelah
+ * data berubah.
+ *
+ * Dulu bernama bank-soal-import.js padahal juga menangani EXPORT.
  */
-
 // Import Soal
 window.importSoal = function() {
     const bankId = document.getElementById('selectedBankSoalImport').value;

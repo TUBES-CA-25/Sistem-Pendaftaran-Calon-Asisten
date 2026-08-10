@@ -219,5 +219,5 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
     </div>
 </div>
 
-<script src="<?= APP_URL ?>/Assets/js/admin/presentasi.js?v=<?= time() ?>"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/penjadwalan/presentasi.js?v=<?= time() ?>"></script>
 

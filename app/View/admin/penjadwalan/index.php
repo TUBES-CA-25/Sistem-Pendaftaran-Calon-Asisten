@@ -100,4 +100,4 @@ $tabs = [
 <script>
     window.baseUrl = '<?= APP_URL ?>';
 </script>
-<script src="<?= APP_URL ?>/Assets/js/admin/penjadwalan.js?v=<?= time() ?>"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/penjadwalan/index.js?v=<?= time() ?>"></script>

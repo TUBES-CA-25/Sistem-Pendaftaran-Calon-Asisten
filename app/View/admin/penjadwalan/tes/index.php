@@ -225,5 +225,5 @@ $bankSoalList = $data['bankSoalList'] ?? [];
     </div>
 </div>
 
-<script src="<?= APP_URL ?>/Assets/js/admin/jadwaltes.js?v=<?= time() ?>"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/penjadwalan/tes.js?v=<?= time() ?>"></script>
 

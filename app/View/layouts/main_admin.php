@@ -385,20 +385,20 @@
         $pageViewMap = [
             'dashboard' => 'admin/dashboard/index.php',
             'lihatPeserta' => 'admin/peserta/index.php',
-            'daftarKehadiran' => 'admin/kehadiran/index.php',
+            'daftarKehadiran' => 'admin/rekap/index.php',
             'lihatnilai' => 'admin/nilai/index.php',
-            'tesTulis' => 'admin/ujian/index.php',
-            'bankSoal' => 'admin/ujian/index.php',
+            'tesTulis' => 'admin/bank-soal/index.php',
+            'bankSoal' => 'admin/bank-soal/index.php',
             // Import/Export kini menjadi tab di dalam halaman Bank Soal.
             // Rute lama tetap dipetakan ke view yang sama supaya tautan
             // yang sudah tersebar tidak mati.
-            'importSoal' => 'admin/ujian/index.php',
+            'importSoal' => 'admin/bank-soal/index.php',
             // Halaman induk Penjadwalan (tab: tes tertulis -> presentasi ->
             // wawancara). Rute lama ketiganya tetap dipetakan ke halaman induk
             // dan mendarat di tabnya masing-masing supaya tautan lama hidup.
             'penjadwalan' => 'admin/penjadwalan/index.php',
             'jadwaltes' => 'admin/penjadwalan/index.php',
-            'pengajuanJudul' => 'admin/judul/index.php',
+            'pengajuanJudul' => 'admin/pengajuan-judul/index.php',
             // Keduanya juga mendarat di halaman induk saat dibuka langsung.
             // Aman terhadap rekursi: peta ini hanya dipakai pada pemuatan
             // PENUH, sedangkan tab mengambil isinya dengan header AJAX yang

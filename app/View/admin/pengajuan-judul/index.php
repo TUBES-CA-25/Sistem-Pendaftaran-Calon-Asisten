@@ -163,5 +163,5 @@ $mahasiswaList = $mahasiswaList ?? [];
     </div>
 </div>
 
-<script src="<?= APP_URL ?>/Assets/js/admin/judul.js?v=<?= time() ?>"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/pengajuan-judul.js?v=<?= time() ?>"></script>
 

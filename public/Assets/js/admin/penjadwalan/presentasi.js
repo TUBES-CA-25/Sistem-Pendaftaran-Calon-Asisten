@@ -1,5 +1,5 @@
 /**
- * admin/presentasi.js
+ * admin/penjadwalan/presentasi.js
  *
  * Dipindahkan dari app/View/admin/presentasi/index.php agar berkas view tetap ringkas
  * (markup saja) dan skrip halaman bisa di-cache browser.

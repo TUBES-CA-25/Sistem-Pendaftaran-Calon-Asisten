@@ -222,7 +222,7 @@ class HomeController extends Controller
                     break;
                 case 'daftarKehadiran':
                     $data = array_merge($sidebarData, $this->getDaftarHadirData());
-                    View::render('index', 'admin/kehadiran', $data);
+                    View::render('index', 'admin/rekap', $data);
                     break;
                 case 'presentasi': // Fallback or user role? Admin specific logic below
                     $data = array_merge($sidebarData, $this->getPresentasiAdminData());
@@ -230,7 +230,7 @@ class HomeController extends Controller
                     break;
                 case 'pengajuanJudul':
                     $data = array_merge($sidebarData, $this->getPengajuanJudulData());
-                    View::render('index', 'admin/judul', $data);
+                    View::render('index', 'admin/pengajuan-judul', $data);
                     break;
                 case 'jadwalPresentasi':
                     $data = array_merge($sidebarData, $this->getJadwalPresentasiData());
@@ -247,7 +247,7 @@ class HomeController extends Controller
                 case 'tesTulis':
                 case 'bankSoal':
                     $data = array_merge($sidebarData, $this->getTesTulisAdminData());
-                    View::render('index', 'admin/ujian', $data);
+                    View::render('index', 'admin/bank-soal', $data);
                     break;
                 // Import/Export tidak lagi berdiri sebagai halaman sendiri -
                 // isinya menjadi tab di halaman Bank Soal. Rute lama tetap
@@ -256,7 +256,7 @@ class HomeController extends Controller
                 case 'importSoal':
                     $data = array_merge($sidebarData, $this->getTesTulisAdminData());
                     $data['tabAwal'] = 'impor';
-                    View::render('index', 'admin/ujian', $data);
+                    View::render('index', 'admin/bank-soal', $data);
                     break;
                 case 'wawancara':
                     $data = array_merge($sidebarData, $this->getWawancaraAdminData());

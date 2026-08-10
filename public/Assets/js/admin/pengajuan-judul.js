@@ -1,5 +1,5 @@
 /**
- * admin/judul.js
+ * admin/pengajuan-judul.js
  *
  * Dipindahkan dari app/View/admin/judul/index.php agar berkas view tetap ringkas
  * (markup saja) dan skrip halaman bisa di-cache browser.

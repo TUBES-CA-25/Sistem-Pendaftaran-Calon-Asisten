@@ -1,8 +1,15 @@
 /**
- * Exam/Bank Soal Admin JavaScript
- * Handles all interactions for the Bank Soal management page
+ * admin/bank-soal/index.js
+ *
+ * LOGIKA UTAMA halaman Bank Soal: kelola bank soal dan isinya.
+ * Membuka rincian bank, memuat daftar soal, tambah/ubah/hapus bank,
+ * tambah/ubah/hapus soal, aktifkan-nonaktifkan bank, dan filter.
+ *
+ * Pembagian berkas di halaman ini:
+ *   bank-soal.js               <- INI: aksi data (CRUD bank & soal)
+ *   bank-soal-editor.js        editor teks soal (EasyMDE) + pratinjau gambar
+ *   bank-soal-import-export.js tab Import & Export berkas Excel/CSV
  */
-
 // Global Variables
 window.currentBankId = null;
 window.currentBankSoal = [];

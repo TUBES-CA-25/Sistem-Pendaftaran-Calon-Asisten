@@ -254,5 +254,5 @@ $colors = ['#2f66f6'];
     </div>
 </div>
 
-<script src="<?= APP_URL ?>/Assets/js/admin/wawancara.js?v=<?= time() ?>"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/penjadwalan/wawancara.js?v=<?= time() ?>"></script>
 

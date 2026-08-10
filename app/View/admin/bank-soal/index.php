@@ -931,7 +931,7 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
 </script>
 
 <!-- Load External JavaScript -->
-<script src="<?= APP_URL ?>/Assets/js/admin/exam-import.js"></script>
-<script src="<?= APP_URL ?>/Assets/js/admin/exam.js"></script>
-<script src="<?= APP_URL ?>/Assets/js/admin/exam-ui.js"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/bank-soal/impor-ekspor.js"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/bank-soal/index.js"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/bank-soal/editor.js"></script>
 

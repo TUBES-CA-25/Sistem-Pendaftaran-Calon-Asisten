@@ -1,5 +1,5 @@
 /**
- * admin/penjadwalan.js
+ * admin/penjadwalan/index.js
  *
  * Menggerakkan tab pada halaman Penjadwalan (Tes Tertulis -> Presentasi ->
  * Wawancara).

@@ -2,7 +2,7 @@
 /**
  * Daftar soal dalam bentuk TABEL.
  *
- * Kontrak yang WAJIB dipertahankan (dipakai admin/exam.js):
+ * Kontrak yang WAJIB dipertahankan (dipakai admin/bank-soal/index.js):
  *  - Tiap baris  : <tr class="card" data-id="<id>" data-type="<status_soal>">
  *                  · data-type              -> window.filterSoal() (toggle 'hidden')
  *                  · class card + data-id   -> window.editSoal() / window.deleteSoal()

@@ -1,3 +1,16 @@
+/**
+ * admin/bank-soal/editor.js
+ *
+ * EDITOR INPUT SOAL pada halaman Bank Soal.
+ * Menyalakan EasyMDE (editor teks berformat) di kolom deskripsi soal pada
+ * modal Tambah & Edit, serta pratinjau gambar sebelum diunggah.
+ *
+ * Hanya mengurus tampilan form soal - tidak menyentuh data. Aksi simpan,
+ * ubah, dan hapus ada di bank-soal.js.
+ *
+ * Dulu bernama bank-soal-ui.js. Nama itu terlalu umum: isinya bukan UI
+ * halaman secara keseluruhan, melainkan khusus editor input soal.
+ */
 // Initialize EasyMDE
 document.addEventListener('DOMContentLoaded', function() {
     // Options matching user screenshot

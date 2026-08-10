@@ -458,5 +458,5 @@ function renderStatusBadge($val) {
     </div>
 </div>
 
-<script src="<?= APP_URL ?>/Assets/js/admin/kehadiran.js?v=<?= time() ?>"></script>
+<script src="<?= APP_URL ?>/Assets/js/admin/rekap.js?v=<?= time() ?>"></script>
 
