@@ -44,57 +44,30 @@ $userName = $userName ?? 'Admin';
         </li>
         
         <li class="relative mx-3 my-1">
-            <a href="#" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline dropdown-toggle group">
-                <div class="flex items-center gap-3">
-                    <i class="bi bi-journal-text text-lg shrink-0 w-6 flex justify-center"></i>
-                    <span class="whitespace-nowrap">Bank Soal</span>
-                </div>
-                <i class="bx bx-chevron-down text-lg transition-transform duration-300 group-[.show]:rotate-180"></i>
+            <!--
+                Dulu ini dropdown berisi "Daftar Soal" dan "Import/Export".
+                Import/Export kini menjadi tab di dalam halaman Bank Soal,
+                menyisakan satu anak saja - dropdown untuk satu tujuan hanya
+                menambah klik, jadi diratakan menjadi menu langsung.
+                Rute /importSoal tetap hidup dan membuka tab tersebut.
+            -->
+            <a href="<?= APP_URL ?>/bankSoal" data-page="bankSoal" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
+                <i class="bi bi-journal-text text-lg shrink-0 w-6 flex justify-center"></i>
+                <span class="whitespace-nowrap">Bank Soal</span>
             </a>
-            <ul class="submenu list-none p-0 m-0 border-l-2 border-slate-200 ml-7 pl-2 mt-1">
-                <li class="relative my-0.5">
-                    <a href="<?= APP_URL ?>/bankSoal" data-page="bankSoal" class="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-[#1d4ed8] transition-all text-xs font-medium no-underline">
-                        <i class='bx bx-list-ul text-sm shrink-0 w-4 flex justify-center'></i>
-                        <span class="whitespace-nowrap">Daftar Soal</span>
-                    </a>
-                </li>
-                <li class="relative my-0.5">
-                    <a href="<?= APP_URL ?>/importSoal" data-page="importSoal" class="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-[#1d4ed8] transition-all text-xs font-medium no-underline">
-                        <i class='bx bx-transfer text-sm shrink-0 w-4 flex justify-center'></i>
-                        <span class="whitespace-nowrap">Import/Export</span>
-                    </a>
-                </li>
-            </ul>
         </li>
         
         <li class="relative mx-3 my-1">
-            <a href="#" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline dropdown-toggle group">
-                <div class="flex items-center gap-3">
-                    <i class="bi bi-calendar-event text-lg shrink-0 w-6 flex justify-center"></i>
-                    <span class="whitespace-nowrap">Penjadwalan</span>
-                </div>
-                <i class="bx bx-chevron-down text-lg transition-transform duration-300 group-[.show]:rotate-180"></i>
+            <!--
+                Dulu dropdown berisi Tes Tertulis, Presentasi, dan Wawancara.
+                Ketiganya kini menjadi tab di dalam satu halaman Penjadwalan,
+                diurutkan sesuai tahapan seleksi. Rute lama masing-masing tetap
+                hidup dan mendarat di tabnya sendiri.
+            -->
+            <a href="<?= APP_URL ?>/penjadwalan" data-page="penjadwalan" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
+                <i class="bi bi-calendar-event text-lg shrink-0 w-6 flex justify-center"></i>
+                <span class="whitespace-nowrap">Penjadwalan</span>
             </a>
-            <ul class="submenu list-none p-0 m-0 border-l-2 border-slate-200 ml-7 pl-2 mt-1">
-                <li class="relative my-0.5">
-                    <a href="<?= APP_URL ?>/jadwaltes" data-page="jadwaltes" class="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-[#1d4ed8] transition-all text-xs font-medium no-underline">
-                        <i class='bx bx-edit text-sm shrink-0 w-4 flex justify-center'></i>
-                        <span class="whitespace-nowrap">Tes Tertulis</span>
-                    </a>
-                </li>
-                <li class="relative my-0.5">
-                    <a href="<?= APP_URL ?>/jadwalPresentasi" data-page="jadwalPresentasi" class="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-[#1d4ed8] transition-all text-xs font-medium no-underline">
-                        <i class='bx bx-slideshow text-sm shrink-0 w-4 flex justify-center'></i>
-                        <span class="whitespace-nowrap">Presentasi</span>
-                    </a>
-                </li>
-                <li class="relative my-0.5">
-                    <a href="<?= APP_URL ?>/wawancara" data-page="wawancara" class="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-[#1d4ed8] transition-all text-xs font-medium no-underline">
-                        <i class='bx bx-user-voice text-sm shrink-0 w-4 flex justify-center'></i>
-                        <span class="whitespace-nowrap">Wawancara</span>
-                    </a>
-                </li>
-            </ul>
         </li>
         
         <li class="relative mx-3 my-1">

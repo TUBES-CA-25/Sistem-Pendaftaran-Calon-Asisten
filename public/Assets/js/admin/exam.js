@@ -21,6 +21,9 @@ window.openBankDetail = function(bankId, bankName) {
     document.getElementById('bankDetailView').classList.remove('hidden');
     document.getElementById('bankDetailView').classList.add('active'); // legacy
     if(document.getElementById('pageHeaderWrapper')) document.getElementById('pageHeaderWrapper').classList.add('hidden');
+    // Sembunyikan tab Daftar/Import saat masuk rincian satu bank - di sini
+    // pengguna sedang mengelola isi bank, bukan berpindah antar bagian.
+    if(document.getElementById('soalTabs')) document.getElementById('soalTabs').classList.add('hidden');
     document.getElementById('detailBankTitle').textContent = bankName;
     
     // Update badge status based on bank data
@@ -54,6 +57,7 @@ window.closeBankDetail = function() {
     document.getElementById('bankListView').classList.remove('hidden');
     document.getElementById('bankListView').classList.remove('hidden'); // legacy
     if(document.getElementById('pageHeaderWrapper')) document.getElementById('pageHeaderWrapper').classList.remove('hidden');
+    if(document.getElementById('soalTabs')) document.getElementById('soalTabs').classList.remove('hidden');
     
     // Show Create Bank Button
     const btnCreate = document.getElementById('btnCreateBank');

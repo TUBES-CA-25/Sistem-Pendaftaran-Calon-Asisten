@@ -26,9 +26,22 @@ class Absensi extends Model {
         $this->presentasi = $presentasi;
     }
     public function getAbsensi() {
+        // Kolom jadwal_* menandai apakah peserta sudah dijadwalkan pada tiap
+        // tahap. Dipakai antarmuka untuk menonaktifkan pilihan Hadir pada
+        // tahap yang belum ada jadwalnya; aturan yang sama divalidasi ulang
+        // di RekapKehadiranController::requirePunyaJadwal().
+        //
+        // id_mahasiswa diambil dari m.id, BUKAN a.id_mahasiswa.
+        //
+        // Query ini LEFT JOIN dari mahasiswa, jadi peserta yang belum punya
+        // baris absensi tetap tampil - tetapi seluruh kolom `a.*` bernilai
+        // NULL untuk mereka, termasuk a.id_mahasiswa. Akibatnya tombol Edit
+        // mengirim mhsId kosong dan server menolak dengan "ID Mahasiswa tidak
+        // valid", sehingga kehadiran peserta baru tidak pernah bisa diisi.
+        // m.id selalu ada karena tabel mahasiswa yang menjadi sisi kiri join.
         $sql = "SELECT
         a.id,
-        a.id_mahasiswa,
+        m.id AS id_mahasiswa,
                     m.nama_lengkap,
                     m.stambuk,
                     m.foto_profil,
@@ -40,7 +53,19 @@ class Absensi extends Model {
                     COALESCE(na.total_nilai, na.nilai) as nilai_akhir,
                     bm.accepted as berkas_status,
                     bm.foto as berkas_foto,
-                    m.status_akhir
+                    m.status_akhir,
+                    (SELECT COUNT(*) FROM wawancara w
+                       WHERE w.id_mahasiswa = m.id
+                         AND w.jenis_wawancara LIKE 'Tes Tertulis%') AS jadwal_tes,
+                    (SELECT COUNT(*) FROM jadwal_presentasi jp
+                       JOIN presentasi p2 ON jp.id_presentasi = p2.id
+                       WHERE p2.id_mahasiswa = m.id) AS jadwal_presentasi,
+                    (SELECT COUNT(*) FROM wawancara w
+                       WHERE w.id_mahasiswa = m.id
+                         AND w.jenis_wawancara LIKE '%lab I') AS jadwal_wawancara1,
+                    (SELECT COUNT(*) FROM wawancara w
+                       WHERE w.id_mahasiswa = m.id
+                         AND w.jenis_wawancara LIKE '%lab II') AS jadwal_wawancara2
                 FROM mahasiswa m
                 LEFT JOIN " . self::$table . " a ON m.id = a.id_mahasiswa
                 LEFT JOIN nilai_akhir na ON m.id = na.id_mahasiswa

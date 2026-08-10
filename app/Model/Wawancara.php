@@ -37,11 +37,24 @@ class Wawancara extends Model
 
     public function getAllWawancaraOnly()
     {
-        $sql = "SELECT w.id, w.id_mahasiswa, m.nama_lengkap, m.stambuk, r.nama as ruangan, w.jenis_wawancara, w.waktu, w.tanggal, w.id_ruangan,
+        // LEFT JOIN ke ruangan, bukan JOIN.
+        //
+        // Tidak ada foreign key dari wawancara.id_ruangan ke ruangan.id, jadi
+        // menghapus sebuah ruangan meninggalkan jadwal yang menunjuk id yang
+        // sudah tidak ada. Dengan INNER JOIN baris itu hilang total dari
+        // daftar - admin tidak bisa melihat apalagi menghapusnya, padahal
+        // jadwalnya tetap terhitung saat pengecekan bentrok slot. Akibatnya
+        // ruangan terlihat kosong tetapi menolak dipakai.
+        //
+        // COALESCE memberi label yang jelas supaya barisnya bisa dikenali dan
+        // diperbaiki, bukan tampil sebagai sel kosong.
+        $sql = "SELECT w.id, w.id_mahasiswa, m.nama_lengkap, m.stambuk,
+                       COALESCE(r.nama, '(ruangan dihapus)') as ruangan,
+                       w.jenis_wawancara, w.waktu, w.tanggal, w.id_ruangan,
                        (SELECT foto FROM berkas_mahasiswa WHERE id_mahasiswa = m.id ORDER BY id DESC LIMIT 1) as foto
-                FROM " . self::$table . " w 
-                JOIN mahasiswa m ON w.id_mahasiswa = m.id 
-                JOIN ruangan r ON w.id_ruangan = r.id 
+                FROM " . self::$table . " w
+                JOIN mahasiswa m ON w.id_mahasiswa = m.id
+                LEFT JOIN ruangan r ON w.id_ruangan = r.id
                 WHERE w.jenis_wawancara NOT LIKE 'Tes Tertulis%'
                 ORDER BY w.tanggal DESC, w.waktu DESC";
         $stmt = self::getDB()->prepare($sql);
@@ -186,9 +199,15 @@ class Wawancara extends Model
             $checkSql = "SELECT COUNT(*) as count FROM " . self::$table . "
                          WHERE id_mahasiswa = ? AND jenis_wawancara LIKE 'Tes Tertulis%'";
         } else {
-            // For Wawancara: Check if mahasiswa already has ANY wawancara (not Tes Tertulis)
+            // Duplikat diperiksa per JENIS wawancara, bukan "wawancara apa pun".
+            //
+            // Dulu query ini memakai NOT LIKE 'Tes Tertulis%' sehingga peserta
+            // yang sudah dijadwalkan Wawancara Kepala Lab I dianggap sudah
+            // punya jadwal - akibatnya penjadwalan Lab II untuk peserta yang
+            // sama selalu dilewati. Padahal keduanya tahap berbeda yang memang
+            // harus dijalani berurutan.
             $checkSql = "SELECT COUNT(*) as count FROM " . self::$table . "
-                         WHERE id_mahasiswa = ? AND jenis_wawancara NOT LIKE 'Tes Tertulis%'";
+                         WHERE id_mahasiswa = ? AND jenis_wawancara = ?";
         }
         $checkStmt = self::getDB()->prepare($checkSql);
 
@@ -201,6 +220,11 @@ class Wawancara extends Model
         foreach ($id as $idmahasiswa) {
             // Check if this mahasiswa already has schedule
             $checkStmt->bindValue(1, $idmahasiswa);
+            // Cabang wawancara membandingkan jenisnya juga (lihat catatan di
+            // atas); cabang tes tertulis hanya memakai satu parameter.
+            if (!$isTertulis) {
+                $checkStmt->bindValue(2, $wawancara->jenis_wawancara);
+            }
             $checkStmt->execute();
             $result = $checkStmt->fetch(\PDO::FETCH_ASSOC);
 
@@ -277,4 +301,46 @@ class Wawancara extends Model
         }
     }
     
+
+    /**
+     * Mencari jadwal lain yang memakai ruangan + tanggal + jam yang sama.
+     *
+     * Tabel `wawancara` menampung jadwal TES TERTULIS dan WAWANCARA sekaligus,
+     * jadi bentrok ruangan harus diperiksa lintas keduanya - satu ruangan tidak
+     * bisa dipakai dua kegiatan pada jam yang sama, apa pun jenisnya.
+     *
+     * Sebelumnya logika ini hanya ada di JadwalTesController sebagai method
+     * privat, sehingga penjadwalan WAWANCARA sama sekali tidak memeriksanya:
+     * dua peserta bisa dijadwalkan di ruangan, tanggal, dan jam yang sama.
+     * Dipindahkan ke model supaya kedua alur memakai aturan yang sama persis.
+     *
+     * @param  int|string      $id_ruangan
+     * @param  string          $tanggal
+     * @param  string          $waktu
+     * @param  int|string|null $abaikanId  id jadwal yang sedang diubah
+     * @return string|null  Keterangan pemakai slot, atau null bila kosong.
+     */
+    public static function cariBentrokJadwal($id_ruangan, $tanggal, $waktu, $abaikanId = null): ?string
+    {
+        $sql = "SELECT m.nama_lengkap, w.jenis_wawancara
+                FROM " . self::$table . " w
+                JOIN mahasiswa m ON w.id_mahasiswa = m.id
+                WHERE w.id_ruangan = ? AND w.tanggal = ? AND w.waktu = ?";
+        $params = [$id_ruangan, $tanggal, $waktu];
+
+        if ($abaikanId !== null) {
+            $sql .= " AND w.id <> ?";
+            $params[] = $abaikanId;
+        }
+        $sql .= " LIMIT 1";
+
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute($params);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            return null;
+        }
+        return trim($row['nama_lengkap']) . ' (' . $row['jenis_wawancara'] . ')';
+    }
 }

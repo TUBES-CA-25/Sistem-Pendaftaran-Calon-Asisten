@@ -305,20 +305,34 @@ class JadwalPresentasi extends Model
      */
     public function getMahasiswaWithoutSchedule()
     {
+        // Urutan seleksi ditegakkan: tes tertulis -> presentasi -> wawancara.
+        //
+        // Peserta baru muncul di sini kalau sudah HADIR di tes tertulis
+        // (absensi.absensi_tes_tertulis = 'Hadir'). Kehadiran dipakai sebagai
+        // bukti "sudah mengerjakan" - punya jadwal saja tidak cukup, karena
+        // peserta bisa terjadwal lalu tidak datang.
+        //
+        // Perbandingannya sengaja '= Hadir', bukan "!= 'Alpha'": nilai default
+        // kolom ini '-' (belum ditandai), dan pembandingan negatif akan
+        // meloloskan peserta yang belum diabsen sama sekali.
         $sql = "SELECT
                 p.id as id_presentasi,
                 m.id as id_mahasiswa,
                 m.nama_lengkap,
                 m.stambuk,
-                p.judul
+                p.judul,
+                1 AS sudah_tes
             FROM presentasi p
             JOIN mahasiswa m ON p.id_mahasiswa = m.id
+            JOIN absensi a ON a.id_mahasiswa = m.id
             LEFT JOIN (
                 SELECT p2.id_mahasiswa
                 FROM jadwal_presentasi jp2
                 JOIN presentasi p2 ON jp2.id_presentasi = p2.id
             ) scheduled ON scheduled.id_mahasiswa = m.id
-            WHERE p.is_accepted = 1 AND scheduled.id_mahasiswa IS NULL
+            WHERE p.is_accepted = 1
+              AND scheduled.id_mahasiswa IS NULL
+              AND a.absensi_tes_tertulis = 'Hadir'
             ORDER BY m.nama_lengkap ASC";
 
         $stmt = self::getDB()->prepare($sql);
@@ -396,5 +410,80 @@ class JadwalPresentasi extends Model
         $stmt->bindParam(4, $time);
 
         return $stmt->execute();
+    }
+
+    /**
+     * Menjadwalkan banyak peserta sekaligus dengan slot waktu berurutan.
+     *
+     * Berbeda dari wawancara yang bisa serentak, presentasi dinilai satu per
+     * satu sehingga tiap peserta mendapat slotnya sendiri: peserta ke-n mulai
+     * pada $waktuMulai + (n * $durasiMenit).
+     *
+     * Memakai ulang saveSingle() supaya aturan yang sudah ada tetap berlaku -
+     * terutama penolakan peserta yang sudah punya jadwal presentasi. Kalau
+     * logika itu disalin ulang di sini, keduanya pasti menyimpang suatu saat.
+     *
+     * Seluruh proses dibungkus transaksi: kalau satu peserta gagal, tidak ada
+     * yang tersimpan. Penjadwalan setengah jadi lebih menyulitkan admin
+     * daripada gagal seluruhnya, karena sisa yang tersimpan harus dicari dan
+     * dihapus manual.
+     *
+     * @param  array $idPresentasiList Urutan id presentasi; urutan menentukan slot.
+     * @return array{jumlah:int, jadwal:array} Ringkasan untuk ditampilkan kembali.
+     */
+    public function saveBatch(array $idPresentasiList, $id_ruangan, $tanggal, $waktuMulai, $durasiMenit = 20)
+    {
+        if (empty($idPresentasiList)) {
+            throw new \Exception('Pilih minimal satu peserta');
+        }
+
+        $durasiMenit = (int) $durasiMenit;
+        if ($durasiMenit < 1) {
+            throw new \Exception('Durasi per peserta minimal 1 menit');
+        }
+
+        // Divalidasi sekali di depan supaya jam mulai yang salah ketahuan
+        // sebelum transaksi dibuka.
+        $jamMulai = $this->validateAndFormatTime($waktuMulai);
+        $mulai = \DateTime::createFromFormat('H:i:s', $jamMulai)
+            ?: \DateTime::createFromFormat('H:i', $jamMulai);
+        if (!$mulai) {
+            throw new \Exception('Waktu mulai tidak valid');
+        }
+
+        $db = self::getDB();
+        $sudahDalamTransaksi = $db->inTransaction();
+        if (!$sudahDalamTransaksi) {
+            $db->beginTransaction();
+        }
+
+        try {
+            $jadwal = [];
+            $urutan = 0;
+
+            foreach ($idPresentasiList as $idPresentasi) {
+                $slot = (clone $mulai)->modify('+' . ($urutan * $durasiMenit) . ' minutes');
+                $jamSlot = $slot->format('H:i');
+
+                $this->saveSingle($idPresentasi, $id_ruangan, $tanggal, $jamSlot);
+
+                $jadwal[] = [
+                    'id_presentasi' => $idPresentasi,
+                    'waktu'         => $jamSlot,
+                ];
+                $urutan++;
+            }
+
+            if (!$sudahDalamTransaksi) {
+                $db->commit();
+            }
+
+            return ['jumlah' => count($jadwal), 'jadwal' => $jadwal];
+        } catch (\Exception $e) {
+            if (!$sudahDalamTransaksi && $db->inTransaction()) {
+                $db->rollBack();
+            }
+            throw $e;
+        }
     }
 }

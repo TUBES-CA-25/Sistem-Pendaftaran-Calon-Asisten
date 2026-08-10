@@ -269,6 +269,13 @@
         if (typeof baseUrl === 'undefined') {
             var baseUrl = '/Sistem-Pendaftaran-Calon-Asisten/public';
         }
+
+        /* Minta konfirmasi dulu. Sebelumnya kegiatan langsung terhapus begitu
+           tombol diklik - tanpa peringatan dan tanpa cara membatalkan, padahal
+           penghapusannya permanen. Semua aksi hapus lain di aplikasi ini sudah
+           memakai showConfirmDelete; hanya yang ini terlewat. */
+        const judulKegiatan = selectedEvent.judul || 'kegiatan ini';
+        showConfirmDelete(function () {
         fetch(`${baseUrl}/deletekegiatan`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -293,6 +300,7 @@
             console.error('Error:', error);
             showAlert('Terjadi kesalahan sistem', false);
         });
+        }, `Hapus kegiatan "${judulKegiatan}"? Tindakan ini tidak dapat dibatalkan.`);
     };
 
     // Handle Edit Activity Submit

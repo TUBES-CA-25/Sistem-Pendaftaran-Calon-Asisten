@@ -5,6 +5,15 @@ use App\Core\Controller;
 
 class JadwalTesController extends Controller
 {
+    /**
+     * Satu-satunya nilai sah untuk jenis kegiatan di halaman ini.
+     *
+     * Bukan pilihan admin: tab Tes Tertulis memang hanya menjadwalkan tes
+     * tertulis. Nilainya harus persis seperti ini karena banyak query
+     * menyaring dengan LIKE 'Tes Tertulis%'.
+     */
+    private const JENIS_TES_TERTULIS = 'Tes Tertulis';
+
     public function index()
     {
         // Check if user is logged in
@@ -22,11 +31,17 @@ class JadwalTesController extends Controller
         // 1. Load Student Test Schedules from 'wawancara' table
         // We filter where jenis_wawancara is like 'Tes Tertulis%'
         $db = \App\Core\Model::getDB();
-        $sql = "SELECT w.id, w.id_mahasiswa, m.nama_lengkap, m.stambuk, r.nama as ruangan, w.jenis_wawancara as kegiatan, w.waktu, w.tanggal,
+        // LEFT JOIN ke ruangan: tidak ada foreign key ke tabel ruangan, jadi
+        // ruangan yang dihapus meninggalkan jadwal yatim. Dengan INNER JOIN
+        // baris itu hilang dari daftar padahal tetap memblokir slot saat
+        // pengecekan bentrok - lihat catatan di Model\Wawancara::getAll().
+        $sql = "SELECT w.id, w.id_mahasiswa, m.nama_lengkap, m.stambuk,
+                       COALESCE(r.nama, '(ruangan dihapus)') as ruangan,
+                       w.jenis_wawancara as kegiatan, w.waktu, w.tanggal,
                        (SELECT foto FROM berkas_mahasiswa WHERE id_mahasiswa = m.id ORDER BY id DESC LIMIT 1) as foto
-                FROM wawancara w 
-                JOIN mahasiswa m ON w.id_mahasiswa = m.id 
-                JOIN ruangan r ON w.id_ruangan = r.id 
+                FROM wawancara w
+                JOIN mahasiswa m ON w.id_mahasiswa = m.id
+                LEFT JOIN ruangan r ON w.id_ruangan = r.id
                 WHERE w.jenis_wawancara LIKE 'Tes Tertulis%'
                 ORDER BY w.tanggal DESC, w.waktu DESC";
         $stmt = $db->prepare($sql);
@@ -52,7 +67,7 @@ class JadwalTesController extends Controller
         $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 
         if ($isAjax) {
-             $this->view('admin/jadwaltes/index', $data);
+             $this->view('admin/penjadwalan/tes/index', $data);
         } else {
              $sidebarData = [
                  'role' => 'Admin',
@@ -88,11 +103,23 @@ class JadwalTesController extends Controller
         $id_ruangan = $input['ruangan'] ?? null;
         $tanggal = $input['tanggal'] ?? null;
         $waktu = $input['waktu'] ?? null;
-        $kegiatan = $input['kegiatan'] ?? 'Tes Tertulis';
+        // Jenis kegiatan DIKUNCI, tidak diambil dari input.
+        //
+        // Tabel `wawancara` menampung jadwal tes tertulis DAN wawancara; yang
+        // memisahkannya hanya nilai kolom ini. Ada 19 tempat di kode yang
+        // menyaring dengan LIKE 'Tes Tertulis%' - mulai dari daftar jadwal,
+        // pengecekan duplikat, sampai kelayakan peserta untuk presentasi.
+        // Kalau nilainya salah ketik sedikit saja ("tes tulis", "Tes tertulis "),
+        // baris itu berhenti terhitung sebagai tes tertulis di seluruh sistem
+        // dan peserta bisa terjadwal dua kali. Karena itu nilainya ditetapkan
+        // di server, bukan dipercayakan ke input.
+        $kegiatan = self::JENIS_TES_TERTULIS;
 
         if (empty($ids) || !$id_ruangan || !$tanggal || !$waktu) {
             self::jsonError('Lengkapi semua data');
         }
+
+        self::requireTanggalTidakLampau($tanggal, 'Tanggal tes');
 
         /* Bentrok dicek terhadap jadwal yang SUDAH ada di ruangan+jam itu.
            Menjadwalkan banyak mahasiswa sekaligus ke satu ruangan pada jam
@@ -173,26 +200,16 @@ class JadwalTesController extends Controller
      * @param int|null $abaikanId id jadwal yang sedang diedit (dikecualikan)
      * @return string|null nama kegiatan yang bentrok, atau null bila aman
      */
+    /**
+     * Pembungkus tipis ke Model\Wawancara::cariBentrokJadwal().
+     *
+     * Isinya dipindahkan ke model karena penjadwalan WAWANCARA memerlukan
+     * aturan yang sama - dulu logika ini privat di sini sehingga wawancara
+     * tidak pernah memeriksa bentrok ruangan sama sekali.
+     */
     private static function cariBentrok($id_ruangan, $tanggal, $waktu, $abaikanId = null): ?string
     {
-        $db = \App\Core\Model::getDB();
-        $sql = "SELECT m.nama_lengkap, w.jenis_wawancara
-                FROM wawancara w
-                JOIN mahasiswa m ON w.id_mahasiswa = m.id
-                WHERE w.id_ruangan = ? AND w.tanggal = ? AND w.waktu = ?";
-        $params = [$id_ruangan, $tanggal, $waktu];
-        if ($abaikanId !== null) {
-            $sql .= " AND w.id <> ?";
-            $params[] = $abaikanId;
-        }
-        $sql .= " LIMIT 1";
-        $stmt = $db->prepare($sql);
-        $stmt->execute($params);
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if (!$row) {
-            return null;
-        }
-        return trim($row['nama_lengkap']) . ' (' . $row['jenis_wawancara'] . ')';
+        return \App\Model\Wawancara::cariBentrokJadwal($id_ruangan, $tanggal, $waktu, $abaikanId);
     }
 
     /**
@@ -212,11 +229,16 @@ class JadwalTesController extends Controller
         $id_ruangan = $input['ruangan'] ?? null;
         $tanggal = $input['tanggal'] ?? null;
         $waktu = $input['waktu'] ?? null;
-        $kegiatan = $input['kegiatan'] ?? null;
+        // Dikunci seperti pada save(): mengubah jenis lewat halaman ini akan
+        // memindahkan baris itu ke tab Wawancara dan membuatnya lolos dari
+        // pengecekan duplikat tes tertulis.
+        $kegiatan = self::JENIS_TES_TERTULIS;
 
-        if (!$id || !$id_ruangan || !$tanggal || !$waktu || !$kegiatan) {
+        if (!$id || !$id_ruangan || !$tanggal || !$waktu) {
             self::jsonError('Lengkapi semua data');
         }
+
+        self::requireTanggalTidakLampau($tanggal, 'Tanggal tes');
 
         $bentrok = self::cariBentrok($id_ruangan, $tanggal, $waktu, $id);
         if ($bentrok !== null) {

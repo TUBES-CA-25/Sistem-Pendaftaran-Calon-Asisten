@@ -128,4 +128,37 @@ abstract class Controller {
         }
         return $id;
     }
+
+    /**
+     * Menolak tanggal yang sudah lewat.
+     *
+     * Dipakai seluruh penjadwalan (tes tertulis, presentasi, wawancara).
+     * Diletakkan di base controller supaya aturannya satu tempat - kalau
+     * disalin ke tiap controller, cepat atau lambat salah satunya menyimpang.
+     *
+     * Hari ini dianggap SAH: admin lazim menjadwalkan kegiatan untuk hari
+     * berjalan. Perbandingan memakai batas tengah malam hari ini sehingga jam
+     * pada $tanggal tidak mempengaruhi hasil.
+     *
+     * Memanggil jsonError() (yang menghentikan eksekusi) bila tidak valid,
+     * mengikuti pola requireAuth() di atas.
+     */
+    protected static function requireTanggalTidakLampau(?string $tanggal, string $label = 'Tanggal'): void
+    {
+        if ($tanggal === null || trim($tanggal) === '') {
+            self::jsonError($label . ' harus diisi');
+        }
+
+        $dipilih = \DateTime::createFromFormat('Y-m-d', substr(trim($tanggal), 0, 10));
+        if (!$dipilih) {
+            self::jsonError($label . ' tidak valid');
+        }
+
+        $dipilih->setTime(0, 0, 0);
+        $hariIni = new \DateTime('today');
+
+        if ($dipilih < $hariIni) {
+            self::jsonError($label . ' tidak boleh di masa lampau');
+        }
+    }
 }

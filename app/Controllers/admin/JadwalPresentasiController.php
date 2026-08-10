@@ -13,6 +13,41 @@ class JadwalPresentasiController extends Controller
         return $presentasiModel->getAll();
     }
 
+    /**
+     * Menegakkan urutan tahap sebelum jadwal presentasi disimpan.
+     *
+     * Dropdown sudah menyaring peserta yang belum hadir tes tertulis, tapi
+     * endpoint bisa dipanggil langsung - jadi aturannya diulang di server.
+     *
+     * Perhatikan: yang diterima adalah id PRESENTASI, bukan id mahasiswa.
+     * Keduanya sering tertukar karena sama-sama integer, jadi pemetaannya
+     * dilakukan eksplisit di sini.
+     *
+     * @param array  $idPresentasiList
+     * @param string $tahap Diteruskan ke Mahasiswa::alasanBelumBolehTahap()
+     */
+    private static function requireLolosTahapSebelumnya(array $idPresentasiList, string $tahap): void
+    {
+        foreach ($idPresentasiList as $idPresentasi) {
+            $sql = "SELECT id_mahasiswa FROM presentasi WHERE id = ?";
+            $stmt = \App\Core\Model::getDB()->prepare($sql);
+            $stmt->execute([$idPresentasi]);
+            $baris = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$baris) {
+                self::jsonError('Data presentasi tidak ditemukan');
+            }
+
+            $alasan = \App\Model\Mahasiswa::alasanBelumBolehTahap(
+                (int) $baris['id_mahasiswa'],
+                $tahap
+            );
+            if ($alasan !== null) {
+                self::jsonError($alasan);
+            }
+        }
+    }
+
     // Methods dari PresentasiController (JadwalPresentasi)
     public function saveJadwal()
     {
@@ -31,6 +66,8 @@ class JadwalPresentasiController extends Controller
         if ( empty($id_ruangan) || empty($tanggal) || empty($waktu) || empty($mahasiswa)) {
             self::jsonError('All fields are required'. 'id ruangan : '.$id_ruangan.'tanggal : '.$tanggal.'waktu : '.$waktu.'Mahasiswa : '.$mahasiswa);
         }
+
+        self::requireTanggalTidakLampau($tanggal, 'Tanggal presentasi');
         try {
             $presentasi = new JadwalPresentasi(
                 $id_ruangan,
@@ -140,6 +177,8 @@ class JadwalPresentasiController extends Controller
                 self::jsonError('Semua field harus diisi');
             }
 
+            self::requireTanggalTidakLampau($tanggal, 'Tanggal presentasi');
+
             $jadwal = new JadwalPresentasi();
             if ($jadwal->updateJadwal($id, $id_ruangan, $tanggal, $waktu)) {
                 self::jsonSuccess([], 'Jadwal berhasil diupdate');
@@ -227,6 +266,9 @@ class JadwalPresentasiController extends Controller
                 self::jsonError('Semua field harus diisi');
             }
 
+            self::requireTanggalTidakLampau($tanggal, 'Tanggal presentasi');
+            self::requireLolosTahapSebelumnya([$id_presentasi], 'presentasi');
+
             $jadwal = new JadwalPresentasi();
 
             if ($jadwal->saveSingle($id_presentasi, $id_ruangan, $tanggal, $waktu)) {
@@ -234,6 +276,61 @@ class JadwalPresentasiController extends Controller
             } else {
                 self::jsonError('Gagal menyimpan jadwal');
             }
+        } catch (\Exception $e) {
+            self::jsonError($e->getMessage());
+        }
+    }
+
+    /**
+     * Menjadwalkan banyak peserta presentasi sekaligus dengan slot berurutan.
+     *
+     * Payload dibaca dari body JSON (bukan $_POST) karena berisi array id -
+     * mengikuti pola saveJadwalTes yang dipanggil lewat dom.postBodyJSON().
+     */
+    public function saveBatchJadwal()
+    {
+        self::requireAuth();
+        header('Content-Type: application/json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            self::jsonError('Invalid request method');
+        }
+
+        try {
+            $input = json_decode(file_get_contents('php://input'), true) ?: [];
+
+            $ids     = $input['id'] ?? [];
+            $ruangan = $input['id_ruangan'] ?? null;
+            $tanggal = $input['tanggal'] ?? null;
+            $mulai   = $input['waktu_mulai'] ?? null;
+            $durasi  = $input['durasi'] ?? 20;
+
+            if (!is_array($ids)) {
+                $ids = [$ids];
+            }
+            // Buang nilai kosong supaya baris terhapus di sisi klien tidak
+            // ikut terkirim sebagai id kosong.
+            $ids = array_values(array_filter($ids, function ($v) {
+                return $v !== null && $v !== '';
+            }));
+
+            if (empty($ids)) {
+                self::jsonError('Pilih minimal satu peserta');
+            }
+            if (!$ruangan || !$tanggal || !$mulai) {
+                self::jsonError('Ruangan, tanggal, dan waktu mulai harus diisi');
+            }
+
+            self::requireTanggalTidakLampau($tanggal, 'Tanggal presentasi');
+            self::requireLolosTahapSebelumnya($ids, 'presentasi');
+
+            $jadwal = new JadwalPresentasi();
+            $hasil = $jadwal->saveBatch($ids, $ruangan, $tanggal, $mulai, $durasi);
+
+            self::jsonSuccess(
+                $hasil,
+                $hasil['jumlah'] . ' jadwal presentasi berhasil dibuat'
+            );
         } catch (\Exception $e) {
             self::jsonError($e->getMessage());
         }

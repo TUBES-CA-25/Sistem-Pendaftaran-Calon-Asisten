@@ -39,10 +39,8 @@ Router::get('/reset-password', [new ForgotPasswordController, 'reset']);
 // IMPORTANT: Specific routes MUST come before catch-all route /{page}
 // Export and download routes
 Router::get("/exportSoal", [new ImporSoalController, 'exportSoal']);
-Router::get("/soal/export",[new ImporSoalController,'exportSoal']);
 Router::get("/getBankDetails", [new BankSoalController, 'getBankDetails']);
 Router::get("/downloadTemplatesoal", [new ImporSoalController, 'downloadTemplate']);
-Router::get("/soal/download-template",[new ImporSoalController, 'downloadTemplate']);
 Router::get('/download',[new BerkasController, 'downloadBerkas']);
 
 // Home routes - catch-all MUST be last
@@ -108,7 +106,6 @@ Router::post("/getBankQuestionsHtml",[new BankSoalController, 'getBankQuestionsH
 Router::post("/exam/verifyToken",[new TesTulisController, 'verifyToken']);
 Router::post("/activateBank",[new BankSoalController, 'activateBank']);
 Router::post("/deactivateBank",[new BankSoalController, 'deactivateBank']);
-Router::post("/soal/import",[new ImporSoalController, 'importSoal']);
 Router::post("/uploadImage", [new BankSoalController, 'uploadImage']);
 
 // Room Participant Management Routes
@@ -123,6 +120,7 @@ Router::post("/getjadwalpresentasiuser",[new JadwalPresentasiController, 'getJad
 Router::post("/updatejadwalpresentasi",[new JadwalPresentasiController, 'updateJadwal']);
 Router::post("/deletejadwalpresentasi",[new JadwalPresentasiController, 'deleteJadwal']);
 Router::post("/savejadwalpresentasi",[new JadwalPresentasiController, 'saveSingleJadwal']);
+Router::post("/savebatchjadwalpresentasi",[new JadwalPresentasiController, 'saveBatchJadwal']);
 Router::post("/getavailablemahasiswa",[new JadwalPresentasiController, 'getAvailableMahasiswa']);
 Router::post("/getallruangan",[new JadwalPresentasiController, 'getAllRuangan']);
 

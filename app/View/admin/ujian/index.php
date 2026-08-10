@@ -19,6 +19,18 @@ $bankCount = $stats['bank_count'];
 $totalSoal = $stats['total_soal'];
 $pgCount = $stats['pg_count'];
 $essayCount = $stats['essay_count'];
+
+// Tab yang terbuka saat halaman dimuat. Rute lama /importSoal harus mendarat
+// langsung di tab Import & Export supaya tautan yang sudah tersebar tidak
+// kehilangan tujuannya.
+//
+// Dua jalur pemuatan memberi petunjuk lewat variabel berbeda: mode SPA
+// mengirim $data['tabAwal'] dari HomeController, sedangkan pemuatan penuh
+// meng-include berkas ini langsung dari main_admin.php sehingga hanya
+// $initialPage yang tersedia. Keduanya diperiksa.
+$tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'importSoal')
+    ? 'impor'
+    : 'bank';
 ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -37,7 +49,34 @@ $essayCount = $stats['essay_count'];
 </div>
 
 <main class="max-w-7xl mx-auto pt-0 pb-6 [&_.editor-toolbar]:!border-slate-200 [&_.editor-toolbar]:rounded-t-xl [&_.CodeMirror]:!border-slate-200 [&_.CodeMirror]:rounded-b-xl [&_.CodeMirror]:min-h-[200px] [&_.CodeMirror]:max-h-[400px] [&_.editor-statusbar]:hidden [&_.condition-render-markdown_img]:max-w-full [&_.condition-render-markdown_img]:max-h-[400px] [&_.condition-render-markdown_img]:object-contain [&_.condition-render-markdown_img]:rounded-xl [&_.condition-render-markdown_img]:my-2.5 [&_.condition-render-markdown_img]:border [&_.condition-render-markdown_img]:border-slate-200 [&_.condition-render-markdown_img]:block [&_.type-option.selected]:bg-blue-600/5 [&_.type-option.selected]:!border-blue-600 [&_.type-option.selected_.check-icon]:!block [&_.EasyMDEContainer]:z-[1055]">
-<div class="bank-list-view" id="bankListView">
+<!--
+    Tab navigasi. Hanya tampil di daftar bank soal; saat masuk ke rincian
+    sebuah bank (bankDetailView) tab ini disembunyikan supaya konteksnya
+    tidak rancu - pengguna sedang mengelola satu bank, bukan berpindah menu.
+-->
+<div id="soalTabs" class="flex items-center gap-1 mb-4 border-b border-slate-200">
+    <?php if ($tabAwal === 'impor'): ?>
+    <button type="button" id="tabBankSoal" onclick="switchSoalTab('bank')"
+            class="soal-tab px-4 py-2.5 text-sm font-bold rounded-t-lg border-b-2 transition-all flex items-center gap-2 border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50">
+        <i class="bi bi-journal-richtext"></i> Daftar Bank Soal
+    </button>
+    <button type="button" id="tabImporSoal" onclick="switchSoalTab('impor')"
+            class="soal-tab px-4 py-2.5 text-sm font-bold rounded-t-lg border-b-2 transition-all flex items-center gap-2 border-blue-600 text-blue-600 bg-blue-50/50">
+        <i class="bx bx-transfer"></i> Import &amp; Export
+    </button>
+    <?php else: ?>
+    <button type="button" id="tabBankSoal" onclick="switchSoalTab('bank')"
+            class="soal-tab px-4 py-2.5 text-sm font-bold rounded-t-lg border-b-2 transition-all flex items-center gap-2 border-blue-600 text-blue-600 bg-blue-50/50">
+        <i class="bi bi-journal-richtext"></i> Daftar Bank Soal
+    </button>
+    <button type="button" id="tabImporSoal" onclick="switchSoalTab('impor')"
+            class="soal-tab px-4 py-2.5 text-sm font-bold rounded-t-lg border-b-2 transition-all flex items-center gap-2 border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50">
+        <i class="bx bx-transfer"></i> Import &amp; Export
+    </button>
+    <?php endif; ?>
+</div>
+
+<div class="bank-list-view<?= $tabAwal === 'impor' ? ' hidden' : '' ?>" id="bankListView">
         <!-- Stats Bar -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
             <div class="bg-white rounded-xl shadow-sm border border-slate-100 px-4 py-3 flex items-center gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
@@ -240,6 +279,145 @@ $essayCount = $stats['essay_count'];
         </div>
     </div>
     </div><!-- end bankListView -->
+
+    <!--
+        Import & Export - dipindahkan ke sini dari halaman terpisah.
+        Keduanya mengelola objek yang sama (soal), jadi digabung sebagai tab.
+        Semua id dipertahankan persis seperti aslinya karena exam-import.js
+        mencarinya lewat getElementById; mengubah nama akan mematikan fitur.
+    -->
+    <div class="<?= $tabAwal === 'impor' ? '' : 'hidden' ?>" id="importExportView">
+        <div class="flex flex-col gap-5">
+            <!-- Import Section -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5 md:p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div class="lg:col-span-7">
+                            <div class="flex items-center mb-5">
+                                <div class="rounded-xl flex items-center justify-center mr-3 shadow-sm w-11 h-11 bg-blue-50 text-blue-600 shrink-0">
+                                    <i class='bx bx-import text-xl'></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-base font-bold text-slate-800 mb-0.5">Import Soal Baru</h4>
+                                    <p class="text-slate-500 text-xs">Tambahkan soal masal ke bank soal pilihan Anda</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="selectedBankSoalImport" class="block text-xs font-bold text-slate-800 mb-1.5">1. Pilih Bank Soal Tujuan</label>
+                                <select class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold transition" id="selectedBankSoalImport">
+                                    <option value="" selected disabled>-- Pilih Bank Soal --</option>
+                                    <?php foreach ($bankSoalList as $bank): ?>
+                                    <option value="<?= $bank['id'] ?>"
+                                            data-name="<?= htmlspecialchars($bank['nama'] ?? '') ?>"
+                                            data-count="<?= $bank['jumlah_soal'] ?>"
+                                            data-pg="<?= $bank['pg_count'] ?>"
+                                            data-essay="<?= $bank['essay_count'] ?>">
+                                        <?= htmlspecialchars($bank['nama'] ?? '') ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-800 mb-1.5">2. Upload File Data Soal</label>
+                                <div class="upload-zone p-5 border-2 border-dashed border-slate-300 rounded-xl text-center bg-slate-50/60 hover:bg-blue-50/40 hover:border-blue-400 transition duration-200 relative">
+                                    <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" id="importFile" accept=".csv, .xls, .xlsx" aria-label="Pilih berkas soal">
+                                    <div id="uploadContent" class="flex flex-col items-center">
+                                        <i class='bx bx-cloud-upload text-blue-600 mb-1.5 text-4xl'></i>
+                                        <h6 class="font-bold text-slate-800 text-sm mb-0.5" id="fileLabel">Klik atau drag file ke sini</h6>
+                                        <p class="text-slate-500 text-xs">Mendukung .csv, .xls, .xlsx (Maksimal 5MB)</p>
+                                    </div>
+                                </div>
+                                <div id="fileInfo" class="mt-2 text-center text-xs font-semibold text-emerald-600 hidden"></div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-5">
+                            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between h-full">
+                                <div>
+                                    <h6 class="font-bold text-slate-800 mb-3 flex items-center gap-1.5 text-sm"><i class='bx bx-info-circle text-blue-600 text-base'></i> Panduan Import</h6>
+                                    <ul class="space-y-2 text-xs text-slate-600 mb-5">
+                                        <li class="flex items-start gap-2"><i class='bx bx-check text-emerald-500 text-base shrink-0'></i> <span>Gunakan format kolom template yang disediakan.</span></li>
+                                        <li class="flex items-start gap-2"><i class='bx bx-check text-emerald-500 text-base shrink-0'></i> <span>Kolom wajib: Deskripsi, Tipe (PG/Essay), Jawaban.</span></li>
+                                        <li class="flex items-start gap-2"><i class='bx bx-check text-emerald-500 text-base shrink-0'></i> <span>Untuk PG, isi kolom Pilihan A sampai E.</span></li>
+                                    </ul>
+                                </div>
+
+                                <div class="flex flex-col gap-2">
+                                    <button class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm flex items-center justify-center gap-2" onclick="importSoal()" id="btnImport" disabled>
+                                        <i class='bx bx-download text-base'></i> Mulai Proses Import
+                                    </button>
+                                    <button type="button" onclick="downloadTemplate()" class="w-full py-2 text-center border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-bold text-sm rounded-xl transition flex items-center justify-center gap-2">
+                                        <i class='bx bx-file-blank text-base'></i> Download Template Excel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Section -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5 md:p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div class="lg:col-span-7">
+                            <div class="flex items-center mb-5">
+                                <div class="rounded-xl flex items-center justify-center mr-3 shadow-sm w-11 h-11 bg-emerald-50 text-emerald-600 shrink-0">
+                                    <i class='bx bx-export text-xl'></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-base font-bold text-slate-800 mb-0.5">Export Data Soal</h4>
+                                    <p class="text-slate-500 text-xs">Unduh seluruh soal dari bank soal ke format Excel</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="selectedBankSoal" class="block text-xs font-bold text-slate-800 mb-1.5">Pilih Bank Soal Sumber</label>
+                                <select class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-700 font-semibold transition" id="selectedBankSoal">
+                                    <option value="" selected disabled>-- Pilih Bank Soal --</option>
+                                    <?php foreach ($bankSoalList as $bank): ?>
+                                    <option value="<?= $bank['id'] ?>"
+                                            data-name="<?= htmlspecialchars($bank['nama'] ?? '') ?>"
+                                            data-count="<?= $bank['jumlah_soal'] ?>"
+                                            data-pg="<?= $bank['pg_count'] ?>"
+                                            data-essay="<?= $bank['essay_count'] ?>">
+                                        <?= htmlspecialchars($bank['nama'] ?? '') ?> (<?= $bank['jumlah_soal'] ?> soal)
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <button class="w-full md:w-auto px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm flex items-center justify-center gap-2" onclick="exportSoal()" id="btnExport" disabled>
+                                <i class='bx bx-download text-base'></i> Unduh File Excel (.xlsx)
+                            </button>
+                        </div>
+
+                        <div class="lg:col-span-5">
+                            <div id="exportSummary" class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                                <h6 class="font-bold text-slate-800 mb-3 text-sm">Ringkasan Data Terpilih</h6>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div class="text-center">
+                                        <h3 class="text-xl font-bold mb-0.5 text-emerald-600" id="exportTotalCount">-</h3>
+                                        <span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider">Total Soal</span>
+                                    </div>
+                                    <div class="text-center border-l border-r border-slate-200">
+                                        <h3 class="text-xl font-bold mb-0.5 text-blue-600" id="exportPGCount">-</h3>
+                                        <span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider">Pilihan Ganda</span>
+                                    </div>
+                                    <div class="text-center">
+                                        <h3 class="text-xl font-bold mb-0.5 text-amber-500" id="exportEssayCount">-</h3>
+                                        <span class="block text-slate-400 text-[10px] font-bold uppercase tracking-wider">Essay</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- end importExportView -->
 
     <!-- Bank Detail View -->
     <div class="bank-detail-view hidden" id="bankDetailView">
@@ -707,6 +885,49 @@ $essayCount = $stats['essay_count'];
         const existingModal = document.getElementById('imageModal');
         if (existingModal) existingModal.remove();
     };
+
+    // Perpindahan tab Daftar Bank Soal <-> Import & Export.
+    // Keduanya mengelola objek yang sama (soal) sehingga disatukan di satu
+    // halaman; sebelumnya Import & Export berdiri sebagai menu terpisah.
+    window.switchSoalTab = function(tab) {
+        const daftar = document.getElementById('bankListView');
+        const imporExport = document.getElementById('importExportView');
+        const tabBank = document.getElementById('tabBankSoal');
+        const tabImpor = document.getElementById('tabImporSoal');
+        if (!daftar || !imporExport || !tabBank || !tabImpor) return;
+
+        const aktif = 'border-blue-600 text-blue-600 bg-blue-50/50';
+        const nonaktif = 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50';
+        const keImpor = (tab === 'impor');
+
+        daftar.classList.toggle('hidden', keImpor);
+        imporExport.classList.toggle('hidden', !keImpor);
+        tabBank.className = 'soal-tab px-4 py-2.5 text-sm font-bold rounded-t-lg border-b-2 transition-all flex items-center gap-2 ' + (keImpor ? nonaktif : aktif);
+        tabImpor.className = 'soal-tab px-4 py-2.5 text-sm font-bold rounded-t-lg border-b-2 transition-all flex items-center gap-2 ' + (keImpor ? aktif : nonaktif);
+    };
+
+    // Menampilkan nama berkas yang dipilih. Fungsi ini dipanggil oleh halaman
+    // Import lama lewat atribut onchange, tetapi definisinya tidak pernah ada
+    // di berkas JS mana pun - jadi labelnya tidak pernah berubah. Sekarang
+    // dipasang sebagai listener supaya benar-benar berjalan.
+    (function () {
+        const berkas = document.getElementById('importFile');
+        const label = document.getElementById('fileLabel');
+        const info = document.getElementById('fileInfo');
+        if (!berkas || !label || !info) return;
+
+        berkas.addEventListener('change', function () {
+            const dipilih = berkas.files && berkas.files[0];
+            if (dipilih) {
+                label.textContent = dipilih.name;
+                info.textContent = (dipilih.size / 1024).toFixed(1) + ' KB siap diimport';
+                info.classList.remove('hidden');
+            } else {
+                label.textContent = 'Klik atau drag file ke sini';
+                info.classList.add('hidden');
+            }
+        });
+    })();
 </script>
 
 <!-- Load External JavaScript -->

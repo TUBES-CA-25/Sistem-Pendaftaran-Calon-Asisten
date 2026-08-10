@@ -37,7 +37,11 @@
             if (res.status === 'success') {
                 let opts = '<option value="">-- Pilih Mahasiswa --</option>';
                 res.data.forEach((m) => {
-                    opts += `<option value="${m.id_presentasi}">${m.nama_lengkap} - ${m.stambuk}</option>`;
+                    // Daftar ini sudah disaring di server: hanya peserta yang
+                    // HADIR di tes tertulis yang dikembalikan. Jadi tidak ada
+                    // lagi penanda "belum tes" - yang muncul pasti memenuhi
+                    // syarat urutan tahap.
+                    opts += `<option value="${m.id_presentasi}" data-nama="${m.nama_lengkap}">${m.nama_lengkap} - ${m.stambuk}</option>`;
                 });
                 dom.html(dom.qs('#selectMahasiswa'), opts);
             }
@@ -92,26 +96,178 @@
         });
     }
 
+    // Peserta yang akan dijadwalkan. Urutan array = urutan slot waktu.
+    // State disimpan di window, bukan variabel lokal IIFE.
+    //
+    // Halaman Penjadwalan mengeksekusi ulang skrip tab setiap kali tab
+    // dibuka. Tiap eksekusi membuat closure baru, tetapi dom.on() menolak
+    // memasang handler yang sama dua kali - jadi handler yang HIDUP tetap
+    // milik eksekusi pertama sementara fungsi penggambar yang dipanggil
+    // adalah milik eksekusi terbaru. Keduanya lalu membaca array yang
+    // berbeda: peserta masuk ke daftar lama, penghitung tetap 0.
+    //
+    // window membuat seluruh eksekusi berbagi satu state yang sama.
+    window.__presentasiTerpilih = window.__presentasiTerpilih || [];
+
     dom.on('click', '#btnAddJadwal', function(e) {
         e.preventDefault();
         loadAvailableMahasiswa(); loadRuangan();
         const form = dom.qs('#formAddJadwal');
         if (form) form.reset();
+        window.__presentasiTerpilih = [];
+        gambarDaftarPeserta();
         UI.modal.open('#addJadwalModal');
     });
 
-    dom.on('submit', '#formAddJadwal', function(e) {
-        e.preventDefault();
-        dom.postJSON(APP_URL + '/savejadwalpresentasi', {
-            id_presentasi: dom.val(dom.qs('#selectMahasiswa')),
+    /**
+     * Menyembunyikan peserta yang sudah masuk daftar dari dropdown.
+     *
+     * Dipakai <option hidden> + disabled, bukan menghapus elemennya, supaya
+     * opsinya bisa muncul kembali saat peserta dikeluarkan dari daftar.
+     */
+    function segarkanOpsiDropdown() {
+        const sel = dom.qs('#selectMahasiswa');
+        if (!sel) return;
+        const terpakai = window.__presentasiTerpilih.map(function(p) { return String(p.id); });
+        Array.prototype.forEach.call(sel.options, function(opt) {
+            if (!opt.value) return; // placeholder dibiarkan
+            const dipakai = terpakai.indexOf(String(opt.value)) !== -1;
+            opt.hidden = dipakai;
+            opt.disabled = dipakai;
+        });
+    }
+
+    /** Menambah menit ke "HH:MM" dan mengembalikan "HH:MM". */
+    function geserJam(mulai, menit) {
+        const bagian = String(mulai || '').split(':');
+        if (bagian.length < 2) return '';
+        const total = (parseInt(bagian[0], 10) * 60) + parseInt(bagian[1], 10) + menit;
+        // Dibungkus 24 jam supaya jadwal yang melewati tengah malam tidak
+        // menghasilkan jam seperti "25:30".
+        const bungkus = ((total % 1440) + 1440) % 1440;
+        const jj = String(Math.floor(bungkus / 60)).padStart(2, '0');
+        const mm = String(bungkus % 60).padStart(2, '0');
+        return jj + ':' + mm;
+    }
+
+    function gambarDaftarPeserta() {
+        const daftar = dom.qs('#daftarPesertaTerpilih');
+        const jumlah = dom.qs('#jumlahPesertaTerpilih');
+        if (!daftar) return;
+
+        if (jumlah) {
+            jumlah.textContent = window.__presentasiTerpilih.length + ' peserta';
+        }
+
+        if (window.__presentasiTerpilih.length === 0) {
+            daftar.innerHTML = '<li id="daftarPesertaKosong" class="text-center text-xs text-slate-400 py-4 border border-dashed border-slate-200 rounded-xl">Belum ada peserta dipilih</li>';
+            gambarPratinjau();
+            return;
+        }
+
+        let html = '';
+        window.__presentasiTerpilih.forEach(function(p, i) {
+            html +=
+                '<li class="flex items-center gap-2 py-2 px-3 bg-slate-50 rounded-xl border border-slate-100" data-id="' + p.id + '">' +
+                    '<span class="shrink-0 w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">' + (i + 1) + '</span>' +
+                    '<span class="flex-1 min-w-0 truncate text-sm text-slate-700">' + p.nama + '</span>' +
+                    '<button type="button" class="shrink-0 text-red-500 hover:text-red-700 hapus-peserta" data-id="' + p.id + '" aria-label="Hapus dari daftar">' +
+                        '<i class="bi bi-x-circle text-base pointer-events-none"></i>' +
+                    '</button>' +
+                '</li>';
+        });
+        daftar.innerHTML = html;
+        gambarPratinjau();
+    }
+
+    /** Pratinjau jam tiap peserta - dihitung dengan rumus yang sama dengan server. */
+    function gambarPratinjau() {
+        const kotak = dom.qs('#pratinjauSlot');
+        const isi = dom.qs('#isiPratinjauSlot');
+        if (!kotak || !isi) return;
+
+        const mulai = dom.val(dom.qs('#inputWaktu'));
+        const durasi = parseInt(dom.val(dom.qs('#inputDurasi')), 10);
+
+        if (window.__presentasiTerpilih.length === 0 || !mulai || !durasi || durasi < 1) {
+            kotak.classList.add('hidden');
+            isi.innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        window.__presentasiTerpilih.forEach(function(p, i) {
+            html += '<li class="flex justify-between gap-2">' +
+                        '<span class="truncate">' + (i + 1) + '. ' + p.nama + '</span>' +
+                        '<span class="shrink-0 font-bold text-blue-700">' + geserJam(mulai, i * durasi) + '</span>' +
+                    '</li>';
+        });
+        isi.innerHTML = html;
+        kotak.classList.remove('hidden');
+    }
+
+    dom.on('click', '#btnTambahKeDaftar', function() {
+        const sel = dom.qs('#selectMahasiswa');
+        if (!sel || !sel.value) return showAlert('Pilih mahasiswa terlebih dahulu', false);
+
+        const opsi = sel.options[sel.selectedIndex];
+        if (window.__presentasiTerpilih.some(function(p) { return p.id === sel.value; })) {
+            return showAlert('Mahasiswa sudah ada dalam daftar', false);
+        }
+
+        window.__presentasiTerpilih.push({
+            id: sel.value,
+            nama: opsi.getAttribute('data-nama') || opsi.text,
+        });
+        sel.value = '';
+        gambarDaftarPeserta();
+        segarkanOpsiDropdown();
+    });
+
+    dom.on('click', '.hapus-peserta', function() {
+        const id = this.getAttribute('data-id');
+        window.__presentasiTerpilih = window.__presentasiTerpilih.filter(function(p) { return p.id !== id; });
+        gambarDaftarPeserta();
+        segarkanOpsiDropdown();
+    });
+
+    // Pratinjau ikut menyesuaikan begitu jam mulai atau durasi diubah.
+    dom.on('change', '#inputWaktu', gambarPratinjau);
+    dom.on('keyup', '#inputDurasi', gambarPratinjau);
+    dom.on('change', '#inputDurasi', gambarPratinjau);
+
+    function simpanJadwalPresentasi() {
+        dom.postBodyJSON(APP_URL + '/savebatchjadwalpresentasi', {
+            id: window.__presentasiTerpilih.map(function(p) { return p.id; }),
             id_ruangan: dom.val(dom.qs('#selectRuangan')),
             tanggal: dom.val(dom.qs('#inputTanggal')),
-            waktu: dom.val(dom.qs('#inputWaktu'))
+            waktu_mulai: dom.val(dom.qs('#inputWaktu')),
+            durasi: dom.val(dom.qs('#inputDurasi'))
         }).then(function(res) {
-            UI.modal.close('#addJadwalModal');
-            if(res.status==='success') { showAlert('Disimpan!'); loadJadwal(); }
-            else showAlert(res.message, false);
+            if (res.status === 'success') {
+                UI.modal.close('#addJadwalModal');
+                window.__presentasiTerpilih = [];
+                showAlert(res.message || 'Jadwal berhasil dibuat');
+                loadJadwal();
+            } else {
+                // Modal sengaja dibiarkan terbuka saat gagal supaya daftar
+                // peserta yang sudah disusun tidak hilang begitu saja.
+                showAlert(res.message, false);
+            }
         });
+    }
+
+    dom.on('submit', '#formAddJadwal', function(e) {
+        e.preventDefault();
+
+        if (window.__presentasiTerpilih.length === 0) {
+            return showAlert('Tambahkan minimal satu peserta ke daftar', false);
+        }
+
+        // Urutan tahap tidak lagi bisa dilewati: daftar peserta sudah
+        // disaring di server dan endpoint menolak peserta yang belum hadir
+        // tes tertulis. Karena itu tidak ada lagi konfirmasi "tetap jadwalkan".
+        simpanJadwalPresentasi();
     });
 
     dom.on('click', '.btn-edit-jadwal', function() {

@@ -13,7 +13,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
         $title = 'Jadwal Presentasi';
         $subtitle = 'Kelola jadwal dan ruangan presentasi mahasiswa';
         $icon = 'bi bi-calendar-event';
-        require_once __DIR__ . '/../../templates/components/PageHeader.php';
+        require_once __DIR__ . '/../../../templates/components/PageHeader.php';
     ?>
 
     <div class="max-w-7xl mx-auto pt-0 pb-6">
@@ -50,7 +50,15 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                     </thead>
                     <tbody id="jadwalTableBody" class="dt-tbody">
                         <?php if (empty($jadwalPresentasi)): ?>
-                            <tr><td colspan="8" class="text-center text-slate-400 py-10 font-medium">Belum ada jadwal presentasi</td></tr>
+                            <tr>
+                                <td colspan="8" class="text-center py-12">
+                                    <div class="w-16 h-16 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-2xl mx-auto mb-3">
+                                        <i class="bi bi-easel"></i>
+                                    </div>
+                                    <h4 class="text-base font-bold text-slate-800 mb-1">Belum Ada Jadwal Presentasi</h4>
+                                    <p class="text-slate-500 text-xs">Klik <span class="font-semibold text-blue-600">Tambah Jadwal</span> untuk menjadwalkan presentasi peserta.</p>
+                                </td>
+                            </tr>
                         <?php else: ?>
                             <?php $i = 1; foreach ($jadwalPresentasi as $row): ?>
                                 <tr class="dt-body-row">
@@ -97,31 +105,69 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
 <!-- Modal Tambah Jadwal -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="addJadwalModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
-    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-[560px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-2xl">
-                <h5 class="font-bold flex items-center gap-2"><i class="bi bi-calendar-plus text-lg"></i>Tambah Jadwal</h5>
+                <h5 class="font-bold flex items-center gap-2"><i class="bi bi-calendar-plus text-lg"></i>Tambah Jadwal Presentasi</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
-            <div class="bg-white p-6">
+            <div class="bg-white p-6 max-h-[70vh] overflow-y-auto">
                 <form id="formAddJadwal" method="POST" action="javascript:void(0);" class="space-y-4">
+                    <!--
+                        Penjadwalan massal. Beberapa peserta dimasukkan ke satu
+                        daftar, lalu tiap peserta mendapat slot berurutan
+                        (mulai + n x durasi) - presentasi dinilai satu per satu,
+                        tidak serentak seperti wawancara.
+                    -->
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Pilih Mahasiswa:</label>
-                        <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="selectMahasiswa" required><option value="">-- Loading --</option></select>
+                        <label for="selectMahasiswa" class="block text-sm font-semibold text-slate-700 mb-2">Pilih Mahasiswa:</label>
+                        <div class="flex gap-2">
+                            <select class="flex-1 min-w-0 px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="selectMahasiswa"><option value="">-- Loading --</option></select>
+                            <button type="button" id="btnTambahKeDaftar" class="shrink-0 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition flex items-center gap-1.5">
+                                <i class="bi bi-plus-lg"></i> Tambah
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1.5">Tambahkan satu per satu; urutan daftar menentukan urutan waktu presentasi.</p>
                     </div>
+
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Pilih Ruangan:</label>
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="block text-sm font-semibold text-slate-700">Daftar Peserta:</label>
+                            <span id="jumlahPesertaTerpilih" class="text-xs font-bold text-slate-500">0 peserta</span>
+                        </div>
+                        <ul id="daftarPesertaTerpilih" class="list-none p-0 m-0 space-y-2 max-h-52 overflow-y-auto">
+                            <li id="daftarPesertaKosong" class="text-center text-xs text-slate-400 py-4 border border-dashed border-slate-200 rounded-xl">
+                                Belum ada peserta dipilih
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <label for="selectRuangan" class="block text-sm font-semibold text-slate-700 mb-2">Pilih Ruangan:</label>
                         <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="selectRuangan" required><option value="">-- Loading --</option></select>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-3 gap-3">
                         <div>
                             <label for="inputTanggal" class="block text-sm font-semibold text-slate-700 mb-2">Tanggal:</label>
-                            <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="inputTanggal" required>
+                            <input type="date" min="<?= date('Y-m-d') ?>" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="inputTanggal" required>
                         </div>
                         <div>
-                            <label for="inputWaktu" class="block text-sm font-semibold text-slate-700 mb-2">Waktu:</label>
-                            <input type="time" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="inputWaktu" required>
+                            <label for="inputWaktu" class="block text-sm font-semibold text-slate-700 mb-2">Mulai:</label>
+                            <input type="time" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="inputWaktu" required>
                         </div>
+                        <div>
+                            <label for="inputDurasi" class="block text-sm font-semibold text-slate-700 mb-2">Durasi:</label>
+                            <div class="relative">
+                                <input type="number" min="1" max="240" value="20" class="w-full pl-3 pr-12 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="inputDurasi" required>
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none">mnt</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pratinjau slot supaya admin tahu persis jam tiap peserta sebelum menyimpan -->
+                    <div id="pratinjauSlot" class="hidden rounded-xl bg-blue-50/60 border border-blue-100 p-3">
+                        <p class="text-xs font-bold text-blue-800 mb-2 flex items-center gap-1.5"><i class="bi bi-clock-history"></i> Pembagian Waktu</p>
+                        <ul id="isiPratinjauSlot" class="list-none p-0 m-0 space-y-1 text-xs text-slate-600 max-h-32 overflow-y-auto"></ul>
                     </div>
                 </form>
             </div>
@@ -156,7 +202,7 @@ $jadwalPresentasi = $jadwalPresentasi ?? [];
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="editTanggal" class="block text-sm font-semibold text-slate-700 mb-2">Tanggal:</label>
-                            <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editTanggal" required>
+                            <input type="date" min="<?= date('Y-m-d') ?>" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editTanggal" required>
                         </div>
                         <div>
                             <label for="editWaktu" class="block text-sm font-semibold text-slate-700 mb-2">Waktu:</label>

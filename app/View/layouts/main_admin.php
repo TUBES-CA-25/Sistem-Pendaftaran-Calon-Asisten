@@ -295,11 +295,22 @@
             'lihatnilai' => 'admin/nilai/index.php',
             'tesTulis' => 'admin/ujian/index.php',
             'bankSoal' => 'admin/ujian/index.php',
-            'importSoal' => 'admin/impor/index.php',
-            'jadwaltes' => 'admin/jadwaltes/index.php',
+            // Import/Export kini menjadi tab di dalam halaman Bank Soal.
+            // Rute lama tetap dipetakan ke view yang sama supaya tautan
+            // yang sudah tersebar tidak mati.
+            'importSoal' => 'admin/ujian/index.php',
+            // Halaman induk Penjadwalan (tab: tes tertulis -> presentasi ->
+            // wawancara). Rute lama ketiganya tetap dipetakan ke halaman induk
+            // dan mendarat di tabnya masing-masing supaya tautan lama hidup.
+            'penjadwalan' => 'admin/penjadwalan/index.php',
+            'jadwaltes' => 'admin/penjadwalan/index.php',
             'pengajuanJudul' => 'admin/judul/index.php',
-            'jadwalPresentasi' => 'admin/presentasi/index.php',
-            'wawancara' => 'admin/wawancara/index.php',
+            // Keduanya juga mendarat di halaman induk saat dibuka langsung.
+            // Aman terhadap rekursi: peta ini hanya dipakai pada pemuatan
+            // PENUH, sedangkan tab mengambil isinya dengan header AJAX yang
+            // dilayani jalur lain dan tetap mengembalikan markup aslinya.
+            'jadwalPresentasi' => 'admin/penjadwalan/index.php',
+            'wawancara' => 'admin/penjadwalan/index.php',
             'ruangan' => 'admin/ruangan/index.php',
             // Halaman 404 (dirender saat nama halaman tidak dikenal)
             '404' => 'errors/404.php',

@@ -66,6 +66,7 @@ class HomeController extends Controller
             'dashboard', 'ruangan', 'lihatPeserta', 'daftarKehadiran',
             'presentasi', 'pengajuanJudul', 'jadwalPresentasi', 'tesTulis',
             'importSoal', 'bankSoal', 'wawancara', 'profile', 'lihatnilai',
+            'penjadwalan',
         ],
         'User' => [
             'dashboard', 'biodata', 'presentasi', 'tesTulis', 'uploadBerkas',
@@ -225,7 +226,7 @@ class HomeController extends Controller
                     break;
                 case 'presentasi': // Fallback or user role? Admin specific logic below
                     $data = array_merge($sidebarData, $this->getPresentasiAdminData());
-                    View::render('index', 'admin/presentasi', $data);
+                    View::render('index', 'admin/penjadwalan/presentasi', $data);
                     break;
                 case 'pengajuanJudul':
                     $data = array_merge($sidebarData, $this->getPengajuanJudulData());
@@ -233,20 +234,33 @@ class HomeController extends Controller
                     break;
                 case 'jadwalPresentasi':
                     $data = array_merge($sidebarData, $this->getJadwalPresentasiData());
-                    View::render('index', 'admin/presentasi', $data);
+                    View::render('index', 'admin/penjadwalan/presentasi', $data);
+                    break;
+                // Halaman induk Penjadwalan. Tidak mengambil data jadwal apa
+                // pun - isi tiap tab diambil terpisah lewat rute aslinya
+                // (/jadwaltes, /jadwalPresentasi, /wawancara) oleh
+                // penjadwalan.js, sehingga hanya satu markup tab yang pernah
+                // ada di DOM dan id yang bertabrakan tidak saling mengganggu.
+                case 'penjadwalan':
+                    View::render('index', 'admin/penjadwalan', $sidebarData);
                     break;
                 case 'tesTulis':
                 case 'bankSoal':
                     $data = array_merge($sidebarData, $this->getTesTulisAdminData());
                     View::render('index', 'admin/ujian', $data);
                     break;
+                // Import/Export tidak lagi berdiri sebagai halaman sendiri -
+                // isinya menjadi tab di halaman Bank Soal. Rute lama tetap
+                // dilayani dan langsung membuka tab tersebut supaya bookmark
+                // atau tautan lama tidak mati.
                 case 'importSoal':
                     $data = array_merge($sidebarData, $this->getTesTulisAdminData());
-                    View::render('index', 'admin/impor', $data);
+                    $data['tabAwal'] = 'impor';
+                    View::render('index', 'admin/ujian', $data);
                     break;
                 case 'wawancara':
                     $data = array_merge($sidebarData, $this->getWawancaraAdminData());
-                    View::render('index', 'admin/wawancara', $data);
+                    View::render('index', 'admin/penjadwalan/wawancara', $data);
                     break;
                 case 'profile':
                     // View 'admin/profil' tidak pernah ada di repo ini, sehingga

@@ -527,13 +527,88 @@ class Mahasiswa extends Model
      * Get students who have completed Presentasi (for Wawancara scheduling)
      */
     public static function getAvailableForWawancara() {
-        $sql = "SELECT m.id, m.nama_lengkap, m.stambuk
+        // Wawancara adalah tahap KETIGA, jadi dua tahap sebelumnya harus
+        // tuntas: hadir di tes tertulis DAN hadir di presentasi.
+        //
+        // Perbandingannya '= Hadir', bukan "!= 'Alpha'" seperti sebelumnya.
+        // Nilai default kolom absensi adalah '-' (belum ditandai), sehingga
+        // pembandingan negatif meloloskan peserta yang belum diabsen sama
+        // sekali - persis yang ingin dicegah aturan urutan ini.
+        //
+        // Peserta yang SUDAH punya jadwal wawancara juga disembunyikan supaya
+        // tidak terjadwal dua kali. Baris 'Tes Tertulis%' dikecualikan dari
+        // pengecekan itu karena tabel `wawancara` menampung keduanya.
+        // Kolom sudah_lab1 / sudah_lab2 menandai wawancara yang SUDAH
+        // dijadwalkan untuk peserta ini.
+        //
+        // Peserta tidak lagi disembunyikan begitu punya satu wawancara: Lab I
+        // dan Lab II adalah dua tahap terpisah yang dijalani berurutan. Dulu
+        // subquery di sini mengecualikan siapa pun yang punya wawancara apa
+        // pun, sehingga peserta yang selesai Lab I tidak pernah bisa
+        // dijadwalkan Lab II.
+        //
+        // Penyaringan akhir dilakukan di sisi antarmuka sesuai jenis yang
+        // sedang dipilih admin, dan divalidasi ulang saat menyimpan.
+        $sql = "SELECT m.id, m.nama_lengkap, m.stambuk,
+                       MAX(w.jenis_wawancara LIKE '%lab I')  AS sudah_lab1,
+                       MAX(w.jenis_wawancara LIKE '%lab II') AS sudah_lab2
                 FROM mahasiswa m
                 INNER JOIN absensi a ON m.id = a.id_mahasiswa
-                WHERE a.absensi_presentasi != 'Alpha'
+                LEFT JOIN wawancara w ON w.id_mahasiswa = m.id
+                WHERE a.absensi_tes_tertulis = 'Hadir'
+                  AND a.absensi_presentasi = 'Hadir'
+                GROUP BY m.id, m.nama_lengkap, m.stambuk
+                HAVING sudah_lab1 = 0 OR sudah_lab2 = 0
                 ORDER BY m.nama_lengkap ASC";
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Memeriksa apakah peserta sudah menuntaskan tahap-tahap sebelumnya.
+     *
+     * Dropdown di antarmuka memang sudah tersaring, tetapi endpoint bisa
+     * dipanggil langsung tanpa lewat halaman - jadi urutan tahap tetap harus
+     * ditegakkan di server. Ini pemeriksaan terakhir sebelum data disimpan.
+     *
+     * Kehadiran ('Hadir') dipakai sebagai bukti "sudah mengerjakan"; punya
+     * jadwal saja tidak cukup karena peserta bisa terjadwal lalu tidak datang.
+     * Nilai default kolom absensi adalah '-', sehingga perbandingannya harus
+     * positif ('= Hadir') - bukan negatif seperti "!= 'Alpha'" yang akan
+     * meloloskan peserta yang belum diabsen sama sekali.
+     *
+     * @param  int    $idMahasiswa
+     * @param  string $tahap 'presentasi' (butuh tes tertulis) atau
+     *                       'wawancara' (butuh tes tertulis + presentasi)
+     * @return string|null  null bila memenuhi syarat, atau alasan penolakan.
+     */
+    public static function alasanBelumBolehTahap(int $idMahasiswa, string $tahap): ?string
+    {
+        $sql = "SELECT m.nama_lengkap,
+                       a.absensi_tes_tertulis,
+                       a.absensi_presentasi
+                FROM mahasiswa m
+                LEFT JOIN absensi a ON a.id_mahasiswa = m.id
+                WHERE m.id = ?";
+        $stmt = self::getDB()->prepare($sql);
+        $stmt->execute([$idMahasiswa]);
+        $baris = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$baris) {
+            return 'Data peserta tidak ditemukan';
+        }
+
+        $nama = $baris['nama_lengkap'] ?: 'Peserta';
+
+        if (($baris['absensi_tes_tertulis'] ?? '') !== 'Hadir') {
+            return $nama . ' belum mengerjakan tes tertulis';
+        }
+
+        if ($tahap === 'wawancara' && ($baris['absensi_presentasi'] ?? '') !== 'Hadir') {
+            return $nama . ' belum mengikuti presentasi';
+        }
+
+        return null;
     }
 }

@@ -14,7 +14,7 @@ $bankSoalList = $data['bankSoalList'] ?? [];
         $title = 'Jadwal Tes Tertulis';
         $subtitle = 'Manajemen jadwal ujian tertulis mahasiswa per individu';
         $icon = 'bi bi-calendar-event';
-        require_once __DIR__ . '/../../templates/components/PageHeader.php';
+        require_once __DIR__ . '/../../../templates/components/PageHeader.php';
     ?>
 
     <div class="max-w-7xl mx-auto pt-0 pb-6">
@@ -52,7 +52,13 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                     <tbody id="table-body" class="dt-tbody">
                         <?php if (empty($jadwalTesList)): ?>
                             <tr>
-                                <td colspan="8" class="text-center py-10 text-slate-400 font-medium">Kosong</td>
+                                <td colspan="8" class="text-center py-12">
+                                    <div class="w-16 h-16 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-2xl mx-auto mb-3">
+                                        <i class="bi bi-calendar-x"></i>
+                                    </div>
+                                    <h4 class="text-base font-bold text-slate-800 mb-1">Belum Ada Jadwal Tes</h4>
+                                    <p class="text-slate-500 text-xs">Klik <span class="font-semibold text-blue-600">Tambah Jadwal</span> untuk menjadwalkan tes tertulis peserta.</p>
+                                </td>
                             </tr>
                         <?php else: ?>
                             <?php $i = 1; foreach ($jadwalTesList as $row): ?>
@@ -118,37 +124,46 @@ $bankSoalList = $data['bankSoalList'] ?? [];
             <div class="bg-white p-6">
                 <form id="addJadwalForm" class="space-y-4">
                     <div>
-                        <label for="mahasiswaSelect" class="block text-sm font-semibold text-slate-700 mb-2">Pilih Mahasiswa</label>
+                        <label for="mahasiswaSelect" class="block text-sm font-semibold text-slate-700 mb-2">Pilih Mahasiswa:</label>
                         <div class="flex gap-2">
-                             <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="mahasiswaSelect">
+                            <select class="flex-1 min-w-0 px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="mahasiswaSelect">
                                 <option value="" disabled selected>-- Pilih Mahasiswa --</option>
                                 <?php foreach ($mahasiswaList as $m): ?>
                                     <option value="<?= $m['id'] ?>"><?= $m['stambuk'] ?> - <?= $m['nama_lengkap'] ?></option>
                                 <?php endforeach; ?>
                             </select>
-                             <button type="button" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm rounded-xl transition shrink-0" id="addMhsToList">Tambah</button>
+                            <button type="button" class="shrink-0 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition flex items-center gap-1.5" id="addMhsToList"><i class="bi bi-plus-lg"></i> Tambah</button>
                         </div>
-                        <ul class="mt-3 space-y-2" id="selectedMhsList"></ul>
+                        <p class="text-xs text-slate-400 mt-1.5">Tambahkan satu per satu; semua peserta terpilih dijadwalkan pada waktu yang sama.</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="ruanganSelect" class="block text-sm font-semibold text-slate-700 mb-2">Ruangan</label>
-                            <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="ruanganSelect" required>
-                                <option value="" disabled selected>Pilih</option>
-                                <?php foreach ($ruanganList as $r): ?>
-                                    <option value="<?= $r['id'] ?>"><?= $r['nama'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="block text-sm font-semibold text-slate-700">Daftar Peserta:</label>
+                            <span id="jumlahMhsTerpilih" class="text-xs font-bold text-slate-500">0 peserta</span>
                         </div>
-                        <div>
-                            <label for="kegiatanInput" class="block text-sm font-semibold text-slate-700 mb-2">Kegiatan</label>
-                            <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="kegiatanInput" value="Tes Tertulis">
-                        </div>
+                        <ul class="list-none p-0 m-0 space-y-2 max-h-40 overflow-y-auto" id="selectedMhsList">
+                            <li id="daftarMhsKosong" class="text-center text-xs text-slate-400 py-4 border border-dashed border-slate-200 rounded-xl">
+                                Belum ada peserta dipilih
+                            </li>
+                        </ul>
+                    </div>
+                    <?php /* Field "Kegiatan" dihapus: tab ini khusus tes tertulis dan tidak
+                            ada pilihan lain. Nilainya ditetapkan di server lewat konstanta
+                            JadwalTesController::JENIS_TES_TERTULIS. */ ?>
+                    <div>
+                        <label for="ruanganSelect" class="block text-sm font-semibold text-slate-700 mb-2">Pilih Ruangan:</label>
+                        <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="ruanganSelect" required>
+                            <option value="" disabled selected>-- Pilih Ruangan --</option>
+                            <?php foreach ($ruanganList as $r): ?>
+                                <option value="<?= $r['id'] ?>"><?= $r['nama'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="tanggalInput" class="block text-sm font-semibold text-slate-700 mb-2">Tanggal</label>
-                            <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="tanggalInput" required>
+                            <input type="date" min="<?= date('Y-m-d') ?>" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="tanggalInput" required>
                         </div>
                         <div>
                             <label for="waktuInput" class="block text-sm font-semibold text-slate-700 mb-2">Waktu</label>
@@ -181,24 +196,19 @@ $bankSoalList = $data['bankSoalList'] ?? [];
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Mahasiswa</label>
                         <p id="editMhsInfo" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-sm font-semibold mb-0"></p>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="editRuangan" class="block text-sm font-semibold text-slate-700 mb-2">Ruangan</label>
-                            <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editRuangan" required>
-                                <?php foreach ($ruanganList as $r): ?>
-                                    <option value="<?= $r['id'] ?>"><?= $r['nama'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="editKegiatan" class="block text-sm font-semibold text-slate-700 mb-2">Kegiatan</label>
-                            <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editKegiatan" required>
-                        </div>
+                    <?php /* Field "Kegiatan" dihapus - lihat catatan di modal tambah. */ ?>
+                    <div>
+                        <label for="editRuangan" class="block text-sm font-semibold text-slate-700 mb-2">Pilih Ruangan:</label>
+                        <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editRuangan" required>
+                            <?php foreach ($ruanganList as $r): ?>
+                                <option value="<?= $r['id'] ?>"><?= $r['nama'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="editTanggal" class="block text-sm font-semibold text-slate-700 mb-2">Tanggal</label>
-                            <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editTanggal" required>
+                            <input type="date" min="<?= date('Y-m-d') ?>" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white transition" id="editTanggal" required>
                         </div>
                         <div>
                             <label for="editWaktu" class="block text-sm font-semibold text-slate-700 mb-2">Waktu</label>

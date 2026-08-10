@@ -61,10 +61,18 @@ $mahasiswaList = $mahasiswaList ?? [];
                                     </div>
                                 </td>
                                 <td class="text-slate-500 py-4 px-4 font-semibold"><?= htmlspecialchars($row['stambuk']) ?></td>
+                                <?php
+                                // Tahap ditampilkan "Terkunci" bila tahap sebelumnya
+                                // belum Hadir - sama dengan aturan yang mengunci dropdown
+                                // di modal dan divalidasi ulang di server.
+                                $bolehPresentasi = tahapTerbuka($row['absensi_tes_tertulis']);
+                                $bolehWawancaraI = $bolehPresentasi && tahapTerbuka($row['absensi_presentasi']);
+                                $bolehWawancaraII = $bolehWawancaraI && tahapTerbuka($row['absensi_wawancara_I']);
+                                ?>
                                 <td class="text-center py-4 px-4"><?= renderStatusBadge($row['absensi_tes_tertulis']) ?></td>
-                                <td class="text-center py-4 px-4"><?= renderStatusBadge($row['absensi_presentasi']) ?></td>
-                                <td class="text-center py-4 px-4"><?= renderStatusBadge($row['absensi_wawancara_I']) ?></td>
-                                <td class="text-center py-4 px-4"><?= renderStatusBadge($row['absensi_wawancara_II']) ?></td>
+                                <td class="text-center py-4 px-4"><?= $bolehPresentasi ? renderStatusBadge($row['absensi_presentasi']) : renderStatusTerkunci('Tes Tertulis') ?></td>
+                                <td class="text-center py-4 px-4"><?= $bolehWawancaraI ? renderStatusBadge($row['absensi_wawancara_I']) : renderStatusTerkunci('Presentasi') ?></td>
+                                <td class="text-center py-4 px-4"><?= $bolehWawancaraII ? renderStatusBadge($row['absensi_wawancara_II']) : renderStatusTerkunci('Wawancara I') ?></td>
                                 <td class="text-center py-4 px-4">
                                     <?php
                                         $statusAkhir = $row['status_akhir'] ?? 'Pending';
@@ -102,6 +110,16 @@ $mahasiswaList = $mahasiswaList ?? [];
                                                 data-absensiwawancaraii="<?= $row['absensi_wawancara_II'] ?? '' ?>"
                                                 data-absensitestertulis="<?= $row['absensi_tes_tertulis'] ?? '' ?>"
                                                 data-absensipresentasi="<?= $row['absensi_presentasi'] ?? '' ?>"
+                                                <?php /* Foto dari berkas yang diunggah peserta. Kosong bila belum
+                                                        mengunggah - modal jatuh ke avatar inisial. */ ?>
+                                                data-foto="<?= !empty($row['berkas_foto']) ? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . htmlspecialchars($row['berkas_foto']) : '' ?>"
+                                                <?php /* Penanda sudah dijadwalkan per tahap. "Hadir" hanya boleh
+                                                        dipilih bila jadwalnya ada - peserta tidak mungkin hadir
+                                                        di kegiatan yang tidak pernah dijadwalkan untuknya. */ ?>
+                                                data-jadwaltes="<?= (int) ($row['jadwal_tes'] ?? 0) ?>"
+                                                data-jadwalpresentasi="<?= (int) ($row['jadwal_presentasi'] ?? 0) ?>"
+                                                data-jadwalwawancara1="<?= (int) ($row['jadwal_wawancara1'] ?? 0) ?>"
+                                                data-jadwalwawancara2="<?= (int) ($row['jadwal_wawancara2'] ?? 0) ?>"
                                                 data-statusakhir="<?= $row['status_akhir'] ?? 'Pending' ?>">
                                             <i class="bi bi-pencil"></i>
                                         </button>
@@ -119,6 +137,23 @@ $mahasiswaList = $mahasiswaList ?? [];
 
 <?php
 // Inline helper with XSS protection
+/**
+ * Badge untuk tahap yang belum boleh diisi.
+ *
+ * Dibedakan dari "Belum Ada": tahap terkunci bukan sekadar belum diisi, tapi
+ * memang belum boleh diisi karena tahap sebelumnya tidak dihadiri. Tanpa
+ * pembedaan ini admin akan mengira dirinya lupa mengisi.
+ */
+function renderStatusTerkunci(string $tahapSebelumnya): string {
+    return '<span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 text-slate-400 border border-slate-200" title="Terkunci - ' . htmlspecialchars($tahapSebelumnya, ENT_QUOTES, 'UTF-8') . ' harus Hadir terlebih dahulu">'
+         . '<i class="bi bi-lock-fill text-[10px]"></i>Terkunci</span>';
+}
+
+/** Tahap terbuka hanya bila tahap sebelumnya bernilai 'Hadir'. */
+function tahapTerbuka(?string $nilaiTahapSebelumnya): bool {
+    return strtolower(trim((string) $nilaiTahapSebelumnya)) === 'hadir';
+}
+
 function renderStatusBadge($val) {
     // Handle empty/null values
     if (!$val || trim($val) === '' || $val === '-') {
@@ -254,7 +289,10 @@ function renderStatusBadge($val) {
                 </h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
-            <div class="p-0">
+            <?php /* bg-white wajib: tanpa ini badan modal transparan dan isi
+                    tabel di belakangnya tembus terlihat. Dua modal lain di
+                    halaman ini sudah memakai pola yang sama. */ ?>
+            <div class="bg-white">
                 <div class="p-4 text-center bg-slate-50 border-b border-slate-100 flex flex-col items-center">
                     <img id="rekapFoto" src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png" alt="Foto Profil" class="rounded-full w-16 h-16 object-cover border-4 border-white shadow-sm mb-2" style="display: none;" onerror="this.style.display='none'; document.getElementById('rekapAvatarContainer').style.display='flex';">
                     <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-secondary text-white flex items-center justify-center font-bold text-xl shadow-sm mb-2" id="rekapAvatarContainer">
@@ -336,7 +374,11 @@ function renderStatusBadge($val) {
             </div>
             <div class="bg-white p-6 space-y-4">
                 <div class="text-center flex flex-col items-center pb-4 border-b border-slate-100">
-                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-secondary text-white flex items-center justify-center font-bold text-2xl shadow-sm mb-3">
+                    <?php /* Foto peserta bila sudah diunggah; kalau tidak ada (atau gagal
+                            dimuat) jatuh ke avatar inisial di bawahnya. Pola yang sama
+                            dipakai modal Rekap. */ ?>
+                    <img id="detailFoto" src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png" alt="Foto Profil" class="rounded-full w-16 h-16 object-cover border-4 border-white shadow-sm mb-3" style="display: none;" onerror="this.style.display='none'; document.getElementById('detailAvatarContainer').style.display='flex';">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-secondary text-white flex items-center justify-center font-bold text-2xl shadow-sm mb-3" id="detailAvatarContainer">
                         <span id="avatarInitial">U</span>
                     </div>
                     <h5 class="text-lg font-bold text-slate-800 mb-1" id="detailNama">Name</h5>
@@ -344,6 +386,17 @@ function renderStatusBadge($val) {
                 </div>
                 <input type="hidden" id="detailUserId">
                 <input type="hidden" id="detailMhsId">
+
+                <?php /* Petunjuk tahap berikutnya. Diisi oleh kehadiran.js setiap kali
+                        modal dibuka atau salah satu tahap diubah, supaya admin tahu
+                        apa yang harus diisi tanpa menebak dari field yang abu-abu. */ ?>
+                <div id="petunjukTahap" class="hidden rounded-xl border p-3 flex items-start gap-2.5 text-xs">
+                    <i id="petunjukIkon" class="bi bi-info-circle text-base shrink-0 mt-0.5"></i>
+                    <div>
+                        <p id="petunjukJudul" class="font-bold mb-0.5"></p>
+                        <p id="petunjukPesan" class="leading-relaxed"></p>
+                    </div>
+                </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
