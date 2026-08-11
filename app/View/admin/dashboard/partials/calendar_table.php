@@ -7,6 +7,32 @@ $calendarWeeks = $calendarWeeks ?? [];
    halaman pertama dimuat. */
 $nSel = 0;
 
+/* Warna per JENIS kegiatan.
+   Sebelumnya semua nama kegiatan ditulis abu-abu seragam (text-slate-500 9px),
+   sehingga "Tes Tertulis", "Presentasi", dan "Wawancara" tidak bisa dibedakan
+   tanpa membacanya satu per satu. Warnanya disamakan dengan stepper tahapan di
+   dashboard peserta supaya satu bahasa di seluruh aplikasi.
+
+   Kelas ditulis literal utuh - syarat Tailwind Play CDN, yang tidak
+   mengompilasi nama kelas hasil rakitan. */
+$warnaJenis = [
+    'Tes Tertulis' => ['titik' => 'bg-amber-500',   'teks' => 'text-amber-700'],
+    'Presentasi'   => ['titik' => 'bg-cyan-500',    'teks' => 'text-cyan-700'],
+    'Wawancara'    => ['titik' => 'bg-emerald-500', 'teks' => 'text-emerald-700'],
+    'Kegiatan'     => ['titik' => 'bg-blue-500',    'teks' => 'text-blue-700'],
+];
+$warnaLain = ['titik' => 'bg-slate-400', 'teks' => 'text-slate-600'];
+
+/** Cocokkan jenis kegiatan ke warnanya; awalan sudah cukup (mis. "Wawancara I"). */
+$ambilWarna = function (string $label) use ($warnaJenis, $warnaLain) {
+    foreach ($warnaJenis as $kunci => $w) {
+        if (stripos($label, $kunci) === 0) {
+            return $w;
+        }
+    }
+    return $warnaLain;
+};
+
 /* Gaya mengikuti referensi "TimeFrame": tanpa garis kotak, tiap sel berupa
    permukaan membulat, hari ini ditandai lingkaran biru penuh.
 
@@ -46,16 +72,22 @@ foreach ($calendarWeeks as $week):
                 if ($isToday) {
                     $gayaSel = 'bg-blue-50/80 ring-2 ring-blue-400 shadow-sm shadow-blue-500/20';
                 } elseif ($adaAcara) {
-                    $gayaSel = 'bg-white ring-1 ring-slate-200 shadow-sm hover:ring-blue-300 hover:shadow-md';
+                    $gayaSel = 'bg-white ring-1 ring-slate-200 shadow-sm hover:ring-blue-300 hover:shadow-md hover:-translate-y-0.5';
                 } elseif ($akhirPekan) {
-                    $gayaSel = 'bg-slate-50/60 hover:bg-slate-100';
+                    /* Akhir pekan dibedakan tipis. Dulu cabang ini isinya sama
+                       persis dengan hari kerja - jadi kode mati yang menyesatkan. */
+                    $gayaSel = 'bg-slate-100/70 hover:bg-slate-100';
                 } else {
                     $gayaSel = 'bg-slate-50/60 hover:bg-slate-100';
                 }
 
-                /* Angka tanggal: hari ini jadi lingkaran gradasi biru penuh. */
+                /* Angka tanggal hari ini: TANPA lingkaran biru penuh.
+                   Penanda "hari ini" cukup dipikul cincin biru pada selnya; kalau
+                   angkanya juga dijadikan lingkaran gradasi, ada dua penanda kuat
+                   bertumpuk di satu sel - ramai dan angkanya sendiri jadi lebih
+                   sulit dibaca daripada tanggal lain. */
                 if ($isToday) {
-                    $gayaAngka = 'w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary text-white font-bold shadow-md shadow-blue-500/40';
+                    $gayaAngka = 'w-6 h-6 text-blue-600 font-bold';
                 } elseif ($adaAcara) {
                     $gayaAngka = 'w-6 h-6 text-slate-700 font-bold';
                 } elseif ($akhirPekan) {
@@ -93,9 +125,18 @@ foreach ($calendarWeeks as $week):
                                 if ($judulAcara !== '' && $judulAcara !== $jenis) {
                                     $tip .= ' - ' . $judulAcara;
                                 }
+                                $wJenis = $ambilWarna($labelSel);
                             ?>
-                                <span class="block w-full text-[9px] font-semibold text-slate-500 leading-tight text-center truncate"
-                                      title="<?= htmlspecialchars($tip) ?>"><?= htmlspecialchars($labelSel) ?></span>
+                                <?php /* justify-center: titik + nama kegiatan diperlakukan
+                                         sebagai satu kesatuan lalu ditengahkan, sehingga
+                                         sejajar dengan angka tanggal di atasnya. Teks
+                                         memakai min-w-0 (bukan flex-1) supaya pasangan itu
+                                         benar-benar rapat di tengah, tapi tetap bisa
+                                         menyusut agar `truncate` bekerja saat nama panjang. */ ?>
+                                <span class="flex w-full items-center justify-center gap-1 min-w-0" title="<?= htmlspecialchars($tip) ?>">
+                                    <span class="w-1.5 h-1.5 rounded-full shrink-0 <?= $wJenis['titik'] ?>"></span>
+                                    <span class="block min-w-0 text-[9px] font-bold leading-tight text-center truncate <?= $wJenis['teks'] ?>"><?= htmlspecialchars($labelSel) ?></span>
+                                </span>
                             <?php endforeach; ?>
 
                             <?php if (count($day['events']) > 2): ?>

@@ -21,8 +21,23 @@
     <style type="text/tailwindcss">
         @layer utilities {
             /* Latar auth: gradien biru lembut, seragam dengan lupa/reset password */
+            /* Latar auth: gambar SVG lokal di atas gradien.
+               Sengaja SVG buatan sendiri (~1,5 KB), bukan foto dari luar -
+               tetap tajam di layar apa pun dan tetap tampil walau jaringan
+               memblokir sumber eksternal. Gradien tetap jadi lapis bawah
+               supaya warnanya sudah benar sebelum SVG selesai diunduh. */
             .bg-auth {
                 @apply bg-gradient-auth;
+                background-image: url('<?= APP_URL ?>/Assets/Img/auth-bg.svg');
+                background-size: cover;
+                background-position: center bottom;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
+            /* background-attachment: fixed berat di peramban HP dan membuat
+               latar meloncat saat bilah alamat muncul-hilang. */
+            @media (max-width: 767.98px) {
+                .bg-auth { background-attachment: scroll; }
             }
             .hide-scroll {
                 overflow-x: hidden;

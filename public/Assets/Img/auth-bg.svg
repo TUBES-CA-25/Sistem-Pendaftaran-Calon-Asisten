@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Latar dekoratif">
+  <defs>
+    <linearGradient id="langit" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#eaf6fd"/>
+      <stop offset="45%"  stop-color="#dbeefb"/>
+      <stop offset="100%" stop-color="#cfe2fb"/>
+    </linearGradient>
+    <linearGradient id="ombak1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#3dc2ec" stop-opacity=".30"/>
+      <stop offset="100%" stop-color="#2563eb" stop-opacity=".22"/>
+    </linearGradient>
+    <linearGradient id="ombak2" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0%"   stop-color="#2563eb" stop-opacity=".26"/>
+      <stop offset="100%" stop-color="#3dc2ec" stop-opacity=".16"/>
+    </linearGradient>
+    <linearGradient id="ombak3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#1e40af" stop-opacity=".18"/>
+      <stop offset="100%" stop-color="#3dc2ec" stop-opacity=".12"/>
+    </linearGradient>
+
+    <radialGradient id="cahaya" cx="18%" cy="12%" r="60%">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Pola titik halus, memberi tekstur agar bidang kosong tidak terasa datar -->
+    <pattern id="titik" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#2563eb" opacity=".16"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#langit)"/>
+  <rect width="1600" height="1000" fill="url(#titik)"/>
+  <rect width="1600" height="1000" fill="url(#cahaya)"/>
+
+  <!-- Lingkaran lembut, sebahasa dengan dekorasi kartu di dalam aplikasi -->
+  <circle cx="1380" cy="120"  r="230" fill="#3dc2ec" opacity=".14"/>
+  <circle cx="1520" cy="380"  r="140" fill="#2563eb" opacity=".10"/>
+  <circle cx="120"  cy="820"  r="200" fill="#2563eb" opacity=".10"/>
+  <circle cx="300"  cy="180"  r="90"  fill="#3dc2ec" opacity=".12"/>
+
+  <!-- Tiga lapis ombak di kaki halaman -->
+  <path fill="url(#ombak3)" d="M0 780 C 240 700, 420 880, 700 800 C 980 720, 1180 880, 1600 770 L1600 1000 L0 1000 Z"/>
+  <path fill="url(#ombak2)" d="M0 850 C 260 780, 470 940, 760 866 C 1050 792, 1300 930, 1600 848 L1600 1000 L0 1000 Z"/>
+  <path fill="url(#ombak1)" d="M0 918 C 280 860, 500 990, 820 930 C 1140 870, 1360 980, 1600 922 L1600 1000 L0 1000 Z"/>
+</svg>

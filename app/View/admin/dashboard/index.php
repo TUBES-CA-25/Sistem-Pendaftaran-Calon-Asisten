@@ -370,7 +370,11 @@ foreach ($pendaftarPerAngkatan as $baris) {
                  besar di bawah tabelnya. */ ?>
         <div class="lg:col-span-3 flex flex-col gap-2.5 items-stretch w-full">
             <!-- Calendar Card -->
-            <div class="bg-white rounded-xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] p-3 animate-fade-up" style="animation-delay: 240ms;">
+            <?php /* flex-grow + tabel h-full: kartu ini mengisi seluruh tinggi
+                     kolom kiri, dan tinggi lebihnya DIBAGI RATA ke baris-baris
+                     minggu - bukan menumpuk jadi ruang putih di bawah tabel.
+                     Terukur: kolom 528px vs kartu 433px menyisakan 95px kosong. */ ?>
+            <div class="bg-white rounded-xl shadow-[0_2px_12px_-2px_rgba(15,23,42,0.08)] p-3 flex flex-col flex-grow animate-fade-up" style="animation-delay: 240ms;">
                 <!-- Header kartu: judul + aksi, sejajar dengan pola kartu grafik
                      & timeline yang memang sudah menaruh judulnya di dalam kartu. -->
                 <?php /* Judul + navigasi bulan + tombol tambah disatukan dalam SATU
@@ -411,8 +415,8 @@ foreach ($pendaftarPerAngkatan as $baris) {
                 <!-- Table -->
                 <?php /* Baris hari dibungkus permukaan biru lembut seperti referensi,
                          menggantikan garis pemisah tipis. */ ?>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-center border-separate border-spacing-0 table-fixed" id="calendarTable">
+                <div class="overflow-x-auto flex-grow flex">
+                    <table class="w-full h-full text-center border-separate border-spacing-0 table-fixed" id="calendarTable">
                         <thead>
                             <tr>
                                 <th class="py-2 text-blue-600 text-[10px] font-bold text-center tracking-widest bg-blue-50/70 rounded-l-xl">MON</th>
@@ -553,37 +557,36 @@ foreach ($pendaftarPerAngkatan as $baris) {
                             <?php endif; ?>
 
                             <!-- Kartu tahapan -->
-                            <?php /* Tahap berjalan memakai animate-glow: bayangan biru
-                                     berdenyut terus-menerus sehingga tahap yang sedang
-                                     diproses langsung menarik mata. Kelas ditulis
-                                     literal utuh per cabang (syarat Play CDN). */ ?>
+                            <?php /* Tahap berjalan: penandanya diturunkan intensitasnya.
+                                     Sebelumnya kartu ini bergradasi biru penuh + teks
+                                     putih + animate-glow berdenyut + kilau melintas
+                                     berulang - empat penanda kuat menumpuk di satu kartu,
+                                     jauh lebih mencolok daripada informasinya sendiri dan
+                                     membuat empat tahap lain seolah tidak penting.
+                                     Sekarang cukup latar biru muda + garis tepi biru,
+                                     teks tetap gelap agar terbaca. */ ?>
                             <div class="<?= $aktif
-                                    ? 'relative overflow-hidden p-2.5 rounded-xl bg-gradient-to-br from-primary to-secondary text-white animate-glow transition-all duration-300'
+                                    ? 'relative overflow-hidden p-2.5 rounded-xl bg-blue-50 border border-blue-300 shadow-sm transition-all duration-300'
                                     : 'p-2.5 rounded-xl border transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 ' . $w['kartu'] ?>">
 
-                                <?php if ($aktif): ?>
-                                    <?php /* Kilau melintas berulang di kartu yang berjalan. */ ?>
-                                    <span class="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-white/25 blur-md animate-sheen-loop" aria-hidden="true"></span>
-                                <?php endif; ?>
-
                                 <div class="relative flex justify-between items-start gap-2 mb-0.5">
-                                    <h6 class="font-bold text-[13px] <?= $aktif ? 'text-white' : $w['judul'] ?>">
+                                    <h6 class="font-bold text-[13px] <?= $aktif ? 'text-blue-800' : $w['judul'] ?>">
                                         <?= htmlspecialchars($status['label']) ?>
                                     </h6>
 
                                     <?php if ($selesai): ?>
                                         <i class="bx bxs-check-circle text-base shrink-0 <?= $w['ikon'] ?>"></i>
                                     <?php elseif ($aktif): ?>
-                                        <span class="text-[9px] font-bold uppercase tracking-wider bg-white/25 px-2 py-0.5 rounded-full shrink-0 animate-shimmer">Berjalan</span>
+                                        <span class="text-[9px] font-bold uppercase tracking-wider bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full shrink-0">Berjalan</span>
                                     <?php endif; ?>
                                 </div>
 
-                                <p class="relative text-[10px] font-medium mb-1.5 <?= $aktif ? 'text-white/85' : 'text-slate-400' ?>">
+                                <p class="relative text-[10px] font-medium mb-1.5 <?= $aktif ? 'text-slate-500' : 'text-slate-400' ?>">
                                     <?= (int) ($status['jumlah'] ?? 0) ?> peserta &middot; <?= htmlspecialchars($statusText) ?>
                                 </p>
 
                                 <?php if (!empty($status['deadline'])): ?>
-                                    <div class="flex items-center gap-2 text-[10px] font-medium <?= $aktif ? 'text-white/80' : 'text-slate-400' ?>">
+                                    <div class="flex items-center gap-2 text-[10px] font-medium <?= $aktif ? 'text-slate-500' : 'text-slate-400' ?>">
                                         <i class="bx bx-calendar-event"></i>
                                         <?php /* .deadline-date + data-jenis: penanda stabil untuk
                                                  dashboard.js. Dulu JS memakai previousElementSibling
@@ -591,7 +594,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
                                                  Awalan "Deadline: " disamakan dengan yang ditulis JS
                                                  agar bentuk teks tidak berubah setelah diedit. */ ?>
                                         <span class="deadline-date" data-jenis="<?= $key ?>">Deadline: <?= date('d M Y', strtotime($status['deadline'])) ?></span>
-                                        <button class="edit-deadline-btn <?= $aktif ? 'text-white hover:text-white/80' : 'text-blue-600 hover:text-blue-700' ?>"
+                                        <button class="edit-deadline-btn <?= 'text-blue-600 hover:text-blue-700' ?>"
                                                 data-jenis="<?= $key ?>"
                                                 data-label="<?= htmlspecialchars($status['label']) ?>"
                                                 data-date="<?= $status['deadline'] ?>"
