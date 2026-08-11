@@ -24,11 +24,9 @@
         suratpernyataan: { ext: ['pdf'],                label: 'Surat Pernyataan', teks: 'PDF' },
     };
 
-    const downloadLink = `${APP_URL}/Assets/Downloads/Template%20CV%20Indo%20ATS.doc`;
-    const docElement = document.getElementById('downloadFile1');
-    if (docElement) {
-        docElement.setAttribute('href', downloadLink);
-    }
+    // Tautan unduh template TIDAK lagi dipasang dari sini. Nama berkasnya
+    // ditulis langsung di view; menaruhnya di JS membuat tautan diam-diam mati
+    // begitu berkasnya diganti, karena view-nya sendiri hanya berisi href="#".
 
     /* ------------------------------------------------------------------ *
      * Pesan error per input

@@ -78,41 +78,49 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
 
 <div class="bank-list-view<?= $tabAwal === 'impor' ? ' hidden' : '' ?>" id="bankListView">
         <!-- Stats Bar -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
-            <div class="bg-white rounded-xl shadow-sm border border-slate-100 px-4 py-3 flex items-center gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-                <div class="w-9 h-9 rounded-lg flex justify-center items-center shrink-0 bg-gradient-to-br from-primary to-secondary text-white shadow-sm">
-                    <i class="bi bi-folder-fill text-sm"></i>
-                </div>
-                <div>
-                    <div class="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Total Bank Soal</div>
-                    <div class="text-xl font-extrabold text-slate-800 leading-tight" id="stat-count-bank"><?= $bankCount ?></div>
-                </div>
-            </div>
-            <div class="bg-white rounded-xl shadow-sm border border-slate-100 px-4 py-3 flex items-center gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-                <div class="w-9 h-9 rounded-lg flex justify-center items-center shrink-0 bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-sm">
-                    <i class="bi bi-file-earmark-text-fill text-sm"></i>
-                </div>
-                <div>
-                    <div class="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Total Soal</div>
-                    <div class="text-xl font-extrabold text-slate-800 leading-tight" id="stat-count-total"><?= $totalSoal ?></div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 hover:shadow-md hover:border-slate-300 transition-all duration-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <i class="bi bi-folder-fill text-lg"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Bank Soal</div>
+                        <div class="text-2xl font-bold text-slate-800 leading-tight tabular-nums" id="stat-count-bank"><?= $bankCount ?></div>
+                    </div>
                 </div>
             </div>
-            <div class="bg-white rounded-xl shadow-sm border border-slate-100 px-4 py-3 flex items-center gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-                <div class="w-9 h-9 rounded-lg flex justify-center items-center shrink-0 bg-gradient-to-br from-sky-400 to-sky-600 text-white shadow-sm">
-                    <i class="bi bi-ui-checks-grid text-sm"></i>
-                </div>
-                <div>
-                    <div class="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Pilihan Ganda</div>
-                    <div class="text-xl font-extrabold text-slate-800 leading-tight" id="stat-count-pg"><?= $pgCount ?></div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 hover:shadow-md hover:border-slate-300 transition-all duration-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <i class="bi bi-file-earmark-text-fill text-lg"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Soal</div>
+                        <div class="text-2xl font-bold text-slate-800 leading-tight tabular-nums" id="stat-count-total"><?= $totalSoal ?></div>
+                    </div>
                 </div>
             </div>
-            <div class="bg-white rounded-xl shadow-sm border border-slate-100 px-4 py-3 flex items-center gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-                <div class="w-9 h-9 rounded-lg flex justify-center items-center shrink-0 bg-gradient-to-br from-amber-400 to-amber-600 text-white shadow-sm">
-                    <i class="bi bi-pencil-square text-sm"></i>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 hover:shadow-md hover:border-slate-300 transition-all duration-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                        <i class="bi bi-ui-checks-grid text-lg"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Pilihan Ganda</div>
+                        <div class="text-2xl font-bold text-slate-800 leading-tight tabular-nums" id="stat-count-pg"><?= $pgCount ?></div>
+                    </div>
                 </div>
-                <div>
-                    <div class="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Essay</div>
-                    <div class="text-xl font-extrabold text-slate-800 leading-tight" id="stat-count-essay"><?= $essayCount ?></div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 hover:shadow-md hover:border-slate-300 transition-all duration-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                        <i class="bi bi-pencil-square text-lg"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Essay</div>
+                        <div class="text-2xl font-bold text-slate-800 leading-tight tabular-nums" id="stat-count-essay"><?= $essayCount ?></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -180,8 +188,8 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
                                     class="group/nama flex items-center gap-3 text-left bg-transparent border-0 p-0 cursor-pointer w-full"
                                     onclick="openBankDetail(<?= $bank['id'] ?>, '<?= $namaBank ?>')"
                                     title="<?= $namaBank ?>">
-                                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center shrink-0 shadow-sm transition-transform duration-200 group-hover/nama:scale-105">
-                                    <i class="bi bi-folder-fill text-sm"></i>
+                                <span class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-sm transition-transform duration-200 group-hover/nama:scale-105 bg-gradient-to-br from-primary to-secondary text-white">
+                                    <i class="bi bi-folder-fill text-base"></i>
                                 </span>
                                 <span class="min-w-0">
                                     <span class="bank-nama block font-bold text-slate-700 text-[13px] leading-snug group-hover/nama:text-blue-600 transition-colors line-clamp-1">
@@ -212,7 +220,7 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
                                      jadi diganti keterangan eksplisit. Sebelumnya barnya
                                      tampil sebagai garis abu polos yang membingungkan. */ ?>
                             <?php if ($total === 0): ?>
-                                <span class="text-[11px] font-medium text-slate-400 italic">Belum ada soal</span>
+                                <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-400 border border-dashed border-slate-300 rounded-lg px-2.5 py-1"><i class="bi bi-inbox"></i>Belum ada soal</span>
                             <?php else: ?>
                                 <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex mb-1.5">
                                     <div class="h-full bg-blue-500 transition-all duration-500" style="width:<?= $pgPct ?>%"></div>
@@ -220,10 +228,10 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
                                 </div>
                                 <div class="flex gap-3">
                                     <span class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block"></span>PG <?= $pg ?>
+                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block"></span>PG <?= $pg ?> <span class="text-slate-400 font-medium">(<?= $pgPct ?>%)</span>
                                     </span>
                                     <span class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block"></span>Essay <?= $essay ?>
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block"></span>Essay <?= $essay ?> <span class="text-slate-400 font-medium">(<?= $essayPct ?>%)</span>
                                     </span>
                                 </div>
                             <?php endif; ?>
@@ -231,15 +239,15 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
 
                         <!-- Status: saklar + label + badge (ketiganya kontrak exam.js) -->
                         <td class="px-4 py-3.5">
-                            <div class="flex items-center justify-center gap-2">
-                                <label class="relative inline-flex items-center cursor-pointer mb-0">
+                            <div class="flex items-center justify-center gap-2.5">
+                                <label class="relative inline-flex items-center cursor-pointer mb-0" title="Klik untuk mengubah status bank soal">
                                     <input type="checkbox" id="activeSwitch_<?= $bank['id'] ?>"
                                         class="sr-only peer bank-active-switch"
                                         <?= $aktif ? 'checked' : '' ?>
                                         onchange="window.activateBank(<?= $bank['id'] ?>)">
-                                    <div class="w-8 h-4 bg-slate-300 rounded-full peer peer-checked:after:translate-x-4 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                                    <div class="w-10 h-[22px] bg-slate-300 rounded-full peer peer-checked:after:translate-x-[18px] after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:rounded-full after:h-4 after:w-4 after:shadow after:transition-all peer-checked:bg-emerald-500 peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-300 peer-disabled:opacity-50 peer-disabled:cursor-not-allowed transition-colors shadow-inner"></div>
                                 </label>
-                                <span id="statusText_<?= $bank['id'] ?>" class="text-[11px] font-semibold <?= $aktif ? 'text-emerald-600' : 'text-slate-500' ?>">
+                                <span id="statusText_<?= $bank['id'] ?>" class="text-[11px] font-semibold w-[58px] text-left <?= $aktif ? 'text-emerald-600' : 'text-slate-500' ?>">
                                     <?= $aktif ? 'Aktif' : 'Non-aktif' ?>
                                 </span>
                                 <?php /* Badge disembunyikan tapi TETAP ADA: exam.js menulis
@@ -480,7 +488,7 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
                                     </div>
                                     <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 transition hover:border-blue-200">
                                         <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">Durasi</div>
-                                        <div class="text-slate-800 font-bold text-lg">45<span class="text-xs text-slate-500 font-medium ml-1">m</span></div>
+                                        <div class="text-slate-800 font-bold text-lg"><span id="panelDurasi">45</span><span class="text-xs text-slate-500 font-medium ml-1">m</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -491,7 +499,7 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
                         <h4 class="font-bold text-slate-800 text-sm mb-3">Aksi Cepat</h4>
                         <div class="space-y-2">
-                            <button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition group border border-transparent hover:border-blue-100" data-modal-open="#addSoalModal">
+                            <button type="button" class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition group border border-transparent hover:border-blue-100" data-modal-open="#addSoalModal">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-blue-100 flex items-center justify-center transition">
                                         <i class='bx bx-plus text-lg'></i>
@@ -501,7 +509,7 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
                                 <i class='bx bx-chevron-right text-slate-400 group-hover:text-blue-500'></i>
                             </button>
                             
-                            <button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-emerald-50 text-slate-600 hover:text-emerald-600 transition group border border-transparent hover:border-emerald-100">
+                            <button type="button" onclick="imporUntukBankIni()" class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-emerald-50 text-slate-600 hover:text-emerald-600 transition group border border-transparent hover:border-emerald-100">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-emerald-100 flex items-center justify-center transition">
                                         <i class='bx bx-import text-lg'></i>
@@ -511,7 +519,7 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
                                 <i class='bx bx-chevron-right text-slate-400 group-hover:text-emerald-500'></i>
                             </button>
 
-                            <button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition group border border-transparent hover:border-blue-100">
+                            <button type="button" onclick="window.editBankModal(window.currentBankId)" class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition group border border-transparent hover:border-blue-100">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-blue-100 flex items-center justify-center transition">
                                         <i class='bx bx-cog text-lg'></i>
@@ -904,6 +912,32 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
         imporExport.classList.toggle('hidden', !keImpor);
         tabBank.className = 'soal-tab px-4 py-2.5 text-sm font-bold rounded-t-lg border-b-2 transition-all flex items-center gap-2 ' + (keImpor ? nonaktif : aktif);
         tabImpor.className = 'soal-tab px-4 py-2.5 text-sm font-bold rounded-t-lg border-b-2 transition-all flex items-center gap-2 ' + (keImpor ? aktif : nonaktif);
+    };
+
+    // Aksi Cepat "Import dari Excel" pada panel rincian bank.
+    //
+    // Tombolnya sebelumnya tidak punya handler sama sekali. Tab Import & Export
+    // hidup di luar panel rincian, jadi rincian harus ditutup dulu - kalau
+    // hanya switchSoalTab() yang dipanggil, panel rincian tetap tampil dan
+    // menumpuk di atas isi tab Import.
+    window.imporUntukBankIni = function () {
+        const bankId = window.currentBankId;
+        window.closeBankDetail();
+        window.switchSoalTab('impor');
+
+        // Bank yang tadi dibuka langsung dipilih sebagai tujuan import sekaligus
+        // sumber export, supaya pengguna tidak perlu memilih ulang.
+        const pasang = function (idSelect, segarkan) {
+            const sel = document.getElementById(idSelect);
+            if (!sel || !bankId) return;
+            if (!sel.querySelector('option[value="' + bankId + '"]')) return;
+            sel.value = String(bankId);
+            if (typeof segarkan === 'function') segarkan();
+        };
+        pasang('selectedBankSoalImport', window.updateImportButtonState);
+        pasang('selectedBankSoal', window.updateExportButtonState);
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     // Menampilkan nama berkas yang dipilih. Fungsi ini dipanggil oleh halaman

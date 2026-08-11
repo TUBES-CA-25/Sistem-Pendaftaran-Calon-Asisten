@@ -145,17 +145,20 @@ $statusAktif = statusJudul($pengajuanAktif);
                             </div>
 
                             <!-- Download Template -->
-                            <div class="p-4 rounded-xl bg-blue-50 border border-blue-100/50 hover:bg-blue-100/70 transition duration-200 mb-6">
-                                <a id="downloadFile1" href="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/Template-Laporan-Makalah.docx" download class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
-                                        <i class="bx bx-file text-white text-lg"></i>
-                                    </div>
-                                    <div>
-                                        <span class="font-bold text-blue-800 text-sm block">Download Template Makalah</span>
-                                        <span class="text-[10px] text-slate-400 block font-medium">Gunakan template yang disediakan</span>
-                                    </div>
-                                </a>
-                            </div>
+                            <?php /* Nama berkas dilewatkan rawurlencode karena mengandung
+                                    spasi. Jalurnya juga tidak lagi ditulis mentah dengan
+                                    nama folder proyek - pakai APP_URL seperti tautan lain. */ ?>
+                            <a href="<?= APP_URL ?>/Assets/Downloads/<?= rawurlencode('Format Makalah Calon Asisten.docx') ?>" download
+                               class="flex items-center gap-3 p-4 rounded-xl bg-blue-50 border border-blue-100/50 hover:bg-blue-100/70 transition duration-200 mb-6">
+                                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
+                                    <i class="bx bx-file text-white text-lg"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="font-bold text-blue-800 text-sm block">Download Format Makalah</span>
+                                    <span class="text-[10px] text-slate-400 block font-medium">Gunakan format yang disediakan</span>
+                                </div>
+                                <i class="bi bi-download text-blue-500 ml-auto shrink-0"></i>
+                            </a>
 
                             <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" <?php if (!$canSubmitPpt) echo 'disabled'; ?>>
                                 <i class="bi bi-upload"></i>Submit File

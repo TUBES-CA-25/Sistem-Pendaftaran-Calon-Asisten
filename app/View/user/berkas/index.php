@@ -98,16 +98,42 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                 <p class="hidden mt-1.5 text-[11px] font-semibold text-red-600 items-center gap-1" data-error-for="suratpernyataan"><i class="bi bi-exclamation-circle-fill"></i><span></span></p>
                             </div>
 
-                            <div class="p-4 rounded-xl bg-blue-50 border border-blue-100/50 hover:bg-blue-100/70 transition duration-200 mb-6">
-                                <a id="downloadFile1" href="#" download class="flex items-center gap-3">
+                            <?php /* Berkas template yang bisa diunduh peserta.
+                                    href ditulis langsung di markup - dulu dikosongkan ('#')
+                                    lalu diisi berkas.js, sehingga saat nama berkasnya
+                                    berganti tautannya diam-diam mati tanpa terlihat di
+                                    view. Nama berkas dilewatkan rawurlencode karena
+                                    mengandung spasi. */ ?>
+                            <?php
+                                $templateBerkas = [
+                                    [
+                                        'berkas' => 'Template CV.docx',
+                                        'judul'  => 'Download Template CV',
+                                        'ket'    => 'Gunakan template yang disediakan',
+                                        'ikon'   => 'bx bx-file',
+                                    ],
+                                    [
+                                        'berkas' => 'Surat Pernyataan Orang Tua.docx',
+                                        'judul'  => 'Download Surat Pernyataan Orang Tua',
+                                        'ket'    => 'Isi, tanda tangani, lalu unggah dalam bentuk PDF',
+                                        'ikon'   => 'bx bx-file-blank',
+                                    ],
+                                ];
+                            ?>
+                            <div class="space-y-2 mb-6">
+                                <?php foreach ($templateBerkas as $tpl): ?>
+                                <a href="<?= APP_URL ?>/Assets/Downloads/<?= rawurlencode($tpl['berkas']) ?>" download
+                                   class="flex items-center gap-3 p-4 rounded-xl bg-blue-50 border border-blue-100/50 hover:bg-blue-100/70 transition duration-200">
                                     <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
-                                        <i class="bx bx-file text-white text-lg"></i>
+                                        <i class="<?= $tpl['ikon'] ?> text-white text-lg"></i>
                                     </div>
-                                    <div>
-                                        <span class="font-bold text-blue-800 text-sm block">Download Template CV</span>
-                                        <span class="text-[10px] text-slate-400 block font-medium">Gunakan template yang disediakan</span>
+                                    <div class="min-w-0">
+                                        <span class="font-bold text-blue-800 text-sm block"><?= htmlspecialchars($tpl['judul']) ?></span>
+                                        <span class="text-[10px] text-slate-400 block font-medium"><?= htmlspecialchars($tpl['ket']) ?></span>
                                     </div>
+                                    <i class="bi bi-download text-blue-500 ml-auto shrink-0"></i>
                                 </a>
+                                <?php endforeach; ?>
                             </div>
 
                             <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition duration-200 flex items-center justify-center gap-2">

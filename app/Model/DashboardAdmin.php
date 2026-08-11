@@ -218,11 +218,67 @@ class DashboardAdmin extends Model
         }
     }
 
+    /**
+     * Tahapan seleksi beserta urutannya - SATU-SATUNYA sumber kebenaran.
+     *
+     * Dipakai bersama oleh timeline admin (getStatusKegiatan) dan timeline
+     * peserta (DashboardUser::getTimelineSeleksi). Ditaruh di satu tempat
+     * supaya kedua sisi tidak bisa menampilkan daftar tahap yang berbeda.
+     *
+     * 'presentasi' sebelumnya tidak ada di sini padahal tahapan peserta
+     * memuatnya, sehingga tahap itu satu-satunya yang tanggalnya tidak bisa
+     * diatur admin.
+     *
+     * @var array<string, array{label: string, default: string}>
+     */
+    public const TAHAPAN_SELEKSI = [
+        'kelengkapan_berkas' => ['label' => 'Kelengkapan Berkas', 'default' => '2026-02-01'],
+        'tes_tertulis'       => ['label' => 'Tes Tertulis',       'default' => '2026-02-05'],
+        'presentasi'         => ['label' => 'Presentasi',         'default' => '2026-02-10'],
+        'tahap_wawancara'    => ['label' => 'Tahap Wawancara',    'default' => '2026-02-15'],
+        'pengumuman'         => ['label' => 'Pengumuman',         'default' => '2026-02-28'],
+    ];
+
+    /**
+     * Tanggal tiap tahap, sudah dilengkapi nilai bawaan bila belum diatur.
+     *
+     * @return array<string, string> jenis => tanggal (Y-m-d), urut sesuai tahapan
+     */
+    public static function getDeadlines(): array
+    {
+        $tersimpan = [];
+        try {
+            $stmt = self::getDB()->prepare("SELECT jenis, tanggal FROM deadline_kegiatan");
+            $stmt->execute();
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $tersimpan[$row['jenis']] = $row['tanggal'];
+            }
+        } catch (\Throwable $e) {}
+
+        // Dibangun ulang mengikuti urutan TAHAPAN_SELEKSI, bukan urutan baris
+        // di basis data - urutan tahap tidak boleh bergantung pada id/insert.
+        $hasil = [];
+        foreach (self::TAHAPAN_SELEKSI as $jenis => $def) {
+            $hasil[$jenis] = $tersimpan[$jenis] ?? $def['default'];
+        }
+        return $hasil;
+    }
+
     public static function updateDeadline(string $jenis, string $tanggal): bool
     {
+        // Hanya tahap yang dikenal yang boleh disimpan. Tanpa ini sembarang
+        // nilai `jenis` dari permintaan akan membuat baris baru di
+        // deadline_kegiatan dan mengotori timeline kedua sisi.
+        if (!isset(self::TAHAPAN_SELEKSI[$jenis])) {
+            return false;
+        }
+        if (!\DateTime::createFromFormat('Y-m-d', $tanggal)) {
+            return false;
+        }
+
         try {
             // Upsert (Insert or Update on duplicate key)
-            $sql = "INSERT INTO deadline_kegiatan (jenis, tanggal) VALUES (:jenis, :tanggal) 
+            $sql = "INSERT INTO deadline_kegiatan (jenis, tanggal) VALUES (:jenis, :tanggal)
                     ON DUPLICATE KEY UPDATE tanggal = :tanggal_update";
             $stmt = self::getDB()->prepare($sql);
             $stmt->bindValue(':jenis', $jenis);
@@ -239,34 +295,9 @@ class DashboardAdmin extends Model
      */
     public static function getStatusKegiatan(): array
     {
-        // 1. Determine Deadlines from DB
-        $deadlines = [];
-        try {
-            $sql = "SELECT jenis, tanggal FROM deadline_kegiatan";
-            $stmt = self::getDB()->prepare($sql);
-            $stmt->execute();
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $deadlines[$row['jenis']] = $row['tanggal'];
-            }
-        } catch (\Throwable $e) {}
+        // 1. Tanggal tiap tahap (sudah termasuk nilai bawaan bila belum diatur)
+        $deadlines = self::getDeadlines();
 
-        // Fallbacks if DB is empty or missing keys
-        $defaultDeadlines = [
-            'kelengkapan_berkas' => '2026-02-01',
-            'tes_tertulis' => '2026-02-05',
-            'tahap_wawancara' => '2026-02-15',
-            'pengumuman' => '2026-02-28'
-        ];
-        
-        foreach ($defaultDeadlines as $key => $val) {
-            if (!isset($deadlines[$key])) {
-                $deadlines[$key] = $val;
-            }
-        }
-
-        // Special dynamic override for Wawancara if desired, 
-        // BUT user asked for "bisa diatur sendiri". So we should probably respect the DB value if set.
-        // However, if the user explicitly saves a date, it will be in the DB.
         // 2. Build Status Sequence
         $today = date('Y-m-d');
 
@@ -328,9 +359,22 @@ class DashboardAdmin extends Model
             'css_class' => $tesState['css_class']
         ];
 
-        // 3. Tahap Wawancara (Depends on Tes Tertulis)
+        // 3. Presentasi (Depends on Tes Tertulis)
+        $presentasiDeadline = $deadlines['presentasi'];
+        $presentasiState = $determineStatus($presentasiDeadline, $tesIsDone);
+        $presentasiIsDone = ($presentasiState['status'] === 'Selesai');
+
+        $status['presentasi'] = [
+            'label' => self::TAHAPAN_SELEKSI['presentasi']['label'],
+            'jumlah' => 0,
+            'deadline' => $presentasiDeadline,
+            'status' => $presentasiState['status'],
+            'css_class' => $presentasiState['css_class']
+        ];
+
+        // 4. Tahap Wawancara (Depends on Presentasi)
         $wawancaraDeadline = $deadlines['tahap_wawancara'];
-        $wawancaraState = $determineStatus($wawancaraDeadline, $tesIsDone);
+        $wawancaraState = $determineStatus($wawancaraDeadline, $presentasiIsDone);
         $wawancaraIsDone = ($wawancaraState['status'] === 'Selesai');
 
         $status['tahap_wawancara'] = [
@@ -341,7 +385,7 @@ class DashboardAdmin extends Model
             'css_class' => $wawancaraState['css_class']
         ];
 
-        // 4. Pengumuman (Depends on Tahap Wawancara)
+        // 5. Pengumuman (Depends on Tahap Wawancara)
         $pengumumanDeadline = $deadlines['pengumuman'];
         $pengumumanState = $determineStatus($pengumumanDeadline, $wawancaraIsDone);
         
@@ -377,6 +421,15 @@ class DashboardAdmin extends Model
                 $status['tes_tertulis']['jumlah'] = (int) $stmt->fetchColumn();
             } catch (\Throwable $e2) {
             }
+        }
+
+        // Presentasi: peserta yang kehadiran presentasinya sudah ditandai Hadir
+        try {
+            $sql = "SELECT COUNT(*) FROM absensi WHERE absensi_presentasi = 'Hadir'";
+            $stmt = self::getDB()->prepare($sql);
+            $stmt->execute();
+            $status['presentasi']['jumlah'] = (int) $stmt->fetchColumn();
+        } catch (\Throwable $e) {
         }
 
         // Tahap wawancara: any wawancara attendance marked Hadir

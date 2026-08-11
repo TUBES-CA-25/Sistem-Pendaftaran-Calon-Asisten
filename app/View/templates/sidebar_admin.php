@@ -23,27 +23,28 @@ $userName = $userName ?? 'Admin';
     </div>
     
     <ul class="flex-grow min-h-0 py-4 list-none m-0 overflow-y-auto">
-        <li class="relative mx-3 my-1">
-            <a href="<?= APP_URL ?>/dashboard" data-page="dashboard" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
+        <li class="relative mx-3 my-0.5">
+            <a href="<?= APP_URL ?>/dashboard" data-page="dashboard" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
                 <i class='bx bxs-dashboard text-lg shrink-0 w-6 flex justify-center'></i>
                 <span class="whitespace-nowrap">Dashboard</span>
             </a>
         </li>
-        <li class="text-[10px] font-semibold tracking-wider text-gray-400 uppercase px-4 pt-4 pb-2">MENU UTAMA</li>
-        <li class="relative mx-3 my-1">
-            <a href="<?= APP_URL ?>/lihatPeserta" data-page="lihatPeserta" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
+        <li class="text-[10px] font-semibold tracking-wider text-gray-400 uppercase px-4 pt-3 pb-1">DATA PESERTA</li>
+        <li class="relative mx-3 my-0.5">
+            <a href="<?= APP_URL ?>/lihatPeserta" data-page="lihatPeserta" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
                 <i class='bx bxs-user-check text-lg shrink-0 w-6 flex justify-center'></i>
                 <span class="whitespace-nowrap">Lihat Peserta</span>
             </a>
         </li>
-        <li class="relative mx-3 my-1">
-            <a href="<?= APP_URL ?>/pengajuanJudul" data-page="pengajuanJudul" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
+        <li class="relative mx-3 my-0.5">
+            <a href="<?= APP_URL ?>/pengajuanJudul" data-page="pengajuanJudul" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
                 <i class='bx bxs-file-doc text-lg shrink-0 w-6 flex justify-center'></i>
                 <span class="whitespace-nowrap">Pengajuan Judul</span>
             </a>
         </li>
         
-        <li class="relative mx-3 my-1">
+        <li class="text-[10px] font-semibold tracking-wider text-gray-400 uppercase px-4 pt-3 pb-1">PERSIAPAN</li>
+        <li class="relative mx-3 my-0.5">
             <!--
                 Dulu ini dropdown berisi "Daftar Soal" dan "Import/Export".
                 Import/Export kini menjadi tab di dalam halaman Bank Soal,
@@ -51,39 +52,41 @@ $userName = $userName ?? 'Admin';
                 menambah klik, jadi diratakan menjadi menu langsung.
                 Rute /importSoal tetap hidup dan membuka tab tersebut.
             -->
-            <a href="<?= APP_URL ?>/bankSoal" data-page="bankSoal" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
+            <a href="<?= APP_URL ?>/bankSoal" data-page="bankSoal" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
                 <i class="bi bi-journal-text text-lg shrink-0 w-6 flex justify-center"></i>
                 <span class="whitespace-nowrap">Bank Soal</span>
             </a>
         </li>
+
+        <li class="relative mx-3 my-0.5">
+            <a href="<?= APP_URL ?>/ruangan" data-page="ruangan" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
+                <i class='bx bx-home-alt text-lg shrink-0 w-6 flex justify-center'></i>
+                <span class="whitespace-nowrap">Ruangan</span>
+            </a>
+        </li>
         
-        <li class="relative mx-3 my-1">
+        <li class="relative mx-3 my-0.5">
             <!--
                 Dulu dropdown berisi Tes Tertulis, Presentasi, dan Wawancara.
                 Ketiganya kini menjadi tab di dalam satu halaman Penjadwalan,
                 diurutkan sesuai tahapan seleksi. Rute lama masing-masing tetap
                 hidup dan mendarat di tabnya sendiri.
             -->
-            <a href="<?= APP_URL ?>/penjadwalan" data-page="penjadwalan" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
+            <a href="<?= APP_URL ?>/penjadwalan" data-page="penjadwalan" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
                 <i class="bi bi-calendar-event text-lg shrink-0 w-6 flex justify-center"></i>
                 <span class="whitespace-nowrap">Penjadwalan</span>
             </a>
         </li>
         
-        <li class="relative mx-3 my-1">
-            <a href="<?= APP_URL ?>/ruangan" data-page="ruangan" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
-                <i class='bx bx-home-alt text-lg shrink-0 w-6 flex justify-center'></i>
-                <span class="whitespace-nowrap">Ruangan</span>
-            </a>
-        </li>
-        <li class="relative mx-3 my-1">
-            <a href="<?= APP_URL ?>/lihatnilai" data-page="lihatnilai" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
+        <li class="text-[10px] font-semibold tracking-wider text-gray-400 uppercase px-4 pt-3 pb-1">HASIL SELEKSI</li>
+        <li class="relative mx-3 my-0.5">
+            <a href="<?= APP_URL ?>/lihatnilai" data-page="lihatnilai" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
                 <i class='bx bx-bar-chart-alt-2 text-lg shrink-0 w-6 flex justify-center'></i>
                 <span class="whitespace-nowrap">Nilai</span>
             </a>
         </li>
-        <li class="relative mx-3 my-1">
-            <a href="<?= APP_URL ?>/daftarKehadiran" data-page="daftarKehadiran" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
+        <li class="relative mx-3 my-0.5">
+            <a href="<?= APP_URL ?>/daftarKehadiran" data-page="daftarKehadiran" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
                 <i class='bx bx-calendar-check text-lg shrink-0 w-6 flex justify-center'></i>
                 <span class="whitespace-nowrap">Rekap</span>
             </a>
@@ -91,7 +94,7 @@ $userName = $userName ?? 'Admin';
     </ul>
     
     <div class="p-4 border-t border-gray-100 mt-auto">
-        <a href="#" data-page="logout" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all text-sm font-medium no-underline">
+        <a href="#" data-page="logout" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all text-sm font-medium no-underline">
             <i class='bx bx-log-out text-lg shrink-0 w-6 flex justify-center'></i>
             <span >Logout</span>
         </a>

@@ -35,6 +35,11 @@ window.openBankDetail = function(bankId, bankName) {
     
     // Update badge status based on bank data
     const bankData = window.bankSoalList ? window.bankSoalList.find(b => b.id == bankId) : null;
+    // Durasi kartu status sebelumnya ditulis mati "45" di markup, jadi selalu
+    // salah untuk bank yang durasinya bukan 45 menit. Ambil dari data bank.
+    const elDurasi = document.getElementById('panelDurasi');
+    if (elDurasi) elDurasi.textContent = (bankData && bankData.durasi) ? bankData.durasi : 45;
+
     const badge = document.getElementById('detailBankStatusBadge');
     if (badge && bankData) {
         if (bankData.is_active == 1) {
@@ -470,6 +475,8 @@ if (typeof baseUrl === 'undefined' && window.appUrl) {
                     // Update UI if in detail view
                     if (window.currentBankId == id) {
                         document.getElementById('detailBankTitle').textContent = formData.get('nama');
+                        const elDurasi = document.getElementById('panelDurasi');
+                        if (elDurasi) elDurasi.textContent = formData.get('durasi') || 45;
                     }
                     
                 } else {
@@ -629,6 +636,12 @@ window.activateBank = function(bankId) {
             showAlert(data.message || 'Gagal mengubah status', false);
             // Revert state on failure
             switchEl.checked = !isActive;
+            // Berhenti di sini. Tanpa return, dua blok di bawah tetap
+            // berjalan dan menulis status BARU ke window.bankSoalList
+            // serta badge halaman detail - padahal server menolak dan
+            // saklarnya sudah dikembalikan. Akibatnya tampilan dan data
+            // di memori bertentangan dengan keadaan sebenarnya.
+            return;
         }
         
         // Update in-memory data

@@ -28,6 +28,7 @@ $dokumen = $dokumen ?? [];
 $graduationStatus = $graduationStatus ?? 'Pending';
 $currentActivities = $currentActivities ?? [];
 $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => ''];
+$timelineSeleksi = $timelineSeleksi ?? [];
 ?>
 
 
@@ -206,16 +207,62 @@ $profileDisplay = $profileDisplay ?? ['hasValidPhoto' => false, 'photoPath' => '
                         </div>
                     </div>
 
-                    <!-- New Legend/Info section -->
+                    <?php /* Timeline bertanggal.
+                            Menggantikan deret label "Sistem Seleksi" yang lama - label
+                            itu hanya mengulang nama tahap yang sudah tertulis di stepper
+                            tepat di atasnya, tanpa menambah keterangan apa pun.
+
+                            Tanggalnya diatur admin (deadline_kegiatan) dan dibaca lewat
+                            DashboardAdmin::TAHAPAN_SELEKSI, sumber yang sama dengan
+                            timeline di dashboard admin.
+
+                            Kelas warna ditulis literal utuh per status - syarat Play CDN,
+                            yang tidak mengompilasi nama kelas hasil rakitan. */ ?>
                     <div class="border-t border-slate-100 pt-4 mt-2">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-2">Sistem Seleksi:</span>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-red-50 text-red-600 border-red-100 animate-pop-in transition-transform duration-200 hover:scale-110 cursor-default" style="animation-delay: 480ms;">Berkas</span>
-                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-amber-50 text-amber-600 border-amber-100 animate-pop-in transition-transform duration-200 hover:scale-110 cursor-default" style="animation-delay: 540ms;">Tes Tertulis</span>
-                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-cyan-50 text-cyan-600 border-cyan-100 animate-pop-in transition-transform duration-200 hover:scale-110 cursor-default" style="animation-delay: 600ms;">Presentasi</span>
-                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-emerald-50 text-emerald-600 border-emerald-100 animate-pop-in transition-transform duration-200 hover:scale-110 cursor-default" style="animation-delay: 660ms;">Wawancara</span>
-                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border bg-blue-50 text-blue-600 border-blue-100 animate-pop-in transition-transform duration-200 hover:scale-110 cursor-default" style="animation-delay: 720ms;">Pengumuman</span>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Jadwal Tahapan Seleksi</span>
+                            <span class="text-[10px] font-semibold text-slate-400">Ditetapkan panitia</span>
                         </div>
+
+                        <?php if (empty($timelineSeleksi)): ?>
+                            <p class="text-xs text-slate-400 italic">Jadwal tahapan belum ditetapkan panitia.</p>
+                        <?php else: ?>
+                        <ol class="relative">
+                            <?php
+                            $gaya = [
+                                'Selesai'     => ['titik' => 'bg-emerald-500 border-emerald-500', 'ikon' => 'bi bi-check-lg text-white', 'label' => 'text-slate-700',  'pil' => 'bg-emerald-50 text-emerald-700 border-emerald-100', 'teks' => 'Selesai'],
+                                'Hari Ini'    => ['titik' => 'bg-blue-600 border-blue-600',       'ikon' => 'bi bi-dot text-white',     'label' => 'text-blue-700',   'pil' => 'bg-blue-50 text-blue-700 border-blue-100',         'teks' => 'Hari ini'],
+                                'Berlangsung' => ['titik' => 'bg-blue-600 border-blue-600',       'ikon' => 'bi bi-dot text-white',     'label' => 'text-blue-700',   'pil' => 'bg-blue-50 text-blue-700 border-blue-100',         'teks' => 'Berlangsung'],
+                                'Terlewat'    => ['titik' => 'bg-white border-red-300',           'ikon' => 'bi bi-exclamation text-red-500', 'label' => 'text-red-600', 'pil' => 'bg-red-50 text-red-600 border-red-100',        'teks' => 'Terlewat'],
+                                'Akan Datang' => ['titik' => 'bg-white border-slate-300',         'ikon' => '',                         'label' => 'text-slate-500',  'pil' => 'bg-slate-50 text-slate-500 border-slate-200',      'teks' => 'Akan datang'],
+                            ];
+                            $jumlahTahap = count($timelineSeleksi);
+                            foreach ($timelineSeleksi as $iTl => $tl):
+                                $g = $gaya[$tl['status']] ?? $gaya['Akan Datang'];
+                                $terakhir = ($iTl === $jumlahTahap - 1);
+                            ?>
+                            <li class="relative flex items-start gap-3 <?= $terakhir ? '' : 'pb-3' ?>">
+                                <?php if (!$terakhir): ?>
+                                    <?php /* Garis penghubung berhenti di titik berikutnya, tidak
+                                            menjulur melewati butir terakhir. */ ?>
+                                    <span class="absolute left-[9px] top-5 bottom-0 w-px bg-slate-200" aria-hidden="true"></span>
+                                <?php endif; ?>
+
+                                <span class="relative z-10 shrink-0 w-[19px] h-[19px] mt-0.5 rounded-full border-2 flex items-center justify-center <?= $g['titik'] ?>">
+                                    <?php if ($g['ikon']): ?><i class="<?= $g['ikon'] ?> text-[11px]"></i><?php endif; ?>
+                                </span>
+
+                                <div class="min-w-0 flex-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                                    <span class="text-xs font-bold <?= $g['label'] ?>"><?= htmlspecialchars($tl['label']) ?></span>
+                                    <span class="text-[11px] font-semibold text-slate-400 tabular-nums">
+                                        <?= $tl['tanggal'] ? date('d M Y', strtotime($tl['tanggal'])) : 'Belum ditetapkan' ?>
+                                    </span>
+                                    <span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 <?= $g['pil'] ?>"><?= $g['teks'] ?></span>
+                                </div>
+                            </li>
+                            <?php endforeach; ?>
+                        </ol>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

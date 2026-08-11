@@ -73,6 +73,8 @@ trait ProvidesUserData
         return [
             'notifikasi' => NotifikasiController::getMessageById() ?? [],
             'tahapanSelesai' => $tahapanSelesai,
+            // Timeline bertanggal; tanggalnya diatur admin lewat dashboard admin.
+            'timelineSeleksi' => \App\Model\DashboardUser::getTimelineSeleksi($tahapanSelesai),
             'percentage' => $progress['percentage'],
             'stepProgress' => $progress['percentage'],
             'jadwalPresentasiUser' => $jadwalPresentasiUser,

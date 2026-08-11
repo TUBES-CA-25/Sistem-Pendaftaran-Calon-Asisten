@@ -43,6 +43,57 @@
         }
     }
 
+    /**
+     * Tulis nilai akhir di kartu identitas.
+     * Angka besar dipakai untuk nilainya saja; kata "Belum dinilai" ditaruh di
+     * baris keterangan supaya tidak memaksa kartu melebar.
+     */
+    function tampilkanNilaiAkhir(total) {
+        const ada = total !== null && typeof total !== 'undefined' && total !== '';
+        dom.text(dom.qs('#detailTotalNilai'), ada ? total : '—');
+        const ket = dom.qs('#detailNilaiKet');
+        if (ket) ket.textContent = ada ? 'dari 100' : 'Belum dinilai';
+    }
+
+    /**
+     * Ubah kolom `pilihan` menjadi daftar pasangan [huruf, isi].
+     *
+     * Dua bentuk yang beredar di data:
+     *   1. JSON objek  -> {"A":"Variabel","B":"Operator"}
+     *   2. satu string -> "A. Variabel, B. Operator, C. Identifier"
+     * Bentuk kedua yang dipakai tabel `soal` saat ini.
+     *
+     * Kembalikan array kosong bila tidak ada bentuk yang cocok, sehingga
+     * pemanggil bisa menampilkan teks aslinya apa adanya.
+     */
+    function uraikanPilihan(pilihan) {
+        if (!pilihan) return [];
+
+        try {
+            const obj = JSON.parse(pilihan);
+            if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+                return Object.entries(obj);
+            }
+        } catch (e) { /* bukan JSON - coba bentuk string di bawah */ }
+
+        if (typeof pilihan !== 'string') return [];
+
+        const hasil = [];
+        pilihan.split(/,\s*(?=[A-Ea-e]\s*[.)])/).forEach(function(bagian) {
+            const cocok = bagian.match(/^\s*([A-Ea-e])\s*[.)]\s*([\s\S]*)$/);
+            if (cocok) hasil.push([cocok[1].toUpperCase(), cocok[2].trim()]);
+        });
+        return hasil;
+    }
+
+    /** Isi bar akurasi dari angka yang sudah dihitung untuk kartu statistik. */
+    function setAkurasi(benar, total) {
+        const persen = total > 0 ? Math.round((benar / total) * 100) : 0;
+        dom.text(dom.qs('#detailPersen'), persen);
+        const bar = dom.qs('#detailProgress');
+        if (bar) bar.style.width = persen + '%';
+    }
+
     // Search functionality
     dom.on('input', '#searchInput', function() {
         const searchTerm = this.value.toLowerCase();
@@ -72,8 +123,14 @@
         // Populate Data
         dom.text(dom.qs('#detailNama'), data.nama);
         dom.text(dom.qs('#detailStambuk'), data.stambuk);
-        dom.text(dom.qs('#detailTotalNilai'), total || 'Belum dinilai');
+        const foto = dom.qs('#detailFoto');
+        if (foto && data.foto) foto.src = data.foto;
+        tampilkanNilaiAkhir(total);
         dom.val(dom.qs('#nilaiAkhir'), total || '');
+
+        // Bar akurasi dikosongkan dulu supaya angka peserta sebelumnya tidak
+        // sempat terbaca sebagai milik peserta yang baru dibuka.
+        setAkurasi(0, 0);
 
         resetFilterButtons();
 
@@ -124,44 +181,48 @@
                             statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 text-xs font-bold rounded-lg border border-red-200"><i class="bi bi-x-circle-fill"></i> Salah</span>';
                         }
 
-                        // Format options for display
+                        // Susun opsi menjadi pasangan [huruf, isi] lebih dulu.
+                        //
+                        // Kolom `pilihan` di basis data TIDAK menyimpan JSON melainkan
+                        // satu string "A. Variabel, B. Operator, ...". Akibatnya
+                        // JSON.parse selalu gagal dan render jatuh ke cabang cadangan
+                        // yang menampilkan opsi polos tanpa penanda apa pun - itulah
+                        // sebabnya kunci jawaban tidak pernah tersorot hijau di layar.
+                        // Kedua bentuk kini diseragamkan supaya sorotannya jalan.
+                        const daftarOpsi = uraikanPilihan(item.pilihan);
+
                         let pilihanHTML = '';
-                        try {
-                            const pilihanObj = JSON.parse(item.pilihan);
-                            pilihanHTML = Object.entries(pilihanObj)
+                        if (daftarOpsi.length > 0) {
+                            pilihanHTML = daftarOpsi
                                 .map(([key, value]) => {
-                                    let optClass = 'bg-slate-50 border-slate-300 text-slate-800';
+                                    // Huruf pilihan dijadikan lencana bulat: kunci dan
+                                    // jawaban keliru langsung kelihatan tanpa harus
+                                    // membaca teksnya lebih dulu.
+                                    let optClass = 'bg-white border-slate-200 text-slate-700';
+                                    let hurufClass = 'bg-slate-100 border-slate-200 text-slate-500';
                                     let icon = '';
                                     if (key === item.jawaban) {
-                                        optClass = 'bg-emerald-50 border-emerald-300 text-emerald-800';
-                                        icon = '<i class="bi bi-check-circle-fill text-emerald-500 float-right mt-0.5"></i>';
+                                        optClass = 'bg-emerald-50 border-emerald-300 text-emerald-900';
+                                        hurufClass = 'bg-emerald-500 border-emerald-500 text-white';
+                                        icon = '<i class="bi bi-check-circle-fill text-emerald-500 shrink-0 mt-0.5"></i>';
                                     } else if (isAnswered && key === item.jawaban_user && !isCorrect) {
-                                        optClass = 'bg-red-50 border-red-300 text-red-800';
-                                        icon = '<i class="bi bi-x-circle-fill text-red-500 float-right mt-0.5"></i>';
+                                        optClass = 'bg-red-50 border-red-300 text-red-900';
+                                        hurufClass = 'bg-red-500 border-red-500 text-white';
+                                        icon = '<i class="bi bi-x-circle-fill text-red-500 shrink-0 mt-0.5"></i>';
                                     }
 
-                                    if (value && (value.includes('.jpg') || value.includes('.jpeg') || value.includes('.png') || value.includes('.gif') || value.includes('.webp'))) {
-                                        return `
-                                            <div class="mb-2 flex items-start gap-2 p-2.5 border rounded-xl shadow-sm w-fit ${optClass}">
-                                                <strong class="font-bold">${key}.</strong>
-                                                <div>
-                                                    <img src="${getImageUrl(value)}" alt="Pilihan ${key}" class="max-w-full h-auto max-h-32 rounded-lg border border-slate-200">
-                                                </div>
-                                                ${icon}
-                                            </div>
-                                        `;
-                                    } else {
-                                        return `<div class="mb-1.5 px-3 py-2 border rounded-lg shadow-sm text-sm ${optClass}"><strong class="font-extrabold mr-1">${key}.</strong> ${value} ${icon}</div>`;
-                                    }
+                                    const huruf = `<span class="shrink-0 w-6 h-6 rounded-lg border flex items-center justify-center text-xs font-extrabold ${hurufClass}">${key}</span>`;
+                                    const isi = (value && (value.includes('.jpg') || value.includes('.jpeg') || value.includes('.png') || value.includes('.gif') || value.includes('.webp')))
+                                        ? `<img src="${getImageUrl(value)}" alt="Pilihan ${key}" class="max-w-full h-auto max-h-32 rounded-lg border border-slate-200">`
+                                        : `<span class="leading-relaxed">${value}</span>`;
+
+                                    return `<div class="flex items-start gap-2.5 px-3 py-2.5 border rounded-xl text-sm ${optClass}">${huruf}<div class="flex-1 min-w-0">${isi}</div>${icon}</div>`;
                                 })
                                 .join('');
-                        } catch (e) {
-                            if (typeof item.pilihan === 'string' && /,\s*(?=[A-E]\.)/.test(item.pilihan)) {
-                                const opts = item.pilihan.split(/,\s*(?=[A-E]\.)/);
-                                pilihanHTML = opts.map(opt => `<div class="mb-1.5 text-slate-800 bg-slate-50 px-3 py-2 border border-slate-300 rounded-lg shadow-sm text-sm">${opt}</div>`).join('');
-                            } else {
-                                pilihanHTML = `<div class="text-slate-800 bg-slate-50 px-3 py-2 border border-slate-300 rounded-lg shadow-sm text-sm">${item.pilihan}</div>`;
-                            }
+                        } else if (item.pilihan) {
+                            // Bentuk yang tidak dikenali - tampilkan apa adanya
+                            // daripada menyembunyikannya dari penilai.
+                            pilihanHTML = `<div class="px-3 py-2.5 border border-slate-200 bg-slate-50 text-slate-700 rounded-xl text-sm">${item.pilihan}</div>`;
                         }
 
                         const tipeBadge = isPilihanGanda
@@ -208,7 +269,7 @@
                                             <div class="font-semibold text-slate-800 text-sm leading-relaxed whitespace-pre-wrap">${item.deskripsi}</div>
 
                                             ${isPilihanGanda ? `
-                                            <div class="space-y-1.5 mt-4">
+                                            <div class="space-y-2 mt-4">
                                                 ${pilihanHTML}
                                             </div>
                                             ` : ''}
@@ -242,6 +303,7 @@
                     dom.text(dom.qs('#statTidakDijawab'), tidakDijawabCount);
                     dom.text(dom.qs('#statPgBenar'), pgBenarCount);
                     dom.text(dom.qs('#statPgSalah'), pgSalahCount);
+                    setAkurasi(benarCount, totalSoal);
 
                     dom.html(dom.qs('#soalJawabanList'), html);
 
@@ -259,6 +321,7 @@
                     dom.html(dom.qs('#soalJawabanList'), '<tr><td colspan="1" class="py-12 text-center text-slate-400">Tidak ada data soal dan jawaban.</td></tr>');
                     ['#statTotal','#statBenar','#statSalah','#statTidakDijawab','#statPgBenar','#statPgSalah']
                         .forEach(function(sel) { dom.text(dom.qs(sel), 0); });
+                    setAkurasi(0, 0);
 
                     if (window.vp_soal) window.vp_soal.updateData();
                 }
@@ -363,7 +426,7 @@
                         btn.dataset.total = nilaiAkhir;
 
                         // Update detail text
-                        dom.text(dom.qs('#detailTotalNilai'), nilaiAkhir);
+                        tampilkanNilaiAkhir(nilaiAkhir);
                     }
                 } else {
                     showAlert(response.message || 'Gagal menyimpan nilai', false);
