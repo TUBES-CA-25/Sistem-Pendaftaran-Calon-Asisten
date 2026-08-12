@@ -269,12 +269,28 @@ function replayEntrance(form) {
     });
 }
 
+/**
+ * Jalankan animasi membalik kartu.
+ *
+ * Kelasnya dilepas dan dipasang ulang dengan reflow paksa di antaranya, sama
+ * seperti replayEntrance: tanpa itu animasi hanya berjalan sekali karena
+ * memasang kelas yang sudah menempel bukan perubahan bagi mesin animasi.
+ */
+function kocokKartu() {
+    if (!container) return;
+    container.classList.remove('mengocok');
+    void container.offsetWidth;   // paksa reflow
+    container.classList.add('mengocok');
+}
+
 function showRegister() {
+    kocokKartu();
     container.classList.add('active');
     replayEntrance(document.getElementById('registerForm'));
 }
 
 function showLogin() {
+    kocokKartu();
     container.classList.remove('active');
     replayEntrance(document.getElementById('loginForm'));
 }

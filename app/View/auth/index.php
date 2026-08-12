@@ -20,25 +20,60 @@
     
     <style type="text/tailwindcss">
         @layer utilities {
-            /* Latar auth: gradien biru lembut, seragam dengan lupa/reset password */
-            /* Latar auth: gambar SVG lokal di atas gradien.
-               Sengaja SVG buatan sendiri (~1,5 KB), bukan foto dari luar -
-               tetap tajam di layar apa pun dan tetap tampil walau jaringan
-               memblokir sumber eksternal. Gradien tetap jadi lapis bawah
-               supaya warnanya sudah benar sebelum SVG selesai diunduh. */
+            /* Latar auth: foto laboratorium terpadu FIKOM UMI. */
+            /* LATAR & KARTU JADI SATU BIDANG.
+               Seluruh halaman berlatar gradasi brand - TANPA bidang putih apa
+               pun di latar. Sisi panel kartu memakai gradasi yang sama sehingga
+               melebur ke latar, dan satu-satunya bidang putih di halaman ini
+               adalah area formulir DI DALAM kartu.
+
+               Pola ini mengikuti referensi: di sana latar juga satu warna penuh,
+               dan putihnya hanya ada di dalam kartu. Versi sebelumnya sempat
+               memakai sapuan putih di latar; itu justru memecah halaman jadi dua
+               bidang dan membuat kartu terbaca menempel, bukan menyambung. */
             .bg-auth {
-                @apply bg-gradient-auth;
-                background-image: url('<?= APP_URL ?>/Assets/Img/auth-bg.svg');
-                background-size: cover;
-                background-position: center bottom;
-                background-repeat: no-repeat;
+                background-color: #2563eb;
+                background-image: linear-gradient(150deg, #3dc2ec 0%, #2563eb 52%, #4b70f5 100%);
                 background-attachment: fixed;
             }
-            /* background-attachment: fixed berat di peramban HP dan membuat
-               latar meloncat saat bilah alamat muncul-hilang. */
-            @media (max-width: 767.98px) {
-                .bg-auth { background-attachment: scroll; }
+
+            /* Panel biru kartu memakai gradasi yang sama dengan latar, sehingga
+               warnanya berdekatan dan kartu terbaca menyambung - tetapi kartunya
+               TETAP berbingkai; tepinya masih terlihat sebagai batas objek.
+
+               Catatan hasil percobaan: `background-attachment: fixed` di sini
+               TIDAK menyamakan gradasi panel dengan gradasi latar. #container
+               memakai animate-fade-up, dan transform yang tertinggal dari
+               animasi itu memindahkan acuan `fixed` dari layar ke kartu, jadi
+               hasilnya sama saja. Karena itu tidak dipakai. */
+            .panel-melebur {
+                background-image: linear-gradient(150deg, #3dc2ec 0%, #2563eb 52%, #4b70f5 100%);
+                background-size: cover;
             }
+
+            /* Lapisan lambang ICLABS di atas bidang gradasi. */
+            .lapis-cap {
+                position: fixed;
+                inset: 0;
+                z-index: -10;
+                overflow: hidden;
+                pointer-events: none;
+            }
+
+            /* Latar kini putih, jadi filter pemutih pada lambang DICABUT -
+               kalau dibiarkan, lambangnya putih di atas putih dan hilang total.
+               Warna teal aslinya dipakai apa adanya, hanya diredam opasitasnya.
+               Semua salinan memakai src yang sama sehingga peramban hanya
+               mengunduhnya sekali (terukur). */
+            .cap-iclabs {
+                position: absolute;
+                /* Diputihkan lewat filter: di atas gradasi biru, warna teal asli
+                   logonya nyaris tidak terlihat. Semua salinan memakai src yang
+                   sama sehingga peramban hanya mengunduhnya sekali (terukur). */
+                filter: brightness(0) invert(1);
+                user-select: none;
+            }
+
             .hide-scroll {
                 overflow-x: hidden;
             }
@@ -109,52 +144,134 @@
             }
         }
     </style>
+    <!-- CSS biasa: SENGAJA di luar <style type="text/tailwindcss">.
+         @keyframes yang ditaruh di dalam blok itu tidak ikut dikompilasi -
+         terukur: kelas .mengocok terpasang, tetapi sudut putar kartu tetap 0
+         derajat sepanjang animasi. Di <style> biasa, peramban memakainya
+         apa adanya. -->
+    <style>
+        /* Animasi memutar kartu SATU KALI PENUH saat berpindah Masuk <-> Daftar.
+           Sebelumnya kartu diputar ke tepi lalu kembali dari sisi seberang
+           (0 -> -86 -> +86 -> 0); gerakan itu terbaca sebagai DUA hentakan.
+           Sekarang satu putaran utuh 0 -> 360 derajat: satu gerakan saja.
+
+           Pergantian isi (transisi panel, 600 ms) jatuh tepat saat kartu
+           berada pada posisi tertipisnya (sekitar 340-410 ms), jadi
+           pertukaran formulirnya tersamarkan - itulah yang membuat sisi
+           "belakang" terasa benar-benar ada.
+
+           Dipasang lewat kelas terpisah .mengocok oleh login.js, bukan
+           digantung pada .active: animasi CSS tidak terpicu ulang hanya
+           karena sebuah kelas dilepas, sehingga arah sebaliknya
+           (Daftar -> Masuk) tidak akan ikut beranimasi. */
+        @keyframes kocok-kartu {
+            0%   { transform: perspective(1600px) rotateY(0deg)   scale(1); }
+            50%  { transform: perspective(1600px) rotateY(180deg) scale(.93); }
+            100% { transform: perspective(1600px) rotateY(360deg) scale(1); }
+        }
+        /* HANYA untuk layar HP (< 768px, ambang yang sama dengan md: milik
+           Tailwind). Di layar lebar, kartu tetap memakai panel biru yang
+           menggeser seperti sebelumnya - animasi balik ini justru akan menimpa
+           `animate-fade-up` pada kartu dan mengacaukan gerak geser panelnya. */
+        /* Pertukaran formulir ikut dipersingkat agar tetap selesai SELAGI
+           kartu tak terlihat. Bawaannya 600 ms - lebih lama daripada putaran
+           yang kini 450 ms, sehingga form lama masih terlihat memudar setelah
+           kartu muncul kembali. 260 ms jatuh di dalam jendela tak-terlihat
+           (sekitar 112-337 ms pada putaran 450 ms). */
+        @media (max-width: 767.98px) {
+        /* #container ditambahkan bukan sekadar gaya penulisan: tanpa itu
+           spesifisitasnya sama dengan `duration-[600ms]` milik Tailwind, dan
+           CSS Play CDN disuntik ke <head> BELAKANGAN sehingga justru Tailwind
+           yang menang. Terukur: durasinya tetap terbaca 0.6s. */
+        #container .panel-form {
+            transition-duration: .26s;
+        }
+        #container.mengocok {
+            animation: kocok-kartu .20s cubic-bezier(.5, 0, .5, 1) both;
+            transform-origin: center center;
+            will-change: transform;
+            /* Sisi belakang disembunyikan: kartu ini hanya punya SATU muka,
+               jadi tanpa ini bagian 90-270 derajat menampilkan isinya dalam
+               keadaan tercermin - terbaca sebagai depan > belakang > depan,
+               seolah berputar dua kali. Dengan disembunyikan, kartu lenyap
+               selagi memunggungi layar dan muncul lagi setelah lewat, sehingga
+               satu putaran terbaca sebagai satu kali berbalik.
+
+               Pertukaran formulir (transisi panel 600 ms) berlangsung persis
+               dalam rentang tak-terlihat itu (sekitar 190-560 ms). */
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #container.mengocok { animation: none; }
+        }
+    </style>
+
     
     <title>Pendaftaran Calon Asisten ICLABS</title>
 </head>
 
-<body class="bg-auth flex items-start sm:items-center justify-center min-h-screen overflow-y-auto py-5 hide-scroll text-gray-800 relative animate-page-fade">
+<body class="bg-auth flex items-start justify-center min-h-screen overflow-y-auto py-5 hide-scroll text-gray-800 relative animate-page-fade">
 
-    <!-- ===== BLOB LATAR (dekoratif) ===== -->
-    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
-        <!-- Blob dinaikkan opasitasnya (40 -> 60/55) agar gradien latar terasa
-             hidup; sebelumnya nyaris tidak terlihat di layar terang. -->
-        <div class="absolute -top-24 -left-24 w-[460px] h-[460px] rounded-full bg-primary/40 blur-3xl opacity-60 animate-blob"></div>
-        <div class="absolute top-1/3 -right-32 w-[520px] h-[520px] rounded-full bg-secondary/35 blur-3xl opacity-55 animate-blob" style="animation-delay: -6s;"></div>
-        <div class="absolute -bottom-32 left-1/4 w-[440px] h-[440px] rounded-full bg-primary-dark/30 blur-3xl opacity-55 animate-blob" style="animation-delay: -12s;"></div>
+    <?php /* Lapisan blob dekoratif DIHAPUS. Latar kini sengaja berupa dua
+             bidang warna rata yang meniru belahan kartu; blob biru berpendar
+             di atasnya justru mengotori sisi putih dan membuat garis belahannya
+             tidak lagi bersih. */ ?>
 
-        <!-- Pola titik halus: memberi tekstur agar latar tidak terasa kosong. -->
-        <div class="absolute inset-0 auth-dots opacity-[0.35]"></div>
+    <div class="lapis-cap" aria-hidden="true">
+            <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+                 style="width: 26%; left: -6%; top: -8%; transform: rotate(-14deg); opacity: 0.17;">
+            <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+                 style="width: 17%; left: 74%; top: 6%; transform: rotate(18deg); opacity: 0.13;">
+            <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+                 style="width: 13%; left: 30%; top: 22%; transform: rotate(-8deg); opacity: 0.15;">
+            <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+                 style="width: 20%; left: 88%; top: 34%; transform: rotate(26deg); opacity: 0.11;">
+            <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+                 style="width: 11%; left: 6%; top: 48%; transform: rotate(12deg); opacity: 0.14;">
+            <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+                 style="width: 15%; left: 62%; top: 58%; transform: rotate(-22deg); opacity: 0.12;">
+            <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+                 style="width: 23%; left: -4%; top: 70%; transform: rotate(8deg); opacity: 0.13;">
+            <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+                 style="width: 12%; left: 84%; top: 80%; transform: rotate(-16deg); opacity: 0.13;">
+            <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+                 style="width: 16%; left: 40%; top: 88%; transform: rotate(22deg); opacity: 0.11;">
     </div>
 
     <!--
       .group class is added so we can use group-active: variants for child animations
     -->
-    <div class="group bg-white md:rounded-[30px] rounded-[24px] shadow-[0_10px_40px_-10px_rgba(37,99,235,0.35)] md:shadow-[0_25px_70px_-15px_rgba(37,99,235,0.4)] ring-1 ring-white/60 relative overflow-hidden w-[95%] md:w-[90%] max-w-[440px] md:max-w-[768px] min-h-auto md:min-h-[520px] flex flex-col md:block animate-fade-up" id="container">
+    <?php /* `ring-1 ring-white/60` DIHAPUS dari kartu.
+             Cincin putih itu tidak terlihat sewaktu latar masih putih, tetapi
+             begitu latar menjadi biru penuh ia muncul sebagai garis terang yang
+             mengelilingi kartu - justru membatalkan efek melebur pada sisi
+             panel. Pemisah kartu kini cukup ditanggung bayangannya saja. */ ?>
+    <div class="group bg-white my-auto md:rounded-[30px] rounded-[24px] shadow-[0_10px_28px_-8px_rgba(6,18,50,0.40)] md:shadow-[0_18px_35px_-12px_rgba(6,18,50,0.35),0_45px_90px_-25px_rgba(6,18,50,0.55)] relative overflow-hidden w-[95%] md:w-[90%] max-w-[440px] md:max-w-[768px] min-h-auto md:min-h-[520px] flex flex-col md:block animate-fade-up" id="container">
 
         <!-- ===== MOBILE TOGGLE BANNER (Only visible <= 768px) ===== -->
-        <div class="md:hidden relative w-full h-[140px] shrink-0 bg-gradient-to-br from-primary via-primary-dark to-secondary rounded-b-[28px] z-10 flex overflow-hidden">
-            <!-- Dekorasi selaras dengan panel desktop -->
-            <div class="absolute inset-0 pointer-events-none panel-sheen" aria-hidden="true"></div>
-            <div class="absolute -top-10 -right-8 w-40 h-40 rounded-full bg-white/10 pointer-events-none" aria-hidden="true"></div>
-            <!-- Mobile Right Panel (Login Active) -->
-            <div class="absolute w-full h-full flex flex-col items-center justify-center text-center p-4 transition-transform duration-500 ease-in-out transform group-active:-translate-x-full">
-                <h1 class="text-[1.1rem] font-bold text-white mb-1">Belum punya akun?</h1>
-                <p class="text-[12px] text-white/90 mb-2">Silahkan daftar akun untuk melanjutkan</p>
-                <button class="bg-white/10 backdrop-blur-sm text-white text-[11px] py-1.5 px-6 border border-white/70 rounded-xl font-bold uppercase transition-all duration-300 hover:bg-white hover:text-primary-dark relative z-10" id="register-mobile">Daftar</button>
-            </div>
-            <!-- Mobile Left Panel (Register Active) -->
-            <div class="absolute w-full h-full flex flex-col items-center justify-center text-center p-4 transition-transform duration-500 ease-in-out transform translate-x-full group-active:translate-x-0">
-                <h1 class="text-[1.1rem] font-bold text-white mb-1">Sudah punya akun?</h1>
-                <p class="text-[12px] text-white/90 mb-2">Silahkan login jika anda telah mempunyai akun</p>
-                <button class="bg-white/10 backdrop-blur-sm text-white text-[11px] py-1.5 px-6 border border-white/70 rounded-xl font-bold uppercase transition-all duration-300 hover:bg-white hover:text-primary-dark relative z-10" id="login-mobile">Masuk</button>
-            </div>
+        <?php /* Pengalih Masuk <-> Daftar untuk HP.
+                 Dulu berupa blok biru setinggi 140 px berisi judul, kalimat
+                 penjelas, dan tombol berbingkai - porsinya hampir sebesar
+                 formulirnya sendiri padahal isinya cuma satu tautan. Sekarang
+                 satu baris teks, pola yang lazim di halaman masuk.
+                 Kedua id tombol DIPERTAHANKAN karena login.js mengikatnya. */ ?>
+        <div class="md:hidden order-last px-6 pb-7 pt-1 text-center">
+            <p class="text-[13px] font-medium text-slate-500 group-active:hidden">
+                Belum punya akun?
+                <button type="button" id="register-mobile" class="ml-1 font-bold text-primary-dark hover:underline underline-offset-2">Daftar sekarang</button>
+            </p>
+            <p class="hidden text-[13px] font-medium text-slate-500 group-active:block">
+                Sudah punya akun?
+                <button type="button" id="login-mobile" class="ml-1 font-bold text-primary-dark hover:underline underline-offset-2">Masuk</button>
+            </p>
         </div>
 
         <!-- ===== FORM SIGN-IN ===== -->
         <div class="relative md:absolute top-0 left-0 w-full md:w-1/2 h-auto md:h-full z-20 transition-all duration-[600ms] ease-[cubic-bezier(0.65,0,0.35,1)] 
                     md:group-active:translate-x-full md:group-active:opacity-0 md:group-active:z-10
-                    grid transition-[grid-template-rows,opacity]
+                    panel-form grid transition-[grid-template-rows,opacity]
                     grid-rows-[1fr] opacity-100 group-active:grid-rows-[0fr] group-active:opacity-0 group-active:pointer-events-none md:group-active:pointer-events-auto md:grid-rows-[1fr] md:opacity-100">
             <div class="overflow-hidden min-h-0">
                 <form id="loginForm" autocomplete="off" class="bg-white flex flex-col items-center justify-center px-6 md:px-10 py-8 md:py-0 h-full w-full">
@@ -201,7 +318,7 @@
         <div class="relative md:absolute top-0 left-0 w-full md:w-1/2 h-auto md:h-full transition-all duration-[600ms] ease-[cubic-bezier(0.65,0,0.35,1)]
                     md:opacity-0 md:z-10
                     md:group-active:translate-x-full md:group-active:opacity-100 md:group-active:z-[50]
-                    grid transition-[grid-template-rows,opacity]
+                    panel-form grid transition-[grid-template-rows,opacity]
                     grid-rows-[0fr] opacity-0 group-active:grid-rows-[1fr] group-active:opacity-100 group-active:pointer-events-auto pointer-events-none md:pointer-events-auto md:group-active:pointer-events-auto md:grid-rows-[1fr] md:group-active:grid-rows-[1fr]">
             <div class="overflow-hidden min-h-0">
                 <form id="registerForm" autocomplete="off" class="bg-white flex flex-col items-center justify-center px-6 md:px-10 py-8 md:py-0 h-full w-full">
@@ -260,21 +377,21 @@
 
         <!-- ===== DESKTOP TOGGLE PANEL ===== -->
         <div class="hidden md:block absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-all duration-[600ms] ease-[cubic-bezier(0.65,0,0.35,1)] z-[1000] rounded-tl-[150px] rounded-bl-[100px] group-active:-translate-x-full group-active:rounded-tl-none group-active:rounded-bl-none group-active:rounded-tr-[150px] group-active:rounded-br-[100px]">
-            <div class="bg-gradient-to-br from-primary via-primary-dark to-secondary text-white relative -left-full h-full w-[200%] transition-transform duration-[600ms] ease-[cubic-bezier(0.65,0,0.35,1)] group-active:translate-x-1/2">
+            <div class="panel-melebur text-white relative -left-full h-full w-[200%] transition-transform duration-[600ms] ease-[cubic-bezier(0.65,0,0.35,1)] group-active:translate-x-1/2">
 
-                <!-- Dekorasi panel: kilau diagonal + lingkaran lembut, meniru
-                     pola yang dipakai PageHeader agar sebahasa dengan aplikasi. -->
-                <div class="absolute inset-0 pointer-events-none panel-sheen" aria-hidden="true"></div>
-                <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-                    <div class="absolute -top-20 right-10 w-64 h-64 rounded-full bg-white/10"></div>
-                    <div class="absolute bottom-[-60px] right-1/3 w-44 h-44 rounded-full bg-white/[0.07]"></div>
-                    <div class="absolute top-1/2 -left-10 w-32 h-32 rounded-full bg-white/[0.06]"></div>
-                </div>
+                <?php /* Kilau diagonal dan lingkaran putih transparan DIHAPUS.
+                         Wadah panel memakai overflow-hidden, jadi hiasan itu
+                         terpotong tepat di tepi dan sudut panel - membuat panel
+                         sedikit lebih terang daripada latar di sana (terukur
+                         selisih 24 dari jumlah RGB di tepi bawah) sehingga batas
+                         kartu tetap terbaca. Setelah dihapus, panel benar-benar
+                         melebur; kedalaman visualnya kini ditanggung lambang
+                         ICLABS di latar yang memang sudah ada. */ ?>
 
                 <!-- Right Panel (Login Active) -->
                 <div class="absolute right-0 w-1/2 h-full flex flex-col items-center justify-center px-8 text-center top-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.65,0,0.35,1)] group-active:translate-x-[200%]">
-                    <div class="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center mb-5 shadow-inner">
-                        <i class="bi bi-person-plus-fill text-2xl text-white"></i>
+                    <div class="w-20 h-20 rounded-2xl bg-white flex items-center justify-center mb-5 shadow-lg ring-1 ring-white/50 p-2.5">
+                        <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="Logo ICLABS-UMI" class="w-full h-full object-contain">
                     </div>
                     <h1 class="text-3xl font-bold mb-3 text-white">Belum punya akun?</h1>
                     <p class="text-[15px] text-white/90 font-medium leading-relaxed mb-5">Silahkan daftar akun untuk melanjutkan proses IC-ASSIST</p>
@@ -283,8 +400,8 @@
 
                 <!-- Left Panel (Register Active) -->
                 <div class="absolute -translate-x-[200%] w-1/2 h-full flex flex-col items-center justify-center px-8 text-center top-0 transition-transform duration-[600ms] ease-[cubic-bezier(0.65,0,0.35,1)] group-active:translate-x-0">
-                    <div class="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center mb-5 shadow-inner">
-                        <i class="bi bi-box-arrow-in-right text-2xl text-white"></i>
+                    <div class="w-20 h-20 rounded-2xl bg-white flex items-center justify-center mb-5 shadow-lg ring-1 ring-white/50 p-2.5">
+                        <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="Logo ICLABS-UMI" class="w-full h-full object-contain">
                     </div>
                     <h1 class="text-3xl font-bold mb-3 text-white">Sudah punya akun?</h1>
                     <p class="text-[15px] text-white/90 font-medium leading-relaxed mb-5">Silahkan login jika anda telah mempunyai akun IC-ASSIST</p>

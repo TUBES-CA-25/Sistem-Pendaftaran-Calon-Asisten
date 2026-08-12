@@ -20,24 +20,45 @@
 
     <style type="text/tailwindcss">
         @layer utilities {
-            /* Latar auth: sama persis dengan halaman login */
-            /* Latar auth: gambar SVG lokal di atas gradien.
-               Sengaja SVG buatan sendiri (~1,5 KB), bukan foto dari luar -
-               tetap tajam di layar apa pun dan tetap tampil walau jaringan
-               memblokir sumber eksternal. Gradien tetap jadi lapis bawah
-               supaya warnanya sudah benar sebelum SVG selesai diunduh. */
+            /* Latar auth: sama persis dengan halaman login - foto
+               laboratorium terpadu FIKOM UMI di bawah tirai gradasi brand. */
             .bg-auth {
                 @apply bg-gradient-auth;
-                background-image: url('<?= APP_URL ?>/Assets/Img/auth-bg.svg');
-                background-size: cover;
-                background-position: center bottom;
-                background-repeat: no-repeat;
+                /* Komposisi abstrak lambang ICLABS di atas gradasi yang sama
+                   dengan frame login. Tirainya sangat tipis dan HANYA memakai
+                   warna brand: henti navy yang dipakai sebelumnya menarik
+                   warna latar menjauh dari biru frame. */
+                /* Disamakan dengan halaman login: latar putih.
+                   Kartu di halaman ini putih seluruhnya, jadi yang memisahkannya
+                   dari latar tinggal bayangan - karena itu bayangannya
+                   diperkuat di bawah. */
+                background-color: #2563eb;
+                background-image: linear-gradient(150deg, #3dc2ec 0%, #2563eb 52%, #4b70f5 100%);
                 background-attachment: fixed;
             }
             /* background-attachment: fixed berat di peramban HP dan membuat
                latar meloncat saat bilah alamat muncul-hilang. */
             @media (max-width: 767.98px) {
                 .bg-auth { background-attachment: scroll; }
+            }
+
+            /* Lapisan lambang ICLABS di latar - sama dengan halaman login,
+               supaya ketiga halaman auth terasa satu rangkaian. Warna teal
+               aslinya dipakai apa adanya, hanya diredam opasitasnya. */
+            .lapis-cap {
+                position: fixed;
+                inset: 0;
+                z-index: -10;
+                overflow: hidden;
+                pointer-events: none;
+            }
+            .cap-iclabs {
+                position: absolute;
+                /* Diputihkan lewat filter: di atas gradasi biru, warna teal asli
+                   logonya nyaris tidak terlihat. Semua salinan memakai src yang
+                   sama sehingga peramban hanya mengunduhnya sekali (terukur). */
+                filter: brightness(0) invert(1);
+                user-select: none;
             }
 
             /* Floating Label Pattern - identik dengan auth/index.php */
@@ -109,15 +130,36 @@
 </head>
 <body class="bg-auth flex items-start sm:items-center justify-center min-h-screen overflow-y-auto py-8 px-4 text-gray-800 relative overflow-x-hidden animate-page-fade">
 
+    <div class="lapis-cap" aria-hidden="true">
+        <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+             style="width: 26%; left: -6%; top: -8%; transform: rotate(-14deg); opacity: 0.17;">
+        <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+             style="width: 17%; left: 74%; top: 6%; transform: rotate(18deg); opacity: 0.13;">
+        <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+             style="width: 13%; left: 30%; top: 22%; transform: rotate(-8deg); opacity: 0.15;">
+        <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+             style="width: 20%; left: 88%; top: 34%; transform: rotate(26deg); opacity: 0.11;">
+        <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+             style="width: 11%; left: 6%; top: 48%; transform: rotate(12deg); opacity: 0.14;">
+        <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+             style="width: 15%; left: 62%; top: 58%; transform: rotate(-22deg); opacity: 0.12;">
+        <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+             style="width: 23%; left: -4%; top: 70%; transform: rotate(8deg); opacity: 0.13;">
+        <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+             style="width: 12%; left: 84%; top: 80%; transform: rotate(-16deg); opacity: 0.13;">
+        <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
+             style="width: 16%; left: 40%; top: 88%; transform: rotate(22deg); opacity: 0.11;">
+    </div>
+
     <!-- ===== BLOB LATAR (dekoratif) ===== -->
     <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div class="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/30 blur-3xl opacity-40 animate-blob"></div>
-        <div class="absolute top-1/3 -right-32 w-[480px] h-[480px] rounded-full bg-secondary/25 blur-3xl opacity-40 animate-blob" style="animation-delay: -6s;"></div>
-        <div class="absolute -bottom-32 left-1/4 w-[400px] h-[400px] rounded-full bg-primary-dark/20 blur-3xl opacity-40 animate-blob" style="animation-delay: -12s;"></div>
+        <?php /* Blob dikecilkan: dirancang untuk latar terang, di atas foto lab
+                 yang gelap hanya jadi kabut yang memudarkan fotonya. */ ?>
+        <div class="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/20 blur-3xl opacity-30 animate-blob"></div>
     </div>
 
     <div class="w-full max-w-[440px]">
-        <div class="bg-white rounded-[24px] shadow-2xl p-8 md:p-10 animate-fade-up">
+        <div class="bg-white rounded-[24px] shadow-[0_18px_35px_-12px_rgba(6,18,50,0.22),0_45px_90px_-25px_rgba(6,18,50,0.28)] p-8 md:p-10 animate-fade-up">
 
             <!-- Logo trio - menyatukan halaman ini dengan halaman login -->
             <div class="flex items-center justify-center gap-2 md:gap-3 mb-6 w-full">

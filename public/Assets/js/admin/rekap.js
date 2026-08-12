@@ -118,17 +118,6 @@
         terapkanOpsiLulus(daftarId);
     }
 
-    /**
-     * Menonaktifkan pilihan "Lulus" selama tahapan belum tuntas.
-     *
-     * Peserta hanya bisa dinyatakan lulus setelah hadir di keempat tahap.
-     * "Tidak Lulus" dan "Pending" sengaja dibiarkan bebas: peserta yang gagal
-     * atau mundur di tengah jalan tidak akan pernah menyelesaikan semuanya,
-     * jadi statusnya harus tetap bisa ditetapkan.
-     *
-     * Hanya berlaku pada modal edit - modal tambah tidak punya field ini.
-     * Aturan yang sama divalidasi ulang di server.
-     */
     function terapkanOpsiLulus(daftarId) {
         if (daftarId !== TAHAP_EDIT) return;
 
