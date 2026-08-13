@@ -56,7 +56,7 @@ $ruanganList = $ruanganList ?? [];
                                         <td class="text-center py-4 px-4 font-semibold text-slate-600"><?= $i++ ?></td>
                                         <td class="py-4 px-4">
                                             <div class="flex items-center gap-3">
-                                                <?php $imgSrc = !empty($ruangan['gambar']) ? str_replace('/public', '', APP_URL).'/res/uploads/ruangan_lab/'.$ruangan['gambar'] : str_replace('/public', '', APP_URL).'/res/uploads/ruangan_lab/default_room.png'; ?>
+                                                <?php $imgSrc = !empty($ruangan['gambar']) ? str_replace('/public', '', APP_URL).'/res/ruangan_lab/'.$ruangan['gambar'] : str_replace('/public', '', APP_URL).'/res/ruangan_lab/default_room.png'; ?>
                                                 <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shrink-0 border border-blue-100 overflow-hidden">
                                                     <a href="<?= $imgSrc ?>" target="_blank" title="Klik untuk memperbesar gambar" class="block w-full h-full">
                                                         <img src="<?= $imgSrc ?>" alt="Gambar Lab" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">

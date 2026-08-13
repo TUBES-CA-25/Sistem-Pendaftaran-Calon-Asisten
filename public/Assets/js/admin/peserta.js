@@ -145,7 +145,7 @@
                 document.getElementById('modalNamaHeader').textContent = data.nama || '-';
                 document.getElementById('modalStambukHeader').textContent = data.stambuk || '-';
 
-                var fotoPath = data.foto ? `${PROJECT_ROOT}/res/imageUser/${data.foto}` : `${APP_URL}/Assets/Downloads/default.png`;
+                var fotoPath = data.foto ? `${PROJECT_ROOT}/res/profile/${data.foto}` : `${APP_URL}/Assets/Downloads/default.png`;
                 if (modalFoto) {
                     modalFoto.src = fotoPath;
                     modalFoto.onerror = function () { this.src = `${APP_URL}/Assets/Downloads/default.png`; };
@@ -252,7 +252,7 @@
 
                 // Download buttons
                 const downloads = {
-                    'downloadFotoButton':     data.foto     ? `${PROJECT_ROOT}/res/imageUser/${data.foto}`    : '',
+                    'downloadFotoButton':     data.foto     ? `${PROJECT_ROOT}/res/profile/${data.foto}`    : '',
                     'downloadCVButton':       data.cv       ? `${PROJECT_ROOT}/res/berkasUser/${data.cv}`     : '',
                     'downloadTranskripButton':data.transkrip? `${PROJECT_ROOT}/res/berkasUser/${data.transkrip}`: '',
                     'downloadSuratButton':    data.surat    ? `${PROJECT_ROOT}/res/berkasUser/${data.surat}`  : ''

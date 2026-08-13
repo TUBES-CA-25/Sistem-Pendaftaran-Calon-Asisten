@@ -334,7 +334,7 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
                                     <div id="uploadContent" class="flex flex-col items-center">
                                         <i class='bx bx-cloud-upload text-blue-600 mb-1.5 text-4xl'></i>
                                         <h6 class="font-bold text-slate-800 text-sm mb-0.5" id="fileLabel">Klik atau drag file ke sini</h6>
-                                        <p class="text-slate-500 text-xs">Mendukung .csv, .xls, .xlsx (Maksimal 5MB)</p>
+                                        <p class="text-slate-500 text-xs">Mendukung .csv, .xls, .xlsx (Maksimal 1MB)</p>
                                     </div>
                                 </div>
                                 <div id="fileInfo" class="mt-2 text-center text-xs font-semibold text-emerald-600 hidden"></div>

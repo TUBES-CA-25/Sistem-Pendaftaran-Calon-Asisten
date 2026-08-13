@@ -57,9 +57,9 @@ class TesTulisController extends Controller {
             // Get berkas to retrieve foto
             $berkas = $mahasiswa ? $mahasiswaModel->getBerkasMahasiswa($mahasiswa['id']) : null;
 
-            // Priority: foto from berkas_mahasiswa (res/imageUser), then foto_profil (res/profile), then default
+            // Priority: foto from berkas_mahasiswa (res/profile), then foto_profil (res/profile), then default
             if (!empty($berkas['foto'])) {
-                $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . $berkas['foto'];
+                $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $berkas['foto'];
             } elseif (!empty($mahasiswa['foto_profil'])) {
                 $photo = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . $mahasiswa['foto_profil'];
             } else {

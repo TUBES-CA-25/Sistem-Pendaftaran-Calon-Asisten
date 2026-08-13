@@ -74,7 +74,7 @@ public/
 ```
 res/
 ├── berkasUser/              # Dokumen user (CV, transkrip)
-├── imageUser/               # Gambar profil
+├── profile/               # Gambar profil
 ├── makalahUser/             # File makalah
 ├── pptUser/                 # File presentasi
 ├── profile/                 # Foto profil

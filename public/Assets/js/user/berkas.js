@@ -14,7 +14,7 @@
  * re-inject (#content diganti oleh app.js).
  */
 (function () {
-    const MAX_SIZE = 5 * 1024 * 1024; // 5 MB — samakan dengan $maxFileSize di BerkasUser.php
+    const MAX_SIZE = 1 * 1024 * 1024; // 1 MB — samakan dengan $maxFileSize di BerkasUser.php
 
     // Aturan per input: ekstensi yang diterima + label untuk pesan error.
     const RULES = {
@@ -77,7 +77,7 @@
             return `${rule.label} harus berformat ${rule.teks}. File yang dipilih ".${ext}".`;
         }
         if (file.size > MAX_SIZE) {
-            return `${rule.label} berukuran ${formatSize(file.size)}, melebihi batas 5 MB.`;
+            return `${rule.label} berukuran ${formatSize(file.size)}, melebihi batas 1 MB.`;
         }
         return '';
     }

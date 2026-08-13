@@ -41,7 +41,7 @@ class ForgotPasswordController extends Controller
         if ($userModel->updateResetToken($user['id'], $tokenHash)) {
             // Send Email
             $mailer = new Mailer();
-            $resetLink = Env::get('APP_URL') . '/reset-password?token=' . $token;
+            $resetLink = APP_URL . '/reset-password?token=' . $token;
             
             $subject = "Reset Password - IC-ASSIST";
             $body = Mailer::buildHtml(

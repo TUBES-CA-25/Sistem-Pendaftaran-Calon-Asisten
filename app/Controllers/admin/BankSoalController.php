@@ -50,7 +50,7 @@ class BankSoalController extends Controller
             return null;
         }
 
-        return 'res/uploads/soal/' . $newFilename;
+        return 'res/soal/' . $newFilename;
     }
 
     /** Hapus berkas gambar soal berdasarkan path relatif yang tersimpan di DB. */
@@ -174,8 +174,13 @@ class BankSoalController extends Controller
                 throw new \Exception('Invalid file type. Only JPG, PNG, GIF, WEBP allowed.');
             }
 
+            // Check file size (max 1MB)
+            if ($file['size'] > 1024 * 1024) {
+                throw new \Exception('File size must be 1MB or less.');
+            }
+
             // Create directory if not exists
-            $uploadDir = __DIR__ . '/../../../res/uploads/soal_content/';
+            $uploadDir = __DIR__ . '/../../../res/soal_content/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
@@ -192,7 +197,7 @@ class BankSoalController extends Controller
             // PENTING: bentuk respons {data:{filePath}} / {error} adalah kontrak
             // unggah gambar EasyMDE. Sengaja TIDAK memakai jsonSuccess()/jsonError()
             // agar editor markdown tetap mengenali baliknya.
-            self::json(['data' => ['filePath' => 'res/uploads/soal_content/' . $newFilename]]);
+            self::json(['data' => ['filePath' => 'res/soal_content/' . $newFilename]]);
 
         } catch (\Exception $e) {
             self::json(['error' => $e->getMessage()], 400);

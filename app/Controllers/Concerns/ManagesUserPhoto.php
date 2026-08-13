@@ -27,8 +27,8 @@ trait ManagesUserPhoto
         }
 
         // Check imageUser directory first (berkas uploads - priority)
-        if (file_exists($docRoot . 'imageUser/' . $filename)) {
-            return $webBasePath . 'imageUser/' . $filename . '?v=' . time();
+        if (file_exists($docRoot . 'profile/' . $filename)) {
+            return $webBasePath . 'profile/' . $filename . '?v=' . time();
         }
 
         // Check profile directory as fallback
@@ -72,8 +72,8 @@ trait ManagesUserPhoto
      */
 
     public static function getAdminPhoto($userId) {
-        $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
-        $webPath = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
+        $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/profile/';
+        $webPath = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/';
         
         $extensions = ['png', 'jpg', 'jpeg'];
         

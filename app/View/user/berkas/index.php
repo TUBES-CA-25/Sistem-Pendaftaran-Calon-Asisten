@@ -67,7 +67,7 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                     <i class="bi bi-image text-blue-600"></i>Foto 3x4
                                 </label>
                                 <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150" type="file" id="foto" name="foto" accept="image/png, image/jpeg, image/jpg" required>
-                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PNG, JPG, JPEG &middot; maks 5 MB</span>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PNG, JPG, JPEG &middot; maks 1 MB</span>
                                 <p class="hidden mt-1.5 text-[11px] font-semibold text-red-600 items-center gap-1" data-error-for="foto"><i class="bi bi-exclamation-circle-fill"></i><span></span></p>
                             </div>
 
@@ -76,7 +76,7 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                     <i class="bi bi-file-earmark-text text-blue-600"></i>CV
                                 </label>
                                 <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150" type="file" id="cv" name="cv" accept="application/pdf" required>
-                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF &middot; maks 5 MB</span>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF &middot; maks 1 MB</span>
                                 <p class="hidden mt-1.5 text-[11px] font-semibold text-red-600 items-center gap-1" data-error-for="cv"><i class="bi bi-exclamation-circle-fill"></i><span></span></p>
                             </div>
 
@@ -85,7 +85,7 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                     <i class="bi bi-file-earmark-bar-graph text-blue-600"></i>Transkrip Nilai
                                 </label>
                                 <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150" type="file" id="transkrip" name="transkrip" accept="application/pdf" required>
-                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF &middot; maks 5 MB</span>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF &middot; maks 1 MB</span>
                                 <p class="hidden mt-1.5 text-[11px] font-semibold text-red-600 items-center gap-1" data-error-for="transkrip"><i class="bi bi-exclamation-circle-fill"></i><span></span></p>
                             </div>
 
@@ -94,7 +94,7 @@ $isBerkasEmpty = $isBerkasEmpty ?? true;
                                     <i class="bi bi-file-earmark-check text-blue-600"></i>Surat Pernyataan
                                 </label>
                                 <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150" type="file" id="suratpernyataan" name="suratpernyataan" accept="application/pdf" required>
-                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF &middot; maks 5 MB</span>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF &middot; maks 1 MB</span>
                                 <p class="hidden mt-1.5 text-[11px] font-semibold text-red-600 items-center gap-1" data-error-for="suratpernyataan"><i class="bi bi-exclamation-circle-fill"></i><span></span></p>
                             </div>
 

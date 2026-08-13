@@ -32,7 +32,10 @@ class RuanganController extends Controller {
         $gambar = 'default_room.png';
         if (isset($_FILES['gambarRuangan']) && $_FILES['gambarRuangan']['error'] !== UPLOAD_ERR_NO_FILE) {
             if ($_FILES['gambarRuangan']['error'] !== UPLOAD_ERR_OK) {
-                self::jsonError('Gagal mengunggah gambar. Ukuran file mungkin terlalu besar (Maks 2MB).');
+                self::jsonError('Gagal mengunggah gambar. Ukuran file mungkin terlalu besar (Maks 1MB).');
+            }
+            if ($_FILES['gambarRuangan']['size'] > 1024 * 1024) {
+                self::jsonError('Ukuran file gambar terlalu besar. Maksimal 1MB.');
             }
             $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
             $fileType = mime_content_type($_FILES['gambarRuangan']['tmp_name']);
@@ -40,7 +43,7 @@ class RuanganController extends Controller {
                 self::jsonError('Format file tidak didukung. Harap unggah gambar (JPEG, PNG, GIF, WEBP)');
             }
 
-            $uploadDir = __DIR__ . '/../../../res/uploads/ruangan_lab/';
+            $uploadDir = __DIR__ . '/../../../res/ruangan_lab/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
@@ -72,7 +75,7 @@ class RuanganController extends Controller {
         try {
             $roomData = $ruangan->getById($_POST['id']);
             if ($roomData && !empty($roomData['gambar']) && $roomData['gambar'] !== 'default_room.png') {
-                $filePath = __DIR__ . '/../../../res/uploads/ruangan_lab/' . $roomData['gambar'];
+                $filePath = __DIR__ . '/../../../res/ruangan_lab/' . $roomData['gambar'];
                 if (file_exists($filePath)) {
                     unlink($filePath);
                 }
@@ -96,7 +99,10 @@ class RuanganController extends Controller {
         $gambar = null;
         if (isset($_FILES['updateGambarRuangan']) && $_FILES['updateGambarRuangan']['error'] !== UPLOAD_ERR_NO_FILE) {
             if ($_FILES['updateGambarRuangan']['error'] !== UPLOAD_ERR_OK) {
-                self::jsonError('Gagal mengunggah gambar. Ukuran file mungkin terlalu besar (Maks 2MB).');
+                self::jsonError('Gagal mengunggah gambar. Ukuran file mungkin terlalu besar (Maks 1MB).');
+            }
+            if ($_FILES['updateGambarRuangan']['size'] > 1024 * 1024) {
+                self::jsonError('Ukuran file gambar terlalu besar. Maksimal 1MB.');
             }
             $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
             $fileType = mime_content_type($_FILES['updateGambarRuangan']['tmp_name']);
@@ -104,7 +110,7 @@ class RuanganController extends Controller {
                 self::jsonError('Format file tidak didukung. Harap unggah gambar (JPEG, PNG, GIF, WEBP)');
             }
 
-            $uploadDir = __DIR__ . '/../../../res/uploads/ruangan_lab/';
+            $uploadDir = __DIR__ . '/../../../res/ruangan_lab/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }

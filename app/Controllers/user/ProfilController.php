@@ -181,7 +181,7 @@ class ProfilController extends Controller {
                     $ext = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
                     $allowed = ['jpg', 'jpeg', 'png'];
                     
-                    if (in_array($ext, $allowed) && $image['size'] <= 5 * 1024 * 1024) { // Increased limit to 5MB
+                    if (in_array($ext, $allowed) && $image['size'] <= 1 * 1024 * 1024) { // Limit to 1MB
                         $newName = uniqid() . '.' . $ext;
                         $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/profile/';
                         

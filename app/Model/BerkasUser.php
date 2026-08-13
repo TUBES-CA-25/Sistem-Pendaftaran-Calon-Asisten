@@ -21,7 +21,7 @@ class BerkasUser extends Model {
     protected $suratPernyataanSize;
     private $imageAccepted = ['jpg', 'jpeg', 'png'];
     private $fileAccepted = 'pdf';
-    private $maxFileSize = 1024 * 1024 * 5; // 5mb 
+    private $maxFileSize = 1024 * 1024 * 1; // 1mb 
 
     public function __construct(
         $id_mahasiswa = null,
@@ -118,7 +118,7 @@ class BerkasUser extends Model {
             throw new Exception("Ukuran file gambar terlalu besar.");
         }
     
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/profile/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true); // Membuat direktori jika tidak ada
         }
@@ -352,7 +352,7 @@ class BerkasUser extends Model {
 
         // Delete old photo after successful update
         if ($result && $oldFiles && !empty($oldFiles['foto'])) {
-            $basePathImage = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
+            $basePathImage = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/profile/';
             $fotoPath = $basePathImage . $oldFiles['foto'];
             if (file_exists($fotoPath)) {
                 @unlink($fotoPath);
@@ -398,7 +398,7 @@ class BerkasUser extends Model {
             if (empty($row[$kolom])) {
                 continue;
             }
-            $dir = ($kolom === 'foto') ? 'imageUser/' : 'berkasUser/';
+            $dir = ($kolom === 'foto') ? 'profile/' : 'berkasUser/';
             $path = $base . $dir . basename($row[$kolom]);
             if (is_file($path)) {
                 @unlink($path);
@@ -465,7 +465,7 @@ class BerkasUser extends Model {
      * @param array $files Array containing file names to delete
      */
     private function deleteOldFiles($files) {
-        $basePathImage = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
+        $basePathImage = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/profile/';
         $basePathBerkas = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser/';
 
         // Delete foto (from imageUser directory)

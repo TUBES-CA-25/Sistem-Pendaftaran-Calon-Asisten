@@ -206,7 +206,7 @@ class Mahasiswa extends Model
      * @param array|null $mahasiswaData Mahasiswa data (foto_profil)
      */
     private function deleteAllMahasiswaFiles($berkasFiles, $presentasiFiles, $mahasiswaData) {
-        $basePathImage = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/';
+        $basePathImage = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/profile/';
         $basePathBerkas = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/berkasUser/';
         $basePathMakalah = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/makalahUser/';
         $basePathPpt = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/pptUser/';

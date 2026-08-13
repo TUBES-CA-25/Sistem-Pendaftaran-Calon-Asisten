@@ -116,7 +116,7 @@ class BerkasController extends Controller
     /**
      * Salin nama file foto dari berkas_mahasiswa.foto ke mahasiswa.foto_profil.
      *
-     * Keduanya kolom terpisah: berkas menyimpan foto 3x4 di res/imageUser/,
+     * Keduanya kolom terpisah: berkas menyimpan foto 3x4 di res/profile/,
      * sedangkan foto profil dibaca dari mahasiswa.foto_profil. Tanpa sinkronisasi
      * ini, foto yang diunggah lewat halaman Upload Berkas tidak pernah muncul
      * sebagai foto profil di dashboard.
@@ -207,7 +207,7 @@ class BerkasController extends Controller
 
             $basePath = $_SERVER['DOCUMENT_ROOT'] . '/Sistem-Pendaftaran-Calon-Asisten/res/';
             $filePath = ($type === 'foto')
-                ? $basePath . 'imageUser/' . $berkas[$type]
+                ? $basePath . 'profile/' . $berkas[$type]
                 : $basePath . 'berkasUser/' . $berkas[$type];
 
             if (!file_exists($filePath)) {

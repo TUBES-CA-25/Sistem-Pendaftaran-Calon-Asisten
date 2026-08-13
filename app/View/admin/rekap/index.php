@@ -47,10 +47,10 @@ $mahasiswaList = $mahasiswaList ?? [];
                                 <td class="py-4 px-4">
                                     <div class="flex items-center gap-3">
                                         <?php
-                                            // Use only foto from berkas_mahasiswa upload (res/imageUser)
+                                            // Use only foto from berkas_mahasiswa upload (res/profile)
                                             $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png';
                                             if (!empty($row['berkas_foto'])) {
-                                                $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . htmlspecialchars($row['berkas_foto']) . '?v=' . time();
+                                                $photoUrl = '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . htmlspecialchars($row['berkas_foto']) . '?v=' . time();
                                             }
                                         ?>
                                         <img src="<?= $photoUrl ?>" alt="Foto" class="rounded-full w-10 h-10 object-cover border-2 border-slate-100 shrink-0" onerror="this.src='/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Downloads/default.png'">
@@ -90,7 +90,7 @@ $mahasiswaList = $mahasiswaList ?? [];
                                                 title="Detail Rekap"
                                                 data-nama="<?= htmlspecialchars($row['nama_lengkap']) ?>"
                                                 data-stambuk="<?= $row['stambuk'] ?>"
-                                                data-foto="<?= !empty($row['berkas_foto']) ? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . htmlspecialchars($row['berkas_foto']) : '' ?>"
+                                                data-foto="<?= !empty($row['berkas_foto']) ? '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . htmlspecialchars($row['berkas_foto']) : '' ?>"
                                                 data-berkas="<?= $row['berkas_status'] ?? '0' ?>"
                                                 data-tes="<?= $row['absensi_tes_tertulis'] ?>"
                                                 data-nilai="<?= $row['nilai_akhir'] ?? '' ?>"
@@ -112,7 +112,7 @@ $mahasiswaList = $mahasiswaList ?? [];
                                                 data-absensipresentasi="<?= $row['absensi_presentasi'] ?? '' ?>"
                                                 <?php /* Foto dari berkas yang diunggah peserta. Kosong bila belum
                                                         mengunggah - modal jatuh ke avatar inisial. */ ?>
-                                                data-foto="<?= !empty($row['berkas_foto']) ? '/Sistem-Pendaftaran-Calon-Asisten/res/imageUser/' . htmlspecialchars($row['berkas_foto']) : '' ?>"
+                                                data-foto="<?= !empty($row['berkas_foto']) ? '/Sistem-Pendaftaran-Calon-Asisten/res/profile/' . htmlspecialchars($row['berkas_foto']) : '' ?>"
                                                 <?php /* Penanda sudah dijadwalkan per tahap. "Hadir" hanya boleh
                                                         dipilih bila jadwalnya ada - peserta tidak mungkin hadir
                                                         di kegiatan yang tidak pernah dijadwalkan untuknya. */ ?>

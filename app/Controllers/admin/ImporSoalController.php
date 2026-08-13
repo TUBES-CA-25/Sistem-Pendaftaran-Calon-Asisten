@@ -314,6 +314,18 @@ class ImporSoalController extends Controller
                 exit;
             }
 
+            if ($_FILES['file']['size'] > 1024 * 1024) {
+                $errorMsg = 'Ukuran file terlalu besar. Maksimal 1MB.';
+                error_log("Import failed: " . $errorMsg);
+                echo json_encode([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => $errorMsg
+                ]);
+                http_response_code(400);
+                exit;
+            }
+
             $fileTmpPath = $_FILES['file']['tmp_name'];
             $fileName = $_FILES['file']['name'];
 

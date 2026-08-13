@@ -82,9 +82,9 @@ document.addEventListener('DOMContentLoaded', function() {
             input.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
-                    // Check file size (max 2MB)
-                    if (file.size > 2 * 1024 * 1024) {
-                        if (typeof showAlert === 'function') showAlert('Ukuran file terlalu besar. Maksimal 2MB.', false);
+                    // Check file size (max 1MB)
+                    if (file.size > 1 * 1024 * 1024) {
+                        if (typeof showAlert === 'function') showAlert('Ukuran file terlalu besar. Maksimal 1MB.', false);
                         e.target.value = '';
                         document.getElementById(containerId).style.display = 'none';
                         return;
