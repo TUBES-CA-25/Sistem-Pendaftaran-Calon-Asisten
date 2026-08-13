@@ -98,8 +98,8 @@ $isDisabled = !$berkasStatus || !$biodataStatus || $absensiTesTertulis;
 </main>
 
 <!-- Bootstrap Token Modal (retails classes for Bootstrap modal trigger but styles inner blocks with Tailwind) -->
-<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="tokenModal" role="dialog" aria-hidden="true">
-    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="tokenModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden bg-white">
             <div class="p-6">

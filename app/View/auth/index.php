@@ -32,22 +32,16 @@
                memakai sapuan putih di latar; itu justru memecah halaman jadi dua
                bidang dan membuat kartu terbaca menempel, bukan menyambung. */
             .bg-auth {
-                background-color: #2563eb;
-                background-image: linear-gradient(150deg, #3dc2ec 0%, #2563eb 52%, #4b70f5 100%);
+                background-color: #2B79E1;
+                background-image: linear-gradient(135deg, #20C9FF 0%, #2B79E1 100%);
                 background-attachment: fixed;
             }
 
             /* Panel biru kartu memakai gradasi yang sama dengan latar, sehingga
                warnanya berdekatan dan kartu terbaca menyambung - tetapi kartunya
-               TETAP berbingkai; tepinya masih terlihat sebagai batas objek.
-
-               Catatan hasil percobaan: `background-attachment: fixed` di sini
-               TIDAK menyamakan gradasi panel dengan gradasi latar. #container
-               memakai animate-fade-up, dan transform yang tertinggal dari
-               animasi itu memindahkan acuan `fixed` dari layar ke kartu, jadi
-               hasilnya sama saja. Karena itu tidak dipakai. */
+               TETAP berbingkai; tepinya masih terlihat sebagai batas objek. */
             .panel-melebur {
-                background-image: linear-gradient(150deg, #3dc2ec 0%, #2563eb 52%, #4b70f5 100%);
+                background-image: linear-gradient(135deg, #20C9FF 0%, #2B79E1 100%);
                 background-size: cover;
             }
 
@@ -414,8 +408,8 @@
 
 
     <!-- Tailwind Custom Modal -->
-    <div id="customModal" class="fixed inset-0 z-[1050] hidden items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" aria-hidden="true">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" id="customModalBackdrop"></div>
+    <div id="customModal" class="fixed inset-0 z-[1050] hidden items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" aria-hidden="true">
+        <div class="absolute inset-0" id="customModalBackdrop"></div>
         <!-- scale mengikuti data-open pada WADAH (#customModal), bukan pada panel
              ini sendiri - karena itu memakai varian arbitrary [&] terhadap induk. -->
         <div class="relative my-6 mx-auto w-[90%] max-w-[340px] z-50 scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
@@ -430,8 +424,8 @@
     </div>
 
     <!-- Tailwind Modal Verifikasi OTP -->
-    <div id="otpModal" class="fixed inset-0 z-[1050] hidden items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" aria-hidden="true">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" id="otpModalBackdrop"></div>
+    <div id="otpModal" class="fixed inset-0 z-[1050] hidden items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" aria-hidden="true">
+        <div class="absolute inset-0" id="otpModalBackdrop"></div>
         <div class="relative w-auto my-6 mx-auto max-w-md z-50 px-4 scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
             <div class="relative flex w-full flex-col rounded-2xl border-0 bg-white shadow-xl outline-none focus:outline-none">
                 <div class="flex items-start justify-between rounded-t p-5 pb-0 border-0">

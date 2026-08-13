@@ -56,15 +56,25 @@
     const MODAL_TRANSITION_MS = 200;
 
     let scrollLockCount = 0;
+    let scrollBarWidth = 0;
 
     function lockScroll() {
         scrollLockCount += 1;
-        document.body.style.overflow = 'hidden';
+        if (scrollLockCount === 1) {
+            scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+            if (scrollBarWidth > 0) {
+                document.body.style.paddingRight = scrollBarWidth + 'px';
+            }
+            document.body.style.overflow = 'hidden';
+        }
     }
 
     function unlockScroll() {
         scrollLockCount = Math.max(0, scrollLockCount - 1);
-        if (scrollLockCount === 0) document.body.style.overflow = '';
+        if (scrollLockCount === 0) {
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }
     }
 
     function openModal(target) {

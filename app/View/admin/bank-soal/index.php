@@ -574,8 +574,8 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
 </main>
 
 <!-- Create Bank Modal -->
-<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="createBankModal" role="dialog" aria-hidden="true">
-    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="createBankModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
             <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
@@ -621,8 +621,8 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
 </div>
 
 <!-- Edit Bank Modal -->
-<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="editBankModal" role="dialog" aria-hidden="true">
-    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="editBankModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
             <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
@@ -668,8 +668,8 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
 </div>
 
 <!-- Add Soal Modal -->
-<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="addSoalModal" role="dialog" aria-hidden="true">
-    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="addSoalModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100 max-h-[85vh] overflow-y-auto">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
             <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
@@ -757,8 +757,8 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
 </div>
 
 <!-- Edit Soal Modal -->
-<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="editSoalModal" role="dialog" aria-hidden="true">
-    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+<div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="editSoalModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0" data-modal-close></div>
     <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100 max-h-[85vh] overflow-y-auto">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
             <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">

@@ -305,8 +305,8 @@
     </div>
 
     <!-- Generic Action Confirmation Modal (Premium Design with Tailwind) -->
-    <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="actionConfirmModal" role="dialog" aria-hidden="true">
-    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="actionConfirmModal" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0" data-modal-close></div>
         <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
             <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <!-- Header with Gradient & Decoration -->
@@ -346,8 +346,8 @@
     </div>
 
     <!-- Bootstrap Delete Confirmation Modal (Redesigned with Tailwind) -->
-    <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="deleteConfirmModal" aria-labelledby="deleteConfirmModalLabel" role="dialog" aria-hidden="true">
-    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="deleteConfirmModal" aria-labelledby="deleteConfirmModalLabel" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0" data-modal-close></div>
         <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
             <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <div class="bg-gradient-to-r from-red-500 to-rose-600 text-white px-6 py-4 flex justify-between items-center rounded-t-[24px]">
@@ -416,8 +416,8 @@
 
 
     <!-- Bootstrap Custom Modal (Redesigned with Tailwind) -->
-    <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="customModal" aria-labelledby="customModalLabel" role="dialog" aria-hidden="true">
-    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="customModal" aria-labelledby="customModalLabel" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0" data-modal-close></div>
         <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
             <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <div class="text-center p-6 md:p-8 flex flex-col items-center">
@@ -430,8 +430,8 @@
     </div>
 
     <!-- Bootstrap Confirm Modal (Redesigned with Tailwind) -->
-    <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100" id="confirmModal" aria-labelledby="confirmModalLabel" role="dialog" aria-hidden="true">
-    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm [will-change:opacity] [transform:translateZ(0)]" data-modal-close></div>
+    <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="confirmModal" aria-labelledby="confirmModalLabel" role="dialog" aria-hidden="true">
+    <div class="absolute inset-0" data-modal-close></div>
         <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
             <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-[24px]">
