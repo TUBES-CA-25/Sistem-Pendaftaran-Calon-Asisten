@@ -133,7 +133,7 @@ $statusAktif = statusJudul($pengajuanAktif);
                                     <i class="bi bi-file-earmark-ppt text-blue-600"></i>File PPT
                                 </label>
                                 <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed" type="file" id="ppt" name="ppt" accept=".ppt,.pptx" required <?php if (!$canSubmitPpt) echo 'disabled'; ?>>
-                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PPT, PPTX (Max 10MB)</span>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PPT, PPTX (Max 1 MB)</span>
                             </div>
 
                             <div>
@@ -141,7 +141,7 @@ $statusAktif = statusJudul($pengajuanAktif);
                                     <i class="bi bi-file-earmark-pdf text-blue-600"></i>Makalah
                                 </label>
                                 <input class="w-full px-3 py-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed" type="file" id="makalah" name="makalah" accept="application/pdf" required <?php if (!$canSubmitPpt) echo 'disabled'; ?>>
-                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF (Max 2MB)</span>
+                                <span class="block text-[10px] text-slate-400 mt-1 font-medium">Format: PDF (Max 1 MB)</span>
                             </div>
 
                             <!-- Download Template -->

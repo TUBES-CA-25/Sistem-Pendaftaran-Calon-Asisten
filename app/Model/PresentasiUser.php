@@ -18,8 +18,8 @@ class PresentasiUser extends Model {
     protected $makalahSize;
     protected $fileMakalahAcc = "pdf";
     protected $filePptAcc = ["ppt", "pptx"];
-    protected $maxMakalahSize = 2048 * 1024;
-    protected $maxPptSize = 10240 * 1024;
+    protected $maxMakalahSize = 1024 * 1024;
+    protected $maxPptSize = 1024 * 1024;
     protected $keterangan;
     public function __construct(
         $id_mahasiswa = null,
