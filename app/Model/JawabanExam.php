@@ -45,6 +45,31 @@ class JawabanExam extends Model {
             return false;
         }
     }
+
+    public static function updateSkorAdmin($id_soal, $id_mahasiswa, $skor) {
+        try {
+            $checkQ = "SELECT id FROM jawaban WHERE id_soal = :id_soal AND id_mahasiswa = :id_mahasiswa";
+            $checkStmt = self::getDB()->prepare($checkQ);
+            $checkStmt->bindParam(':id_soal', $id_soal, PDO::PARAM_INT);
+            $checkStmt->bindParam(':id_mahasiswa', $id_mahasiswa, PDO::PARAM_INT);
+            $checkStmt->execute();
+
+            if ($checkStmt->rowCount() > 0) {
+                $query = "UPDATE " . self::$table . " SET skor_admin = :skor, modified = NOW() WHERE id_soal = :id_soal AND id_mahasiswa = :id_mahasiswa";
+            } else {
+                $query = "INSERT INTO " . self::$table . " (id_soal, id_mahasiswa, jawaban, skor_admin, created_at) VALUES (:id_soal, :id_mahasiswa, '', :skor, NOW())";
+            }
+
+            $stmt = self::getDB()->prepare($query);
+            $stmt->bindParam(':skor', $skor, PDO::PARAM_INT);
+            $stmt->bindParam(':id_soal', $id_soal, PDO::PARAM_INT);
+            $stmt->bindParam(':id_mahasiswa', $id_mahasiswa, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (\Exception $e) {
+            error_log("Error updating skor admin: " . $e->getMessage());
+            return false;
+        }
+    }
     
     public function getJawaban($id_soal) {
         $query = "SELECT jawaban FROM " . self::$table . " WHERE id_soal = :id_soal";

@@ -29,7 +29,7 @@ class NilaiAkhir extends Model
             }
             $id_user = $mahasiswa['id'];
 
-            $query = "SELECT id_soal, jawaban FROM jawaban WHERE id_mahasiswa = :id_mahasiswa";
+            $query = "SELECT id_soal, jawaban, skor_admin FROM jawaban WHERE id_mahasiswa = :id_mahasiswa";
             $stmt = self::getDB()->prepare($query);
             $stmt->bindParam(':id_mahasiswa', $id_user, PDO::PARAM_INT);
             $stmt->execute();
@@ -38,8 +38,9 @@ class NilaiAkhir extends Model
             foreach ($user_answers as $answer) {
                 $id_soal = $answer['id_soal'];
                 $jawaban_user = $answer['jawaban'];
+                $skor_admin = $answer['skor_admin'];
 
-                $query_soal = "SELECT s.pilihan, s.jawaban, b.poin_per_soal FROM soal s LEFT JOIN bank_soal b ON s.bank_soal_id = b.id WHERE s.id = :id_soal";
+                $query_soal = "SELECT s.pilihan, s.jawaban, s.status_soal, b.poin_per_soal FROM soal s LEFT JOIN bank_soal b ON s.bank_soal_id = b.id WHERE s.id = :id_soal";
                 $stmt_soal = self::getDB()->prepare($query_soal);
                 $stmt_soal->bindParam(':id_soal', $id_soal, PDO::PARAM_INT);
                 $stmt_soal->execute();
@@ -50,12 +51,24 @@ class NilaiAkhir extends Model
                     $correct_answer = $soal_data['jawaban'];
                     $poin_per_benar = isset($soal_data['poin_per_soal']) ? (int)$soal_data['poin_per_soal'] : 10;
                     
-                    // Normalize answers for comparison
-                    if (isset($pilihan[$jawaban_user]) && trim($pilihan[$jawaban_user]) === trim($correct_answer)) {
-                        $total_nilai += $poin_per_benar;
-                    } elseif (trim($jawaban_user) === trim($correct_answer)) {
-                         // Fallback for essay or direct match
-                         $total_nilai += $poin_per_benar;
+                    if ($soal_data['status_soal'] !== 'pilihan_ganda') {
+                        // Essay: use skor_admin if it exists
+                        if ($skor_admin !== null) {
+                            $total_nilai += (int)$skor_admin;
+                        } else {
+                            // Fallback for direct match if skor_admin not set yet
+                            if (trim($jawaban_user) === trim($correct_answer)) {
+                                $total_nilai += $poin_per_benar;
+                            }
+                        }
+                    } else {
+                        // Normalize answers for comparison
+                        if (isset($pilihan[$jawaban_user]) && trim($pilihan[$jawaban_user]) === trim($correct_answer)) {
+                            $total_nilai += $poin_per_benar;
+                        } elseif (trim($jawaban_user) === trim($correct_answer)) {
+                             // Fallback direct match
+                             $total_nilai += $poin_per_benar;
+                        }
                     }
                 }
             }
@@ -80,6 +93,74 @@ class NilaiAkhir extends Model
             return $total_nilai;
         } catch (\Exception $e) {
             error_log("Error saving nilai: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function saveNilaiByIdMahasiswa($id_mahasiswa)
+    {
+        try {
+            $total_nilai = 0;
+
+            $query = "SELECT id_soal, jawaban, skor_admin FROM jawaban WHERE id_mahasiswa = :id_mahasiswa";
+            $stmt = self::getDB()->prepare($query);
+            $stmt->bindParam(':id_mahasiswa', $id_mahasiswa, PDO::PARAM_INT);
+            $stmt->execute();
+            $user_answers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($user_answers as $answer) {
+                $id_soal = $answer['id_soal'];
+                $jawaban_user = $answer['jawaban'];
+                $skor_admin = $answer['skor_admin'];
+
+                $query_soal = "SELECT s.pilihan, s.jawaban, s.status_soal, b.poin_per_soal FROM soal s LEFT JOIN bank_soal b ON s.bank_soal_id = b.id WHERE s.id = :id_soal";
+                $stmt_soal = self::getDB()->prepare($query_soal);
+                $stmt_soal->bindParam(':id_soal', $id_soal, PDO::PARAM_INT);
+                $stmt_soal->execute();
+                $soal_data = $stmt_soal->fetch(PDO::FETCH_ASSOC);
+
+                if ($soal_data) {
+                    $pilihan = json_decode($soal_data['pilihan'], true);
+                    $correct_answer = $soal_data['jawaban'];
+                    $poin_per_benar = isset($soal_data['poin_per_soal']) ? (int)$soal_data['poin_per_soal'] : 10;
+                    
+                    if ($soal_data['status_soal'] !== 'pilihan_ganda') {
+                        if ($skor_admin !== null) {
+                            $total_nilai += (int)$skor_admin;
+                        } else {
+                            if (trim($jawaban_user) === trim($correct_answer)) {
+                                $total_nilai += $poin_per_benar;
+                            }
+                        }
+                    } else {
+                        if (isset($pilihan[$jawaban_user]) && trim($pilihan[$jawaban_user]) === trim($correct_answer)) {
+                            $total_nilai += $poin_per_benar;
+                        } elseif (trim($jawaban_user) === trim($correct_answer)) {
+                             $total_nilai += $poin_per_benar;
+                        }
+                    }
+                }
+            }
+
+            $checkQ = "SELECT id FROM nilai_akhir WHERE id_mahasiswa = :id";
+            $checkStmt = self::getDB()->prepare($checkQ);
+            $checkStmt->bindParam(':id', $id_mahasiswa);
+            $checkStmt->execute();
+            
+            if ($checkStmt->rowCount() > 0) {
+                 $query_update = "UPDATE nilai_akhir SET nilai = :nilai, total_nilai = :nilai, modified = NOW() WHERE id_mahasiswa = :id_mahasiswa";
+            } else {
+                 $query_update = "INSERT INTO nilai_akhir (id_mahasiswa, nilai, total_nilai, created_at) VALUES (:id_mahasiswa, :nilai, :nilai, NOW())";
+            }
+            
+            $stmt_update = self::getDB()->prepare($query_update);
+            $stmt_update->bindParam(':id_mahasiswa', $id_mahasiswa, PDO::PARAM_INT);
+            $stmt_update->bindParam(':nilai', $total_nilai, PDO::PARAM_INT);
+            $stmt_update->execute();
+
+            return $total_nilai;
+        } catch (\Exception $e) {
+            error_log("Error saving nilai by id mahasiswa: " . $e->getMessage());
             throw $e;
         }
     }
@@ -120,9 +201,10 @@ class NilaiAkhir extends Model
     {
         // Get all soal with LEFT JOIN to jawaban to show all questions
         // This will return all questions, with jawaban_user as NULL for unanswered questions
-        $query = "SELECT s.id, s.deskripsi, s.pilihan, s.jawaban, s.status_soal, s.image_url, j.jawaban as jawaban_user
+        $query = "SELECT s.id, s.deskripsi, s.pilihan, s.jawaban, s.status_soal, s.image_url, j.jawaban as jawaban_user, j.skor_admin, b.poin_per_soal
                   FROM soal s
                   LEFT JOIN jawaban j ON s.id = j.id_soal AND j.id_mahasiswa = :id_mahasiswa
+                  LEFT JOIN bank_soal b ON s.bank_soal_id = b.id
                   ORDER BY s.id ASC";
         $stmt = self::getDB()->prepare($query);
         $stmt->bindParam(':id_mahasiswa', $id);

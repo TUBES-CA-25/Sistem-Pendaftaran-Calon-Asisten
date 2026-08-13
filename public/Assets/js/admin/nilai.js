@@ -159,27 +159,85 @@
 
                     response.data.forEach((item, index) => {
                         const isAnswered = item.jawaban_user !== null && item.jawaban_user !== '';
-                        const isCorrect = isAnswered && (item.jawaban === item.jawaban_user);
                         const tipeSoal = item.status_soal || 'essay';
                         const isPilihanGanda = tipeSoal === 'pilihan_ganda';
+                        
+                        let isCorrect = false;
+                        let skorAdmin = null;
+                        const poin = item.poin_per_soal ? parseInt(item.poin_per_soal) : 10;
+                        const poinMendekati = Math.floor(poin / 2);
+
+                        if (isPilihanGanda) {
+                            isCorrect = isAnswered && (item.jawaban === item.jawaban_user);
+                        } else {
+                            skorAdmin = item.skor_admin !== null && item.skor_admin !== undefined ? parseInt(item.skor_admin) : null;
+                            isCorrect = skorAdmin !== null && skorAdmin === poin;
+                        }
 
                         let statusBadge;
-                        if (isCorrect) {
-                            benarCount++;
-                            if (isPilihanGanda) pgBenarCount++;
-                            statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200"><i class="bi bi-check-circle-fill"></i> Benar</span>';
-                        } else if (!isAnswered && isPilihanGanda) {
-                            salahCount++;
-                            pgSalahCount++;
-                            statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 text-xs font-bold rounded-lg border border-red-200"><i class="bi bi-dash-circle"></i> Salah (Kosong)</span>';
-                        } else if (!isAnswered) {
-                            tidakDijawabCount++;
-                            statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-300"><i class="bi bi-dash-circle"></i> Kosong</span>';
+                        if (isPilihanGanda) {
+                            // Pilihan Ganda logic
+                            if (!isAnswered) {
+                                salahCount++;
+                                pgSalahCount++;
+                                statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 text-xs font-bold rounded-lg border border-red-200"><i class="bi bi-dash-circle"></i> Salah (Kosong)</span>';
+                            } else if (isCorrect) {
+                                benarCount++;
+                                pgBenarCount++;
+                                statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200"><i class="bi bi-check-circle-fill"></i> Benar</span>';
+                            } else {
+                                salahCount++;
+                                pgSalahCount++;
+                                statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 text-xs font-bold rounded-lg border border-red-200"><i class="bi bi-x-circle-fill"></i> Salah</span>';
+                            }
                         } else {
-                            salahCount++;
-                            if (isPilihanGanda) pgSalahCount++;
-                            statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 text-xs font-bold rounded-lg border border-red-200"><i class="bi bi-x-circle-fill"></i> Salah</span>';
+                            // Essay logic — prioritize skorAdmin over isAnswered
+                            if (skorAdmin !== null) {
+                                if (skorAdmin === 0) {
+                                    salahCount++;
+                                    statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 text-xs font-bold rounded-lg border border-red-200"><i class="bi bi-x-circle-fill"></i> Salah</span>';
+                                } else if (skorAdmin === poinMendekati) {
+                                    statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 text-xs font-bold rounded-lg border border-amber-200"><i class="bi bi-exclamation-circle-fill"></i> Mendekati Benar</span>';
+                                } else if (skorAdmin === poin) {
+                                    benarCount++;
+                                    statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200"><i class="bi bi-check-circle-fill"></i> Benar</span>';
+                                } else {
+                                    // skor_admin has a value but doesn't match any preset
+                                    statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-lg border border-blue-200"><i class="bi bi-pencil-square"></i> Skor: ${skorAdmin}</span>`;
+                                }
+                            } else if (!isAnswered) {
+                                tidakDijawabCount++;
+                                statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-300"><i class="bi bi-dash-circle"></i> Kosong</span>';
+                            } else {
+                                statusBadge = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg border border-slate-200"><i class="bi bi-clock-history"></i> Belum Dinilai</span>';
+                            }
                         }
+
+                        let essayScoringHtml = '';
+                        if (!isPilihanGanda) {
+                            const isSalah = skorAdmin === 0;
+                            const isMendekati = skorAdmin === poinMendekati;
+                            const isBenar = skorAdmin === poin;
+
+                            essayScoringHtml = `
+                            <div class="mt-4 pt-3 border-t border-slate-100">
+                                <div class="text-slate-500 font-bold uppercase tracking-wider text-[10px] mb-2 flex items-center gap-1.5">
+                                    <i class="bi bi-star"></i> Nilai Essay (Bobot: ${poin} Pts)
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="button" onclick="window.updateEssayScore(${item.id}, ${id}, 0, this)" class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-colors ${isSalah ? 'bg-red-500 text-white border-red-500' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'}">
+                                        Salah (0 pts)
+                                    </button>
+                                    <button type="button" onclick="window.updateEssayScore(${item.id}, ${id}, ${poinMendekati}, this)" class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-colors ${isMendekati ? 'bg-amber-500 text-white border-amber-500' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'}">
+                                        Mendekati Benar (${poinMendekati} pts)
+                                    </button>
+                                    <button type="button" onclick="window.updateEssayScore(${item.id}, ${id}, ${poin}, this)" class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-colors ${isBenar ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'}">
+                                        Benar (${poin} pts)
+                                    </button>
+                                </div>
+                            </div>`;
+                        }
+
 
                         // Susun opsi menjadi pasangan [huruf, isi] lebih dulu.
                         //
@@ -233,10 +291,10 @@
 
                         let numberClasses;
                         let kartuBorder;
-                        if (isCorrect) {
+                        if (isCorrect || (!isPilihanGanda && skorAdmin !== null && skorAdmin > 0)) {
                             numberClasses = 'bg-emerald-100 text-emerald-800 border-emerald-300';
                             kartuBorder = 'border-emerald-200';
-                        } else if (!isAnswered) {
+                        } else if (!isAnswered || (!isPilihanGanda && skorAdmin === null)) {
                             numberClasses = 'bg-slate-200 text-slate-800 border-slate-300';
                             kartuBorder = 'border-slate-200';
                         } else {
@@ -288,6 +346,7 @@
                                                         : `<div class="px-3 py-2 bg-white text-slate-700 border border-slate-200 text-sm rounded-lg whitespace-pre-wrap leading-relaxed">${item.jawaban_user}</div>`)
                                                     : '<div class="inline-block px-3 py-1.5 bg-slate-100 text-slate-500 font-bold text-sm rounded-lg border border-slate-300 border-dashed">KOSONG</div>'
                                                 }
+                                                ${essayScoringHtml}
                                             </div>
                                         </div>
                                     </div>
@@ -438,3 +497,135 @@
             });
     });
 })();
+
+window.updateEssayScore = function(idSoal, idMahasiswa, skor, btnEl) {
+    if (btnEl) btnEl.disabled = true;
+
+    dom.postJSON(APP_URL + '/update-essay-score', {
+        id_soal: idSoal,
+        id_mahasiswa: idMahasiswa,
+        skor: skor
+    })
+    .then(res => {
+        if (res.status === 'success' || res.success) {
+            // 1. Update main table row data
+            const detailBtn = dom.qs(`.btn-detail[data-id="${idMahasiswa}"]`);
+            if (detailBtn && res.total_nilai !== undefined) {
+                detailBtn.dataset.total = res.total_nilai;
+                const tr = detailBtn.closest('tr');
+                if (tr) {
+                    const cells = tr.querySelectorAll('td');
+                    if (cells[3]) {
+                        cells[3].innerHTML = `<span class="inline-block px-3 py-1 bg-blue-50 text-blue-700 border border-blue-100 text-xs font-semibold rounded-lg">${res.total_nilai}</span>`;
+                    }
+                    // Update status badge in table
+                    const score = parseInt(res.total_nilai);
+                    let badgeClass, statusText;
+                    if (score >= 70) {
+                        badgeClass = 'text-emerald-700 bg-emerald-50 border border-emerald-100';
+                        statusText = 'Memenuhi';
+                    } else {
+                        badgeClass = 'text-red-700 bg-red-50 border border-red-100';
+                        statusText = 'Tidak Memenuhi';
+                    }
+                    if (cells[4]) {
+                        cells[4].innerHTML = `<span class="inline-block px-3 py-1.5 text-xs font-semibold rounded-lg ${badgeClass}">${statusText}</span>`;
+                    }
+                }
+            }
+
+            // 2. Visually update the buttons and badge in the modal without re-rendering everything
+            if (btnEl) {
+                // Update total text in the header of the modal
+                const detailTotalNilai = dom.qs('#detailTotalNilai');
+                if (detailTotalNilai) {
+                    detailTotalNilai.textContent = res.total_nilai;
+                }
+
+                const group = btnEl.closest('.flex');
+                if (group) {
+                    const buttons = group.querySelectorAll('button');
+                    buttons.forEach(b => {
+                        b.className = b.className.replace(/bg-red-500 text-white border-red-500/g, 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50');
+                        b.className = b.className.replace(/bg-amber-500 text-white border-amber-500/g, 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50');
+                        b.className = b.className.replace(/bg-emerald-500 text-white border-emerald-500/g, 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50');
+                    });
+
+                    btnEl.className = btnEl.className.replace(/bg-white text-slate-600 border-slate-300 hover:bg-slate-50/g, '');
+                    
+                    if (btnEl.innerText.includes('Salah')) {
+                        btnEl.className += ' bg-red-500 text-white border-red-500';
+                    } else if (btnEl.innerText.includes('Mendekati')) {
+                        btnEl.className += ' bg-amber-500 text-white border-amber-500';
+                    } else {
+                        btnEl.className += ' bg-emerald-500 text-white border-emerald-500';
+                    }
+                }
+                
+                // Update the status badge above the question
+                // We know it's inside a tr/td, but there's a div containing the question.
+                const card = btnEl.closest('div.border.border-slate-200'); 
+                if (card) {
+                    // Try to find the status badge container in the header
+                    const headerFlex = card.querySelector('.flex.items-start.justify-between.gap-4');
+                    if (headerFlex) {
+                        const badges = headerFlex.querySelectorAll('span.inline-flex');
+                        if (badges.length > 0) {
+                            const badgeContainer = badges[badges.length - 1]; // Usually the last badge is the status
+                            
+                            if (skor === 0) {
+                                badgeContainer.outerHTML = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 text-xs font-bold rounded-lg border border-red-200"><i class="bi bi-x-circle-fill"></i> Salah</span>';
+                            } else if (btnEl.innerText.includes('Mendekati')) {
+                                badgeContainer.outerHTML = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 text-xs font-bold rounded-lg border border-amber-200"><i class="bi bi-exclamation-circle-fill"></i> Mendekati Benar</span>';
+                            } else {
+                                badgeContainer.outerHTML = '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200"><i class="bi bi-check-circle-fill"></i> Benar</span>';
+                            }
+                        }
+                    }
+                }
+                
+                // Helper to update stats dynamically
+                const recalculateStatsFromDOM = () => {
+                    let benar = 0, salah = 0, tidakDijawab = 0;
+                    const badges = document.querySelectorAll('#soalJawabanList .flex.items-start.justify-between.gap-4 > span.inline-flex:last-child');
+                    badges.forEach(badge => {
+                        const txt = badge.innerText;
+                        if (badge.classList.contains('bg-emerald-50')) {
+                            benar++;
+                        } else if (badge.classList.contains('bg-red-50')) {
+                            salah++;
+                        } else if (badge.classList.contains('bg-slate-200') && txt.includes('Kosong')) {
+                            tidakDijawab++;
+                        }
+                    });
+                    const total = document.querySelectorAll('#soalJawabanList > tr').length;
+                    
+                    const statBenar = document.querySelector('#statBenar');
+                    const statSalah = document.querySelector('#statSalah');
+                    const statTidakDijawab = document.querySelector('#statTidakDijawab');
+                    
+                    if (statBenar) statBenar.textContent = benar;
+                    if (statSalah) statSalah.textContent = salah;
+                    if (statTidakDijawab) statTidakDijawab.textContent = tidakDijawab;
+                    
+                    const persen = total > 0 ? Math.round((benar / total) * 100) : 0;
+                    const persenEl = document.querySelector('#detailPersen');
+                    if (persenEl) persenEl.textContent = persen;
+                    const bar = document.querySelector('#detailProgress');
+                    if (bar) bar.style.width = persen + '%';
+                };
+                
+                recalculateStatsFromDOM();
+                
+                btnEl.disabled = false;
+            }
+        } else {
+            if (btnEl) btnEl.disabled = false;
+            alert(res.message || 'Gagal menyimpan nilai esai');
+        }
+    })
+    .catch(err => {
+        if (btnEl) btnEl.disabled = false;
+        alert('Terjadi kesalahan sistem saat menyimpan nilai');
+    });
+};

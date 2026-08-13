@@ -98,6 +98,45 @@ class NilaiController extends Controller
         }
     }
 
+    public function updateSkorEssay()
+    {
+        try {
+            ob_clean();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            if (!isset($_SESSION['user']['id'])) {
+                self::jsonError('User tidak terautentikasi');
+            }
+
+            $id_mahasiswa = $_POST['id_mahasiswa'] ?? null;
+            $id_soal = $_POST['id_soal'] ?? null;
+            $skor = $_POST['skor'] ?? null;
+            
+            if (!$id_mahasiswa || !$id_soal || $skor === null) {
+                self::jsonError('Data tidak lengkap');
+            }
+
+            $jawabanModel = new \App\Model\JawabanExam();
+            if ($jawabanModel->updateSkorAdmin($id_soal, $id_mahasiswa, $skor)) {
+                // Recalculate total score
+                $nilaiAkhir = new NilaiAkhir();
+                $totalScore = $nilaiAkhir->saveNilaiByIdMahasiswa($id_mahasiswa);
+                
+                // Note: We don't necessarily want to send notification on every single essay checked.
+                // We'll leave it out, or maybe just update the total.
+                
+                self::jsonSuccess(['total_nilai' => $totalScore], 'Skor esai berhasil disimpan');
+            } else {
+                self::jsonError('Gagal menyimpan skor esai');
+            }
+        } catch (\Exception $e) {
+            error_log("Error in updateSkorEssay: " . $e->getMessage());
+            self::jsonError($e->getMessage());
+        }
+    }
+
     public function getSoalAndJawabanMahasiswa()
     {
         try {

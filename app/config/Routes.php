@@ -90,6 +90,7 @@ Router::post("/updateprofile",[new ProfilController, 'updateProfile']);
 Router::post("/acceptberkas",[new BerkasController, 'updateAcceptedStatus']);
 Router::post("/ruangan/getfilter",[new JadwalWawancaraController,'getAllFilterByIdRuangan']);
 Router::post("/updatenilaiakhir",[new NilaiController, 'updateTotalNilai']);
+Router::post("/update-essay-score",[new NilaiController, 'updateSkorEssay']);
 Router::post("/updateabsensi",[new RekapKehadiranController, 'updateData']);
 Router::post("/deleteabsensi",[new RekapKehadiranController, 'deleteData']);
 Router::post("/backfillabsensi",[new RekapKehadiranController, 'backfillData']);

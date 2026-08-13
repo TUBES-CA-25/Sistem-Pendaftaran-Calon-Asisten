@@ -147,7 +147,8 @@ $nilai = $nilai ?? [];
                             <div class="text-[10px] font-semibold text-white/70 mt-1" id="detailNilaiKet">&nbsp;</div>
                         </div>
                         <div class="w-px h-14 bg-white/25"></div>
-                        <form id="formNilaiAkhir" class="flex items-end gap-2">
+                        <!-- Manual scoring is now handled automatically -->
+                        <form id="formNilaiAkhir" class="hidden flex items-end gap-2">
                             <div>
                                 <label for="nilaiAkhir" class="block text-[10px] font-bold uppercase tracking-wider text-white/70 mb-1">Ubah Nilai</label>
                                 <input type="number" id="nilaiAkhir" min="0" max="100" placeholder="0-100"
