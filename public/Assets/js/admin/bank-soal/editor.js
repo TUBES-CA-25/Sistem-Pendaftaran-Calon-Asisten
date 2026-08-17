@@ -61,18 +61,55 @@ document.addEventListener('DOMContentLoaded', function() {
     // Bootstrap sudah dibuang dari project ini, jadi listener lama tidak pernah
     // menyala dan CodeMirror tampil kacau saat modal dibuka: editor dibangun
     // ketika modal masih display:none sehingga tinggi/gutter-nya terhitung 0.
+    /**
+     * Segarkan CodeMirror SETELAH animasi modal benar-benar selesai.
+     *
+     * core/ui.js memancarkan 'modal:shown' tepat setelah atribut data-open
+     * dipasang - artinya di AWAL transisi scale-95 -> scale-100, bukan di
+     * akhirnya. Kalau refresh() jalan saat itu, CodeMirror mengukur lebar huruf
+     * ketika panel masih berskala 0,95 sehingga ukurannya meleset 5%.
+     *
+     * Catatan kejujuran: penundaan ini TIDAK terbukti lewat pengujian, karena
+     * peramban headless yang dipakai melompati transisi. Sebab utama kursor
+     * meleset adalah varian `data-[open]:scale-100` yang salah sasaran (lihat
+     * view) - itu sudah diperbaiki dan terukur menyelesaikan masalahnya
+     * (-13,6px menjadi -0,1px). Penundaan ini dipertahankan sebagai pengaman
+     * justru KARENA perbaikan itu: dulu panel selalu 0,95 sehingga waktu
+     * refresh tak berpengaruh, sekarang transisinya benar-benar berjalan.
+     */
+    function segarkanSetelahAnimasi(modal, ambilEditor) {
+        modal.addEventListener('modal:shown', function () {
+            const panel = modal.querySelector('.panel-modal-soal') || modal.firstElementChild;
+            let sudah = false;
+
+            const jalankan = function () {
+                if (sudah) return;
+                sudah = true;
+                const editor = ambilEditor();
+                if (editor) editor.codemirror.refresh();
+            };
+
+            if (panel) {
+                panel.addEventListener('transitionend', function pada(e) {
+                    if (e.propertyName !== 'transform') return;
+                    panel.removeEventListener('transitionend', pada);
+                    jalankan();
+                });
+            }
+            // Jaring pengaman: transitionend tidak dipancarkan bila animasi
+            // dimatikan (prefers-reduced-motion) atau transisinya tak berjalan.
+            setTimeout(jalankan, 320);
+        });
+    }
+
     const addModal = document.getElementById('addSoalModal');
     if (addModal) {
-        addModal.addEventListener('modal:shown', function () {
-            if (window.easyMDE_add) window.easyMDE_add.codemirror.refresh();
-        });
+        segarkanSetelahAnimasi(addModal, function () { return window.easyMDE_add; });
     }
 
     const editModal = document.getElementById('editSoalModal');
     if (editModal) {
-        editModal.addEventListener('modal:shown', function () {
-            if (window.easyMDE_edit) window.easyMDE_edit.codemirror.refresh();
-        });
+        segarkanSetelahAnimasi(editModal, function () { return window.easyMDE_edit; });
     }
 
     // Refactored Image Preview helper

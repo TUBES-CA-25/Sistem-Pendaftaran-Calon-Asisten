@@ -48,6 +48,44 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
 ?>
 </div>
 
+<?php /* Batang gulir modal soal disembunyikan.
+
+         Ditulis sebagai CSS biasa karena Tailwind tidak punya utility untuk
+         menyembunyikan batang gulir, dan ketiga properti di bawah dibutuhkan
+         sekaligus: `scrollbar-width` untuk Firefox, `-ms-overflow-style` untuk
+         Edge lama, dan pseudo-elemen ::-webkit-scrollbar untuk Chrome/Safari.
+
+         Yang disembunyikan hanya BATANGNYA - `overflow-y: auto` tetap ada
+         sehingga isinya masih bisa digulir dengan roda tetikus, sentuhan,
+         maupun papan ketik. */ ?>
+<style>
+    /* Tinggi modal memakai dvh, BUKAN vh.
+       Di peramban HP, `vh` dihitung terhadap layar tanpa memperhitungkan bilah
+       alamat, sehingga modal setinggi 85vh bisa menjulur ke bawah area yang
+       benar-benar terlihat dan tombol Simpan jadi tak terjangkau. `dvh`
+       mengikuti tinggi yang benar-benar tersedia saat itu.
+
+       Baris `vh` ditulis lebih dulu sebagai cadangan untuk peramban lama yang
+       belum mengenal dvh - keduanya WAJIB ada, bukan sekadar berjaga. */
+    .panel-modal-soal {
+        max-height: 85vh;
+        max-height: 85dvh;
+    }
+    .gulir-tanpa-batang {
+        /* 150px = tinggi kepala + kaki modal */
+        max-height: calc(85vh - 150px);
+        max-height: calc(85dvh - 150px);
+        overflow-y: auto;
+        scrollbar-width: none;        /* Firefox */
+        -ms-overflow-style: none;     /* Edge lama */
+    }
+    .gulir-tanpa-batang::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        display: none;                /* Chrome, Edge, Safari */
+    }
+</style>
+
 <main class="max-w-7xl mx-auto pt-0 pb-6 [&_.editor-toolbar]:!border-slate-200 [&_.editor-toolbar]:rounded-t-xl [&_.CodeMirror]:!border-slate-200 [&_.CodeMirror]:rounded-b-xl [&_.CodeMirror]:min-h-[200px] [&_.CodeMirror]:max-h-[400px] [&_.editor-statusbar]:hidden [&_.condition-render-markdown_img]:max-w-full [&_.condition-render-markdown_img]:max-h-[400px] [&_.condition-render-markdown_img]:object-contain [&_.condition-render-markdown_img]:rounded-xl [&_.condition-render-markdown_img]:my-2.5 [&_.condition-render-markdown_img]:border [&_.condition-render-markdown_img]:border-slate-200 [&_.condition-render-markdown_img]:block [&_.type-option.selected]:bg-blue-600/5 [&_.type-option.selected]:!border-blue-600 [&_.type-option.selected_.check-icon]:!block [&_.EasyMDEContainer]:z-[1055]">
 <!--
     Tab navigasi. Hanya tampil di daftar bank soal; saat masuk ke rincian
@@ -576,7 +614,7 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
 <!-- Create Bank Modal -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="createBankModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
             <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
                 <h5 class="font-bold text-lg"><i class='bx bx-folder-plus mr-2'></i>Buat Bank Soal Baru</h5>
@@ -623,7 +661,7 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
 <!-- Edit Bank Modal -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="editBankModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
             <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
                 <h5 class="font-bold text-lg"><i class='bx bx-edit mr-2'></i>Edit Bank Soal</h5>
@@ -670,14 +708,14 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
 <!-- Add Soal Modal -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="addSoalModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100 max-h-[85vh] overflow-y-auto">
+    <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100 panel-modal-soal overflow-hidden">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
             <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
                 <h5 class="font-bold text-lg"><i class='bx bx-plus-circle mr-2'></i>Tambah Soal Baru</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <form id="addSoalForm" enctype="multipart/form-data">
-                <div class="p-6 space-y-6" style="max-height: 65vh; overflow-y: auto;">
+                <div class="p-6 space-y-6 gulir-tanpa-batang">
                     <!-- Tipe Soal Selection -->
                     <div class="text-center">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Pilih Tipe Soal</label>
@@ -759,7 +797,7 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
 <!-- Edit Soal Modal -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="editSoalModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100 max-h-[85vh] overflow-y-auto">
+    <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100 panel-modal-soal overflow-hidden">
         <div class="relative bg-white w-full shadow-lg rounded-2xl overflow-hidden">
             <div class="bg-blue-600 text-white p-6 rounded-t-2xl flex justify-between items-center gap-3">
                 <h5 class="font-bold text-lg"><i class='bx bx-edit mr-2'></i>Edit Soal</h5>
@@ -767,7 +805,7 @@ $tabAwal = (($data['tabAwal'] ?? '') === 'impor' || ($initialPage ?? '') === 'im
             </div>
             <form id="editSoalForm" enctype="multipart/form-data">
                 <input type="hidden" name="id" id="editSoalId">
-                <div class="p-6 space-y-6" style="max-height: 65vh; overflow-y: auto;">
+                <div class="p-6 space-y-6 gulir-tanpa-batang">
                     <!-- Tipe Soal Selection -->
                     <div class="text-center">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Tipe Soal</label>
