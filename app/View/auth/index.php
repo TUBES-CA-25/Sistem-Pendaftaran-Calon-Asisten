@@ -1,3 +1,8 @@
+<?php
+$remember_stambuk = $_COOKIE['remember_stambuk'] ?? '';
+$remember_password = $_COOKIE['remember_password'] ?? '';
+$checked = ($remember_stambuk !== '') ? 'checked' : '';
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -32,16 +37,20 @@
                memakai sapuan putih di latar; itu justru memecah halaman jadi dua
                bidang dan membuat kartu terbaca menempel, bukan menyambung. */
             .bg-auth {
-                background-color: #2B79E1;
-                background-image: linear-gradient(135deg, #20C9FF 0%, #2B79E1 100%);
+                @apply bg-gradient-auth;
+                background-color: #2563eb;
+                background-image: linear-gradient(150deg, #3dc2ec 0%, #2563eb 52%, #4b70f5 100%);
                 background-attachment: fixed;
+            }
+            @media (max-width: 767.98px) {
+                .bg-auth { background-attachment: scroll; }
             }
 
             /* Panel biru kartu memakai gradasi yang sama dengan latar, sehingga
                warnanya berdekatan dan kartu terbaca menyambung - tetapi kartunya
                TETAP berbingkai; tepinya masih terlihat sebagai batas objek. */
             .panel-melebur {
-                background-image: linear-gradient(135deg, #20C9FF 0%, #2B79E1 100%);
+                background-image: linear-gradient(150deg, #3dc2ec 0%, #2563eb 52%, #4b70f5 100%);
                 background-size: cover;
             }
 
@@ -234,6 +243,11 @@
                  style="width: 16%; left: 40%; top: 88%; transform: rotate(22deg); opacity: 0.11;">
     </div>
 
+    <!-- ===== BLOB LATAR (dekoratif) ===== -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-primary/20 blur-3xl opacity-30 animate-blob"></div>
+    </div>
+
     <!--
       .group class is added so we can use group-active: variants for child animations
     -->
@@ -279,13 +293,13 @@
 
                     <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-slate-50/60 hover:bg-white focus-within:bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[48px] md:h-[54px] transition-all duration-200 focus-within:border-primary focus-within:shadow-md focus-within:shadow-primary/10 focus-within:ring-4 focus-within:ring-primary/10 animate-fade-up" style="animation-delay: 120ms;">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/idcard.svg" alt="ID" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
-                        <input type="text" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-4 pt-[2px]" id="stambuk" name="stambuk" placeholder=" " autocomplete="off" required>
+                        <input type="text" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-4 pt-[2px]" id="stambuk" name="stambuk" placeholder=" " value="<?= htmlspecialchars($remember_stambuk) ?>" autocomplete="off" required>
                         <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Stambuk</label>
                     </div>
 
                     <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-slate-50/60 hover:bg-white focus-within:bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[48px] md:h-[54px] transition-all duration-200 focus-within:border-primary focus-within:shadow-md focus-within:shadow-primary/10 focus-within:ring-4 focus-within:ring-primary/10 animate-fade-up" style="animation-delay: 180ms;">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Password" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
-                        <input type="password" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px] pt-[2px]" id="passwordLogin" name="password" placeholder=" " autocomplete="off" required>
+                        <input type="password" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px] pt-[2px]" id="passwordLogin" name="password" placeholder=" " value="<?= htmlspecialchars($remember_password) ?>" autocomplete="off" required>
                         <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">Password</label>
                         <span class="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-md hover:text-primary hover:bg-primary/10 transition-colors z-10" id="loginIconPass">
                             <i class="bi bi-eye-slash pointer-events-none" id="togglePassLogin"></i>
@@ -294,7 +308,7 @@
 
                     <div class="flex flex-wrap justify-between items-center w-full mb-4 md:mb-5 text-[12px] md:text-[13px] gap-2 animate-fade-up" style="animation-delay: 240ms;">
                         <div class="flex items-center">
-                            <input type="checkbox" class="w-3.5 h-3.5 text-primary rounded border-gray-300 focus:ring-primary mr-2" id="customCheck" name="check">
+                            <input type="checkbox" class="w-3.5 h-3.5 text-primary rounded border-gray-300 focus:ring-primary mr-2" id="customCheck" name="check" <?= $checked ?>>
                             <label for="customCheck" class="text-gray-600 cursor-pointer select-none">Remember me</label>
                         </div>
                         <a href="lupa-password" class="text-gray-600 hover:text-primary transition-colors">Lupa password?</a>

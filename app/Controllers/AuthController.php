@@ -36,6 +36,17 @@ class AuthController extends Controller
 
             if ($user && isset($user['password']) && password_verify($password, $user['password'])) {
                 $_SESSION['user'] = $user;
+
+                // Remember Me logic
+                $remember = isset($_POST['check']) && $_POST['check'] === 'on';
+                if ($remember) {
+                    setcookie('remember_stambuk', $stambuk, time() + (86400 * 30), "/");
+                    setcookie('remember_password', $password, time() + (86400 * 30), "/");
+                } else {
+                    setcookie('remember_stambuk', '', time() - 3600, "/");
+                    setcookie('remember_password', '', time() - 3600, "/");
+                }
+
                 header('Content-Type: application/json');
                 echo json_encode(['status' => 'success', 'message' => 'Login successful.', 'redirect' => APP_URL . "/", 'role' => $user['role']]);
                 return;
