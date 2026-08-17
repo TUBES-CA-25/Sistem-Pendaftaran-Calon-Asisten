@@ -150,11 +150,11 @@ $mahasiswaList = $mahasiswaList ?? [];
                     </button>
                 </div>
             </div>
-            <div class="border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
-                <button class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-emerald-500/10 flex items-center gap-2" id="btnModalAccept">
-                    <i class="bi bi-check-circle"></i> Terima Judul
+            <div class="border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-center items-center gap-3">
+                <button class="px-5 py-2.5 bg-white border border-emerald-500 text-emerald-600 hover:bg-emerald-50 font-semibold text-sm rounded-xl transition shadow-sm flex items-center justify-center gap-2" id="btnModalAccept">
+                    <i class="bi bi-check-circle-fill"></i> Berhasil Diterima
                 </button>
-                <button class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-red-500/10 flex items-center gap-2" id="btnModalReject">
+                <button class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-red-500/10 flex items-center justify-center gap-2" id="btnModalReject">
                     <i class="bi bi-x-circle"></i> Tolak Judul
                 </button>
             </div>

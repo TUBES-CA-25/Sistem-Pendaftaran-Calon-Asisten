@@ -38,27 +38,26 @@
         const accept = dom.qs('#btnModalAccept');
         const reject = dom.qs('#btnModalReject');
 
-        const ACCEPT_ON  = 'bg-emerald-600 hover:bg-emerald-700 text-white';
-        const ACCEPT_OFF = 'border border-emerald-600 text-emerald-600 bg-white cursor-not-allowed';
-        const REJECT_ON  = 'bg-red-600 hover:bg-red-700 text-white';
-        const REJECT_OFF = 'border border-red-600 text-red-600 bg-white cursor-not-allowed';
+        const ACCEPT_ON  = 'bg-white border border-emerald-500 text-emerald-600 hover:bg-emerald-50 shadow-sm';
+        const ACCEPT_OFF = 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed';
+        const REJECT_ON  = 'bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-500/10';
+        const REJECT_OFF = 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed';
 
         function setBtn(el, onCls, offCls, disabled, innerHtml) {
             if (!el) return;
-            dom.removeClass(el, disabled ? onCls : offCls);
-            dom.addClass(el, disabled ? offCls : onCls);
+            el.className = 'px-5 py-2.5 font-semibold text-sm rounded-xl transition flex items-center justify-center gap-2 ' + (disabled ? offCls : onCls);
             el.disabled = disabled;
             el.innerHTML = innerHtml;
         }
 
         if (data.status == 1) {          // Diterima
-            setBtn(accept, ACCEPT_ON, ACCEPT_OFF, true,  '<i class="bi bi-check-circle-fill"></i> Berhasil Diterima');
+            setBtn(accept, ACCEPT_ON, ACCEPT_OFF, true,  '<i class="bi bi-lock-fill"></i> Berhasil Diterima');
             setBtn(reject, REJECT_ON, REJECT_OFF, false, '<i class="bi bi-x-circle"></i> Tolak Judul');
         } else if (data.status == 2) {   // Ditolak
-            setBtn(reject, REJECT_ON, REJECT_OFF, true,  '<i class="bi bi-x-circle-fill"></i> Berhasil Ditolak');
-            setBtn(accept, ACCEPT_ON, ACCEPT_OFF, false, '<i class="bi bi-check-circle"></i> Terima Judul');
+            setBtn(reject, REJECT_ON, REJECT_OFF, true,  '<i class="bi bi-lock-fill"></i> Berhasil Ditolak');
+            setBtn(accept, ACCEPT_ON, ACCEPT_OFF, false, '<i class="bi bi-check-circle-fill"></i> Berhasil Diterima');
         } else {                          // Belum diproses
-            setBtn(accept, ACCEPT_ON, ACCEPT_OFF, false, '<i class="bi bi-check-circle"></i> Terima Judul');
+            setBtn(accept, ACCEPT_ON, ACCEPT_OFF, false, '<i class="bi bi-check-circle-fill"></i> Berhasil Diterima');
             setBtn(reject, REJECT_ON, REJECT_OFF, false, '<i class="bi bi-x-circle"></i> Tolak Judul');
         }
 
