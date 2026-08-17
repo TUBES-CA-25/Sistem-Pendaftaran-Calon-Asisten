@@ -134,7 +134,7 @@
         }
     </style>
 </head>
-<body class="bg-auth flex items-start sm:items-center justify-center min-h-screen overflow-y-auto py-8 px-4 text-gray-800 relative overflow-x-hidden animate-page-fade">
+<body class="bg-auth flex items-center justify-center min-h-screen overflow-y-auto py-8 px-4 text-gray-800 relative overflow-x-hidden animate-page-fade">
 
     <div class="lapis-cap" aria-hidden="true">
         <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="" class="cap-iclabs"
@@ -169,9 +169,9 @@
 
             <!-- Logo trio - menyatukan halaman ini dengan halaman login -->
             <div class="flex items-center justify-center gap-2 md:gap-3 mb-6 w-full">
-                <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/umi.png" alt="UMI" class="w-[44px] md:w-[56px] object-contain">
-                <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/fikom.png" alt="FIKOM" class="w-[44px] md:w-[56px] object-contain">
-                <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="ICLABS" class="w-[44px] md:w-[56px] object-contain">
+                <img src="<?= APP_URL ?>/Assets/Img/umi.png" alt="UMI" class="w-[44px] md:w-[56px] object-contain">
+                <img src="<?= APP_URL ?>/Assets/Img/fikom.png" alt="FIKOM" class="w-[44px] md:w-[56px] object-contain">
+                <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="ICLABS" class="w-[44px] md:w-[56px] object-contain">
             </div>
 
             <div class="text-center mb-7">
@@ -200,7 +200,7 @@
                 <input type="hidden" name="token" value="<?= htmlspecialchars($_GET['token'] ?? '') ?>">
 
                 <div class="float-group w-full mb-4 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
-                    <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Password" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
+                    <img src="<?= APP_URL ?>/Assets/Img/password.svg" alt="Password" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
                     <input type="password"
                         class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px]"
                         id="newPassword"
@@ -218,7 +218,7 @@
                 </div>
 
                 <div class="float-group w-full mb-5 flex items-center bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[52px] transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
-                    <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/password.svg" alt="Confirm" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
+                    <img src="<?= APP_URL ?>/Assets/Img/password.svg" alt="Confirm" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
                     <input type="password"
                         class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-[40px]"
                         id="confirmPassword"
@@ -235,14 +235,14 @@
                     </button>
                 </div>
 
-                <button type="submit" class="w-full bg-gradient-to-br from-primary to-secondary rounded-xl py-3 text-[14px] md:text-[15px] font-semibold text-white tracking-wide hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-sm transition-all flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none" id="submitBtn">
+                <button type="submit" class="w-full bg-gradient-primary hover:bg-secondary rounded-xl py-3 text-[14px] md:text-[15px] font-semibold text-white tracking-wide hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-sm transition-all flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none" id="submitBtn">
                     <span class="loading"></span>
                     <span class="btn-text">Ubah Password</span>
                 </button>
             </form>
 
             <div class="text-center mt-6">
-                <a href="/Sistem-Pendaftaran-Calon-Asisten/public/login" class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-primary transition-colors no-underline">
+                <a href="<?= APP_URL ?>/login" class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-primary transition-colors no-underline">
                     <i class="bi bi-arrow-left"></i> Kembali ke Login
                 </a>
             </div>
@@ -344,7 +344,7 @@
 
             try {
                 // Ensure endpoint matches your routes
-                const response = await fetch('/Sistem-Pendaftaran-Calon-Asisten/public/reset-password/update', {
+                const response = await fetch('<?= APP_URL ?>/reset-password/update', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -361,7 +361,7 @@
                     alertDiv.style.display = 'block';
 
                     setTimeout(() => {
-                        window.location.href = '/Sistem-Pendaftaran-Calon-Asisten/public/login';
+                        window.location.href = '<?= APP_URL ?>/login';
                     }, 1500);
                 } else {
                     alertDiv.className = 'alert alert-error';

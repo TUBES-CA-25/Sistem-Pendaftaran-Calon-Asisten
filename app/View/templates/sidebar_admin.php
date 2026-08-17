@@ -14,22 +14,22 @@ $userName = $userName ?? 'Admin';
 $role = $role ?? 'Admin';
 $userName = $userName ?? 'Admin';
 ?>
-<div class="sidebar fixed top-0 left-0 h-screen w-[240px] z-[1040] flex flex-col p-0 transition-transform duration-300 lg:translate-x-0 -translate-x-full shadow-md border-r border-gray-100 bg-white" id="sidebar">
-    <div class="flex flex-col justify-center items-center py-6 px-5 border-b border-gray-100">
+<div class="sidebar fixed inset-y-0 left-0 w-[240px] z-[1040] flex flex-col p-0 transition-transform duration-300 lg:translate-x-0 -translate-x-full shadow-md border-r border-gray-100 bg-white" id="sidebar">
+    <div class="flex flex-col justify-center items-center py-4 px-4 border-b border-gray-100">
         <div class="flex items-center gap-3">
             <img src="<?= APP_URL ?>/Assets/Img/iclabs.png" alt="ICLABS Logo" class="w-10 h-10 shrink-0 object-contain">
             <span class="text-lg font-bold tracking-wider text-primary">IC-ASSIST</span>
         </div>
     </div>
     
-    <ul class="flex-grow min-h-0 py-4 list-none m-0 overflow-y-auto">
+    <ul class="flex-grow min-h-0 py-2 list-none m-0 overflow-y-auto">
         <li class="relative mx-3 my-0.5">
             <a href="<?= APP_URL ?>/dashboard" data-page="dashboard" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
                 <i class='bx bxs-dashboard text-lg shrink-0 w-6 flex justify-center'></i>
                 <span class="whitespace-nowrap">Dashboard</span>
             </a>
         </li>
-        <li class="text-[10px] font-semibold tracking-wider text-gray-400 uppercase px-4 pt-3 pb-1">DATA PESERTA</li>
+        <li class="text-[10px] font-semibold tracking-wider text-gray-400 uppercase px-4 pt-2 pb-1">DATA PESERTA</li>
         <li class="relative mx-3 my-0.5">
             <a href="<?= APP_URL ?>/lihatPeserta" data-page="lihatPeserta" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
                 <i class='bx bxs-user-check text-lg shrink-0 w-6 flex justify-center'></i>
@@ -43,7 +43,7 @@ $userName = $userName ?? 'Admin';
             </a>
         </li>
         
-        <li class="text-[10px] font-semibold tracking-wider text-gray-400 uppercase px-4 pt-3 pb-1">PERSIAPAN</li>
+        <li class="text-[10px] font-semibold tracking-wider text-gray-400 uppercase px-4 pt-2 pb-1">PERSIAPAN</li>
         <li class="relative mx-3 my-0.5">
             <!--
                 Dulu ini dropdown berisi "Daftar Soal" dan "Import/Export".
@@ -78,7 +78,7 @@ $userName = $userName ?? 'Admin';
             </a>
         </li>
         
-        <li class="text-[10px] font-semibold tracking-wider text-gray-400 uppercase px-4 pt-3 pb-1">HASIL SELEKSI</li>
+        <li class="text-[10px] font-semibold tracking-wider text-gray-400 uppercase px-4 pt-2 pb-1">HASIL SELEKSI</li>
         <li class="relative mx-3 my-0.5">
             <a href="<?= APP_URL ?>/lihatnilai" data-page="lihatnilai" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-[#1d4ed8] hover:translate-x-1 transition-all text-sm font-medium no-underline">
                 <i class='bx bx-bar-chart-alt-2 text-lg shrink-0 w-6 flex justify-center'></i>
@@ -93,7 +93,7 @@ $userName = $userName ?? 'Admin';
         </li>
     </ul>
     
-    <div class="p-4 border-t border-gray-100 mt-auto">
+    <div class="p-3 border-t border-gray-100 mt-auto">
         <a href="#" data-page="logout" class="flex items-center gap-3 px-4 py-2 rounded-xl text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all text-sm font-medium no-underline">
             <i class='bx bx-log-out text-lg shrink-0 w-6 flex justify-center'></i>
             <span >Logout</span>

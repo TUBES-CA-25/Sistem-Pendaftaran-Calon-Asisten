@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Admin Dashboard - ICLABS</title>
     <link rel="icon" href="<?= APP_URL ?>/Assets/Img/iclabs.png">
 
@@ -209,26 +209,14 @@
         .sidebar.translate-x-0 { transform: translateX(0) !important; }
         .sidebar.-translate-x-full { transform: translateX(-100%) !important; }
     }
-
-    /* Tinggi sidebar memakai dvh, bukan vh.
-
-       Di peramban HP, 100vh dihitung TANPA memperhitungkan bilah alamat,
-       sehingga lebih tinggi dari area yang benar-benar terlihat. Footer
-       sidebar (tombol Logout) jadi terdorong ke bawah layar dan tidak
-       bisa dijangkau - sidebar sendiri tidak menggulung karena hanya
-       <ul> di dalamnya yang overflow-y-auto.
-
-       Baris 100vh dipertahankan sebagai cadangan untuk peramban lama
-       yang belum mengenal dvh. */
     .sidebar {
-        /* Urutan penting: nilai terakhir yang DIDUKUNG peramban yang dipakai.
-           --app-vh diisi JS dari window.innerHeight (paling akurat, jalan di
-           semua peramban); dvh sebagai cadangan; vh sebagai cadangan terakhir. */
         height: 100vh;
         height: 100dvh;
-        height: var(--app-vh, 100vh);
-        overflow-y: auto;
+        height: 100%;
+        bottom: 0;
+        padding-bottom: env(safe-area-inset-bottom);
     }
+
     @media (min-width: 640px) {
         [data-notif-panel] {
             position: absolute;
@@ -241,27 +229,6 @@
         }
     }
     </style>
-    <script>
-    /* Tinggi viewport nyata untuk sidebar.
-
-       100vh di peramban HP tidak memperhitungkan bilah alamat, sehingga
-       footer sidebar (tombol Logout) terdorong ke bawah layar. Sebagian
-       peramban Android lama juga belum mengenal dvh, jadi tingginya diukur
-       langsung dari window.innerHeight.
-
-       Dipasang di <head> supaya nilainya sudah ada sebelum halaman dilukis;
-       resize & orientationchange menjaganya tetap benar saat bilah alamat
-       muncul/hilang atau layar diputar. */
-    (function () {
-        function setTinggiViewport() {
-            document.documentElement.style.setProperty(
-                '--app-vh', window.innerHeight + 'px'
-            );
-        }
-        setTinggiViewport();
-        window.addEventListener('resize', setTinggiViewport);
-        window.addEventListener('orientationchange', setTinggiViewport);
-    })();
     </script>
 </head>
 <body class="animate-page-fade">
