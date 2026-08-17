@@ -275,7 +275,7 @@
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="ICLABS" class="w-[44px] md:w-[68px] object-contain">
                     </div>
 
-                    <h1 class="text-center mb-4 text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-primary-dark to-secondary bg-clip-text text-transparent animate-fade-up" style="animation-delay: 60ms;">Masuk</h1>
+                    <h1 class="text-center mb-4 text-2xl md:text-3xl font-extrabold text-primary-dark animate-fade-up" style="animation-delay: 60ms;">Masuk</h1>
 
                     <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-slate-50/60 hover:bg-white focus-within:bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[48px] md:h-[54px] transition-all duration-200 focus-within:border-primary focus-within:shadow-md focus-within:shadow-primary/10 focus-within:ring-4 focus-within:ring-primary/10 animate-fade-up" style="animation-delay: 120ms;">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/idcard.svg" alt="ID" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
@@ -300,7 +300,7 @@
                         <a href="lupa-password" class="text-gray-600 hover:text-primary transition-colors">Lupa password?</a>
                     </div>
 
-                    <button type="submit" class="w-full bg-gradient-to-r from-primary via-primary-dark to-secondary bg-[length:200%_auto] hover:bg-[position:right_center] rounded-xl py-3 md:py-3.5 text-[14px] md:text-[15px] font-bold text-white tracking-wide shadow-lg shadow-primary-dark/25 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary-dark/35 active:translate-y-0 transition-all duration-300 flex justify-center items-center gap-2 animate-fade-up disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none" style="animation-delay: 300ms;" name="login" id="btnlogin">
+                    <button type="submit" class="w-full bg-gradient-primary hover:bg-secondary rounded-xl py-3 md:py-3.5 text-[14px] md:text-[15px] font-bold text-white tracking-wide shadow-lg shadow-primary-dark/25 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary-dark/35 active:translate-y-0 transition-all duration-300 flex justify-center items-center gap-2 animate-fade-up disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none" style="animation-delay: 300ms;" name="login" id="btnlogin">
                         <span class="loading"></span>
                         <i class="bi bi-box-arrow-in-right btn-icon"></i><span class="btn-text">Login</span>
                     </button>
@@ -325,7 +325,7 @@
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/iclabs.png" alt="ICLABS" class="w-[38px] md:w-[52px] object-contain">
                     </div>
 
-                    <h1 class="text-center mb-4 text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-primary-dark to-secondary bg-clip-text text-transparent animate-fade-up" style="animation-delay: 60ms;">Buat Akun</h1>
+                    <h1 class="text-center mb-4 text-2xl md:text-3xl font-extrabold text-primary-dark animate-fade-up" style="animation-delay: 60ms;">Buat Akun</h1>
 
                     <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-slate-50/60 hover:bg-white focus-within:bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-all duration-200 focus-within:border-primary focus-within:shadow-md focus-within:shadow-primary/10 focus-within:ring-4 focus-within:ring-primary/10 animate-fade-up" style="animation-delay: 120ms;">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/profile.svg" alt="Email" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
@@ -361,7 +361,7 @@
                     </div>
                     <div id="confirmPassError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden animate-fade-up"></div>
 
-                    <button type="submit" class="w-full bg-gradient-to-r from-primary via-primary-dark to-secondary bg-[length:200%_auto] hover:bg-[position:right_center] rounded-xl py-3 md:py-3.5 text-[14px] md:text-[15px] font-bold text-white tracking-wide shadow-lg shadow-primary-dark/25 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary-dark/35 active:translate-y-0 transition-all duration-300 flex justify-center items-center gap-2 mt-2 animate-fade-up disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none" style="animation-delay: 360ms;" name="register" id="btndaftar">
+                    <button type="submit" class="w-full bg-gradient-primary hover:bg-secondary rounded-xl py-3 md:py-3.5 text-[14px] md:text-[15px] font-bold text-white tracking-wide shadow-lg shadow-primary-dark/25 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary-dark/35 active:translate-y-0 transition-all duration-300 flex justify-center items-center gap-2 mt-2 animate-fade-up disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none" style="animation-delay: 360ms;" name="register" id="btndaftar">
                         <span class="loading"></span>
                         <i class="bi bi-person-plus btn-icon"></i><span class="btn-text">Daftar</span>
                     </button>
