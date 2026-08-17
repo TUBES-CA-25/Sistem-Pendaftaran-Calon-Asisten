@@ -620,7 +620,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
 <!-- Add Activity Modal -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="addActivityModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
@@ -657,7 +657,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
 <!-- Edit Deadline Modal -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="editDeadlineModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-sm scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-sm scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
@@ -685,7 +685,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
 <!-- Activity Detail/Action Modal -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="activityActionModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-[480px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-[480px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
 
             <!-- Header section (Gradient Blue to Cyan) -->
@@ -749,7 +749,7 @@ foreach ($pendaftarPerAngkatan as $baris) {
 <!-- Edit Activity Modal -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="editActivityModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">

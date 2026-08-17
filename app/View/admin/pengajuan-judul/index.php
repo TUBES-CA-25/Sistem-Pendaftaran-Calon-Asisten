@@ -108,25 +108,49 @@ $mahasiswaList = $mahasiswaList ?? [];
 <!-- Modal Detail -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="detailPengajuanModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-2xl">
                 <h5 class="font-bold flex items-center gap-2"><i class="bi bi-person-badge text-lg"></i>Detail Presentasi</h5>
                 <button type="button" data-modal-close aria-label="Tutup" class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-white/80 hover:text-white hover:bg-white/20"><i class="bi bi-x-lg text-sm pointer-events-none"></i></button>
             </div>
             <div class="bg-white p-6">
-                <div class="space-y-4">
-                    <div><strong class="text-xs text-slate-400 font-bold uppercase tracking-wider block mb-1">Nama:</strong> <p class="text-slate-800 font-semibold" id="detailNama">-</p></div>
-                    <div><strong class="text-xs text-slate-400 font-bold uppercase tracking-wider block mb-1">Stambuk:</strong> <p class="text-slate-800 font-semibold" id="detailStambuk">-</p></div>
-                    <div><strong class="text-xs text-slate-400 font-bold uppercase tracking-wider block mb-1">Judul:</strong> <p class="text-slate-700 font-medium leading-relaxed" id="detailJudul">-</p></div>
-                    
-                    <div class="flex gap-3 pt-4 border-t border-slate-100">
-                        <button class="w-full py-2.5 px-4 bg-white hover:bg-slate-50 border border-slate-200 text-blue-600 font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-sm" id="btnDownloadPpt"><i class="bi bi-file-earmark-ppt"></i> Download PPT</button>
-                        <button class="w-full py-2.5 px-4 bg-white hover:bg-slate-50 border border-slate-200 text-blue-600 font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-sm" id="btnDownloadMakalah"><i class="bi bi-file-earmark-pdf"></i> Download Makalah</button>
+                <?php /* Nama & Stambuk disandingkan dua kolom - keduanya pendek,
+                         jadi menumpuknya ke bawah hanya memboroskan tinggi modal
+                         dan mendorong Judul menjauh dari kepala. Judul tetap satu
+                         baris penuh karena bisa sangat panjang. */ ?>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Nama</span>
+                        <p class="text-slate-800 font-semibold leading-snug" id="detailNama">-</p>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Stambuk</span>
+                        <p class="text-slate-800 font-semibold tabular-nums leading-snug" id="detailStambuk">-</p>
                     </div>
                 </div>
+
+                <?php /* Judul diberi permukaan tersendiri supaya terbaca sebagai
+                         isi utama yang sedang dinilai, bukan sekadar baris ketiga. */ ?>
+                <div class="mt-4 rounded-xl bg-slate-50 border border-slate-100 p-3.5">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1.5">Judul Presentasi</span>
+                    <p class="text-slate-700 font-medium leading-relaxed" id="detailJudul">-</p>
+                </div>
+
+                <?php /* Kedua tombol unduh diberi warna sendiri - sebelumnya sama
+                         persis (putih, teks biru) sehingga harus dibaca dulu untuk
+                         dibedakan. Oranye untuk PPT dan merah untuk PDF mengikuti
+                         warna yang sudah lazim dikenali bagi kedua jenis berkas. */ ?>
+                <div class="grid grid-cols-2 gap-3 mt-5 pt-5 border-t border-slate-100">
+                    <button class="group py-2.5 px-4 bg-amber-50 hover:bg-amber-100 border border-amber-200 hover:border-amber-300 text-amber-700 font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2" id="btnDownloadPpt">
+                        <i class="bi bi-file-earmark-ppt-fill text-sm text-amber-500 group-hover:text-amber-600 transition-colors"></i> Download PPT
+                    </button>
+                    <button class="group py-2.5 px-4 bg-rose-50 hover:bg-rose-100 border border-rose-200 hover:border-rose-300 text-rose-700 font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2" id="btnDownloadMakalah">
+                        <i class="bi bi-file-earmark-pdf-fill text-sm text-rose-500 group-hover:text-rose-600 transition-colors"></i> Download Makalah
+                    </button>
+                </div>
             </div>
-            <div class="bg-slate-50 px-6 py-4 flex justify-center gap-3">
+            <div class="border-t border-slate-100 bg-slate-50 px-6 py-4 rounded-b-2xl flex justify-end gap-3">
                 <button class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl transition shadow-md shadow-emerald-500/10 flex items-center gap-2" id="btnModalAccept">
                     <i class="bi bi-check-circle"></i> Terima Judul
                 </button>
@@ -141,7 +165,7 @@ $mahasiswaList = $mahasiswaList ?? [];
 <!-- Modal Send Message -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="sendMessageModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-2xl">
                 <h5 class="font-bold flex items-center gap-2"><i class="bi bi-chat-dots text-lg"></i>Kirim Pesan Revisi</h5>

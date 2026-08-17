@@ -288,7 +288,7 @@
     <!-- Tailwind Redesigned Custom Modal -->
     <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="customModal" aria-labelledby="customModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-        <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
             <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <div class="text-center p-6 md:p-8 flex flex-col items-center">
                     <img id="modalGif" src="" alt="Animation" class="mb-4" style="width: 100px; display: none;">
@@ -302,7 +302,7 @@
     <!-- Tailwind Redesigned Generic Action Confirmation Modal -->
     <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="actionConfirmModal" aria-labelledby="actionConfirmModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-        <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
             <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <!-- Header with Icon & Title -->
                 <div id="actionConfirmHeader" class="px-6 py-8 flex flex-col items-center relative overflow-hidden bg-gradient-to-r from-primary to-secondary rounded-t-[24px]">

@@ -98,7 +98,7 @@ $ruanganList = $ruanganList ?? [];
 <!-- Modals -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="tambahRuanganModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-2xl">
                 <h5 class="font-bold flex items-center gap-2"><i class="bi bi-plus-circle text-lg"></i>Tambah Ruangan Baru</h5>
@@ -122,7 +122,7 @@ $ruanganList = $ruanganList ?? [];
 
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="updateRuanganModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-2xl">
                 <h5 class="font-bold flex items-center gap-2"><i class="bi bi-pencil-square text-lg"></i>Ubah Nama Ruangan</h5>

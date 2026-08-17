@@ -307,7 +307,7 @@
     <!-- Generic Action Confirmation Modal (Premium Design with Tailwind) -->
     <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="actionConfirmModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-        <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
             <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <!-- Header with Gradient & Decoration -->
                 <div id="actionConfirmHeader" class="border-0 text-white relative p-6 flex flex-col items-center text-center bg-gradient-to-r from-primary to-secondary rounded-t-[24px]">
@@ -348,7 +348,7 @@
     <!-- Bootstrap Delete Confirmation Modal (Redesigned with Tailwind) -->
     <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="deleteConfirmModal" aria-labelledby="deleteConfirmModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-        <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
             <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <div class="bg-gradient-to-r from-red-500 to-rose-600 text-white px-6 py-4 flex justify-between items-center rounded-t-[24px]">
                     <h5 class="font-bold text-base flex items-center gap-2" id="deleteConfirmModalLabel">
@@ -418,7 +418,7 @@
     <!-- Bootstrap Custom Modal (Redesigned with Tailwind) -->
     <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="customModal" aria-labelledby="customModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-        <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
             <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <div class="text-center p-6 md:p-8 flex flex-col items-center">
                     <img id="modalGif" src="" alt="Animation" class="mb-4" style="width: 100px; display: none;">
@@ -432,7 +432,7 @@
     <!-- Bootstrap Confirm Modal (Redesigned with Tailwind) -->
     <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="confirmModal" aria-labelledby="confirmModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-        <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+        <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
             <div class="relative isolate bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
                 <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-[24px]">
                     <h5 class="font-bold text-white text-base" id="confirmModalLabel">Konfirmasi</h5>

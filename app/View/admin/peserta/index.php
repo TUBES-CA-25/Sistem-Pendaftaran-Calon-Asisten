@@ -115,7 +115,7 @@ $result = $result ?? [];
 <!-- Modal Kirim Notifikasi -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="addNotification" aria-labelledby="addNotificationLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-2xl">
                 <h5 class="font-bold flex items-center gap-2" id="addNotificationLabel">
@@ -173,7 +173,7 @@ $result = $result ?? [];
     <!-- Tinggi frame dikunci (h-[90vh]) supaya modal TIDAK berubah ukuran saat
          pindah tab. Header, kartu profil, navigasi tab, dan footer memakai
          shrink-0; hanya area isi tab yang memanjang dan menggulir sendiri. -->
-    <div class="relative w-full max-w-4xl mx-auto h-[85vh] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-4xl mx-auto h-[85vh] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative bg-white w-full h-full flex flex-col rounded-2xl shadow-2xl overflow-hidden">
             <!-- Header dengan Background Gradient -->
             <div class="relative bg-gradient-to-br from-primary to-secondary px-6 py-4 text-white overflow-hidden shrink-0 rounded-t-2xl">
@@ -472,7 +472,7 @@ $result = $result ?? [];
 <!-- Modal Kirim Pesan Individual -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="sendMessageModal" aria-labelledby="sendMessageModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex justify-between items-center text-white rounded-t-2xl">
                 <h5 class="font-bold flex items-center gap-2" id="sendMessageModalLabel">

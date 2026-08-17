@@ -539,7 +539,7 @@ $timelineSeleksi = $timelineSeleksi ?? [];
 <!-- Custom Message Modal -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="customMessageModal" aria-labelledby="customMessageModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-3xl scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative isolate w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="bg-gradient-to-r from-primary to-secondary text-white border-0 py-4 px-6 flex justify-between items-center rounded-t-2xl">
                 <h5 class="font-bold text-base" id="customMessageModalLabel">
@@ -582,7 +582,7 @@ $timelineSeleksi = $timelineSeleksi ?? [];
 <!-- Upcoming Activities Modal -->
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="upcomingActivitiesModal" aria-labelledby="upcomingActivitiesModalLabel" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
-    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out data-[open]:scale-100">
+    <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
         <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
             <div class="border-0 py-4 px-6 flex justify-between items-center bg-slate-50 border-b border-slate-100 rounded-t-2xl">
                 <h5 class="font-bold text-slate-800 text-base" id="upcomingActivitiesModalLabel">Upcoming Activities</h5>
