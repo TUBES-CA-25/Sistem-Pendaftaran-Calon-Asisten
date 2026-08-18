@@ -344,7 +344,7 @@ $checked = ($remember_stambuk !== '') ? 'checked' : '';
                     <div class="float-group w-full mb-3 md:mb-4 flex items-center bg-slate-50/60 hover:bg-white focus-within:bg-white border-[1.5px] border-slate-200 hover:border-slate-300 rounded-xl px-3 md:px-4 h-[48px] md:h-[52px] transition-all duration-200 focus-within:border-primary focus-within:shadow-md focus-within:shadow-primary/10 focus-within:ring-4 focus-within:ring-primary/10 animate-fade-up" style="animation-delay: 120ms;">
                         <img src="/Sistem-Pendaftaran-Calon-Asisten/public/Assets/Img/profile.svg" alt="Email" class="float-icon w-[18px] md:w-[22px] opacity-45 transition-all duration-300 z-10">
                         <input type="email" class="absolute inset-0 w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-[13px] md:text-[14.5px] font-medium pl-[36px] md:pl-[44px] pr-4 pt-[2px]" id="email" name="email" placeholder=" " autocomplete="off" required>
-                        <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">email@student.umi.ac.id</label>
+                        <label class="float-label absolute left-[36px] md:left-[44px] top-1/2 -translate-y-1/2 text-gray-400 text-[13px] md:text-[14.5px] pointer-events-none transition-all duration-300 origin-left">stambuk@student.umi.ac.id</label>
                     </div>
                     <div id="emailError" class="text-red-500 text-xs w-full text-left -mt-2 mb-2 pl-1 empty:hidden animate-fade-up"></div>
 

@@ -176,6 +176,8 @@
 
     // Click tracker for activities
     let selectedEvent = null;
+    let currentEventsList = [];
+    let currentEventIndex = 0;
 
     window.showActivityActions = function(eventsJson) {
         let events = [];
@@ -188,26 +190,91 @@
         
         if (!events || events.length === 0) return;
         
-        // For simplicity, we handle the first event of the day if multiple exist
-        const event = events[0];
+        currentEventsList = events;
+        currentEventIndex = 0;
+        
+        renderEventModal();
+
+        const modal = UI.modal.ref(document.getElementById('activityActionModal'));
+        modal.show();
+    }
+
+    function renderEventModal() {
+        const event = currentEventsList[currentEventIndex];
         selectedEvent = event;
+
+        // Tampilkan/sembunyikan panah navigasi jika ada lebih dari 1 acara
+        const navEl = document.getElementById('eventNavigation');
+        const countEl = document.getElementById('eventCounter');
+        if (currentEventsList.length > 1) {
+            if (navEl) navEl.classList.remove('hidden');
+            if (countEl) countEl.textContent = (currentEventIndex + 1) + '/' + currentEventsList.length;
+        } else {
+            if (navEl) navEl.classList.add('hidden');
+        }
 
         document.getElementById('displayJudul').textContent = event.judul;
         document.getElementById('displayTanggal').textContent = new Date(event.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         document.getElementById('displayDeskripsi').textContent = event.deskripsi || 'Tidak ada deskripsi.';
 
-        // Set jenis badge
-        const jenisEl = document.getElementById('displayJenis');
-        if (jenisEl) {
-            const jenisColors = {
-                'Kegiatan':   'text-blue-500',
-                'Wawancara':  'text-amber-500',
-                'Presentasi': 'text-emerald-500',
-                'Tes Tertulis': 'text-indigo-500'
-            };
-            jenisEl.textContent = event.jenis || '';
-            // Add 'hidden' to the class so it doesn't break the layout if used as a hidden data holder
-            jenisEl.className = 'hidden text-[11px] font-bold uppercase tracking-wider ' + (jenisColors[event.jenis] || 'text-slate-400');
+        // Set dynamic content layout (icons and box colors) per event type
+        const jenis = event.jenis || 'Kegiatan';
+        const displayIcon = document.getElementById('displayIcon');
+        const descBox = document.getElementById('descBox');
+        const dateBox = document.getElementById('dateBox');
+        const dateLabel = document.getElementById('dateLabel');
+        const dateIcon = document.getElementById('dateIcon');
+        const displayTanggal = document.getElementById('displayTanggal');
+        const jenisBox = document.getElementById('jenisBox');
+        const jenisLabel = document.getElementById('jenisLabel');
+        const jenisIcon = document.getElementById('jenisIcon');
+        const displayJenisLengkap = document.getElementById('displayJenisLengkap');
+        const watermarkIcon = document.getElementById('watermarkIcon');
+        const descContainer = document.getElementById('descContainer');
+
+        if (descBox && dateBox && jenisBox) {
+            // Semua box menggunakan warna biru gradasi/soft biru yang elegan dengan sedikit efek depth (tidak datar)
+            descBox.className = "bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-xl p-4 border border-blue-100/60 shadow-[inset_0_2px_10px_rgba(59,130,246,0.04)] transition-colors duration-300 min-h-[80px]";
+            descBox.querySelector('p').className = "text-[13px] text-slate-700 leading-relaxed whitespace-pre-wrap m-0 transition-colors duration-300 font-medium";
+            
+            dateBox.className = "bg-[#E6F0FF] rounded-xl p-3.5 border border-transparent transition-colors duration-300";
+            dateLabel.className = "text-[10px] text-blue-500/80 font-bold uppercase tracking-wider block mb-1 transition-colors duration-300";
+            dateIcon.className = "bx bx-calendar text-blue-600 text-lg transition-colors duration-300";
+            displayTanggal.className = "text-[13px] font-bold text-blue-700 transition-colors duration-300";
+
+            jenisBox.className = "bg-blue-50 rounded-xl p-3.5 border border-blue-100 transition-colors duration-300";
+            jenisLabel.className = "text-[10px] text-blue-400 font-bold uppercase tracking-wider block mb-1 transition-colors duration-300";
+            jenisIcon.className = "bx bx-tag text-blue-500 text-lg transition-colors duration-300";
+            displayJenisLengkap.className = "text-[13px] font-bold text-blue-800 transition-colors duration-300";
+
+            // Sembunyikan box deskripsi secara default (nanti dimunculkan hanya untuk Kegiatan)
+            if (descContainer) {
+                descContainer.style.display = 'none';
+            }
+
+            // Atur icon & watermark berdasarkan jenis kegiatan (tanpa ubah warna)
+            if (jenis.toLowerCase().includes('tes tertulis')) {
+                if (displayIcon) displayIcon.className = "bi bi-journal-text text-xl";
+                if (watermarkIcon) watermarkIcon.className = "bi bi-journal-text absolute -right-4 -top-4 text-9xl opacity-[0.03] rotate-[-15deg] transition-all duration-500 pointer-events-none text-blue-900";
+            } else if (jenis.toLowerCase().includes('wawancara')) {
+                if (displayIcon) displayIcon.className = "bi bi-people text-xl";
+                if (watermarkIcon) watermarkIcon.className = "bi bi-people absolute -right-4 -top-4 text-9xl opacity-[0.03] rotate-[-15deg] transition-all duration-500 pointer-events-none text-blue-900";
+            } else if (jenis.toLowerCase().includes('presentasi')) {
+                if (displayIcon) displayIcon.className = "bi bi-easel text-xl";
+                if (watermarkIcon) watermarkIcon.className = "bi bi-easel absolute -right-4 -top-4 text-9xl opacity-[0.03] rotate-[-15deg] transition-all duration-500 pointer-events-none text-blue-900";
+            } else {
+                if (displayIcon) displayIcon.className = "bi bi-calendar-event text-xl";
+                if (watermarkIcon) watermarkIcon.className = "bi bi-calendar-event absolute -right-4 -top-4 text-9xl opacity-[0.03] rotate-[-15deg] transition-all duration-500 pointer-events-none text-blue-900";
+                
+                // Kegiatan biasa memunculkan box deskripsi
+                if (descContainer) {
+                    descContainer.style.display = 'block';
+                }
+            }
+        }
+
+        if (displayJenisLengkap) {
+            displayJenisLengkap.textContent = jenis;
         }
 
         const actionsDiv = document.getElementById('calendarActions');
@@ -241,9 +308,31 @@
                 }
             }
         }
+    }
 
-        const modal = UI.modal.ref(document.getElementById('activityActionModal'));
-        modal.show();
+    // Event listeners untuk panah navigasi slider kegiatan
+    const btnPrevEvent = document.getElementById('btnPrevEvent');
+    if (btnPrevEvent) {
+        btnPrevEvent.addEventListener('click', function() {
+            if (currentEventIndex > 0) {
+                currentEventIndex--;
+            } else {
+                currentEventIndex = currentEventsList.length - 1; // loop ke akhir
+            }
+            renderEventModal();
+        });
+    }
+
+    const btnNextEvent = document.getElementById('btnNextEvent');
+    if (btnNextEvent) {
+        btnNextEvent.addEventListener('click', function() {
+            if (currentEventIndex < currentEventsList.length - 1) {
+                currentEventIndex++;
+            } else {
+                currentEventIndex = 0; // loop ke awal
+            }
+            renderEventModal();
+        });
     }
 
     // Edit Button Handler

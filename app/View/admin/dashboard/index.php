@@ -621,32 +621,37 @@ foreach ($pendaftarPerAngkatan as $baris) {
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="addActivityModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
-        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                        <i class="bx bx-calendar-plus text-blue-600"></i>Tambah Kegiatan
-                    </h5>
-                    <button type="button" class="text-slate-400 hover:text-slate-600" data-modal-close aria-label="Tutup">
-                        <i class="bi bi-x-lg text-lg"></i>
-                    </button>
-                </div>
+        <div class="relative bg-white w-full rounded-2xl shadow-2xl overflow-hidden">
+            <!-- Header section -->
+            <div class="bg-gradient-to-br from-primary to-secondary p-6 pb-5 relative rounded-t-2xl">
+                <button type="button" class="absolute top-4 right-4 w-7 h-7 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition-colors shadow-sm cursor-pointer border-0" data-modal-close aria-label="Tutup">
+                    <i class="bi bi-x-lg text-[10px]"></i>
+                </button>
+                <h5 class="text-[17px] font-extrabold text-white leading-snug tracking-tight uppercase flex items-center gap-2 m-0">
+                    <i class="bx bx-calendar-plus text-xl"></i> Tambah Kegiatan
+                </h5>
+            </div>
+
+            <!-- Content section -->
+            <div class="p-6 relative">
                 <form id="addActivityForm" class="space-y-4">
                     <div>
-                        <label for="judulKegiatan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Judul Kegiatan</label>
-                        <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="judul" id="judulKegiatan" required>
+                        <label for="judulKegiatan" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Judul Kegiatan</label>
+                        <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-slate-50/50 hover:bg-white transition-colors" name="judul" id="judulKegiatan" required>
                     </div>
                     <div>
-                        <label for="tanggalKegiatan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tanggal</label>
-                        <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="tanggal" id="tanggalKegiatan" required>
+                        <label for="tanggalKegiatan" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Tanggal</label>
+                        <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-slate-50/50 hover:bg-white transition-colors" name="tanggal" id="tanggalKegiatan" required>
                     </div>
                     <div>
-                        <label for="deskripsiKegiatan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Deskripsi</label>
-                        <textarea class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="deskripsi" id="deskripsiKegiatan" rows="3"></textarea>
+                        <label for="deskripsiKegiatan" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Deskripsi</label>
+                        <textarea class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-slate-50/50 hover:bg-white transition-colors min-h-[100px]" name="deskripsi" id="deskripsiKegiatan" rows="3"></textarea>
                     </div>
-                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                        <button type="button" class="px-5 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm rounded-xl transition cursor-pointer" data-modal-close>Batal</button>
-                        <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition border-0 cursor-pointer">Simpan</button>
+                    <div class="flex justify-end gap-3 pt-5 mt-2">
+                        <button type="button" class="px-5 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800 font-bold text-sm rounded-xl transition-all shadow-sm cursor-pointer" data-modal-close>Batal</button>
+                        <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-blue-600/20 border-0 cursor-pointer flex items-center justify-center gap-2">
+                            <i class="bx bx-save text-lg"></i> Simpan
+                        </button>
                     </div>
                 </form>
             </div>
@@ -686,52 +691,77 @@ foreach ($pendaftarPerAngkatan as $baris) {
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="activityActionModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
     <div class="relative w-full max-w-[480px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
+        <!-- Floating Arrows for navigating multiple events -->
+        <div id="eventNavigation" class="absolute top-1/2 -translate-y-1/2 -left-2 -right-2 sm:-left-14 sm:-right-14 z-50 flex justify-between pointer-events-none hidden">
+            <button type="button" id="btnPrevEvent" class="w-8 h-8 sm:w-10 sm:h-10 bg-white shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)] hover:bg-slate-50 hover:-translate-x-1 rounded-full flex items-center justify-center text-blue-600 transition-all cursor-pointer border border-slate-100 pointer-events-auto active:scale-95 text-xl sm:text-2xl">
+                <i class="bx bx-chevron-left"></i>
+            </button>
+            <button type="button" id="btnNextEvent" class="w-8 h-8 sm:w-10 sm:h-10 bg-white shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)] hover:bg-slate-50 hover:translate-x-1 rounded-full flex items-center justify-center text-blue-600 transition-all cursor-pointer border border-slate-100 pointer-events-auto active:scale-95 text-xl sm:text-2xl">
+                <i class="bx bx-chevron-right"></i>
+            </button>
+        </div>
+
         <div class="relative bg-white w-full rounded-[24px] shadow-2xl overflow-hidden">
 
-            <!-- Header section (Gradient Blue to Cyan) -->
-            <div class="bg-gradient-to-br from-primary to-secondary p-6 pb-5 relative rounded-t-[24px]">
-                <button type="button" class="absolute top-3 right-3 w-8 h-8 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition-colors shadow-sm cursor-pointer border-0" data-modal-close aria-label="Tutup">
-                    <i class="bi bi-x-lg text-xs"></i>
+            <!-- Tailwind CDN Safelist for Dynamic Colors -->
+            <div class="hidden from-primary to-secondary from-amber-500 to-orange-500 from-emerald-500 to-teal-500 from-cyan-500 to-blue-500"></div>
+
+            <!-- Header section -->
+            <div id="activityModalHeader" class="bg-gradient-to-br from-primary to-secondary p-6 pb-5 relative rounded-t-[24px] transition-colors duration-500">
+                <button type="button" class="absolute top-4 right-4 w-7 h-7 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition-colors shadow-sm cursor-pointer border-0" data-modal-close aria-label="Tutup">
+                    <i class="bi bi-x-lg text-[10px]"></i>
                 </button>
-                <h5 class="text-[17px] font-extrabold text-white leading-snug pr-8 tracking-tight uppercase" id="displayJudul"></h5>
+                <div class="flex items-center flex-wrap gap-2 pr-8 mt-1">
+                    <h5 class="text-[17px] font-extrabold text-white leading-snug tracking-tight uppercase flex items-center gap-2 m-0" id="displayJudulContainer">
+                        <i id="displayIcon" class="bi bi-calendar-event"></i>
+                        <span id="displayJudul"></span>
+                    </h5>
+                    <span id="eventCounter" class="text-white/90 text-[10px] font-bold tabular-nums bg-white/20 px-2 py-0.5 rounded-full hidden shrink-0"></span>
+                </div>
             </div>
 
             <!-- Content section (White) -->
-            <div class="p-6">
-                <!-- Informasi Umum -->
-                <div class="mb-5">
-                    <div class="flex items-center gap-1.5 mb-2.5">
-                        <i class="bx bx-info-circle text-slate-400 text-sm"></i>
-                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Informasi Umum</span>
+            <div class="p-6 relative overflow-hidden">
+                <!-- Watermark Icon -->
+                <i id="watermarkIcon" class="bi bi-calendar-event absolute -right-4 -top-4 text-9xl opacity-[0.03] rotate-[-15deg] transition-all duration-500 pointer-events-none"></i>
+
+                <div class="grid grid-cols-2 gap-2 sm:gap-4 mb-5 relative z-10">
+                    <!-- Date Box -->
+                    <div id="dateBox" class="bg-[#E6F0FF] rounded-xl p-2.5 sm:p-3.5 border border-transparent transition-colors duration-300">
+                        <span id="dateLabel" class="text-[9px] sm:text-[10px] text-blue-500/80 font-bold uppercase tracking-wider block mb-1 transition-colors duration-300 truncate">Tanggal Pelaksanaan</span>
+                        <div class="flex items-center gap-1.5 sm:gap-2 mt-1">
+                            <i id="dateIcon" class="bx bx-calendar text-blue-600 text-base sm:text-lg transition-colors duration-300"></i>
+                            <span class="text-[11px] sm:text-[13px] font-bold text-blue-700 transition-colors duration-300 truncate" id="displayTanggal"></span>
+                        </div>
                     </div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#E6F0FF] rounded-lg">
-                        <i class="bx bx-calendar text-blue-600 text-sm"></i>
-                        <span class="text-xs font-bold text-blue-700" id="displayTanggal"></span>
+                    
+                    <!-- Kategori Box -->
+                    <div id="jenisBox" class="bg-slate-50 rounded-xl p-2.5 sm:p-3.5 border border-slate-100 transition-colors duration-300">
+                        <span id="jenisLabel" class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1 transition-colors duration-300 truncate">Kategori</span>
+                        <div class="flex items-center gap-1.5 sm:gap-2 mt-1">
+                            <i id="jenisIcon" class="bx bx-tag text-slate-500 text-base sm:text-lg transition-colors duration-300"></i>
+                            <span class="text-[11px] sm:text-[13px] font-bold text-slate-700 transition-colors duration-300 truncate" id="displayJenisLengkap"></span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Deskripsi -->
-                <div class="mb-2">
-                    <div class="flex items-center gap-1.5 mb-2.5">
-                        <i class="bx bx-file text-slate-400 text-sm"></i>
-                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Deskripsi</span>
-                    </div>
-                    <div class="bg-[#F8FAFC] rounded-xl p-4 border border-slate-100">
-                        <p class="text-[13px] text-slate-600 leading-relaxed whitespace-pre-wrap m-0" id="displayDeskripsi"></p>
+                <div id="descContainer" class="relative z-10 transition-all duration-300 overflow-hidden">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">Deskripsi Kegiatan</span>
+                    <div id="descBox" class="bg-[#F8FAFC] rounded-xl p-4 border border-slate-100 transition-colors duration-300 min-h-[80px]">
+                        <p class="text-[13px] text-slate-600 leading-relaxed whitespace-pre-wrap m-0 transition-colors duration-300" id="displayDeskripsi"></p>
                     </div>
                 </div>
             </div>
 
-            <!-- Actions — Kegiatan -->
-            <div id="calendarActions" style="display: none;" class="px-6 pb-6 pt-0">
-                <div class="grid grid-cols-2 gap-3">
-                    <button type="button" class="py-2.5 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[13px] rounded-xl border border-slate-200 transition-all flex items-center justify-center gap-2 cursor-pointer" id="btnEditActivity">
-                        <i class="bi bi-pencil"></i> Edit
-                    </button>
-                    <button type="button" class="py-2.5 bg-[#C81E1E] hover:bg-red-700 text-white font-bold text-[13px] rounded-xl transition-all flex items-center justify-center gap-2 border-0 cursor-pointer" id="btnDeleteActivity">
-                        <i class="bi bi-trash"></i> Hapus
-                    </button>
-                </div>
+            <!-- Action Buttons untuk Kegiatan -->
+            <div id="calendarActions" class="p-6 pt-0 grid grid-cols-2 gap-3" style="display: none;">
+                <button type="button" class="px-4 py-2.5 rounded-xl bg-white border border-blue-100/80 text-sm font-bold text-blue-700 hover:bg-blue-50 hover:border-blue-200 hover:shadow-md hover:shadow-blue-500/10 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_2px_10px_-3px_rgba(59,130,246,0.1)]" id="btnEditActivity">
+                    <i class="bx bx-edit-alt text-blue-600 text-lg"></i> Edit
+                </button>
+                <button type="button" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white text-sm font-bold transition-all shadow-md shadow-red-500/25 flex items-center justify-center gap-2 border-0 cursor-pointer" id="btnDeleteActivity">
+                    <i class="bx bx-trash text-lg"></i> Hapus
+                </button>
             </div>
 
             <!-- Actions — Wawancara/Presentasi -->
@@ -750,33 +780,38 @@ foreach ($pendaftarPerAngkatan as $baris) {
 <div data-modal class="fixed inset-0 z-[1050] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 ease-out data-[open]:opacity-100 bg-slate-900/50 backdrop-blur-sm" id="editActivityModal" role="dialog" aria-hidden="true">
     <div class="absolute inset-0" data-modal-close></div>
     <div class="relative w-full max-w-[500px] scale-95 transition-transform duration-200 ease-out [[data-open]_&]:scale-100">
-        <div class="relative bg-white w-full rounded-2xl shadow-xl overflow-hidden">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h5 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                        <i class="bx bx-edit-alt text-blue-600"></i>Edit Kegiatan
-                    </h5>
-                    <button type="button" class="text-slate-400 hover:text-slate-600" data-modal-close aria-label="Tutup">
-                        <i class="bi bi-x-lg text-lg"></i>
-                    </button>
-                </div>
+        <div class="relative bg-white w-full rounded-2xl shadow-2xl overflow-hidden">
+            <!-- Header section -->
+            <div class="bg-gradient-to-br from-primary to-secondary p-6 pb-5 relative rounded-t-2xl">
+                <button type="button" class="absolute top-4 right-4 w-7 h-7 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition-colors shadow-sm cursor-pointer border-0" data-modal-close aria-label="Tutup">
+                    <i class="bi bi-x-lg text-[10px]"></i>
+                </button>
+                <h5 class="text-[17px] font-extrabold text-white leading-snug tracking-tight uppercase flex items-center gap-2 m-0">
+                    <i class="bx bx-edit-alt text-xl"></i> Edit Kegiatan
+                </h5>
+            </div>
+
+            <!-- Content section -->
+            <div class="p-6 relative">
                 <form id="editActivityForm" class="space-y-4">
                     <input type="hidden" name="id" id="editIdKegiatan">
                     <div>
-                        <label for="editJudulKegiatan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Judul Kegiatan</label>
-                        <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="judul" id="editJudulKegiatan" required>
+                        <label for="editJudulKegiatan" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Judul Kegiatan</label>
+                        <input type="text" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-slate-50/50 hover:bg-white transition-colors" name="judul" id="editJudulKegiatan" required>
                     </div>
                     <div>
-                        <label for="editTanggalKegiatan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tanggal</label>
-                        <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="tanggal" id="editTanggalKegiatan" required>
+                        <label for="editTanggalKegiatan" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Tanggal</label>
+                        <input type="date" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-slate-50/50 hover:bg-white transition-colors" name="tanggal" id="editTanggalKegiatan" required>
                     </div>
                     <div>
-                        <label for="editDeskripsiKegiatan" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Deskripsi</label>
-                        <textarea class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-white transition" name="deskripsi" id="editDeskripsiKegiatan" rows="3"></textarea>
+                        <label for="editDeskripsiKegiatan" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Deskripsi</label>
+                        <textarea class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm text-slate-700 font-semibold bg-slate-50/50 hover:bg-white transition-colors min-h-[100px]" name="deskripsi" id="editDeskripsiKegiatan" rows="3"></textarea>
                     </div>
-                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                        <button type="button" class="px-5 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm rounded-xl transition" data-modal-close>Batal</button>
-                        <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition">Update</button>
+                    <div class="flex justify-end gap-3 pt-5 mt-2">
+                        <button type="button" class="px-5 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800 font-bold text-sm rounded-xl transition-all shadow-sm cursor-pointer" data-modal-close>Batal</button>
+                        <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-blue-600/20 border-0 cursor-pointer flex items-center justify-center gap-2">
+                            <i class="bx bx-check-circle text-lg"></i> Update
+                        </button>
                     </div>
                 </form>
             </div>
